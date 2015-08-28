@@ -1,0 +1,20 @@
+{
+    "name": "eveseat/Eveapi",
+    "description": "SeAT EVE API Integration",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Leon Jacobs",
+            "email": "leonja511@gmail.com"
+        }
+    ],
+    "autoload": {
+      "psr-4": {
+          "eveseat\\Eveapi\\": "src/"
+      }
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "illuminate/support": "~5"
+    }
+}
