@@ -6,7 +6,7 @@ Copyright (c) 2015 Leon Jacobs
 Copyright (c) 2015 eveseat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to dea    l
+of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -24,33 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Eveapi;
+namespace Seat\Eveapi\Traits;
 
-use Illuminate\Support\ServiceProvider;
-
-class EveapiServiceProvider extends ServiceProvider
+trait Core
 {
-    /**
-     * Bootstrap the application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
 
-        // Publish migrations
-        $this->publishes([
-            __DIR__.'/database/migrations/' => database_path('migrations')
-        ], 'migrations');
-    }
-
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
 }

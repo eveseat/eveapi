@@ -1,5 +1,5 @@
 {
-    "name": "eveseat/Eveapi",
+    "name": "eveseat/eveapi",
     "description": "SeAT EVE API Integration",
     "license": "MIT",
     "authors": [
@@ -9,12 +9,14 @@
         }
     ],
     "autoload": {
-      "psr-4": {
-          "eveseat\\Eveapi\\": "src/"
-      }
+        "psr-4": {
+            "Seat\\Eveapi\\": "src/"
+        }
     },
     "minimum-stability": "dev",
     "require": {
-        "illuminate/support": "~5"
+        "php": ">=5.5.9",
+        "laravel/framework": "5.1.*",
+        "3rdpartyeve/phealng": "2.2.*"
     }
 }
