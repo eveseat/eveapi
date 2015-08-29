@@ -42,5 +42,7 @@ trait Cleanup
         $this->pheal = null;
         $this->key = null;
         $this->vcode = null;
+
+        return;
     }
 }

@@ -78,4 +78,24 @@ trait JobTracker
         // Return the Job Tracking handle
         return $job_tracker;
     }
+
+    /**
+     * Write diagnostic information to the Job Tracker
+     *
+     * @param \Seat\Eveapi\Models\JobTracking $job_tracker
+     * @param \Exception                      $e
+     */
+    public function reportJobError(JobTracking $job_tracker, \Exception $e)
+    {
+
+        $job_tracker->status = 'Error';
+        $job_tracker->output = 'Last status: ' . $job_tracker->output . PHP_EOL .
+            'Error: ' . $e->getCode() . ': ' . $e->getMessage() . PHP_EOL .
+            'File: ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL .
+            'Trace: ' . $e->getTraceAsString() . PHP_EOL .
+            'Previous: ' . $e->getPrevious();
+        $job_tracker->save();
+
+        return;
+    }
 }
