@@ -9,6 +9,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use Seat\Eveapi\Server\ServerStatus;
+
 class UpdateServerStatus extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
@@ -28,7 +30,8 @@ class UpdateServerStatus extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
-        //
-        sleep(1);
+        $job = new ServerStatus();
+        $job->call();
+
     }
 }

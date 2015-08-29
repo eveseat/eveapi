@@ -24,54 +24,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Eveapi\Traits;
+namespace Seat\Eveapi\Server;
 
-use Pheal\Access\StaticCheck;
-use Pheal\Cache\FileStorage;
-use Pheal\Core\Config;
-use Pheal\Pheal;
+use Seat\Eveapi\Traits\Boot;
+use Seat\Eveapi\Traits\Cleanup;
+use Seat\Eveapi\Traits\Core;
 
-trait Core
+class ServerStatus
 {
-    use Validation;
+    use Boot, Core, Cleanup;
 
-    protected $pheal = null;
-    protected $key = null;
-    protected $vcode = null;
-
-    /**
-     * @return $this
-     */
-    public function start()
+    public function call()
     {
 
-        // Configure Pheal
-        Config::getInstance()->cache = new FileStorage(storage_path() . '/app/pheal/');
-        Config::getInstance()->access = new StaticCheck();
-        Config::getInstance()->log = new \Pheal\Log\FileStorage(storage_path() . '/logs/');
-        Config::getInstance()->api_customkeys = true;
-        Config::getInstance()->http_method = 'curl';
+        $result = $this->getPheal()
+            ->serverScope
+            ->ServerStatus();
 
-        // TODO: Setup the identifying User-Agent
-        Config::getInstance()->http_user_agent = 'Testing SeAT 1.0 (harro foxfour!)';
-
-        return $this;
-    }
-
-    public function setKey($key, $vcode)
-    {
-        $this->validateKeyPair($key, $vcode);
-        $this->key = $key;
-        $this->vcode = $vcode;
-    }
-
-    public function getPheal()
-    {
-
-        $this->pheal = new Pheal($this->key, $this->vcode);
-
-        return $this->pheal;
-
+        print $result->serverOpen;
     }
 
 }

@@ -26,52 +26,30 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Traits;
 
-use Pheal\Access\StaticCheck;
-use Pheal\Cache\FileStorage;
-use Pheal\Core\Config;
-use Pheal\Pheal;
+use Seat\Eveapi\Exception\InvalidKeyPairException;
 
-trait Core
+trait Validation
 {
-    use Validation;
-
-    protected $pheal = null;
-    protected $key = null;
-    protected $vcode = null;
 
     /**
-     * @return $this
+     * @param $key
+     * @param $vcode
+     *
+     * @throws \Seat\Eveapi\Exception\InvalidKeyPairException
      */
-    public function start()
+    public function validateKeyPair($key, $vcode)
     {
 
-        // Configure Pheal
-        Config::getInstance()->cache = new FileStorage(storage_path() . '/app/pheal/');
-        Config::getInstance()->access = new StaticCheck();
-        Config::getInstance()->log = new \Pheal\Log\FileStorage(storage_path() . '/logs/');
-        Config::getInstance()->api_customkeys = true;
-        Config::getInstance()->http_method = 'curl';
+        // Check that the values are not null
+        if (is_null($key) || is_null($vcode))
+            return;
 
-        // TODO: Setup the identifying User-Agent
-        Config::getInstance()->http_user_agent = 'Testing SeAT 1.0 (harro foxfour!)';
+        // Do some really simple validation to ensure that
+        // the key pair at least looks sane.
+        if ( ! is_numeric($key) || strlen($vcode) <> 64) {
+            throw new InvalidKeyPairException;
+        }
 
-        return $this;
+        return;
     }
-
-    public function setKey($key, $vcode)
-    {
-        $this->validateKeyPair($key, $vcode);
-        $this->key = $key;
-        $this->vcode = $vcode;
-    }
-
-    public function getPheal()
-    {
-
-        $this->pheal = new Pheal($this->key, $this->vcode);
-
-        return $this->pheal;
-
-    }
-
 }
