@@ -30,6 +30,7 @@ use Illuminate\Support\ServiceProvider;
 
 class EveapiServiceProvider extends ServiceProvider
 {
+
     /**
      * Bootstrap the application services.
      *
@@ -40,8 +41,9 @@ class EveapiServiceProvider extends ServiceProvider
 
         // Publish migrations
         $this->publishes([
-            __DIR__.'/database/migrations/' => database_path('migrations')
+            __DIR__ . '/database/migrations/' => database_path('migrations')
         ], 'migrations');
+
     }
 
     /**

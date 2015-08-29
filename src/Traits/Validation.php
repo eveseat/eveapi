@@ -46,9 +46,8 @@ trait Validation
 
         // Do some really simple validation to ensure that
         // the key pair at least looks sane.
-        if ( ! is_numeric($key) || strlen($vcode) <> 64) {
+        if (!is_numeric($key) || strlen($vcode) <> 64)
             throw new InvalidKeyPairException;
-        }
 
         return;
     }

@@ -33,10 +33,11 @@ use Pheal\Pheal;
 
 trait Core
 {
+
     use Validation;
 
     protected $pheal = null;
-    protected $key = null;
+    protected $key   = null;
     protected $vcode = null;
 
     /**
@@ -60,9 +61,12 @@ trait Core
 
     public function setKey($key, $vcode)
     {
+
         $this->validateKeyPair($key, $vcode);
         $this->key = $key;
         $this->vcode = $vcode;
+
+        return;
     }
 
     public function getPheal()

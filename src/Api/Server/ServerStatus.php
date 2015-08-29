@@ -24,16 +24,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Eveapi\Server;
+namespace Seat\Eveapi\Api\Server;
 
+use Pheal\Exceptions\PhealException;
+use Seat\Eveapi\Models\ServerServerStatus;
 use Seat\Eveapi\Traits\Boot;
 use Seat\Eveapi\Traits\Cleanup;
 use Seat\Eveapi\Traits\Core;
 
+/**
+ * Class ServerStatus
+ * @package Seat\Eveapi\Server
+ */
 class ServerStatus
 {
+
     use Boot, Core, Cleanup;
 
+    /**
+     * Run the Server Status Update
+     */
     public function call()
     {
 
@@ -41,7 +51,20 @@ class ServerStatus
             ->serverScope
             ->ServerStatus();
 
-        print $result->serverOpen;
+        if (
+            ServerServerStatus::orderBy('currentTime', 'desc')
+                ->value('currentTime') <> $result->request_time
+        ) {
+
+            ServerServerStatus::create(
+                [
+                    'currentTime'   => $result->request_time,
+                    'serverOpen'    => $result->serverOpen,
+                    'onlinePlayers' => $result->onlinePlayers
+                ]);
+        }
+
+        return;
     }
 
 }
