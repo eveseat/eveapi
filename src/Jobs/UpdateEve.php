@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use Seat\Eveapi\Api\Eve\ErrorList;
 use Seat\Eveapi\Api\Eve\RefTypes;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -58,6 +59,13 @@ class UpdateEve extends Job implements SelfHandling, ShouldQueue
 
             // Call https://api.eveonline.com/eve/RefTypes.xml.aspx
             $work = new RefTypes();
+            $work->call();
+
+            $job_tracker->output = 'Started ErrorList Update';
+            $job_tracker->save();
+
+            // Call https://api.eveonline.com/eve/ErrorList.xml.aspx
+            $work = new ErrorList();
             $work->call();
 
             $job_tracker->status = 'Done';
