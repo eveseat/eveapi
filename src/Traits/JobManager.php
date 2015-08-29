@@ -52,13 +52,12 @@ trait JobManager
     /**
      * Adds a Job to the queue only if one does not
      * already exist.
-     *
-     * @param \Seat\Eveapi\Models\JobTracking $job
-     * @param                                 $args
+     * @param $job
+     * @param $args
      *
      * @return mixed
      */
-    public function addUniqueJob(JobTracking $job, $args)
+    public function addUniqueJob($job, $args)
     {
 
         // Merge the arguments with the defaults
