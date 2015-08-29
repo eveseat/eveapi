@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class EveErrorList
- * @package App
+ * @package Seat\Eveapi\Models
  */
 class EveErrorList extends Model
 {

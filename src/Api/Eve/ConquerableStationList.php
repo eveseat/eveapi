@@ -27,16 +27,16 @@ SOFTWARE.
 namespace Seat\Eveapi\Api\Eve;
 
 use Pheal\Exceptions\PhealException;
-use Seat\Eveapi\Models\EveErrorList;
+use Seat\Eveapi\Models\EveConquerableStationList;
 use Seat\Eveapi\Traits\Boot;
 use Seat\Eveapi\Traits\Cleanup;
 use Seat\Eveapi\Traits\Core;
 
 /**
- * Class ErrorList
+ * Class ConquerableStationList
  * @package Seat\Eveapi\Server
  */
-class ErrorList
+class ConquerableStationList
 {
 
     use Boot, Core, Cleanup;
@@ -49,15 +49,25 @@ class ErrorList
 
         $result = $this->getPheal()
             ->eveScope
-            ->ErrorList();
+            ->ConquerableStationList();
 
-        foreach ($result->errors as $error) {
+        foreach ($result->outposts as $outpost) {
 
-            EveErrorList::firstOrCreate(
-                [
-                    'errorCode' => $error->errorCode,
-                    'errorText' => $error->errorText
-                ]);
+            // Get or create the Outpost...
+            $station = EveConquerableStationList::firstOrNew([
+                'stationID' => $outpost->stationID ]);
+
+            // ... and set its fields
+            $station->fill([
+                'stationID'       => $outpost->stationID,
+                'stationName'     => $outpost->stationName,
+                'stationTypeID'   => $outpost->stationTypeID,
+                'solarSystemID'   => $outpost->solarSystemID,
+                'corporationID'   => $outpost->corporationID,
+                'corporationName' => $outpost->corporationName
+            ]);
+
+            $station->save();
         }
 
         return;
