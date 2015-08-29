@@ -40,5 +40,6 @@ trait Boot
     {
 
         $this->start();
+
     }
 }
