@@ -28,6 +28,10 @@ namespace Seat\Eveapi\Traits;
 
 use Seat\Eveapi\Exception\InvalidKeyPairException;
 
+/**
+ * Class Validation
+ * @package Seat\Eveapi\Traits
+ */
 trait Validation
 {
 

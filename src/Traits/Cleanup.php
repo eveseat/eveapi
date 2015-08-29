@@ -26,9 +26,16 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Traits;
 
+/**
+ * Class Cleanup
+ * @package Seat\Eveapi\Traits
+ */
 trait Cleanup
 {
 
+    /**
+     *  Cleanup actions
+     */
     public function __destruct()
     {
 

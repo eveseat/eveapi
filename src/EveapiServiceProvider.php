@@ -28,6 +28,10 @@ namespace Seat\Eveapi;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class EveapiServiceProvider
+ * @package Seat\Eveapi
+ */
 class EveapiServiceProvider extends ServiceProvider
 {
 

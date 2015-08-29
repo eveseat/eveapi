@@ -26,9 +26,16 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Traits;
 
+/**
+ * Class Boot
+ * @package Seat\Eveapi\Traits
+ */
 trait Boot
 {
 
+    /**
+     *  Boot actions
+     */
     public function __construct()
     {
 

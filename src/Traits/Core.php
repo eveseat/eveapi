@@ -31,13 +31,28 @@ use Pheal\Cache\FileStorage;
 use Pheal\Core\Config;
 use Pheal\Pheal;
 
+/**
+ * Class Core
+ * @package Seat\Eveapi\Traits
+ */
 trait Core
 {
 
     use Validation;
 
+    /**
+     * @var null
+     */
     protected $pheal = null;
+
+    /**
+     * @var null
+     */
     protected $key   = null;
+
+    /**
+     * @var null
+     */
     protected $vcode = null;
 
     /**
@@ -59,6 +74,12 @@ trait Core
         return $this;
     }
 
+    /**
+     * @param $key
+     * @param $vcode
+     *
+     * @throws \Seat\Eveapi\Exception\InvalidKeyPairException
+     */
     public function setKey($key, $vcode)
     {
 
@@ -69,6 +90,9 @@ trait Core
         return;
     }
 
+    /**
+     * @return null|\Pheal\Pheal
+     */
     public function getPheal()
     {
 

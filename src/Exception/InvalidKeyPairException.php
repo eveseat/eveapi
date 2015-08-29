@@ -26,6 +26,10 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Exception;
 
+/**
+ * Class InvalidKeyPairException
+ * @package Seat\Eveapi\Exception
+ */
 class InvalidKeyPairException extends \Exception
 {
 

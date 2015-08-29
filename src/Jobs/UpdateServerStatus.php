@@ -11,6 +11,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Seat\Eveapi\Api\Server\ServerStatus;
 
+/**
+ * Class UpdateServerStatus
+ * @package Seat\Eveapi\Jobs
+ */
 class UpdateServerStatus extends Job implements SelfHandling, ShouldQueue
 {
 
