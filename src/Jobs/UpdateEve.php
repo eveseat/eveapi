@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use Seat\Eveapi\Api\Eve\AllianceList;
 use Seat\Eveapi\Api\Eve\ConquerableStationList;
 use Seat\Eveapi\Api\Eve\ErrorList;
 use Seat\Eveapi\Api\Eve\RefTypes;
@@ -75,6 +76,13 @@ class UpdateEve extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/eve/ConquerableStationList.xml.aspx
             $work = new ConquerableStationList();
+            $work->call();
+
+            $job_tracker->output = 'Started AllianceList Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/eve/AllianceList.xml.aspx
+            $work = new AllianceList();
             $work->call();
 
             $job_tracker->status = 'Done';
