@@ -12,6 +12,11 @@ class EveAllianceList extends Model
 {
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'allianceID';
+
+    /**
      * @var array
      */
     protected $fillable = [

@@ -12,6 +12,11 @@ class EveRefTypes extends Model
 {
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'refTypeID';
+
+    /**
      * @var array
      */
     protected $fillable = ['refTypeID', 'refTypeName'];

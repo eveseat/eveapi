@@ -12,6 +12,11 @@ class EveErrorList extends Model
 {
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'errorCode';
+
+    /**
      * @var array
      */
     protected $fillable = ['errorCode', 'errorText'];

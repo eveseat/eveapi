@@ -12,6 +12,11 @@ class EveConquerableStationList extends Model
 {
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'stationID';
+
+    /**
      * @var array
      */
     protected $fillable = [

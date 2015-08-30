@@ -12,6 +12,11 @@ class MapSovereignty extends Model
 {
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'solarSystemID';
+
+    /**
      * @var array
      */
     protected $fillable = [
