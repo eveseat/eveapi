@@ -26,7 +26,6 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Map;
 
-use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Models\MapSovereignty;
 use Seat\Eveapi\Traits\Boot;
 use Seat\Eveapi\Traits\Cleanup;
@@ -53,14 +52,19 @@ class Sovereignty
 
         foreach ($result->solarSystems as $solar_system) {
 
-            MapSovereignty::firstOrCreate(
-                [
-                    'solarSystemID'   => $solar_system->solarSystemID,
-                    'allianceID'      => $solar_system->allianceID,
-                    'factionID'       => $solar_system->factionID,
-                    'solarSystemName' => $solar_system->solarSystemName,
-                    'corporationID'   => $solar_system->corporationID
-                ]);
+            // Get or create the Outpost...
+            $system = MapSovereignty::firstOrNew([
+                'solarSystemID' => $solar_system->solarSystemID]);
+
+            // ... and set its fields
+            $system->fill([
+                'allianceID'      => $solar_system->allianceID,
+                'factionID'       => $solar_system->factionID,
+                'solarSystemName' => $solar_system->solarSystemName,
+                'corporationID'   => $solar_system->corporationID
+            ]);
+
+            $system->save();
         }
 
         return;
