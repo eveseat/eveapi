@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use Seat\Eveapi\Api\Map\Kills;
 use Seat\Eveapi\Api\Map\Sovereignty;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -58,6 +59,13 @@ class UpdateMap extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/map/Sovereignty.xml.aspx
             $work = new Sovereignty();
+            $work->call();
+
+            $job_tracker->output = 'Started Kills Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/map/Kills.xml.aspx
+            $work = new Kills();
             $work->call();
 
             $job_tracker->status = 'Done';
