@@ -16,7 +16,7 @@ class CreateMapSovereigntiesTable extends Migration
 
         Schema::create('map_sovereignties', function (Blueprint $table) {
 
-            $table->integer('solarSystemID');
+            $table->integer('solarSystemID')->unique();
             $table->integer('allianceID');
             $table->integer('factionID');
             $table->string('solarSystemName');

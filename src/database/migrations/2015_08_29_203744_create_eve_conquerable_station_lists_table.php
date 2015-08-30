@@ -16,8 +16,6 @@ class CreateEveConquerableStationListsTable extends Migration
 
         Schema::create('eve_conquerable_station_lists', function (Blueprint $table) {
 
-            $table->increments('id');
-
             $table->integer('stationID')->unique();
             $table->string('stationName');
             $table->integer('stationTypeID');
@@ -26,7 +24,7 @@ class CreateEveConquerableStationListsTable extends Migration
             $table->string('corporationName');
 
             // Index
-            $table->index('stationID');
+            $table->primary('stationID');
 
             $table->timestamps();
         });

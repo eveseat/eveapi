@@ -16,8 +16,6 @@ class CreateJobTrackingsTable extends Migration
 
         Schema::create('job_trackings', function (Blueprint $table) {
 
-            $table->increments('id');
-
             $table->string('job_id')->unique();
             $table->integer('owner_id')->default(0);
             $table->string('api');
@@ -26,7 +24,7 @@ class CreateJobTrackingsTable extends Migration
             $table->enum('status', ['Queued', 'Working', 'Done', 'Error']);
 
             // Indexes
-            $table->index('job_id');
+            $table->primary('job_id');
             $table->index('owner_id');
             $table->index('status');
 

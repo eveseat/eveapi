@@ -16,8 +16,7 @@ class CreateEveAllianceListsTable extends Migration
 
         Schema::create('eve_alliance_lists', function (Blueprint $table) {
 
-//            $table->increments('id');
-            $table->integer('allianceID');
+            $table->integer('allianceID')->unique();
 
             $table->string('name');
             $table->string('shortName');
@@ -26,7 +25,6 @@ class CreateEveAllianceListsTable extends Migration
             $table->dateTime('startDate');
 
             // Indexes
-//            $table->index('allianceID');
             $table->primary('allianceID');
 
             $table->timestamps();

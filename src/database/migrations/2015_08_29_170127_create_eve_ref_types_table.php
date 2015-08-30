@@ -16,13 +16,11 @@ class CreateEveRefTypesTable extends Migration
 
         Schema::create('eve_ref_types', function (Blueprint $table) {
 
-            $table->increments('id');
-
             $table->integer('refTypeID')->unique();
             $table->text('refTypeName');
 
             // Index
-            $table->index('refTypeID');
+            $table->primary('refTypeID');
 
             $table->timestamps();
         });

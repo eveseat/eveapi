@@ -16,8 +16,6 @@ class CreateEveAllianceListMemberCorporationsTable extends Migration
 
         Schema::create('eve_alliance_list_member_corporations', function (Blueprint $table) {
 
-//            $table->increments('id');
-
             $table->integer('allianceID');
 
             $table->integer('corporationID');

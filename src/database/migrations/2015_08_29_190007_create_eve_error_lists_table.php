@@ -16,13 +16,11 @@ class CreateEveErrorListsTable extends Migration
 
         Schema::create('eve_error_lists', function (Blueprint $table) {
 
-            $table->increments('id');
-
             $table->integer('errorCode')->unique();
             $table->text('errorText');
 
             // Index
-            $table->index('errorCode');
+            $table->primary('errorCode');
 
             $table->timestamps();
         });
