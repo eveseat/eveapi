@@ -24,37 +24,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Eveapi\Traits;
-
-use Seat\Eveapi\Exception\InvalidKeyPairException;
-use Seat\Eveapi\Exception\MissingKeyPairException;
+namespace Seat\Eveapi\Exception;
 
 /**
- * Class Validation
- * @package Seat\Eveapi\Traits
+ * Class MissingKeyPairException
+ * @package Seat\Eveapi\Exception
  */
-trait Validation
+class MissingKeyPairException extends \Exception
 {
 
-    /**
-     * @param $key
-     * @param $vcode
-     *
-     * @throws \Seat\Eveapi\Exception\InvalidKeyPairException
-     * @throws \Seat\Eveapi\Exception\MissingKeyPairException
-     */
-    public function validateKeyPair($key, $vcode)
-    {
-
-        // Check that the values are not null
-        if (is_null($key) || is_null($vcode))
-            throw new MissingKeyPairException;
-
-        // Do some really simple validation to ensure that
-        // the key pair at least looks sane.
-        if (!is_numeric($key) || strlen($vcode) <> 64)
-            throw new InvalidKeyPairException;
-
-        return;
-    }
 }
