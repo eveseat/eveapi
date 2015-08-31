@@ -1,18 +1,55 @@
 <?php
+/*
+The MIT License (MIT)
+
+Copyright (c) 2015 Leon Jacobs
+Copyright (c) 2015 eveseat
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 namespace Seat\Eveapi\Test\Support;
 
 use DOMDocument;
 
-//use XMLReader;
-
+/**
+ * Class XSDValidator
+ * @package Seat\Eveapi\Test\Support
+ */
 class XSDValidator
 {
 
+    /**
+     * @var
+     */
     protected $xml;
 
+    /**
+     * @var
+     */
     protected $xsd_file;
 
+    /**
+     * @param $xml
+     *
+     * @return $this
+     */
     public function setXML($xml)
     {
 
@@ -21,6 +58,12 @@ class XSDValidator
         return $this;
     }
 
+    /**
+     * @param $xsd_file
+     *
+     * @return $this
+     * @throws \Exception
+     */
     public function setXSDFile($xsd_file)
     {
 
@@ -32,6 +75,10 @@ class XSDValidator
         return $this;
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function validate()
     {
 
@@ -47,13 +94,13 @@ class XSDValidator
                 'XML does not validate XSD file ' . $this->xsd_file . ' : ' . $errors);
         }
 
-        //validating with xsd
+        // Validate the XML with an XSD
         $xml = new DOMDocument();
         $xml->loadXML($this->xml);
 
         if (!$this->xml)
             throw new \Exception(
-                'You must provide a XSD file with XSDValidator::setXSDFile.');
+                'You must provide a XSD file.');
 
         if (!$xml->schemaValidate($this->xsd_file)) {
 
@@ -66,6 +113,9 @@ class XSDValidator
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getXMLErrorsString()
     {
 
@@ -77,10 +127,9 @@ class XSDValidator
             $level = $error->level === LIBXML_ERR_WARNING ?
                 'Warning' : $error->level === LIBXML_ERR_ERROR ? 'Error' : 'Fatal';
 
-            $errors_string .= '[' . $level .'] ' . trim($error->message) .
-                ' Check XML on line ' . $error->line . ' col '. $error->column;
+            $errors_string .= '[' . $level . '] ' . trim($error->message) .
+                ' Check XML on line ' . $error->line . ' col ' . $error->column;
 
-//            $errors_string .= PHP_EOL;
         }
 
         libxml_clear_errors();
