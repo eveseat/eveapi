@@ -30,10 +30,10 @@ use Seat\Eveapi\Helpers\XsdValidator;
 use Seat\Eveapi\Traits\Core;
 
 /**
- * Class ServerTest
+ * Class MapTest
  * @package Seat\Eveapi\Test\LiveApi
  */
-class ServerTest extends \PHPUnit_Framework_TestCase
+class MapTest extends \PHPUnit_Framework_TestCase
 {
 
     use Core;
@@ -56,17 +56,17 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     /**
      * @throws \Exception
      */
-    public function testServerStatusApiResponseIsValid()
+    public function testJumpsApiResponseIsValid()
     {
 
         // Call the EVE API for the source XML
-        $this->client->serverScope->ServerStatus();
+        $this->client->mapScope->Jumps();
 
         // Start the XSDValidator and load the XSD
         // and XML string from the API call
         $validator = new XsdValidator();
         $validator->setXSDFile(
-            __DIR__ . '/../Support/Xsd/Server/ServerStatus.xsd')
+            __DIR__ . '/../Support/Xsd/Map/Jumps.xsd')
             ->setXML($this->client->xml);
 
         // Validate and assert
@@ -75,4 +75,47 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function testKillsApiResponseIsValid()
+    {
+
+        // Call the EVE API for the source XML
+        $this->client->mapScope->Kills();
+
+        // Start the XSDValidator and load the XSD
+        // and XML string from the API call
+        $validator = new XsdValidator();
+        $validator->setXSDFile(
+            __DIR__ . '/../Support/Xsd/Map/Kills.xsd')
+            ->setXML($this->client->xml);
+
+        // Validate and assert
+        $result = $validator->validate();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSovereigntyApiResponseIsValid()
+    {
+
+        // Call the EVE API for the source XML
+        $this->client->mapScope->Sovereignty();
+
+        // Start the XSDValidator and load the XSD
+        // and XML string from the API call
+        $validator = new XsdValidator();
+        $validator->setXSDFile(
+            __DIR__ . '/../Support/Xsd/Map/Sovereignty.xsd')
+            ->setXML($this->client->xml);
+
+        // Validate and assert
+        $result = $validator->validate();
+
+        $this->assertTrue($result);
+    }
 }

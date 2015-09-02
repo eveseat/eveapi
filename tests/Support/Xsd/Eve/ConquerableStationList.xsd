@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+    <xs:element name="eveapi">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="currentTime" type="xs:string"></xs:element>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="rowset">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="row" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:attribute name="stationID" type="xs:int"></xs:attribute>
+                                                <xs:attribute name="stationName" type="xs:string"></xs:attribute>
+                                                <xs:attribute name="stationTypeID" type="xs:int"></xs:attribute>
+                                                <xs:attribute name="solarSystemID" type="xs:int"></xs:attribute>
+                                                <xs:attribute name="corporationID" type="xs:int"></xs:attribute>
+                                                <xs:attribute name="corporationName" type="xs:string"></xs:attribute>
+                                                <xs:attribute name="x" type="xs:long"></xs:attribute>
+                                                <xs:attribute name="y" type="xs:long"></xs:attribute>
+                                                <xs:attribute name="z" type="xs:long"></xs:attribute>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="name" type="xs:string"></xs:attribute>
+                                    <xs:attribute name="key" type="xs:string"></xs:attribute>
+                                    <xs:attribute name="columns" type="xs:string"></xs:attribute>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="cachedUntil" type="xs:string"></xs:element>
+            </xs:sequence>
+            <xs:attribute name="version" type="xs:int"></xs:attribute>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

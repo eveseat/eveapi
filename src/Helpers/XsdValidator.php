@@ -24,15 +24,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Eveapi\Test\Support;
+namespace Seat\Eveapi\Helpers;
 
 use DOMDocument;
 
 /**
- * Class XSDValidator
- * @package Seat\Eveapi\Test\Support
+ * Class XsdValidator
+ * @package Seat\Eveap\Helpers
  */
-class XSDValidator
+class XsdValidator
 {
 
     /**
@@ -128,8 +128,9 @@ class XSDValidator
                 'Warning' : $error->level === LIBXML_ERR_ERROR ? 'Error' : 'Fatal';
 
             $errors_string .= '[' . $level . '] ' . trim($error->message) .
-                ' Check XML on line ' . $error->line . ' col ' . $error->column;
+                ' Check the source XML on line ' . $error->line . ' col ' . $error->column;
 
+            $errors_string .= PHP_EOL;
         }
 
         libxml_clear_errors();

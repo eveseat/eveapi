@@ -24,13 +24,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Eveapi\Traits\Test;
+namespace Seat\Eveapi\Test\Traits;
 
 use Seat\Eveapi\Traits\Validation;
 
 /**
  * Class ValidationTest
- * @package Seat\Eveapi\Traits
+ * @package Seat\Eveapi\Test\Traits
  */
 class ValidationTest extends \PHPUnit_Framework_TestCase
 {
