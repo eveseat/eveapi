@@ -1,0 +1,41 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="eveapi">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="xs:string" name="currentTime"/>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="rowset" maxOccurs="unbounded" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="row" maxOccurs="unbounded" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:string">
+                                                        <xs:attribute type="xs:byte" name="groupID" use="optional"/>
+                                                        <xs:attribute type="xs:string" name="name" use="optional"/>
+                                                        <xs:attribute type="xs:string" name="description"
+                                                                      use="optional"/>
+                                                        <xs:attribute type="xs:int" name="accessMask" use="optional"/>
+                                                        <xs:attribute type="xs:string" name="type" use="optional"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute type="xs:string" name="name" use="optional"/>
+                                    <xs:attribute type="xs:string" name="key" use="optional"/>
+                                    <xs:attribute type="xs:string" name="columns" use="optional"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element type="xs:string" name="cachedUntil"/>
+            </xs:sequence>
+            <xs:attribute type="xs:byte" name="version"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
