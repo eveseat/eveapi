@@ -24,56 +24,75 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Eveapi\Traits;
+namespace Seat\Eveapi\Test\Helpers;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Seat\Eveapi\Helpers\JobContainer;
-use Seat\Eveapi\Models\JobTracking;
 
 /**
- * Class JobManager
- * @package Seat\Eveapi\Traits
+ * Class JobContainerTest
+ * @package Seat\Eveapi\Test\Helpers
  */
-trait JobManager
+class JobContainerTest extends \PHPUnit_Framework_TestCase
 {
 
-    use DispatchesJobs;
+    /**
+     * @var
+     */
+    protected $container;
 
     /**
-     * Adds a Job to the queue only if one does not
-     * already exist.
      *
-     * @param $job
-     * @param $args
-     *
-     * @return mixed
      */
-    public function addUniqueJob($job, JobContainer $args)
+    public function setUp()
     {
 
-        // Look for an existing job
-        $job_id = JobTracking::where('owner_id', $args->owner_id)
-            ->where('api', $args->api)
-            ->whereIn('status', ['Queued', 'Working'])
-            ->value('job_id');
+        $this->container = new JobContainer();
+    }
 
-        // Just return if the job already exists
-        if ($job_id)
-            return $job_id;
+    /**
+     *
+     */
+    public function testDoesNotHaveKey()
+    {
 
-        // Add a new job onto the queue...
-        $job_id = $this->dispatchFrom($job, $args);
+        $array = $this->container;
+        $this->assertArrayNotHasKey('nope', $array);
+    }
 
-        // ...and add tracking information
-        JobTracking::create([
-            'job_id'   => $job_id,
-            'owner_id' => $args->owner_id,
-            'api'      => $args->api,
-            'scope'    => $args->scope,
-            'status'   => 'Queued'
-        ]);
+    /**
+     *
+     */
+    public function testDoesHaveKey()
+    {
 
-        return $job_id;
+        $array = $this->container;
+        $array->new_key = 'test';
+        $this->assertArrayHasKey('new_key', $array);
+    }
 
+    /**
+     *
+     */
+    public function testSetsNewValue()
+    {
+
+        $array = $this->container;
+        $array->key = 'test_value';
+
+        $this->assertEquals('test_value', $array->key);
+    }
+
+    /**
+     *
+     */
+    public function testJobContainerHasDefaultKeys()
+    {
+
+        $array = $this->container;
+
+        $this->assertArrayHasKey('queue', $array);
+        $this->assertArrayHasKey('scope', $array);
+        $this->assertArrayHasKey('api', $array);
+        $this->assertArrayHasKey('owner_id', $array);
     }
 }
