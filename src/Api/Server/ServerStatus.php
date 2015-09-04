@@ -26,7 +26,6 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Server;
 
-use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Models\ServerServerStatus;
 use Seat\Eveapi\Traits\Boot;
 use Seat\Eveapi\Traits\Cleanup;

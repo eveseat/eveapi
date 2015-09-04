@@ -26,7 +26,6 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Eve;
 
-use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Models\EveAllianceList;
 use Seat\Eveapi\Models\EveAllianceListMemberCorporations;
 use Seat\Eveapi\Traits\Boot;
