@@ -103,6 +103,7 @@ class APIKeyInfo
         // on this API Key. As a reminder, these are the
         // ids that remained after the previous update.
         AccountApiKeyInfoCharacters::whereIn('characterID', $known_characters)
+            ->where('keyID', $api_info->key_id)
             ->delete();
 
         return;
