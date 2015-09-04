@@ -54,6 +54,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @group LiveApi
      * @throws \Exception
      */
     public function testJumpsApiResponseIsValid()
@@ -76,6 +77,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @group LiveApi
      * @throws \Exception
      */
     public function testKillsApiResponseIsValid()
@@ -98,6 +100,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @group LiveApi
      * @throws \Exception
      */
     public function testSovereigntyApiResponseIsValid()

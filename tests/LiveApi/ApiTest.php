@@ -54,6 +54,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @group LiveApi
      * @throws \Exception
      */
     public function testCallListApiResponseIsValid()
