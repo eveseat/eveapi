@@ -23,8 +23,7 @@ use Seat\Eveapi\Traits\JobTracker;
 class UpdateEve extends Job implements SelfHandling, ShouldQueue
 {
 
-    use InteractsWithQueue, SerializesModels, DispatchesJobs,
-        JobTracker;
+    use InteractsWithQueue, SerializesModels, JobTracker;
 
     /**
      * Create a new job instance.

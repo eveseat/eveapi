@@ -21,8 +21,7 @@ use Seat\Eveapi\Traits\JobTracker;
 class UpdateMap extends Job implements SelfHandling, ShouldQueue
 {
 
-    use InteractsWithQueue, SerializesModels, DispatchesJobs,
-        JobTracker;
+    use InteractsWithQueue, SerializesModels, JobTracker;
 
     /**
      * Create a new job instance.
