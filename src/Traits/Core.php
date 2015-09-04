@@ -78,6 +78,7 @@ trait Core
      * @param $key
      * @param $vcode
      *
+     * @return $this
      * @throws \Seat\Eveapi\Exception\InvalidKeyPairException
      */
     public function setKey($key, $vcode)
@@ -87,7 +88,7 @@ trait Core
         $this->key = $key;
         $this->vcode = $vcode;
 
-        return;
+        return $this;
     }
 
     /**
@@ -96,7 +97,8 @@ trait Core
     public function getPheal()
     {
 
-        $this->pheal = new Pheal($this->key, $this->vcode);
+        $this->pheal = new Pheal(
+            $this->key, $this->vcode);
 
         return $this->pheal;
 
