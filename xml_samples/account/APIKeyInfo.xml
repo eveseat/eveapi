@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-04 19:08:20</currentTime>
+  <result>
+    <key accessMask="268435455" type="Account" expires="">
+      <rowset name="characters" key="characterID" columns="characterID,characterName,corporationID,corporationName,allianceID,allianceName,factionID,factionName">
+        <row characterID="12345678" characterName="This Is" corporationID="09876554" corporationName="Federal Navy Academy" allianceID="0" allianceName="" factionID="0" factionName="" />
+        <row characterID="1234567" characterName="Bob The" corporationID="09876543" corporationName="Federal Navy Academy" allianceID="0" allianceName="" factionID="500002" factionName="Minmatar Republic" />
+        <row characterID="123456789" characterName="Builder" corporationID="098765432" corporationName="Federal Navy Academys" allianceID="65748392" allianceName="Not Really An Alliance" factionID="0" factionName="" />
+      </rowset>
+    </key>
+  </result>
+  <cachedUntil>2015-09-04 19:13:20</cachedUntil>
+</eveapi>
