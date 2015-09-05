@@ -37,7 +37,7 @@ class ServerStatus extends Base
 {
 
     /**
-     * Run the Server Status Update
+     * Run the Update
      */
     public function call()
     {

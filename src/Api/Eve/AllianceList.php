@@ -38,7 +38,7 @@ class AllianceList extends Base
 {
 
     /**
-     * Run the AllianceList Update
+     * Run the Update
      */
     public function call()
     {

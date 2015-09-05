@@ -48,7 +48,7 @@ trait Core
     /**
      * @var null
      */
-    protected $key   = null;
+    protected $key = null;
 
     /**
      * @var null

@@ -30,14 +30,14 @@ use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\MapKills;
 
 /**
- * Class Sovereignty
+ * Class Kills
  * @package Seat\Eveapi\Api\Map
  */
 class Kills extends Base
 {
 
     /**
-     * Run the Ref Types Update
+     * Run the Update
      */
     public function call()
     {

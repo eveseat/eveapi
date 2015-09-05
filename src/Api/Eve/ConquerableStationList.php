@@ -37,7 +37,7 @@ class ConquerableStationList extends Base
 {
 
     /**
-     * Run the Ref Types Update
+     * Run the Update
      */
     public function call()
     {
@@ -50,7 +50,7 @@ class ConquerableStationList extends Base
 
             // Get or create the Outpost...
             $station = EveConquerableStationList::firstOrNew([
-                'stationID' => $outpost->stationID ]);
+                'stationID' => $outpost->stationID]);
 
             // ... and set its fields
             $station->fill([

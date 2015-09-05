@@ -37,7 +37,7 @@ class Jumps extends Base
 {
 
     /**
-     * Run the Ref Types Update
+     * Run the Update
      */
     public function call()
     {

@@ -31,11 +31,15 @@ use Seat\Eveapi\Models\AccountApiKeyInfo;
 use Seat\Eveapi\Models\AccountApiKeyInfoCharacters;
 use Seat\Eveapi\Models\EveApiKey;
 
+/**
+ * Class APIKeyInfo
+ * @package Seat\Eveapi\Api\Account
+ */
 class APIKeyInfo extends Base
 {
 
     /**
-     * Run the Ref Types Update
+     * Run the Update
      *
      * @param \Seat\Eveapi\Models\EveApiKey $api_info
      */
