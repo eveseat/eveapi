@@ -138,6 +138,8 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
                     $job_tracker->output = 'Key type \'' . $this->eve_api_key->type .
                         '\' is unknown. No update job was queued!';
                     $job_tracker->save();
+
+                    return;
             }
 
             $job_tracker->status = 'Done';
