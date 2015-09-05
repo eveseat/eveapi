@@ -26,19 +26,15 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Map;
 
+use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\MapSovereignty;
-use Seat\Eveapi\Traits\Boot;
-use Seat\Eveapi\Traits\Cleanup;
-use Seat\Eveapi\Traits\Core;
 
 /**
  * Class Sovereignty
  * @package Seat\Eveapi\Api\Map
  */
-class Sovereignty
+class Sovereignty extends Base
 {
-
-    use Boot, Core, Cleanup;
 
     /**
      * Run the Ref Types Update

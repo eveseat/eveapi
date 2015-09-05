@@ -26,19 +26,15 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Eve;
 
+use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\EveErrorList;
-use Seat\Eveapi\Traits\Boot;
-use Seat\Eveapi\Traits\Cleanup;
-use Seat\Eveapi\Traits\Core;
 
 /**
  * Class ErrorList
  * @package Seat\Eveapi\Server
  */
-class ErrorList
+class ErrorList extends Base
 {
-
-    use Boot, Core, Cleanup;
 
     /**
      * Run the Ref Types Update

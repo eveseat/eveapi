@@ -24,38 +24,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Eveapi\Api\Eve;
+namespace Seat\Eveapi\Api;
 
-use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\EveRefTypes;
+use Seat\Eveapi\Traits\Boot;
+use Seat\Eveapi\Traits\Cleanup;
+use Seat\Eveapi\Traits\Core;
 
 /**
- * Class RefTypes
- * @package Seat\Eveapi\Server
+ * This abstract basically just containers the
+ * few Traits that are used in all API update
+ * methods
+ *
+ * Class Base
+ * @package Seat\Eveapi\Api
  */
-class RefTypes extends Base
+abstract class Base
 {
 
-    /**
-     * Run the Ref Types Update
-     */
-    public function call()
-    {
-
-        $result = $this->getPheal()
-            ->eveScope
-            ->RefTypes();
-
-        foreach ($result->refTypes as $ref_type) {
-
-            EveRefTypes::firstOrCreate(
-                [
-                    'refTypeID'   => $ref_type->refTypeID,
-                    'refTypeName' => $ref_type->refTypeName
-                ]);
-        }
-
-        return;
-    }
+    use Boot, Core, Cleanup;
 
 }

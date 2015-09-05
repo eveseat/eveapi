@@ -26,19 +26,15 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Api;
 
+use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\EveApiCallList;
-use Seat\Eveapi\Traits\Boot;
-use Seat\Eveapi\Traits\Cleanup;
-use Seat\Eveapi\Traits\Core;
 
 /**
  * Class CallList
  * @package Seat\Eveapi\Api\Api
  */
-class CallList
+class CallList extends Base
 {
-
-    use Boot, Core, Cleanup;
 
     /**
      * Run the Ref Types Update

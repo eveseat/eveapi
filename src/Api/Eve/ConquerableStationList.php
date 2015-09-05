@@ -26,19 +26,15 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Eve;
 
+use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\EveConquerableStationList;
-use Seat\Eveapi\Traits\Boot;
-use Seat\Eveapi\Traits\Cleanup;
-use Seat\Eveapi\Traits\Core;
 
 /**
  * Class ConquerableStationList
  * @package Seat\Eveapi\Server
  */
-class ConquerableStationList
+class ConquerableStationList extends Base
 {
-
-    use Boot, Core, Cleanup;
 
     /**
      * Run the Ref Types Update

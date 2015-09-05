@@ -26,19 +26,15 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Server;
 
+use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\ServerServerStatus;
-use Seat\Eveapi\Traits\Boot;
-use Seat\Eveapi\Traits\Cleanup;
-use Seat\Eveapi\Traits\Core;
 
 /**
  * Class ServerStatus
  * @package Seat\Eveapi\Server
  */
-class ServerStatus
+class ServerStatus extends Base
 {
-
-    use Boot, Core, Cleanup;
 
     /**
      * Run the Server Status Update

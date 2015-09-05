@@ -26,19 +26,15 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Map;
 
+use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\MapJumps;
-use Seat\Eveapi\Traits\Boot;
-use Seat\Eveapi\Traits\Cleanup;
-use Seat\Eveapi\Traits\Core;
 
 /**
  * Class Jumps
  * @package Seat\Eveapi\Api\Map
  */
-class Jumps
+class Jumps extends Base
 {
-
-    use Boot, Core, Cleanup;
 
     /**
      * Run the Ref Types Update

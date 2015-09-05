@@ -26,17 +26,13 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Account;
 
+use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\AccountApiKeyInfo;
 use Seat\Eveapi\Models\AccountApiKeyInfoCharacters;
 use Seat\Eveapi\Models\EveApiKey;
-use Seat\Eveapi\Traits\Boot;
-use Seat\Eveapi\Traits\Cleanup;
-use Seat\Eveapi\Traits\Core;
 
-class APIKeyInfo
+class APIKeyInfo extends Base
 {
-
-    use Boot, Core, Cleanup;
 
     /**
      * Run the Ref Types Update

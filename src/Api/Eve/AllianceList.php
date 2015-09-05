@@ -26,20 +26,16 @@ SOFTWARE.
 
 namespace Seat\Eveapi\Api\Eve;
 
+use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\EveAllianceList;
 use Seat\Eveapi\Models\EveAllianceListMemberCorporations;
-use Seat\Eveapi\Traits\Boot;
-use Seat\Eveapi\Traits\Cleanup;
-use Seat\Eveapi\Traits\Core;
 
 /**
  * Class AllianceList
  * @package Seat\Eveapi\Server
  */
-class AllianceList
+class AllianceList extends Base
 {
-
-    use Boot, Core, Cleanup;
 
     /**
      * Run the AllianceList Update
