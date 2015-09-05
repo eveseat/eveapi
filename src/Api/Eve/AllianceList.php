@@ -59,7 +59,6 @@ class AllianceList extends Base
 
             // ... and set its fields
             $alliance_data->fill([
-                'allianceID'     => $alliance->allianceID,
                 'name'           => $alliance->name,
                 'shortName'      => $alliance->shortName,
                 'executorCorpID' => $alliance->executorCorpID,
