@@ -67,6 +67,7 @@ trait Core
         Config::getInstance()->log = new \Pheal\Log\FileStorage(storage_path() . '/logs/');
         Config::getInstance()->api_customkeys = true;
         Config::getInstance()->http_method = 'curl';
+        Config::getInstance()->http_timeout = 60;
 
         // TODO: Setup the identifying User-Agent
         Config::getInstance()->http_user_agent = 'Testing SeAT 1.0 (harro foxfour!)';
