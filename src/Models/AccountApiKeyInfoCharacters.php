@@ -62,6 +62,6 @@ class AccountApiKeyInfoCharacters extends Model
     {
 
         return $this->hasOne(
-            'Seat\Eveapi\Models\EveApiKey', 'keyID', 'keyID');
+            'Seat\Eveapi\Models\EveApiKey', 'key_id', 'keyID');
     }
 }

@@ -54,6 +54,6 @@ class EveApiKey extends Model
     {
 
         return $this->hasMany(
-            'Seat\Eveapi\Models\AccountApiKeyInfoCharacters', 'keyID', 'keyID');
+            'Seat\Eveapi\Models\AccountApiKeyInfoCharacters', 'keyID', 'key_id');
     }
 }
