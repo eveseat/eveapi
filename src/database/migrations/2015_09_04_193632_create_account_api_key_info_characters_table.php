@@ -16,8 +16,6 @@ class CreateAccountApiKeyInfoCharactersTable extends Migration
 
         Schema::create('account_api_key_info_characters', function (Blueprint $table) {
 
-            $table->increments('id');
-
             $table->integer('keyID');
             $table->integer('characterID');
             $table->string('characterName');
