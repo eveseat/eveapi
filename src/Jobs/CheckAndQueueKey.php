@@ -34,6 +34,9 @@ use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Seat\Eveapi\Api\Account\APIKeyInfo;
+use Seat\Eveapi\Helpers\JobContainer;
+use Seat\Eveapi\Models\AccountApiKeyInfo;
+use Seat\Eveapi\Traits\JobManager;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -43,8 +46,7 @@ use Seat\Eveapi\Traits\JobTracker;
 class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
 {
 
-    use InteractsWithQueue, SerializesModels, DispatchesJobs,
-        JobTracker;
+    use InteractsWithQueue, SerializesModels, JobTracker, JobManager;
 
     /**
      * The EveApiKey instance
@@ -66,8 +68,9 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
     /**
      * Execute the job.
      *
+     * @param \Seat\Eveapi\Helpers\JobContainer $fresh_job
      */
-    public function handle()
+    public function handle(JobContainer $fresh_job)
     {
 
         // Find the tracking record for this job
@@ -91,6 +94,51 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
             // https://api.eveonline.com/account/APIKeyInfo.xml.aspx
             $work = new APIKeyInfo();
             $work->call($this->eve_api_key);
+
+            // Now, based on the type of key, queue another job
+            // that will run with the actual updates. We need
+            // to pull a fresh instance as it just updated.
+            switch (
+                AccountApiKeyInfo::find($this->eve_api_key->key_id)
+                ->value('type')
+            ) {
+
+                // Account & Character Key types are essentially
+                // the same, except for the fact that one only
+                // has one character and the other has all.
+                case 'Account':
+                case 'Character':
+                    $fresh_job->scope = 'Eve';
+                    $fresh_job->api = 'Character';
+                    $fresh_job->owner_id = $this->eve_api_key->key_id;
+                    $fresh_job->eve_api_key = $this->eve_api_key;
+
+                    $job_id = $this->addUniqueJob(
+                        'Seat\Eveapi\Jobs\UpdateCharacter', $fresh_job);
+
+                    $job_tracker->output = 'Character Update Job ' . $job_id . ' queued';
+                    $job_tracker->save();
+                    break;
+
+                case 'Corporation':
+                    $fresh_job->scope = 'Eve';
+                    $fresh_job->api = 'Corporation';
+                    $fresh_job->owner_id = $this->eve_api_key->key_id;
+                    $fresh_job->eve_api_key = $this->eve_api_key;
+
+                    $job_id = $this->addUniqueJob(
+                        'Seat\Eveapi\Jobs\UpdateCorporation', $fresh_job);
+
+                    $job_tracker->output = 'Corporation Update Job ' . $job_id . ' queued';
+                    $job_tracker->save();
+                    break;
+
+                default:
+                    $job_tracker->status = 'Error';
+                    $job_tracker->output = 'Key type \'' . $this->eve_api_key->type .
+                        '\' is unknown. No update job was queued!';
+                    $job_tracker->save();
+            }
 
             $job_tracker->status = 'Done';
             $job_tracker->output = null;
