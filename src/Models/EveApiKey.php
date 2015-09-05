@@ -44,4 +44,16 @@ class EveApiKey extends Model
      * @var array
      */
     protected $fillable = ['key_id', 'v_code', 'user_id', 'enabled', 'last_error'];
+
+    /**
+     * Returns the characters for the key
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function characters()
+    {
+
+        return $this->hasMany(
+            'Seat\Eveapi\Models\AccountApiKeyInfoCharacters', 'keyID', 'keyID');
+    }
 }

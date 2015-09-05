@@ -42,7 +42,19 @@ class AccountApiKeyInfoCharacters extends Model
         'keyID', 'characterID', 'characterName', 'corporationID', 'corporationName'];
 
     /**
-     * Returns the Key this character belongs to
+     * Returns the KeyInfo this character belongs to
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function key_info()
+    {
+
+        return $this->hasOne(
+            'Seat\Eveapi\Models\AccountApiKeyInfo', 'keyID', 'keyID');
+    }
+
+    /**
+     * Returns the API Key a character belongs to
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -50,6 +62,6 @@ class AccountApiKeyInfoCharacters extends Model
     {
 
         return $this->hasOne(
-            'Seat\Eveapi\Models\AccountApiKeyInfo', 'keyID', 'keyID');
+            'Seat\Eveapi\Models\EveApiKey', 'keyID', 'keyID');
     }
 }
