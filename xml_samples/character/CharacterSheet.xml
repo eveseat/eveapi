@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-05 18:35:50</currentTime>
+  <result>
+    <characterID>12344</characterID>
+    <name>Bob The Builder</name>
+    <homeStationID>61000655</homeStationID>
+    <DoB>2011-10-05 20:57:00</DoB>
+    <race>Caldari</race>
+    <bloodLineID>2</bloodLineID>
+    <bloodLine>Civire</bloodLine>
+    <ancestryID>8</ancestryID>
+    <ancestry>Mercs</ancestry>
+    <gender>Male</gender>
+    <corporationName>No Mans Corporation</corporationName>
+    <corporationID>878023749</corporationID>
+    <allianceName>No Mans Alliance</allianceName>
+    <allianceID>123445</allianceID>
+    <factionName />
+    <factionID>0</factionID>
+    <cloneTypeID>164</cloneTypeID>
+    <cloneName>Clone Grade Alpha</cloneName>
+    <cloneSkillPoints>0</cloneSkillPoints>
+    <freeSkillPoints>0</freeSkillPoints>
+    <freeRespecs>1</freeRespecs>
+    <cloneJumpDate>2015-07-26 15:22:00</cloneJumpDate>
+    <lastRespecDate>2011-10-20 10:24:15</lastRespecDate>
+    <lastTimedRespec>2011-10-20 10:24:15</lastTimedRespec>
+    <remoteStationDate>0001-01-01 00:00:00</remoteStationDate>
+    <rowset name="jumpClones" key="jumpCloneID" columns="jumpCloneID,typeID,locationID,cloneName">
+      <row jumpCloneID="22766127" typeID="164" locationID="60015138" cloneName="" />
+      <row jumpCloneID="22167597" typeID="164" locationID="61000072" cloneName="" />
+      <row jumpCloneID="22529544" typeID="164" locationID="61000249" cloneName="" />
+      <row jumpCloneID="22280377" typeID="164" locationID="61000393" cloneName="" />
+    </rowset>
+    <rowset name="jumpCloneImplants" key="jumpCloneID" columns="jumpCloneID,typeID,typeName">
+      <row jumpCloneID="18801110" typeID="16004" typeName="Eifyr and Co. 'Rogue' Evasive Maneuvering EM-705" />
+      <row jumpCloneID="18801110" typeID="16248" typeName="Zainou 'Gnome' Shield Operation SP-905" />
+      <row jumpCloneID="18801110" typeID="20499" typeName="High-grade Slave Alpha" />
+      <row jumpCloneID="18801110" typeID="20501" typeName="High-grade Slave Beta" />
+      <row jumpCloneID="18801110" typeID="20503" typeName="High-grade Slave Delta" />
+      <row jumpCloneID="18801110" typeID="20505" typeName="High-grade Slave Epsilon" />
+      <row jumpCloneID="18801110" typeID="20507" typeName="High-grade Slave Gamma" />
+      <row jumpCloneID="18801110" typeID="20509" typeName="High-grade Slave Omega" />
+      <row jumpCloneID="18801110" typeID="21606" typeName="Inherent Implants 'Noble' Hull Upgrades HG-1008" />
+      <row jumpCloneID="18801110" typeID="27116" typeName="Inherent Implants 'Squire' Capacitor Management EM-805" />
+      <row jumpCloneID="21888939" typeID="9899" typeName="Ocular Filter - Basic" />
+      <row jumpCloneID="21888939" typeID="9941" typeName="Memory Augmentation - Basic" />
+      <row jumpCloneID="21888939" typeID="9942" typeName="Neural Boost - Basic" />
+      <row jumpCloneID="21888939" typeID="9943" typeName="Cybernetic Subprocessor - Basic" />
+    </rowset>
+    <jumpActivation>2015-09-05 09:51:16</jumpActivation>
+    <jumpFatigue>2015-09-05 10:23:00</jumpFatigue>
+    <jumpLastUpdate>2015-09-05 09:47:45</jumpLastUpdate>
+    <balance>403062722.82</balance>
+    <rowset name="implants" key="typeID" columns="typeID,typeName">
+      <row typeID="9899" typeName="Ocular Filter - Basic" />
+      <row typeID="10225" typeName="Social Adaptation Chip - Standard" />
+      <row typeID="10212" typeName="Neural Boost - Standard" />
+      <row typeID="10208" typeName="Memory Augmentation - Standard" />
+      <row typeID="10221" typeName="Cybernetic Subprocessor - Standard" />
+    </rowset>
+    <attributes>
+      <intelligence>21</intelligence>
+      <memory>21</memory>
+      <charisma>17</charisma>
+      <perception>20</perception>
+      <willpower>20</willpower>
+    </attributes>
+    <rowset name="skills" key="typeID" columns="typeID,skillpoints,level,published">
+      <row typeID="3421" skillpoints="16000" level="3" published="1" />
+      <row typeID="26261" skillpoints="135765" level="4" published="1" />
+      <row typeID="12365" skillpoints="90510" level="4" published="1" />
+      <row typeID="3424" skillpoints="512000" level="5" published="1" />
+      <row typeID="3334" skillpoints="1280000" level="5" published="1" />
+      <row typeID="3321" skillpoints="512000" level="5" published="1" />
+      <row typeID="3417" skillpoints="256000" level="5" published="1" />
+      <row typeID="3393" skillpoints="45255" level="4" published="1" />
+      <row typeID="3303" skillpoints="256000" level="5" published="1" />
+      <row typeID="3420" skillpoints="181020" level="4" published="1" />
+      <row typeID="3419" skillpoints="768000" level="5" published="1" />
+      <row typeID="25719" skillpoints="768000" level="5" published="1" />
+      <row typeID="30541" skillpoints="45255" level="4" published="1" />
+      <row typeID="30652" skillpoints="226275" level="4" published="1" />
+      <row typeID="34390" skillpoints="768000" level="5" published="1" />
+      <row typeID="3322" skillpoints="135765" level="4" published="1" />
+    </rowset>
+    <rowset name="certificates" key="certificateID" columns="certificateID" />
+    <rowset name="corporationRoles" key="roleID" columns="roleID,roleName">
+      <row roleID="1" roleName="roleDirector" />
+    </rowset>
+    <rowset name="corporationRolesAtHQ" key="roleID" columns="roleID,roleName">
+      <row roleID="1" roleName="roleDirector" />
+    </rowset>
+    <rowset name="corporationRolesAtBase" key="roleID" columns="roleID,roleName">
+      <row roleID="1" roleName="roleDirector" />
+    </rowset>
+    <rowset name="corporationRolesAtOther" key="roleID" columns="roleID,roleName">
+      <row roleID="1" roleName="roleDirector" />
+    </rowset>
+    <rowset name="corporationTitles" key="titleID" columns="titleID,titleName">
+      <row titleID="64" titleName="Phweeeeeep" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-05 19:28:30</cachedUntil>
+</eveapi>

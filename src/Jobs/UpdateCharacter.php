@@ -36,6 +36,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Seat\Eveapi\Api\Account\AccountStatus;
 use Seat\Eveapi\Api\Character\AccountBalance;
 use Seat\Eveapi\Api\Character\AssetList;
+use Seat\Eveapi\Api\Character\CharacterSheet;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -106,6 +107,13 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/char/AssetList.xml.aspx
             $work = new AssetList();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started CharacterSheet Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/CharacterSheet.xml.aspx
+            $work = new CharacterSheet();
             $work->call($this->eve_api_key);
 
             $job_tracker->status = 'Done';
