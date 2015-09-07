@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-07 10:34:39</currentTime>
+  <result>
+    <rowset name="contactNotifications" key="notificationID" columns="notificationID,senderID,senderName,sentDate,messageData">
+      <row notificationID="1234" senderID="12345" senderName="ABC" sentDate="2015-08-11 19:36:00" messageData="level: 10&#xA;message: ''&#xA;" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-07 10:47:21</cachedUntil>
+</eveapi>
