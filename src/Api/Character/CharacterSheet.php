@@ -27,7 +27,6 @@ SOFTWARE.
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterAccountBalance;
 use Seat\Eveapi\Models\CharacterCharacterSheet;
 use Seat\Eveapi\Models\CharacterCharacterSheetCorporationTitles;
 use Seat\Eveapi\Models\CharacterCharacterSheetImplants;
