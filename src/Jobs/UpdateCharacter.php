@@ -41,6 +41,7 @@ use Seat\Eveapi\Api\Character\ContactList;
 use Seat\Eveapi\Api\Character\ContactNotifications;
 use Seat\Eveapi\Api\Character\Contracts;
 use Seat\Eveapi\Api\Character\ContractsItems;
+use Seat\Eveapi\Api\Character\IndustryJobs;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -146,6 +147,13 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/char/ContractItems.xml.aspx
             $work = new ContractsItems();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started IndustryJobs Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/IndustryJobs.xml.aspx
+            $work = new IndustryJobs();
             $work->call($this->eve_api_key);
 
             $job_tracker->status = 'Done';
