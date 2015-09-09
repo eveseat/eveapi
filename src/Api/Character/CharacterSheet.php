@@ -87,7 +87,8 @@ class CharacterSheet extends Base
                 'allianceName'      => $result->allianceName,
                 'allianceID'        => $result->allianceID,
                 'factionName'       => $result->factionName,
-                'factionID'         => $result->factionID,
+                'factionID'         => isset($result->factionID) ?
+                    $result->factionID : 0,
                 'cloneTypeID'       => $result->cloneTypeID,
                 'cloneName'         => $result->cloneName,
                 'cloneSkillPoints'  => $result->cloneSkillPoints,
@@ -119,10 +120,11 @@ class CharacterSheet extends Base
             // Lets loop over the implants and create them
             foreach ($result->implants as $implant) {
 
-                $character_data->implants()->save(new CharacterCharacterSheetImplants([
-                    'typeID'   => $implant->typeID,
-                    'typeName' => $implant->typeName
-                ]));
+                CharacterCharacterSheetImplants::create([
+                    'characterID' => $character->characterID,
+                    'typeID'      => $implant->typeID,
+                    'typeName'    => $implant->typeName
+                ]);
 
             } // Foreach Implants
 
@@ -138,12 +140,13 @@ class CharacterSheet extends Base
             // Lets loop over the clones for the character.
             foreach ($result->jumpClones as $jump_clone) {
 
-                $character_data->jump_clones()->save(new CharacterCharacterSheetJumpClone([
+                CharacterCharacterSheetJumpClone::create([
+                    'characterID' => $character->characterID,
                     'jumpCloneID' => $jump_clone->jumpCloneID,
                     'typeID'      => $jump_clone->typeID,
                     'locationID'  => $jump_clone->locationID,
                     'cloneName'   => $jump_clone->cloneName
-                ]));
+                ]);
 
             } // Foreach JumpClone
 
@@ -185,12 +188,11 @@ class CharacterSheet extends Base
             // Lets loop over the corporation titles and populate
             foreach ($result->corporationTitles as $title) {
 
-                $character_data->corporation_titles()->save(
-                    new CharacterCharacterSheetCorporationTitles([
-                        'titleID'   => $title->titleID,
-                        'titleName' => $title->titleName
-                    ])
-                );
+                CharacterCharacterSheetCorporationTitles::create([
+                    'characterID' => $character->characterID,
+                    'titleID'     => $title->titleID,
+                    'titleName'   => $title->titleName
+                ]);
             } // Foreach Title
 
         } // Foreach Character
