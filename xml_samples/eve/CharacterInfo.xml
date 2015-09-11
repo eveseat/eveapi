@@ -1,0 +1,30 @@
+<eveapi version="2">
+  <currentTime>2015-09-11 11:12:32</currentTime>
+  <result>
+    <characterID>123</characterID>
+    <characterName>ABC</characterName>
+    <race>Caldari</race>
+    <bloodlineID>2</bloodlineID>
+    <bloodline>Civire</bloodline>
+    <ancestryID>7</ancestryID>
+    <ancestry>Entrepreneurs</ancestry>
+    <accountBalance>8063638388.32</accountBalance>
+    <skillPoints>188516877</skillPoints>
+    <nextTrainingEnds>2015-09-15 11:39:00</nextTrainingEnds>
+    <shipName>Oh</shipName>
+    <shipTypeID>16233</shipTypeID>
+    <shipTypeName>Prophecy</shipTypeName>
+    <corporationID>123</corporationID>
+    <corporation>ABC</corporation>
+    <corporationDate>2012-11-11 16:19:00</corporationDate>
+    <allianceID>123</allianceID>
+    <alliance>ABC</alliance>
+    <allianceDate>2015-02-19 12:48:00</allianceDate>
+    <lastKnownLocation>Jita</lastKnownLocation>
+    <securityStatus>5.00637904051767</securityStatus>
+    <rowset name="employmentHistory" key="recordID" columns="recordID,corporationID,corporationName,startDate">
+      <row recordID="21115744" corporationID="123" corporationName="ABC" startDate="2012-11-11 16:19:00" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-11 11:58:59</cachedUntil>
+</eveapi>
