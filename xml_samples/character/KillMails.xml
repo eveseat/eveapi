@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-11 13:18:50</currentTime>
+  <result>
+    <rowset name="kills" key="killID" columns="killID,solarSystemID,killTime,moonID">
+      <row killID="123" solarSystemID="30002004" killTime="2015-09-06 15:50:00" moonID="0">
+        <victim characterID="123" characterName="ABC" corporationID="123" corporationName="ABC" allianceID="123" allianceName="ABC" factionID="0" factionName="" damageTaken="2856" shipTypeID="34828" />
+        <rowset name="attackers" columns="characterID,characterName,corporationID,corporationName,allianceID,allianceName,factionID,factionName,securityStatus,damageDone,finalBlow,weaponTypeID,shipTypeID">
+          <row characterID="123" characterName="ABC" corporationID="123" corporationName="ABC" allianceID="123" allianceName="ABC" factionID="0" factionName="" securityStatus="5.00637904051767" damageDone="931" finalBlow="1" weaponTypeID="2977" shipTypeID="34562" />
+        </rowset>
+        <rowset name="items" columns="typeID,flag,qtyDropped,qtyDestroyed,singleton">
+          <row typeID="22291" flag="11" qtyDropped="1" qtyDestroyed="0" singleton="0" />
+          <row typeID="2613" flag="31" qtyDropped="0" qtyDestroyed="53" singleton="0" />
+          <row typeID="2404" flag="27" qtyDropped="1" qtyDestroyed="0" singleton="0" />
+          <row typeID="29013" flag="5" qtyDropped="0" qtyDestroyed="2" singleton="0" />
+          <row typeID="29015" flag="20" qtyDropped="1" qtyDestroyed="0" singleton="0" />
+          <row typeID="24497" flag="5" qtyDropped="960" qtyDestroyed="0" singleton="0" />
+          <row typeID="27387" flag="5" qtyDropped="0" qtyDestroyed="1258" singleton="0" />
+        </rowset>
+      </row>
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-11 13:28:48</cachedUntil>
+</eveapi>
