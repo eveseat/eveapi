@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-12 06:35:25</currentTime>
+  <result>
+    <rowset name="messages" key="messageID" columns="messageID">
+      <row messageID="123"><![CDATA[Testing Email Data]]></row>
+    </rowset>
+  </result>
+  <cachedUntil>2025-09-09 06:35:25</cachedUntil>
+</eveapi>
