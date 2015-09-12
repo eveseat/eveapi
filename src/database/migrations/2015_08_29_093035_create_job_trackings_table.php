@@ -20,7 +20,7 @@ class CreateJobTrackingsTable extends Migration
             $table->integer('owner_id')->default(0);
             $table->string('api');
             $table->string('scope');
-            $table->string('output')->default(null)->nullable();
+            $table->text('output')->default(null)->nullable();
             $table->enum('status', ['Queued', 'Working', 'Done', 'Error']);
 
             // Indexes
