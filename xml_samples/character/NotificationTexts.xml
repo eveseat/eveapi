@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-12 09:53:45</currentTime>
+  <result>
+    <rowset name="notifications" key="notificationID" columns="notificationID">
+      <row notificationID="123"><![CDATA[solarSystemID: 1234
+structureTypeID: 32458
+]]></row>
+    </rowset>
+  </result>
+  <cachedUntil>2025-09-09 09:53:45</cachedUntil>
+</eveapi>

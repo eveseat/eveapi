@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-12 09:00:55</currentTime>
+  <result>
+    <rowset name="notifications" key="notificationID" columns="notificationID,typeID,senderID,senderName,sentDate,read">
+      <row notificationID="528986657" typeID="147" senderID="125490663" senderName="TnT Strong Hold" sentDate="2015-09-12 00:25:00" read="0" />
+      <row notificationID="528974604" typeID="162" senderID="131511956" senderName="Tactical Narcotics Team" sentDate="2015-09-11 22:44:00" read="0" />
+      <row notificationID="528943999" typeID="10" senderID="1000130" senderName="Sisters of EVE" sentDate="2015-09-11 18:53:00" read="0" />
+      <row notificationID="528936846" typeID="141" senderID="1000125" senderName="CONCORD" sentDate="2015-09-11 17:39:00" read="0" />
+      <row notificationID="528929808" typeID="14" senderID="1000125" senderName="CONCORD" sentDate="2015-09-11 16:21:00" read="0" />
+      <row notificationID="528889699" typeID="147" senderID="125490663" senderName="TnT Strong Hold" sentDate="2015-09-11 06:20:00" read="0" />
+      <row notificationID="528884482" typeID="161" senderID="131511956" senderName="Tactical Narcotics Team" sentDate="2015-09-11 04:40:00" read="0" />
+      <row notificationID="528712402" typeID="102" senderID="1000125" senderName="CONCORD" sentDate="2015-09-09 19:11:00" read="0" />
+      <row notificationID="528700483" typeID="102" senderID="1000125" senderName="CONCORD" sentDate="2015-09-09 17:20:00" read="0" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-12 09:23:18</cachedUntil>
+</eveapi>

@@ -46,6 +46,8 @@ use Seat\Eveapi\Api\Character\KillMails;
 use Seat\Eveapi\Api\Character\MailBodies;
 use Seat\Eveapi\Api\Character\MailingLists;
 use Seat\Eveapi\Api\Character\MailMessages;
+use Seat\Eveapi\Api\Character\Notifications;
+use Seat\Eveapi\Api\Character\NotificationTexts;
 use Seat\Eveapi\Api\Eve\CharacterInfo;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -194,6 +196,20 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/char/MailingLists.xml.aspx
             $work = new MailingLists();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started Notifications Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/Notifications.xml.aspx
+            $work = new Notifications();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started NotificationTexts Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/NotificationTexts.xml.aspx
+            $work = new NotificationTexts();
             $work->call($this->eve_api_key);
 
             $job_tracker->status = 'Done';
