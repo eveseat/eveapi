@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-13 19:13:22</currentTime>
+  <result>
+    <rowset name="pins" key="pinID" columns="pinID,typeID,typeName,schematicID,lastLaunchTime,cycleTime,quantityPerCycle,installTime,expiryTime,contentTypeID,contentTypeName,contentQuantity,longitude,latitude">
+      <row pinID="123" typeID="2534" typeName="Gas Command Center" schematicID="0" lastLaunchTime="0001-01-01 00:00:00" cycleTime="0" quantityPerCycle="0" installTime="0001-01-01 00:00:00" expiryTime="0001-01-01 00:00:00" contentTypeID="0" contentTypeName="" contentQuantity="0" longitude="-0.110945005152992" latitude="0.875145915078715" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-13 20:13:22</cachedUntil>
+</eveapi>

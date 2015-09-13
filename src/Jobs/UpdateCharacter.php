@@ -48,6 +48,10 @@ use Seat\Eveapi\Api\Character\MailingLists;
 use Seat\Eveapi\Api\Character\MailMessages;
 use Seat\Eveapi\Api\Character\Notifications;
 use Seat\Eveapi\Api\Character\NotificationTexts;
+use Seat\Eveapi\Api\Character\PlanetaryColonies;
+use Seat\Eveapi\Api\Character\PlanetaryLinks;
+use Seat\Eveapi\Api\Character\PlanetaryPins;
+use Seat\Eveapi\Api\Character\PlanetaryRoutes;
 use Seat\Eveapi\Api\Eve\CharacterInfo;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -210,6 +214,34 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/char/NotificationTexts.xml.aspx
             $work = new NotificationTexts();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started PlanetaryColonies Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/PlanetaryColonies.xml.aspx
+            $work = new PlanetaryColonies();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started PlanetaryPins Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/PlanetaryPins.xml.aspx
+            $work = new PlanetaryPins();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started PlanetaryRoutes Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/PlanetaryRoutes.xml.aspx
+            $work = new PlanetaryRoutes();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started PlanetaryLinks Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/PlanetaryLinks.xml.aspx
+            $work = new PlanetaryLinks();
             $work->call($this->eve_api_key);
 
             $job_tracker->status = 'Done';
