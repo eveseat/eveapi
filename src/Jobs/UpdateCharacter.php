@@ -56,6 +56,7 @@ use Seat\Eveapi\Api\Character\PlanetaryRoutes;
 use Seat\Eveapi\Api\Character\Research;
 use Seat\Eveapi\Api\Character\SkillInTraining;
 use Seat\Eveapi\Api\Character\SkillQueue;
+use Seat\Eveapi\Api\Character\Standings;
 use Seat\Eveapi\Api\Eve\CharacterInfo;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -274,6 +275,13 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/char/SkillQueue.xml.aspx
             $work = new SkillQueue();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started Stadings Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/Standings.xml.aspx
+            $work = new Standings();
             $work->call($this->eve_api_key);
 
             $job_tracker->status = 'Done';
