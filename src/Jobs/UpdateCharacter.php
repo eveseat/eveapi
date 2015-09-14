@@ -53,6 +53,7 @@ use Seat\Eveapi\Api\Character\PlanetaryColonies;
 use Seat\Eveapi\Api\Character\PlanetaryLinks;
 use Seat\Eveapi\Api\Character\PlanetaryPins;
 use Seat\Eveapi\Api\Character\PlanetaryRoutes;
+use Seat\Eveapi\Api\Character\Research;
 use Seat\Eveapi\Api\Eve\CharacterInfo;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -250,6 +251,13 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/char/MarketOrders.xml.aspx
             $work = new MarketOrders();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started Research Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/Research.xml.aspx
+            $work = new Research();
             $work->call($this->eve_api_key);
 
             $job_tracker->status = 'Done';
