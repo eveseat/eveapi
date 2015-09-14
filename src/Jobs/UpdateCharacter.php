@@ -46,6 +46,7 @@ use Seat\Eveapi\Api\Character\KillMails;
 use Seat\Eveapi\Api\Character\MailBodies;
 use Seat\Eveapi\Api\Character\MailingLists;
 use Seat\Eveapi\Api\Character\MailMessages;
+use Seat\Eveapi\Api\Character\MarketOrders;
 use Seat\Eveapi\Api\Character\Notifications;
 use Seat\Eveapi\Api\Character\NotificationTexts;
 use Seat\Eveapi\Api\Character\PlanetaryColonies;
@@ -242,6 +243,13 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/char/PlanetaryLinks.xml.aspx
             $work = new PlanetaryLinks();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started MarketOrders Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/MarketOrders.xml.aspx
+            $work = new MarketOrders();
             $work->call($this->eve_api_key);
 
             $job_tracker->status = 'Done';
