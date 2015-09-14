@@ -59,6 +59,7 @@ use Seat\Eveapi\Api\Character\SkillQueue;
 use Seat\Eveapi\Api\Character\Standings;
 use Seat\Eveapi\Api\Character\UpcomingCalendarEvents;
 use Seat\Eveapi\Api\Character\WalletJournal;
+use Seat\Eveapi\Api\Character\WalletTransactions;
 use Seat\Eveapi\Api\Eve\CharacterInfo;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -298,6 +299,13 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/char/WalletJournal.xml.aspx
             $work = new WalletJournal();
+            $work->call($this->eve_api_key);
+
+            $job_tracker->output = 'Started WalletTransactions Update';
+            $job_tracker->save();
+
+            // https://api.eveonline.com/char/WalletTransactions.xml.aspx
+            $work = new WalletTransactions();
             $work->call($this->eve_api_key);
 
             $job_tracker->status = 'Done';

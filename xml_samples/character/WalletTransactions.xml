@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-14 12:13:23</currentTime>
+  <result>
+    <rowset name="transactions" key="transactionID" columns="transactionDateTime,transactionID,quantity,typeName,typeID,price,clientID,clientName,stationID,stationName,transactionType,transactionFor,journalTransactionID,clientTypeID">
+      <row transactionDateTime="2015-09-05 06:55:21" transactionID="123" quantity="4" typeName="Shield Power Relay II" typeID="1422" price="500000.00" clientID="123" clientName="ABC" stationID="123" stationName="ABC" transactionType="buy" transactionFor="personal" journalTransactionID="123" clientTypeID="1375" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-14 12:29:33</cachedUntil>
+</eveapi>
