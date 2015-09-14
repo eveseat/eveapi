@@ -1,7 +1,7 @@
 {
     "name": "eveseat/eveapi",
     "description": "SeAT EVE API Integration",
-    "license": "MIT",
+    "license": "GPL-2.0",
     "authors": [
         {
             "name": "Leon Jacobs",
