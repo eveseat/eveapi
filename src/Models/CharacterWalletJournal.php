@@ -36,6 +36,11 @@ class CharacterWalletJournal extends Model
 {
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'hash';
+
+    /**
      * @var array
      */
     protected $fillable = [

@@ -16,11 +16,8 @@ class CreateCharacterWalletJournalsTable extends Migration
 
         Schema::create('character_wallet_journals', function (Blueprint $table) {
 
-            $table->increments('id');
-            $table->integer('characterID');
-
-            // Hash for transaction uniqueness
             $table->string('hash')->unique();
+            $table->integer('characterID');
             $table->bigInteger('refID');
             $table->dateTime('date');
             $table->integer('refTypeID');
@@ -39,9 +36,9 @@ class CreateCharacterWalletJournalsTable extends Migration
             $table->integer('owner2TypeID');
 
             // Indexes
+            $table->primary('hash');
             $table->index('characterID');
             $table->index('refID');
-            $table->index('hash');
             $table->index('refTypeID');
 
             $table->timestamps();
