@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-14 09:15:19</currentTime>
+  <result>
+    <rowset name="upcomingEvents" key="eventID" columns="eventID,ownerID,ownerName,eventDate,eventTitle,duration,importance,response,eventText,ownerTypeID">
+      <row eventID="1210292" ownerID="1" ownerName="EVE System" eventDate="2015-09-15 17:00:00" eventTitle="Mass test on Duality" duration="60" importance="0" response="Undecided" eventText="To be tested:&#xD;&#xA;Brain in a box&#xD;&#xA;&#xD;&#xA;Please refer to &lt;a href=&quot;https://forums.eveonline.com/default.aspx?g=posts&amp;t=445069&quot;&gt;this thread&lt;/a&gt; for more information about how to participate in this test, and &lt;a href=&quot;http://wiki.eveonline.com/en/wiki/Mass_testing&quot;&gt;this article&lt;/a&gt; for more information on mass testing.&#xD;&#xA;&#xD;&#xA;All participants will receive a reward of two million free skill points on Singularity and Duality.&#xD;&#xA;&#xD;&#xA;Please note that this mass test takes place on Duality and not on Singularity!" ownerTypeID="0" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-14 09:59:17</cachedUntil>
+</eveapi>
