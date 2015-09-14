@@ -154,7 +154,7 @@ class WalletJournal extends Base
                 // we will be doing those checks. The most ob-
                 // vious one being that we may have received less
                 // than the total amount of rows asked for.
-                if (count($result->kills) < $this->rows_per_call)
+                if (count($result->transactions) < $this->rows_per_call)
                     break;
 
                 // If the response contained known transactions,
