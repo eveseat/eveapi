@@ -37,8 +37,8 @@ class ErrorList extends Base
     public function call()
     {
 
-        $result = $this->getPheal()
-            ->eveScope
+        $result = $this->setScope('eve')
+            ->getPheal()
             ->ErrorList();
 
         foreach ($result->errors as $error) {

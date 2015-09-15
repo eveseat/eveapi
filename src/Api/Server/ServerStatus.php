@@ -37,8 +37,8 @@ class ServerStatus extends Base
     public function call()
     {
 
-        $result = $this->getPheal()
-            ->serverScope
+        $result = $this->setScope('server')
+            ->getPheal()
             ->ServerStatus();
 
         if (

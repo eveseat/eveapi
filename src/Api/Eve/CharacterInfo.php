@@ -22,7 +22,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Eve;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\EveApiKey;
 use Seat\Eveapi\Models\EveCharacterInfo;
 use Seat\Eveapi\Models\EveCharacterInfoEmploymentHistory;
 
@@ -36,28 +35,25 @@ class CharacterInfo extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
-     * @param str                           $pub_character_id
+     * @param str $pub_character_id
+     *
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info, $pub_character_id = null)
+    public function call($pub_character_id = null)
     {
 
-        // This workers requires a slightly different bit
+        // This worker requires a slightly different bit
         // of logic to start off. This is because the api
         // endpoint works if you supply an api/vcode or
         // not.
-        $pheal_handle = $this->setKey(
-            $api_info->key_id, $api_info->v_code)
-            ->getPheal();
+        $pheal = $this->setScope('eve')->getPheal();
 
         // In the case of this being an update with a
         // specified characterID, use that one.
         if (!is_null($pub_character_id)) {
 
-            $result = $pheal_handle
-                ->eveScope
-                ->CharacterInfo([
-                    'characterID' => $pub_character_id]);
+            $result = $pheal->CharacterInfo([
+                'characterID' => $pub_character_id]);
 
             $this->_update_character_info($result);
 
@@ -65,12 +61,10 @@ class CharacterInfo extends Base
 
             // Otherwise, update all of the character on the
             // ApiKey that we got as normal
-            foreach ($api_info->characters as $character) {
+            foreach ($this->api_info->characters as $character) {
 
-                $result = $pheal_handle
-                    ->eveScope
-                    ->CharacterInfo([
-                        'characterID' => $character->characterID]);
+                $result = $pheal->CharacterInfo([
+                    'characterID' => $character->characterID]);
 
                 $this->_update_character_info($result);
 

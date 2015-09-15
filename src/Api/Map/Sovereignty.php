@@ -37,8 +37,8 @@ class Sovereignty extends Base
     public function call()
     {
 
-        $result = $this->getPheal()
-            ->mapScope
+        $result = $this->setScope('map')
+            ->getPheal()
             ->Sovereignty();
 
         foreach ($result->solarSystems as $solar_system) {

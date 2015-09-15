@@ -23,7 +23,6 @@ namespace Seat\Eveapi\Api\Account;
 
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\AccountAccountStatus;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class AccountStatus
@@ -35,22 +34,18 @@ class AccountStatus extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        $result = $this->setKey(
-            $api_info->key_id, $api_info->v_code)
+        $result = $this->setScope('account')
             ->getPheal()
-            ->accountScope
             ->AccountStatus();
 
-        // Get or create the record...
         $account_status = AccountAccountStatus::firstOrNew([
-            'keyID' => $api_info->key_id]);
+            'keyID' => $this->api_info->key_id]);
 
-        // ... and set its fields
         $account_status->fill([
             'paidUntil'    => $result->paidUntil,
             'createDate'   => $result->createDate,

@@ -23,7 +23,6 @@ namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterPlanetaryColony;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class PlanetaryColonies
@@ -35,21 +34,18 @@ class PlanetaryColonies extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
 
-            $result = $this->setKey(
-                $api_info->key_id, $api_info->v_code)
-                ->getPheal()
-                ->charScope
-                ->PlanetaryColonies([
-                    'characterID' => $character->characterID]);
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
+
+            $result = $pheal->PlanetaryColonies([
+                'characterID' => $character->characterID]);
 
             // Update the Planetary Colonies for the character.
             // As this can obiously change a lot, we will have

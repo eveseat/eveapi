@@ -23,7 +23,6 @@ namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterWalletJournal;
-use Seat\Eveapi\Models\EveApiKey;
 use Seat\Eveapi\Traits\Utils;
 
 /**
@@ -46,14 +45,15 @@ class WalletJournal extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
+
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
 
             // Define the first MAX from_id to use when
             // retreiving transactions.
@@ -65,11 +65,6 @@ class WalletJournal extends Base
             // already known.
             $transaction_overlap = false;
 
-            // Setup the Pheal Instance to use
-            $pheal = $this->setKey(
-                $api_info->key_id, $api_info->v_code)
-                ->getPheal();
-
             // This infinite loop needs to be broken out of
             // once we have reached the end of the backwards
             // journal walking. Walking ends when we have
@@ -77,18 +72,16 @@ class WalletJournal extends Base
             // we have reached a known transaction hash.
             while (true) {
 
-                $result = $pheal
-                    ->charScope
-                    ->WalletJournal(
-                        [
-                            'characterID' => $character->characterID,
-                            'rowCount'    => $this->rows_per_call
-                            // If the from_id is not PHP_INT_MAX, the we can
-                            // specify it for the API call. If not, we will
-                            // get an error such as:
-                            //  Error: 121: Invalid fromID provided.
-                        ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
-                    );
+                $result = $pheal->WalletJournal([
+                        'characterID' => $character->characterID,
+                        'rowCount'    => $this->rows_per_call
+
+                        // If the from_id is not PHP_INT_MAX, the we can
+                        // specify it for the API call. If not, we will
+                        // get an error such as:
+                        //  Error: 121: Invalid fromID provided.
+                    ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
+                );
 
                 // Loop over the response transactions, checking the
                 //existance and updating as required

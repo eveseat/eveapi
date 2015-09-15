@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Api\Character;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterPlanetaryLink;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class PlanetaryLinks
@@ -36,10 +35,12 @@ class PlanetaryLinks extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
+
+        $pheal = $this->setScope('char')->getPheal();
 
         // Links need to be processed for every planet on
         // every character for the provided API key. We
@@ -47,12 +48,8 @@ class PlanetaryLinks extends Base
         // updating the information as well as clean up
         // the routes that are no longer applicable.
 
-        // Get an instance of Pheal to use in the updates.
-        $pheal = $this->setKey(
-            $api_info->key_id, $api_info->v_code)
-            ->getPheal();
-
-        foreach ($api_info->characters as $character) {
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
 
             // Query the database for known planets from
             // the planetary colonies table that this
@@ -63,10 +60,9 @@ class PlanetaryLinks extends Base
 
             foreach ($colonies as $planet_id) {
 
-                $result = $pheal->charScope
-                    ->PlanetaryLinks([
-                        'characterID' => $character->characterID,
-                        'planetID'    => $planet_id]);
+                $result = $pheal->PlanetaryLinks([
+                    'characterID' => $character->characterID,
+                    'planetID'    => $planet_id]);
 
                 // There isnt a concept such as a unique
                 // linkID, so for now we will just delete

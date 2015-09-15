@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Api\Character;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterContractItems;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class ContractsItems
@@ -36,14 +35,15 @@ class ContractsItems extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
+
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
 
             // Get a list of all of the contracts that do
             // not have their items updated yet. Since this
@@ -64,13 +64,9 @@ class ContractsItems extends Base
             // Process the contractID's as we have received them
             foreach ($contract_ids as $contract_id) {
 
-                $result = $this->setKey(
-                    $api_info->key_id, $api_info->v_code)
-                    ->getPheal()
-                    ->charScope
-                    ->ContractItems([
-                        'characterID' => $character->characterID,
-                        'contractID'  => $contract_id]);
+                $result = $pheal->ContractItems([
+                    'characterID' => $character->characterID,
+                    'contractID'  => $contract_id]);
 
                 // Finally, loop the results and populate the db
                 foreach ($result->itemList as $item) {

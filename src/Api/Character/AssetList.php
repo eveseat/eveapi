@@ -25,7 +25,6 @@ use Carbon\Carbon;
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterAssetList;
 use Seat\Eveapi\Models\CharacterAssetListContents;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class AssetList
@@ -37,21 +36,18 @@ class AssetList extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
 
-            $result = $this->setKey(
-                $api_info->key_id, $api_info->v_code)
-                ->getPheal()
-                ->charScope
-                ->AssetList([
-                    'characterID' => $character->characterID]);
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
+
+            $result = $pheal->AssetList([
+                'characterID' => $character->characterID]);
 
             // The caveat of this API call as can be seen here [1] is
             // that the itemID's may change for a number of reasons.

@@ -37,8 +37,8 @@ class ConquerableStationList extends Base
     public function call()
     {
 
-        $result = $this->getPheal()
-            ->eveScope
+        $result = $this->setScope('eve')
+            ->getPheal()
             ->ConquerableStationList();
 
         foreach ($result->outposts as $outpost) {

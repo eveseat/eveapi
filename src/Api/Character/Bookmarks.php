@@ -23,7 +23,6 @@ namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterBookmark;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class Bookmarks
@@ -35,19 +34,18 @@ class Bookmarks extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
 
-            $result = $this->setKey(
-                $api_info->key_id, $api_info->v_code)
-                ->getPheal()
-                ->charScope
-                ->Bookmarks([
-                    'characterID' => $character->characterID]);
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
+
+            $result = $pheal->Bookmarks([
+                'characterID' => $character->characterID]);
 
             // Process each folder and the bookmarks therein
             foreach ($result->folders as $folder) {

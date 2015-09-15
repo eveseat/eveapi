@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Api\Account;
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\AccountApiKeyInfo;
 use Seat\Eveapi\Models\AccountApiKeyInfoCharacters;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class APIKeyInfo
@@ -36,20 +35,18 @@ class APIKeyInfo extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        $result = $this->setKey(
-            $api_info->key_id, $api_info->v_code)
+        $result = $this->setScope('account')
             ->getPheal()
-            ->accountScope
             ->APIKeyInfo();
 
         // Get or create the record...
         $key_info = AccountApiKeyInfo::firstOrNew([
-            'keyID' => $api_info->key_id]);
+            'keyID' => $this->api_info->key_id]);
 
         // ... and set its fields
         $key_info->fill([
@@ -68,7 +65,7 @@ class APIKeyInfo extends Base
         // database and remove from it as we update.
         // Once we are done, we will delete any of
         // the remaining characterID's
-        $known_characters = AccountApiKeyInfoCharacters::where('keyID', $api_info->key_id)
+        $known_characters = AccountApiKeyInfoCharacters::where('keyID', $this->api_info->key_id)
             ->lists('characterID')->toArray();
 
         // Next up, we iterate of the chatacters we got from
@@ -78,7 +75,7 @@ class APIKeyInfo extends Base
         foreach ($result->key->characters as $character) {
 
             $character_info = AccountApiKeyInfoCharacters::firstOrNew([
-                'keyID'       => $api_info->key_id,
+                'keyID'       => $this->api_info->key_id,
                 'characterID' => $character->characterID]);
 
             $character_info->fill([
@@ -98,7 +95,7 @@ class APIKeyInfo extends Base
         // on this API Key. As a reminder, these are the
         // ids that remained after the previous update.
         AccountApiKeyInfoCharacters::whereIn('characterID', $known_characters)
-            ->where('keyID', $api_info->key_id)
+            ->where('keyID', $this->api_info->key_id)
             ->delete();
 
         return;

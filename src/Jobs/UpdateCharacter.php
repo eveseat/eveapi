@@ -27,37 +27,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
-
-use Seat\Eveapi\Api\Account\AccountStatus;
-use Seat\Eveapi\Api\Character\AccountBalance;
-use Seat\Eveapi\Api\Character\AssetList;
-use Seat\Eveapi\Api\Character\Bookmarks;
-use Seat\Eveapi\Api\Character\CharacterSheet;
-use Seat\Eveapi\Api\Character\ChatChannels;
-use Seat\Eveapi\Api\Character\ContactList;
-use Seat\Eveapi\Api\Character\ContactNotifications;
-use Seat\Eveapi\Api\Character\Contracts;
-use Seat\Eveapi\Api\Character\ContractsItems;
-use Seat\Eveapi\Api\Character\IndustryJobs;
-use Seat\Eveapi\Api\Character\KillMails;
-use Seat\Eveapi\Api\Character\MailBodies;
-use Seat\Eveapi\Api\Character\MailingLists;
-use Seat\Eveapi\Api\Character\MailMessages;
-use Seat\Eveapi\Api\Character\MarketOrders;
-use Seat\Eveapi\Api\Character\Notifications;
-use Seat\Eveapi\Api\Character\NotificationTexts;
-use Seat\Eveapi\Api\Character\PlanetaryColonies;
-use Seat\Eveapi\Api\Character\PlanetaryLinks;
-use Seat\Eveapi\Api\Character\PlanetaryPins;
-use Seat\Eveapi\Api\Character\PlanetaryRoutes;
-use Seat\Eveapi\Api\Character\Research;
-use Seat\Eveapi\Api\Character\SkillInTraining;
-use Seat\Eveapi\Api\Character\SkillQueue;
-use Seat\Eveapi\Api\Character\Standings;
-use Seat\Eveapi\Api\Character\UpcomingCalendarEvents;
-use Seat\Eveapi\Api\Character\WalletJournal;
-use Seat\Eveapi\Api\Character\WalletTransactions;
-use Seat\Eveapi\Api\Eve\CharacterInfo;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -87,6 +56,74 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
         $this->eve_api_key = $eve_api_key;
     }
 
+    public function workers()
+    {
+
+        // An array with the possible workers for a
+        // character / account API key. The order is
+        // significant as some calls rely on a
+        // previous one.
+        $workers = [
+
+            // The very first call to determine the
+            // access mask and characters
+            \Seat\Eveapi\Api\Account\AccountStatus::class,
+
+            \Seat\Eveapi\Api\Character\AccountBalance::class,
+            \Seat\Eveapi\Api\Character\AssetList::class,
+            \Seat\Eveapi\Api\Character\Bookmarks::class,
+            \Seat\Eveapi\Api\Character\CharacterSheet::class,
+            \Seat\Eveapi\Api\Character\ChatChannels::class,
+            \Seat\Eveapi\Api\Character\ContactList::class,
+            \Seat\Eveapi\Api\Character\ContactNotifications::class,
+
+            // Contracts are updated first and then the
+            // respective items
+            \Seat\Eveapi\Api\Character\Contracts::class,
+            \Seat\Eveapi\Api\Character\ContractsItems::class,
+
+            \Seat\Eveapi\Api\Character\IndustryJobs::class,
+            \Seat\Eveapi\Api\Character\KillMails::class,
+
+            // Mail Messages is called first so that the
+            // headers are populated for the body updates.
+            // This is also a requirement from CCP's side
+            // before the body is callable via the API.
+            \Seat\Eveapi\Api\Character\MailMessages::class,
+            \Seat\Eveapi\Api\Character\MailBodies::class,
+
+            \Seat\Eveapi\Api\Character\MailingLists::class,
+            \Seat\Eveapi\Api\Character\MarketOrders::class,
+
+            // Notifications is called first so that the
+            // texts can be updated.
+            \Seat\Eveapi\Api\Character\Notifications::class,
+            \Seat\Eveapi\Api\Character\NotificationTexts::class,
+
+            // Planetary Interaction relies totally on the
+            // Colonies to be up to date
+            \Seat\Eveapi\Api\Character\PlanetaryColonies::class,
+            \Seat\Eveapi\Api\Character\PlanetaryPins::class,
+            \Seat\Eveapi\Api\Character\PlanetaryRoutes::class,
+            \Seat\Eveapi\Api\Character\PlanetaryLinks::class,
+
+            \Seat\Eveapi\Api\Character\Research::class,
+            \Seat\Eveapi\Api\Character\SkillInTraining::class,
+            \Seat\Eveapi\Api\Character\SkillQueue::class,
+            \Seat\Eveapi\Api\Character\Standings::class,
+            \Seat\Eveapi\Api\Character\UpcomingCalendarEvents::class,
+            \Seat\Eveapi\Api\Character\WalletJournal::class,
+            \Seat\Eveapi\Api\Character\WalletTransactions::class,
+            \Seat\Eveapi\Api\Eve\CharacterInfo::class
+        ];
+
+        // Yield the classes as a generator
+        foreach ($workers as $worker) {
+            yield $worker;
+        }
+
+    }
+
     /**
      * Execute the job.
      *
@@ -109,215 +146,15 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
             $job_tracker->status = 'Working';
             $job_tracker->save();
 
-            $job_tracker->output = 'Started AccountStatus Update';
-            $job_tracker->save();
+            foreach ($this->workers() as $worker) {
 
-            // https://api.eveonline.com/account/AccountStatus.xml.aspx
-            $work = new AccountStatus();
-            $work->call($this->eve_api_key);
+                $job_tracker->output = 'Processing: ' . $worker;
+                $job_tracker->save();
 
-            $job_tracker->output = 'Started AccountBalance Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/AccountBalance.xml.aspx
-            $work = new AccountBalance();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started AssetList Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/AssetList.xml.aspx
-            $work = new AssetList();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started Bookmarks Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/Bookmarks.xml.aspx
-            $work = new Bookmarks();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started CharacterSheet Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/CharacterSheet.xml.aspx
-            $work = new CharacterSheet();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started ChatChannels Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/ChatChannels.xml.aspx
-            $work = new ChatChannels();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started ContactList Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/ContactList.xml.aspx
-            $work = new ContactList();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started ContactNotifications Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/ContactNotifications.xml.aspx
-            $work = new ContactNotifications();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started Contracts Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/Contracts.xml.aspx
-            $work = new Contracts();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started ContractsItems Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/ContractItems.xml.aspx
-            $work = new ContractsItems();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started IndustryJobs Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/IndustryJobs.xml.aspx
-            $work = new IndustryJobs();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started CharacterInfo Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/eve/CharacterInfo.xml.aspx
-            $work = new CharacterInfo();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started KillMails Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/KillMails.xml.aspx
-            $work = new KillMails();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started MailMessages Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/MailMessages.xml.aspx
-            $work = new MailMessages();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started MailBodies Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/MailBodies.xml.aspx
-            $work = new MailBodies();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started MailingLists Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/MailingLists.xml.aspx
-            $work = new MailingLists();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started Notifications Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/Notifications.xml.aspx
-            $work = new Notifications();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started NotificationTexts Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/NotificationTexts.xml.aspx
-            $work = new NotificationTexts();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started PlanetaryColonies Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/PlanetaryColonies.xml.aspx
-            $work = new PlanetaryColonies();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started PlanetaryPins Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/PlanetaryPins.xml.aspx
-            $work = new PlanetaryPins();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started PlanetaryRoutes Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/PlanetaryRoutes.xml.aspx
-            $work = new PlanetaryRoutes();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started PlanetaryLinks Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/PlanetaryLinks.xml.aspx
-            $work = new PlanetaryLinks();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started MarketOrders Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/MarketOrders.xml.aspx
-            $work = new MarketOrders();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started Research Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/Research.xml.aspx
-            $work = new Research();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started SkillInTraining Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/SkillInTraining.xml.aspx
-            $work = new SkillInTraining();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started SkillQueue Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/SkillQueue.xml.aspx
-            $work = new SkillQueue();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started Stadings Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/Standings.xml.aspx
-            $work = new Standings();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started UpcomingCalendarEvents Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/UpcomingCalendarEvents.xml.aspx
-            $work = new UpcomingCalendarEvents();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started WalletJournal Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/WalletJournal.xml.aspx
-            $work = new WalletJournal();
-            $work->call($this->eve_api_key);
-
-            $job_tracker->output = 'Started WalletTransactions Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/char/WalletTransactions.xml.aspx
-            $work = new WalletTransactions();
-            $work->call($this->eve_api_key);
+                // Perform the update
+                $work = new $worker;
+                $work->setApi($this->eve_api_key)->call();
+            }
 
             $job_tracker->status = 'Done';
             $job_tracker->output = null;

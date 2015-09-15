@@ -37,8 +37,8 @@ class Kills extends Base
     public function call()
     {
 
-        $result = $this->getPheal()
-            ->mapScope
+        $result = $this->setScope('map')
+            ->getPheal()
             ->Kills();
 
         foreach ($result->solarSystems as $solar_system) {

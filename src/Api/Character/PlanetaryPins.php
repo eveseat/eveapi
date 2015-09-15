@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Api\Character;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterPlanetaryPin;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class PlanetaryPins
@@ -36,10 +35,12 @@ class PlanetaryPins extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
+
+        $pheal = $this->setScope('char')->getPheal();
 
         // Pins need to be processed for every planet on
         // every character for the provided API key. We
@@ -47,12 +48,8 @@ class PlanetaryPins extends Base
         // updating the information as well as clean up
         // the pins that are no longer applicable.
 
-        // Get an instance of Pheal to use in the updates.
-        $pheal = $this->setKey(
-            $api_info->key_id, $api_info->v_code)
-            ->getPheal();
-
-        foreach ($api_info->characters as $character) {
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
 
             // Query the database for known planets from
             // the planetary colonies table that this
@@ -63,10 +60,9 @@ class PlanetaryPins extends Base
 
             foreach ($colonies as $planet_id) {
 
-                $result = $pheal->charScope
-                    ->PlanetaryPins([
-                        'characterID' => $character->characterID,
-                        'planetID'    => $planet_id]);
+                $result = $pheal->PlanetaryPins([
+                    'characterID' => $character->characterID,
+                    'planetID'    => $planet_id]);
 
                 // Update the Pins
                 foreach ($result->pins as $pin) {

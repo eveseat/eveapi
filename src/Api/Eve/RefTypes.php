@@ -37,8 +37,8 @@ class RefTypes extends Base
     public function call()
     {
 
-        $result = $this->getPheal()
-            ->eveScope
+        $result = $this->setScope('eve')
+            ->getPheal()
             ->RefTypes();
 
         foreach ($result->refTypes as $ref_type) {

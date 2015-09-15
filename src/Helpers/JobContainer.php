@@ -39,10 +39,11 @@ class JobContainer implements \ArrayAccess
      */
     protected $data = [
 
-        'queue'    => 'default',
-        'scope'    => null,
-        'api'      => null,
-        'owner_id' => 0,
+        'queue'       => 'default',
+        'scope'       => null,
+        'api'         => null,
+        'owner_id'    => 0,
+        'eve_api_key' => null
     ];
 
     /**

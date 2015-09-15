@@ -26,7 +26,6 @@ use Seat\Eveapi\Models\CharacterKillMail;
 use Seat\Eveapi\Models\CharacterKillMailAttacker;
 use Seat\Eveapi\Models\CharacterKillMailDetail;
 use Seat\Eveapi\Models\CharacterKillMailItem;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class KillMails
@@ -46,9 +45,9 @@ class KillMails extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
         // Killmails is another tricky one to update correctly.
@@ -91,19 +90,14 @@ class KillMails extends Base
         // the affected character.
         //
         // [1] https://neweden-dev.com/Char/KillMails
+        $pheal = $this->setScope('char')->getPheal();
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
 
             // Define the first MAX from_id to use when
             // retreiving killmails.
             $from_id = PHP_INT_MAX;
-
-            // Setup the Pheal Instance to use
-            $pheal = $this->setKey(
-                $api_info->key_id, $api_info->v_code)
-                ->getPheal();
 
             // This infinite loop needs to be broken out of
             // once we have reached the end of the backwards
@@ -112,18 +106,16 @@ class KillMails extends Base
             // we have reached a known killID.
             while (true) {
 
-                $result = $pheal
-                    ->charScope
-                    ->KillMails(
-                        [
-                            'characterID' => $character->characterID,
-                            'rowCount'    => $this->rows_per_call
-                            // If the from_id is not PHP_INT_MAX, the we can
-                            // specify it for the API call. If not, we will
-                            // get an error such as:
-                            //  Error: 121: Invalid beforeKillID provided.
-                        ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
-                    );
+                $result = $pheal->KillMails([
+                        'characterID' => $character->characterID,
+                        'rowCount'    => $this->rows_per_call
+
+                        // If the from_id is not PHP_INT_MAX, the we can
+                        // specify it for the API call. If not, we will
+                        // get an error such as:
+                        //  Error: 121: Invalid beforeKillID provided.
+                    ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
+                );
 
                 // Loop over the response kills, checking the existance
                 // and updating the related tables as required

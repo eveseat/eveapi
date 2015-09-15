@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Api\Character;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterMailMessageBody;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class MailBodies
@@ -36,14 +35,15 @@ class MailBodies extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
+
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
 
             // Get a list of messageIDs that we do not have mail
             // bodies for. These ID's will be used to try and
@@ -65,13 +65,9 @@ class MailBodies extends Base
             // ids we want to update.
             foreach (array_chunk($message_ids, 10) as $message_id_chunk) {
 
-                $result = $this->setKey(
-                    $api_info->key_id, $api_info->v_code)
-                    ->getPheal()
-                    ->charScope
-                    ->MailBodies([
-                        'characterID' => $character->characterID,
-                        'ids'         => implode(',', $message_id_chunk)]);
+                $result = $pheal->MailBodies([
+                    'characterID' => $character->characterID,
+                    'ids'         => implode(',', $message_id_chunk)]);
 
                 // Populate the mail bodies
                 foreach ($result->messages as $body) {

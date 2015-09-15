@@ -37,8 +37,8 @@ class Jumps extends Base
     public function call()
     {
 
-        $result = $this->getPheal()
-            ->mapScope
+        $result = $this->setScope('map')
+            ->getPheal()
             ->Jumps();
 
         foreach ($result->solarSystems as $solar_system) {

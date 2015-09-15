@@ -19,22 +19,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-namespace Seat\Eveapi\Traits;
+namespace Seat\Eveapi\Exception;
 
 /**
- * Class Boot
- * @package Seat\Eveapi\Traits
+ * Class InvalidScopeException
+ * @package Seat\Eveapi\Exception
  */
-trait Boot
+class InvalidScopeException extends \Exception
 {
 
-    /**
-     *  Boot actions
-     */
-    public function __construct()
-    {
-
-        $this->start();
-
-    }
 }

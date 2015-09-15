@@ -25,7 +25,6 @@ use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterChatChannel;
 use Seat\Eveapi\Models\CharacterChatChannelInfo;
 use Seat\Eveapi\Models\CharacterChatChannelMember;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class ChatChannels
@@ -37,21 +36,18 @@ class ChatChannels extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
 
-            $result = $this->setKey(
-                $api_info->key_id, $api_info->v_code)
-                ->getPheal()
-                ->charScope
-                ->ChatChannels([
-                    'characterID' => $character->characterID]);
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
+
+            $result = $pheal->ChatChannels([
+                'characterID' => $character->characterID]);
 
             // Update the Channels for this Character
             foreach ($result->channels as $channel) {

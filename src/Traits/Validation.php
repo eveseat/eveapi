@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Traits;
 
 use Seat\Eveapi\Exception\InvalidKeyPairException;
+use Seat\Eveapi\Exception\InvalidScopeException;
 use Seat\Eveapi\Exception\MissingKeyPairException;
 
 /**
@@ -49,6 +50,24 @@ trait Validation
         // the key pair at least looks sane.
         if (!is_numeric($key) || strlen($vcode) <> 64)
             throw new InvalidKeyPairException;
+
+        return;
+    }
+
+    /**
+     * @param $scope
+     *
+     * @throws \Seat\Eveapi\Exception\InvalidScopeException
+     */
+    public function validateScope($scope)
+    {
+
+        // Scopes that should be considered valid
+        $valid_scopes = [
+            'account', 'api', 'char', 'corp', 'eve', 'map', 'server'];
+
+        if (!in_array($scope, $valid_scopes))
+            throw new InvalidScopeException;
 
         return;
     }

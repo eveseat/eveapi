@@ -37,8 +37,8 @@ class CallList extends Base
     public function call()
     {
 
-        $result = $this->getPheal()
-            ->apiScope
+        $result = $this->setScope('api')
+            ->getPheal()
             ->CallList();
 
         foreach ($result->calls as $call) {

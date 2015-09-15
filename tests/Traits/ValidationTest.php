@@ -69,6 +69,23 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return array
+     */
+    public function providerValidScopes()
+    {
+
+        return [
+            ['account'],
+            ['api'],
+            ['char'],
+            ['corp'],
+            ['eve'],
+            ['map'],
+            ['server']
+        ];
+    }
+
+    /**
      * @param string $testKey   The API Key
      * @param string $testVcode The vCode
      *
@@ -105,5 +122,27 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Seat\Eveapi\Exception\MissingKeyPairException');
         $this->validateKeyPair($testKey, $testVcode);
+    }
+
+    /**
+     * @throws \Seat\Eveapi\Exception\InvalidScopeException
+     */
+    public function testScopeIsInvalid()
+    {
+
+        $this->setExpectedException('Seat\Eveapi\Exception\InvalidScopeException');
+        $this->validateScope('not_valid');
+    }
+
+    /**
+     * @param $scope
+     *
+     * @dataProvider providerValidScopes
+     */
+    public function testScopeIsValid($scope)
+    {
+
+        $scope = $this->validateScope($scope);
+        $this->assertNull($scope);
     }
 }

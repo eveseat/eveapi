@@ -28,7 +28,6 @@ use Seat\Eveapi\Models\CharacterContactListAllianceLabel;
 use Seat\Eveapi\Models\CharacterContactListCorporate;
 use Seat\Eveapi\Models\CharacterContactListCorporateLabel;
 use Seat\Eveapi\Models\CharacterContactListLabel;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class ContactList
@@ -40,21 +39,18 @@ class ContactList extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
 
-            $result = $this->setKey(
-                $api_info->key_id, $api_info->v_code)
-                ->getPheal()
-                ->charScope
-                ->ContactList([
-                    'characterID' => $character->characterID]);
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
+
+            $result = $pheal->ContactList([
+                'characterID' => $character->characterID]);
 
             // Contact Lists can change just like many other
             // types of information. So, we have to delete

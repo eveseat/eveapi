@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Api\Character;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterNotificationsText;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class NotificationTexts
@@ -36,14 +35,15 @@ class NotificationTexts extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
+
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
 
             // Get a list of notificationIDs that we do
             // not have the text content for.
@@ -64,13 +64,9 @@ class NotificationTexts extends Base
             // will chunk the ids we want to update.
             foreach (array_chunk($notification_ids, 10) as $notification_id_chunk) {
 
-                $result = $this->setKey(
-                    $api_info->key_id, $api_info->v_code)
-                    ->getPheal()
-                    ->charScope
-                    ->NotificationTexts([
-                        'characterID' => $character->characterID,
-                        'ids'         => implode(',', $notification_id_chunk)]);
+                $result = $pheal->NotificationTexts([
+                    'characterID' => $character->characterID,
+                    'ids'         => implode(',', $notification_id_chunk)]);
 
                 // Populate the mail bodies
                 foreach ($result->notifications as $notification) {

@@ -38,8 +38,8 @@ class AllianceList extends Base
     public function call()
     {
 
-        $result = $this->getPheal()
-            ->eveScope
+        $result = $this->setScope('eve')
+            ->getPheal()
             ->AllianceList();
 
         // TODO: Figure out if there is a better way to

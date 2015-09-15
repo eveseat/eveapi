@@ -28,7 +28,6 @@ use Seat\Eveapi\Models\CharacterCharacterSheetImplants;
 use Seat\Eveapi\Models\CharacterCharacterSheetJumpClone;
 use Seat\Eveapi\Models\CharacterCharacterSheetJumpCloneImplants;
 use Seat\Eveapi\Models\CharacterCharacterSheetSkills;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class CharacterSheet
@@ -40,24 +39,21 @@ class CharacterSheet extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
 
-            $result = $this->setKey(
-                $api_info->key_id, $api_info->v_code)
-                ->getPheal()
-                ->charScope
-                ->CharacterSheet([
-                    'characterID' => $character->characterID]);
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
+
+            $result = $pheal->CharacterSheet([
+                'characterID' => $character->characterID]);
 
             // The full character sheet is pretty large. We have
-            // a few things we can just update the datbase with
+            // a few things we can just update the database with
             // but also a whole bunch of things like clones
             // and skills that will need a loop to update.
             // Lets start with the easy stuff first ok.

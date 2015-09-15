@@ -22,11 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterAccountBalance;
 use Seat\Eveapi\Models\CharacterMailingList;
 use Seat\Eveapi\Models\CharacterMailingListInfo;
-use Seat\Eveapi\Models\CharacterMailMessage;
-use Seat\Eveapi\Models\EveApiKey;
 
 /**
  * Class MailingLists
@@ -38,21 +35,18 @@ class MailingLists extends Base
     /**
      * Run the Update
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @return mixed|void
      */
-    public function call(EveApiKey $api_info)
+    public function call()
     {
 
-        // Ofc, we need to process the update of all
-        // of the characters on this key.
-        foreach ($api_info->characters as $character) {
+        $pheal = $this->setScope('char')->getPheal();
 
-            $result = $this->setKey(
-                $api_info->key_id, $api_info->v_code)
-                ->getPheal()
-                ->charScope
-                ->MailingLists([
-                    'characterID' => $character->characterID]);
+        // Loop the key characters
+        foreach ($this->api_info->characters as $character) {
+
+            $result = $pheal->MailingLists([
+                'characterID' => $character->characterID]);
 
             // Characters can join/leave mailing lists at
             // any time. For this reason, we need to clean
