@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-14 19:07:47</currentTime>
+  <result>
+    <rowset name="folders" key="folderID" columns="folderName">
+      <row folderID="0" folderName="">
+        <rowset name="bookmarks" key="bookmarkID" columns="creatorID,created,itemID,typeID,locationID,x,y,z,memo,note">
+          <row bookmarkID="123" creatorID="123" created="2012-12-28 22:22:29" itemID="0" typeID="5" locationID="123" x="123" y="123" z="123" memo="Saved" note="" />
+        </rowset>
+      </row>
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-14 20:07:48</cachedUntil>
+</eveapi>
