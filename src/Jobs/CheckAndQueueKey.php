@@ -81,14 +81,11 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
         try {
 
             $job_tracker->status = 'Working';
-            $job_tracker->save();
-
             $job_tracker->output = 'Started APIKeyInfo Update';
             $job_tracker->save();
 
             // https://api.eveonline.com/account/APIKeyInfo.xml.aspx
-            $work = new APIKeyInfo();
-            $work->setApi($this->eve_api_key)->call();
+            (new APIKeyInfo())->setApi($this->eve_api_key)->call();
 
             // Now, based on the type of key, queue another job
             // that will run with the actual updates. We need

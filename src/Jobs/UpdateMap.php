@@ -28,9 +28,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use Seat\Eveapi\Api\Map\Jumps;
-use Seat\Eveapi\Api\Map\Kills;
-use Seat\Eveapi\Api\Map\Sovereignty;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -64,26 +61,14 @@ class UpdateMap extends Job implements SelfHandling, ShouldQueue
             $job_tracker->status = 'Working';
             $job_tracker->save();
 
-            $job_tracker->output = 'Started Sovereignty Update';
-            $job_tracker->save();
+            foreach (config('eveapi.workers.map') as $worker) {
 
-            // https://api.eveonline.com/map/Sovereignty.xml.aspx
-            $work = new Sovereignty();
-            $work->call();
+                $job_tracker->output = 'Processing: ' . class_basename($worker);
+                $job_tracker->save();
 
-            $job_tracker->output = 'Started Kills Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/map/Kills.xml.aspx
-            $work = new Kills();
-            $work->call();
-
-            $job_tracker->output = 'Started Jumps Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/map/Jumps.xml.aspx
-            $work = new Jumps();
-            $work->call();
+                // Perform the update
+                (new $worker)->call();
+            }
 
             $job_tracker->status = 'Done';
             $job_tracker->output = null;

@@ -56,77 +56,8 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
         $this->eve_api_key = $eve_api_key;
     }
 
-    public function workers()
-    {
-
-        // An array with the possible workers for a
-        // character / account API key. The order is
-        // significant as some calls rely on a
-        // previous one.
-        $workers = [
-
-            // The very first call to determine the
-            // access mask and characters
-            \Seat\Eveapi\Api\Account\AccountStatus::class,
-
-            \Seat\Eveapi\Api\Character\AccountBalance::class,
-            \Seat\Eveapi\Api\Character\AssetList::class,
-            \Seat\Eveapi\Api\Character\Bookmarks::class,
-            \Seat\Eveapi\Api\Character\CharacterSheet::class,
-            \Seat\Eveapi\Api\Character\ChatChannels::class,
-            \Seat\Eveapi\Api\Character\ContactList::class,
-            \Seat\Eveapi\Api\Character\ContactNotifications::class,
-
-            // Contracts are updated first and then the
-            // respective items
-            \Seat\Eveapi\Api\Character\Contracts::class,
-            \Seat\Eveapi\Api\Character\ContractsItems::class,
-
-            \Seat\Eveapi\Api\Character\IndustryJobs::class,
-            \Seat\Eveapi\Api\Character\KillMails::class,
-
-            // Mail Messages is called first so that the
-            // headers are populated for the body updates.
-            // This is also a requirement from CCP's side
-            // before the body is callable via the API.
-            \Seat\Eveapi\Api\Character\MailMessages::class,
-            \Seat\Eveapi\Api\Character\MailBodies::class,
-
-            \Seat\Eveapi\Api\Character\MailingLists::class,
-            \Seat\Eveapi\Api\Character\MarketOrders::class,
-
-            // Notifications is called first so that the
-            // texts can be updated.
-            \Seat\Eveapi\Api\Character\Notifications::class,
-            \Seat\Eveapi\Api\Character\NotificationTexts::class,
-
-            // Planetary Interaction relies totally on the
-            // Colonies to be up to date
-            \Seat\Eveapi\Api\Character\PlanetaryColonies::class,
-            \Seat\Eveapi\Api\Character\PlanetaryPins::class,
-            \Seat\Eveapi\Api\Character\PlanetaryRoutes::class,
-            \Seat\Eveapi\Api\Character\PlanetaryLinks::class,
-
-            \Seat\Eveapi\Api\Character\Research::class,
-            \Seat\Eveapi\Api\Character\SkillInTraining::class,
-            \Seat\Eveapi\Api\Character\SkillQueue::class,
-            \Seat\Eveapi\Api\Character\Standings::class,
-            \Seat\Eveapi\Api\Character\UpcomingCalendarEvents::class,
-            \Seat\Eveapi\Api\Character\WalletJournal::class,
-            \Seat\Eveapi\Api\Character\WalletTransactions::class,
-            \Seat\Eveapi\Api\Eve\CharacterInfo::class
-        ];
-
-        // Yield the classes as a generator
-        foreach ($workers as $worker) {
-            yield $worker;
-        }
-
-    }
-
     /**
      * Execute the job.
-     *
      */
     public function handle()
     {
@@ -146,14 +77,13 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
             $job_tracker->status = 'Working';
             $job_tracker->save();
 
-            foreach ($this->workers() as $worker) {
+            foreach (config('eveapi.workers.character') as $worker) {
 
-                $job_tracker->output = 'Processing: ' . $worker;
+                $job_tracker->output = 'Processing: ' . class_basename($worker);
                 $job_tracker->save();
 
                 // Perform the update
-                $work = new $worker;
-                $work->setApi($this->eve_api_key)->call();
+                (new $worker)->setApi($this->eve_api_key)->call();
             }
 
             $job_tracker->status = 'Done';

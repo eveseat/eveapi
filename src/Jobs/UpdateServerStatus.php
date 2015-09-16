@@ -28,7 +28,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use Seat\Eveapi\Api\Server\ServerStatus;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -62,12 +61,14 @@ class UpdateServerStatus extends Job implements SelfHandling, ShouldQueue
             $job_tracker->status = 'Working';
             $job_tracker->save();
 
-            $job_tracker->output = 'Started ServerStatus Update';
-            $job_tracker->save();
+            foreach (config('eveapi.workers.server') as $worker) {
 
-            // Call https://api.eveonline.com/server/ServerStatus.xml.aspx
-            $work = new ServerStatus();
-            $work->call();
+                $job_tracker->output = 'Processing: ' . class_basename($worker);
+                $job_tracker->save();
+
+                // Perform the update
+                (new $worker)->call();
+            }
 
             $job_tracker->status = 'Done';
             $job_tracker->output = null;

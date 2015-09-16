@@ -28,11 +28,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use Seat\Eveapi\Api\Eve\AllianceList;
-use Seat\Eveapi\Api\Eve\ConquerableStationList;
-use Seat\Eveapi\Api\Eve\ErrorList;
-use Seat\Eveapi\Api\Eve\RefTypes;
-
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -66,33 +61,14 @@ class UpdateEve extends Job implements SelfHandling, ShouldQueue
             $job_tracker->status = 'Working';
             $job_tracker->save();
 
-            $job_tracker->output = 'Started RefTypes Update';
-            $job_tracker->save();
+            foreach (config('eveapi.workers.eve') as $worker) {
 
-            // https://api.eveonline.com/eve/RefTypes.xml.aspx
-            $work = new RefTypes();
-            $work->call();
+                $job_tracker->output = 'Processing: ' . class_basename($worker);
+                $job_tracker->save();
 
-            $job_tracker->output = 'Started ErrorList Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/eve/ErrorList.xml.aspx
-            $work = new ErrorList();
-            $work->call();
-
-            $job_tracker->output = 'Started ConquerableStationList Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/eve/ConquerableStationList.xml.aspx
-            $work = new ConquerableStationList();
-            $work->call();
-
-            $job_tracker->output = 'Started AllianceList Update';
-            $job_tracker->save();
-
-            // https://api.eveonline.com/eve/AllianceList.xml.aspx
-            $work = new AllianceList();
-            $work->call();
+                // Perform the update
+                (new $worker)->call();
+            }
 
             $job_tracker->status = 'Done';
             $job_tracker->output = null;
