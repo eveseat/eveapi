@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Test\LiveApi;
 
 use Seat\Eveapi\Helpers\XsdValidator;
-use Seat\Eveapi\Traits\Core;
+use Seat\Eveapi\Test\Support\Helpers;
 
 /**
  * Class ServerTest
@@ -30,8 +30,6 @@ use Seat\Eveapi\Traits\Core;
  */
 class ServerTest extends \PHPUnit_Framework_TestCase
 {
-
-    use Core;
 
     /**
      * A Pheal instance
@@ -45,7 +43,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
 
-        $this->client = $this->getPheal();
+        $this->client = Helpers::setup_pheal();
     }
 
     /**
