@@ -83,12 +83,18 @@ trait JobTracker
     public function reportJobError(JobTracking $job_tracker, \Exception $e)
     {
 
+        // Prepare some useful information about the error.
+        $output = 'Last Updater: ' . $job_tracker->output . PHP_EOL ;
+        $output .= PHP_EOL;
+        $output .= 'Exception: ' . get_class($e) . PHP_EOL;
+        $output .= 'Error Code: ' . $e->getCode() . PHP_EOL;
+        $output .= 'Error Message: ' . $e->getMessage() . PHP_EOL;
+        $output .= 'File: ' . $e->getFile() . ' - Line: ' . $e->getLine() . PHP_EOL;
+        $output .= PHP_EOL;
+        $output .= 'Traceback: ' . $e->getTraceAsString() . PHP_EOL;
+
         $job_tracker->status = 'Error';
-        $job_tracker->output = 'Last status: ' . $job_tracker->output . PHP_EOL .
-            'Error: ' . $e->getCode() . ': ' . $e->getMessage() . PHP_EOL .
-            'File: ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL .
-            'Trace: ' . $e->getTraceAsString() . PHP_EOL .
-            'Previous: ' . $e->getPrevious();
+        $job_tracker->output = $output;
         $job_tracker->save();
 
         return;
