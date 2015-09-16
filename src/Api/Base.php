@@ -33,9 +33,9 @@ use Seat\Eveapi\Models\EveApiKey;
 use Seat\Eveapi\Traits\Validation;
 
 /**
- * This abstract basically just containers the
- * few Traits that are used in all API update
- * methods
+ * This abstract contains the call contract that
+ * needs to be used by all update workers making
+ * use of this classes concrete functions.
  *
  * Class Base
  * @package Seat\Eveapi\Api
