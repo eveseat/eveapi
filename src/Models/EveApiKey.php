@@ -41,6 +41,18 @@ class EveApiKey extends Model
     protected $fillable = ['key_id', 'v_code', 'user_id', 'enabled', 'last_error'];
 
     /**
+     * Returns the key information such as accessMask
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function info()
+    {
+
+        return $this->hasOne(
+            'Seat\Eveapi\Models\AccountApiKeyInfo', 'keyID', 'key_id');
+    }
+
+    /**
      * Returns the characters for the key
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

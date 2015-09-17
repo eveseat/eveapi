@@ -24,11 +24,11 @@ namespace Seat\Eveapi\Api;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
-use Pheal\Access\StaticCheck;
 use Pheal\Cache\HashedNameFileStorage;
 use Pheal\Core\Config;
 use Pheal\Log\PsrLogger;
 use Pheal\Pheal;
+use Seat\Eveapi\Helpers\EveApiAccess;
 use Seat\Eveapi\Models\EveApiKey;
 use Seat\Eveapi\Traits\Validation;
 
@@ -134,7 +134,7 @@ abstract class Base
 
         // Configure Pheal
         $config->cache = new HashedNameFileStorage(storage_path() . '/app/pheal/');
-        $config->access = new StaticCheck();
+        $config->access = new EveApiAccess(config('eveapi.access_bits'));
         $config->log = new PsrLogger($this->getLogger());
         $config->api_customkeys = true;
         $config->http_method = 'curl';
@@ -206,6 +206,13 @@ abstract class Base
             $this->key_id,
             $this->v_code
         );
+
+        // Give Pheal the key type and accessMask
+        // information that we have. This will be
+        // used by the access checking logic.
+        $this->pheal->setAccess(
+            $this->api_info->info->type,
+            $this->api_info->info->accessMask);
 
         // Check if a scope was set.
         if (!is_null($this->scope))

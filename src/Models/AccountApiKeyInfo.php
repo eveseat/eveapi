@@ -41,6 +41,18 @@ class AccountApiKeyInfo extends Model
     protected $fillable = ['keyID', 'accessMask', 'type', 'expires'];
 
     /**
+     * Returns the key details for this info
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function key()
+    {
+
+        return $this->hasOne(
+            'Seat\Eveapi\Models\EveApiKey', 'key_id', 'keyID');
+    }
+
+    /**
      * Returns the characters for the key
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

@@ -27,6 +27,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Pheal\Exceptions\AccessException;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -72,28 +73,35 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
         // Do the update work and catch any errors
         // that may come of it.
+        $job_tracker->status = 'Working';
+        $job_tracker->save();
         try {
-
-            $job_tracker->status = 'Working';
-            $job_tracker->save();
 
             foreach (config('eveapi.workers.character') as $worker) {
 
-                $job_tracker->output = 'Processing: ' . class_basename($worker);
-                $job_tracker->save();
+                try {
 
-                // Perform the update
-                (new $worker)->setApi($this->eve_api_key)->call();
-            }
+                    $job_tracker->output = 'Processing: ' . class_basename($worker);
+                    $job_tracker->save();
 
-            $job_tracker->status = 'Done';
-            $job_tracker->output = null;
-            $job_tracker->save();
+                    // Perform the update
+                    (new $worker)->setApi($this->eve_api_key)->call();
+
+                } catch (AccessException $e) {
+
+                    // TODO: Write to some audit log file maybe?
+                }
+
+            } // Foreach worker
 
         } catch (\Exception $e) {
 
             $this->reportJobError($job_tracker, $e);
-
+            return;
         }
+
+        $job_tracker->status = 'Done';
+        $job_tracker->output = null;
+        $job_tracker->save();
     }
 }
