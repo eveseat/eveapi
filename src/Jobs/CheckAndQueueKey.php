@@ -29,7 +29,6 @@ use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\APIException;
 use Seat\Eveapi\Api\Account\APIKeyInfo;
 use Seat\Eveapi\Helpers\JobContainer;
-use Seat\Eveapi\Models\AccountApiKeyInfo;
 use Seat\Eveapi\Traits\JobManager;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -87,12 +86,8 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
             (new APIKeyInfo())->setApi($this->eve_api_key)->call();
 
             // Now, based on the type of key, queue another job
-            // that will run with the actual updates. We need
-            // to pull a fresh instance as it just updated.
-            switch (
-            AccountApiKeyInfo::find($this->eve_api_key->key_id)
-                ->value('type')
-            ) {
+            // that will run with the actual updates.
+            switch ($this->eve_api_key->info->type) {
 
                 // Account & Character Key types are essentially
                 // the same, except for the fact that one only
