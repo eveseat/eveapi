@@ -21,7 +21,7 @@ class CreateCharacterAccountBalancesTable extends Migration
             $table->integer('characterID');
             $table->integer('accountID');
             $table->integer('accountKey');
-            $table->decimal('balance', 22, 2)->nullable();  // Some rich bastards out there
+            $table->decimal('balance', 30, 2)->nullable();  // Some rich bastards out there
 
             // Indexes
             $table->index('characterID');
