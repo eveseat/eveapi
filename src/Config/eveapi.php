@@ -26,11 +26,11 @@ return [
     // Defines the workers that is available to use.
     'workers'     => [
 
-        'api'       => [
+        'api'         => [
             \Seat\Eveapi\Api\Api\CallList::class
         ],
 
-        'character' => [
+        'character'   => [
             // The very first call to determine the
             // access mask and characters
             \Seat\Eveapi\Api\Account\AccountStatus::class,
@@ -79,20 +79,24 @@ return [
             \Seat\Eveapi\Api\Character\WalletTransactions::class
         ],
 
-        'eve'       => [
+        'corporation' => [
+            Seat\Eveapi\Api\Corporation\AccountBalance::class,
+        ],
+
+        'eve'         => [
             \Seat\Eveapi\Api\Eve\AllianceList::class,
             \Seat\Eveapi\Api\Eve\ConquerableStationList::class,
             \Seat\Eveapi\Api\Eve\ErrorList::class,
             \Seat\Eveapi\Api\Eve\RefTypes::class
         ],
 
-        'map'       => [
+        'map'         => [
             \Seat\Eveapi\Api\Map\Jumps::class,
             \Seat\Eveapi\Api\Map\Kills::class,
             \Seat\Eveapi\Api\Map\Sovereignty::class
         ],
 
-        'server'    => [
+        'server'      => [
             \Seat\Eveapi\Api\Server\ServerStatus::class
         ]
     ],
