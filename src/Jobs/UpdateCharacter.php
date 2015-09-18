@@ -28,6 +28,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Pheal\Exceptions\AccessException;
+use Pheal\Exceptions\APIException;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -94,9 +95,16 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
 
             } // Foreach worker
 
+        } catch (APIException $e) {
+
+            $this->handleApiException($job_tracker, $this->eve_api_key, $e);
+
+            return;
+
         } catch (\Exception $e) {
 
             $this->reportJobError($job_tracker, $e);
+
             return;
         }
 

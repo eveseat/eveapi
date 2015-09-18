@@ -28,6 +28,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use Pheal\Exceptions\APIException;
 use Seat\Eveapi\Api\Account\APIKeyInfo;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Models\AccountApiKeyInfo;
@@ -137,6 +138,12 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
             $job_tracker->status = 'Done';
             $job_tracker->output = null;
             $job_tracker->save();
+
+        } catch (APIException $e) {
+
+            $this->handleApiException($job_tracker, $this->eve_api_key, $e);
+
+            return;
 
         } catch (\Exception $e) {
 

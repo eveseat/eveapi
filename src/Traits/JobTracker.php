@@ -21,6 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Traits;
 
+use Seat\Eveapi\Models\EveApiKey;
 use Seat\Eveapi\Models\JobTracking;
 
 /**
@@ -84,7 +85,7 @@ trait JobTracker
     {
 
         // Prepare some useful information about the error.
-        $output = 'Last Updater: ' . $job_tracker->output . PHP_EOL ;
+        $output = 'Last Updater: ' . $job_tracker->output . PHP_EOL;
         $output .= PHP_EOL;
         $output .= 'Exception: ' . get_class($e) . PHP_EOL;
         $output .= 'Error Code: ' . $e->getCode() . PHP_EOL;
@@ -99,4 +100,140 @@ trait JobTracker
 
         return;
     }
+
+    /**
+     * Attempt to take the appropriate action based on the
+     * EVE API Exception.
+     *
+     * @param \Seat\Eveapi\Models\JobTracking $job_tracker
+     * @param \Seat\Eveapi\Models\EveApiKey   $api_key
+     * @param \Exception                      $e
+     *
+     * @throws \Exception
+     */
+    public function handleApiException(JobTracking $job_tracker, EveApiKey $api_key, \Exception $e)
+    {
+
+        // Errors from the EVE API should be treated seriously. If
+        // these are ignored, one may risk having the calling IP
+        // banned entirely. We don't want that, so lets check
+        // and act accordingly based on the error code. We also rely
+        // entirely on PhealNG to pass us the proper error codes.
+        switch ($e->getCode()) {
+
+            // "API key authentication failure."
+            case 202:
+                // "Authentication failure."
+            case 203:
+            case 204:
+                // "Authentication failure."
+            case 205:
+                // "Authentication failure."
+            case 210:
+                // "Authentication failure (final pass)."
+            case 212:
+                // The API is probably entirely wrong.
+                $api_key->update([
+                    'enabled'    => false,
+                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                ]);
+
+                break;
+
+            // "Invalid Corporation Key. Key owner does not fullfill role
+            // requirements anymore."
+            case 220:
+                // Owner of the corporation key doesnt have hes roles anymore?
+                $api_key->update([
+                    'enabled'    => false,
+                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                ]);
+
+                break;
+
+            // "Illegal page request! Please verify the access granted by the key you are using!."
+            case 221:
+                // Not 100% sure how to handle this one. This call has no
+                // access mask requirement...
+                $api_key->update([
+                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                ]);
+
+                break;
+
+            // "Key has expired. Contact key owner for access renewal."
+            case 222:
+                // We have a invalid key. Expired or deleted.
+                $api_key->update([
+                    'enabled'    => false,
+                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                ]);
+
+                break;
+
+            // "Authentication failure. Legacy API keys can no longer be
+            // used. Please create a new key on support.eveonline.com
+            // and make sure your application supports Customizable
+            // API Keys."
+            case 223:
+                // The API we are working with is waaaaaay too old.
+                $api_key->update([
+                    'enabled'    => false,
+                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                ]);
+
+                break;
+
+            // "Web site database temporarily disabled."
+            case 901:
+                // The EVE API Database is apparently down, so mark the
+                // server as 'down' in the cache so that subsequent
+                // calls don't fail because of this.
+                \Cache::put('eve_api_down', true, 30);
+
+                break;
+
+            // "EVE backend database temporarily disabled.""
+            case 902:
+                // The EVE API Database is apparently down, so mark the
+                // server as 'down' in the cache so that subsequent
+                // calls don't fail because of this.
+                \Cache::put('eve_api_down', true, 30);
+
+                break;
+
+            // "Your IP address has been temporarily blocked because it
+            // is causing too many errors. See the cacheUntil
+            // timestamp for when it will be opened again.
+            // IPs that continually cause a lot of errors
+            // in the API will be permanently banned,
+            // please take measures to minimize
+            // problematic API calls from your
+            // application."
+            case 904:
+                // If we are rate limited, set the status of the eveapi
+                // server to 'down' in the cache so that subsequent
+                // calls don't fail because of this.
+
+                // Get time of IP ban in minutes, rounded up to the next whole minute
+                $time = round((
+                        $e->cached_until_unixtime - $e->request_time_unixtime) / 60, 0, PHP_ROUND_HALF_UP);
+                \Cache::put('eve_api_down', true, $time);
+
+                break;
+
+            // We got a problem we don't know what to do with, so log
+            // and throw the exception so that the can debug it.
+            default:
+                throw $e;
+                break;
+
+        }
+
+        // Update the Job itself with the error information
+        $this->reportJobError($job_tracker, $e);
+
+        return;
+    }
+
 }
