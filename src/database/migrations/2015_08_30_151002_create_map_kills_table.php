@@ -1,10 +1,11 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateMapKillsTable extends Migration
 {
+
     /**
      * Run the migrations.
      *
@@ -12,6 +13,7 @@ class CreateMapKillsTable extends Migration
      */
     public function up()
     {
+
         Schema::create('map_kills', function (Blueprint $table) {
 
             $table->integer('solarSystemID')->unique();
@@ -33,6 +35,7 @@ class CreateMapKillsTable extends Migration
      */
     public function down()
     {
+
         Schema::drop('map_kills');
     }
 }

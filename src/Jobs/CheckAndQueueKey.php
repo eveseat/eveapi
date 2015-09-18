@@ -22,12 +22,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Jobs;
 
 use App\Jobs\Job;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
-
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\APIException;
 use Seat\Eveapi\Api\Account\APIKeyInfo;
 use Seat\Eveapi\Helpers\JobContainer;
@@ -92,7 +90,7 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
             // that will run with the actual updates. We need
             // to pull a fresh instance as it just updated.
             switch (
-                AccountApiKeyInfo::find($this->eve_api_key->key_id)
+            AccountApiKeyInfo::find($this->eve_api_key->key_id)
                 ->value('type')
             ) {
 

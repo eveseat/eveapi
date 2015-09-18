@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Test\Support;
 
 use Pheal\Cache\NullStorage;
-use Pheal\Log\NullStorage as NullLogStorage;
 use Pheal\Core\Config;
+use Pheal\Log\NullStorage as NullLogStorage;
 use Pheal\Pheal;
 
 /**

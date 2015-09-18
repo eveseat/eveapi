@@ -44,7 +44,7 @@ class AccountBalance extends Base
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->AccountBalance([
-                    'characterID' => $character->characterID]);
+                'characterID' => $character->characterID]);
 
             // I know, characters only have one account, but considering
             // how CCP operates (cough, dust, cough), lets just be sure

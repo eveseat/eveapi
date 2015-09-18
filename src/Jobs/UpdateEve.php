@@ -22,12 +22,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Jobs;
 
 use App\Jobs\Job;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
-
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
