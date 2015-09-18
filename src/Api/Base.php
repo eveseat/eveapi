@@ -210,9 +210,10 @@ abstract class Base
         // Give Pheal the key type and accessMask
         // information that we have. This will be
         // used by the access checking logic.
-        $this->pheal->setAccess(
-            $this->api_info->info->type,
-            $this->api_info->info->accessMask);
+        if ($this->api_info->info)
+            $this->pheal->setAccess(
+                $this->api_info->info->type,
+                $this->api_info->info->accessMask);
 
         // Check if a scope was set.
         if (!is_null($this->scope))
