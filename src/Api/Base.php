@@ -28,6 +28,7 @@ use Pheal\Cache\HashedNameFileStorage;
 use Pheal\Core\Config;
 use Pheal\Log\PsrLogger;
 use Pheal\Pheal;
+use Seat\Eveapi\Exception\InvalidScopeException;
 use Seat\Eveapi\Helpers\EveApiAccess;
 use Seat\Eveapi\Models\EveApiKey;
 use Seat\Eveapi\Traits\Validation;
@@ -69,6 +70,11 @@ abstract class Base
      * @var null
      */
     protected $scope = null;
+
+    /**
+     * @var null
+     */
+    protected $corporationID = null;
 
     /**
      * @var null
@@ -222,6 +228,26 @@ abstract class Base
 
         return $this->pheal;
 
+    }
+
+    /**
+     * Sets the corporationID to use in Corporation
+     * related API update work
+     *
+     * @return $this
+     * @throws \Seat\Eveapi\Exception\InvalidScopeException
+     */
+    public function setCorporationID()
+    {
+
+        if ($this->scope != 'corp')
+            throw new InvalidScopeException(
+                'This method only supports calls to the corp scope.');
+
+        $this->corporationID = $this->api_info
+            ->characters()->first()->corporationID;
+
+        return $this;
     }
 
     /**
