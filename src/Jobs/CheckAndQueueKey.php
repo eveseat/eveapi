@@ -87,7 +87,7 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
 
             // Now, based on the type of key, queue another job
             // that will run with the actual updates.
-            switch ($this->eve_api_key->info->type) {
+            switch ($this->eve_api_key->fresh()->info->type) {
 
                 // Account & Character Key types are essentially
                 // the same, except for the fact that one only
