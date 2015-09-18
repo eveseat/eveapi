@@ -41,21 +41,17 @@ class UpcomingCalendarEvents extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->UpcomingCalendarEvents([
                 'characterID' => $character->characterID]);
 
-            // Update the Calender Events
             foreach ($result->upcomingEvents as $event) {
 
-                // Get or create the record...
                 $event_info = CharacterUpcomingCalendarEvent::firstOrNew([
                     'characterID' => $character->characterID,
                     'eventID'     => $event->eventID]);
 
-                // ... and set its fields
                 $event_info->fill([
                     'ownerID'     => $event->ownerID,
                     'ownerName'   => $event->ownerName,

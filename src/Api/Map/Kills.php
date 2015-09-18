@@ -43,11 +43,9 @@ class Kills extends Base
 
         foreach ($result->solarSystems as $solar_system) {
 
-            // Get or create the Outpost...
             $system = MapKills::firstOrNew([
                 'solarSystemID' => $solar_system->solarSystemID]);
 
-            // ... and set its fields
             $system->fill([
                 'shipKills'    => $solar_system->shipKills,
                 'factionKills' => $solar_system->factionKills,

@@ -46,7 +46,6 @@ class CharacterSheet extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->CharacterSheet([
@@ -168,6 +167,7 @@ class CharacterSheet extends Base
                 ]);
 
                 $skill_info->save();
+
             } // Foreach Skills
 
             // Next, Corporation Titles. Again, this is something that

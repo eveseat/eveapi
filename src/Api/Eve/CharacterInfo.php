@@ -110,7 +110,6 @@ class CharacterInfo extends Base
 
         $character_info->save();
 
-        // Process the Employment History
         foreach ($result->employmentHistory as $employment) {
 
             EveCharacterInfoEmploymentHistory::firstOrCreate([

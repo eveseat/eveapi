@@ -48,7 +48,6 @@ class PlanetaryPins extends Base
         // updating the information as well as clean up
         // the pins that are no longer applicable.
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             // Query the database for known planets from
@@ -64,16 +63,13 @@ class PlanetaryPins extends Base
                     'characterID' => $character->characterID,
                     'planetID'    => $planet_id]);
 
-                // Update the Pins
                 foreach ($result->pins as $pin) {
 
-                    // Get or create the record...
                     $pin_info = CharacterPlanetaryPin::firstOrNew([
                         'ownerID'  => $character->characterID,
                         'planetID' => $planet_id,
                         'pinID'    => $pin->pinID]);
 
-                    // ... and set its fields
                     $pin_info->fill([
                         'typeID'           => $pin->typeID,
                         'typeName'         => $pin->typeName,
@@ -91,6 +87,7 @@ class PlanetaryPins extends Base
                     ]);
 
                     $pin_info->save();
+
                 } // Foreach Pins
 
                 // Cleanup the Pins that are not in the reponse

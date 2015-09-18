@@ -42,7 +42,6 @@ class MailBodies extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             // Get a list of messageIDs that we do not have mail
@@ -69,15 +68,17 @@ class MailBodies extends Base
                     'characterID' => $character->characterID,
                     'ids'         => implode(',', $message_id_chunk)]);
 
-                // Populate the mail bodies
                 foreach ($result->messages as $body) {
 
                     CharacterMailMessageBody::create([
                         'messageID' => $body->messageID,
                         'body'      => $body->__toString()
                     ]);
+
                 }
+
             } // Foreach messageID chunk
+
         }
 
         return;

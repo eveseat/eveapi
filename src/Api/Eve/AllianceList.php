@@ -42,17 +42,11 @@ class AllianceList extends Base
             ->getPheal()
             ->AllianceList();
 
-        // TODO: Figure out if there is a better way to
-        // handle the member corporations stuff
-        EveAllianceListMemberCorporations::truncate();
-
         foreach ($result->alliances as $alliance) {
 
-            // Get or create the Alliance...
             $alliance_data = EveAllianceList::firstOrNew([
                 'allianceID' => $alliance->allianceID]);
 
-            // ... and set its fields
             $alliance_data->fill([
                 'name'           => $alliance->name,
                 'shortName'      => $alliance->shortName,
@@ -63,15 +57,34 @@ class AllianceList extends Base
 
             $alliance_data->save();
 
-            // Populate the member corporations for the current
+            // Get a list of known corporationID's for this
             // alliance
+            $known_corporations = EveAllianceListMemberCorporations::where(
+                'allianceID', $alliance->allianceID)
+                ->lists('corporationID')->all();
+
+            // Populate the member corporations for the current
+            // alliance if the corporationID is not in the
+            // known_corporations list
             foreach ($alliance->memberCorporations as $corporation) {
 
-                $alliance_data->members()->save(new EveAllianceListMemberCorporations([
-                    'corporationID' => $corporation->corporationID,
-                    'startDate'     => $corporation->startDate
-                ]));
+                if (!in_array($corporation->corporationID, $known_corporations))
+                    EveAllianceListMemberCorporations::create([
+                        'allianceID'    => $alliance->allianceID,
+                        'corporationID' => $corporation->corporationID,
+                        'startDate'     => $corporation->startDate
+                    ]);
             }
+
+            // Cleanup Corporations that are no longer part
+            // of this alliance
+            EveAllianceListMemberCorporations::where('allianceID', $alliance->allianceID)
+                ->whereNotIn('corporationID', array_map(function ($corporation) {
+
+                    return $corporation->corporationID;
+
+                }, (array)$alliance->memberCorporations))
+                ->delete();
         }
 
         return;

@@ -46,12 +46,11 @@ class ServerStatus extends Base
                 ->value('currentTime') <> $result->request_time
         ) {
 
-            ServerServerStatus::create(
-                [
-                    'currentTime'   => $result->request_time,
-                    'serverOpen'    => $result->serverOpen,
-                    'onlinePlayers' => $result->onlinePlayers
-                ]);
+            ServerServerStatus::create([
+                'currentTime'   => $result->request_time,
+                'serverOpen'    => $result->serverOpen,
+                'onlinePlayers' => $result->onlinePlayers
+            ]);
         }
 
         return;

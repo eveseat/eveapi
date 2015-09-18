@@ -41,13 +41,11 @@ class Contracts extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->Contracts([
                 'characterID' => $character->characterID]);
 
-            // Add new contracts
             foreach ($result->contractList as $contract) {
 
                 $contract_data = CharacterContract::firstOrNew([

@@ -43,11 +43,10 @@ class ErrorList extends Base
 
         foreach ($result->errors as $error) {
 
-            EveErrorList::firstOrCreate(
-                [
-                    'errorCode' => $error->errorCode,
-                    'errorText' => $error->errorText
-                ]);
+            EveErrorList::firstOrCreate([
+                'errorCode' => $error->errorCode,
+                'errorText' => $error->errorText
+            ]);
         }
 
         return;

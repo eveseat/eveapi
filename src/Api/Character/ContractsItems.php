@@ -42,7 +42,6 @@ class ContractsItems extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             // Get a list of all of the contracts that do
@@ -68,7 +67,6 @@ class ContractsItems extends Base
                     'characterID' => $character->characterID,
                     'contractID'  => $contract_id]);
 
-                // Finally, loop the results and populate the db
                 foreach ($result->itemList as $item) {
 
                     CharacterContractItems::create([
@@ -82,6 +80,7 @@ class ContractsItems extends Base
                         'singleton'   => $item->singleton,
                         'included'    => $item->included
                     ]);
+
                 } // Foreach ItemList
 
             } // Foreach ContractID

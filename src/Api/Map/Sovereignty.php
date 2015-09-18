@@ -43,11 +43,9 @@ class Sovereignty extends Base
 
         foreach ($result->solarSystems as $solar_system) {
 
-            // Get or create the Outpost...
             $system = MapSovereignty::firstOrNew([
                 'solarSystemID' => $solar_system->solarSystemID]);
 
-            // ... and set its fields
             $system->fill([
                 'allianceID'      => $solar_system->allianceID,
                 'factionID'       => $solar_system->factionID,

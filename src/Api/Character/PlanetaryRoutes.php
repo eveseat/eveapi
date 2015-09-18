@@ -64,16 +64,13 @@ class PlanetaryRoutes extends Base
                     'characterID' => $character->characterID,
                     'planetID'    => $planet_id]);
 
-                // Update the Routes
                 foreach ($result->routes as $route) {
 
-                    // Get or create the record...
                     $route_info = CharacterPlanetaryRoute::firstOrNew([
                         'ownerID'  => $character->characterID,
                         'planetID' => $planet_id,
                         'routeID'  => $route->routeID]);
 
-                    // ... and set its fields
                     $route_info->fill([
                         'sourcePinID'      => $route->sourcePinID,
                         'destinationPinID' => $route->destinationPinID,

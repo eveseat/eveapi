@@ -41,13 +41,11 @@ class MailMessages extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->MailMessages([
                 'characterID' => $character->characterID]);
 
-            // Add new Mail Messages
             foreach ($result->messages as $message) {
 
                 CharacterMailMessage::firstOrCreate([

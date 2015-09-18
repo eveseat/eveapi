@@ -43,11 +43,10 @@ class RefTypes extends Base
 
         foreach ($result->refTypes as $ref_type) {
 
-            EveRefTypes::firstOrCreate(
-                [
-                    'refTypeID'   => $ref_type->refTypeID,
-                    'refTypeName' => $ref_type->refTypeName
-                ]);
+            EveRefTypes::firstOrCreate([
+                'refTypeID'   => $ref_type->refTypeID,
+                'refTypeName' => $ref_type->refTypeName
+            ]);
         }
 
         return;

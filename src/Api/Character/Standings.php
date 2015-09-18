@@ -41,7 +41,6 @@ class Standings extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->Standings([
@@ -80,12 +79,10 @@ class Standings extends Base
     public function _update_standing($characterID, $standing, $type)
     {
 
-        // Get or create the record...
         $standing_info = CharacterStanding::firstOrNew([
             'characterID' => $characterID,
             'fromID'      => $standing->fromID]);
 
-        // ... and set its fields
         $standing_info->fill([
             'type'     => $type,
             'fromName' => $standing->fromName,

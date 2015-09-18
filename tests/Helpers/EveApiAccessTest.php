@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Test\Helpers;
 use Seat\Eveapi\Helpers\EveApiAccess;
 
 /**
- * Class JobContainerTest
+ * Class EveApiAccessTest
  * @package Seat\Eveapi\Test\Helpers
  */
 class EveApiAccessTest extends \PHPUnit_Framework_TestCase

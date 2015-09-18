@@ -90,9 +90,9 @@ class KillMails extends Base
         // the affected character.
         //
         // [1] https://neweden-dev.com/Char/KillMails
+
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             // Define the first MAX from_id to use when
@@ -117,15 +117,15 @@ class KillMails extends Base
                     ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
                 );
 
-                // Loop over the response kills, checking the existance
-                // and updating the related tables as required
                 foreach ($result->kills as $kill) {
 
                     // Ensure that $from_id is at its lowest
                     $from_id = min($kill->killID, $from_id);
 
                     // Check if the killmail is known. If it is,
-                    // then we can just continue to the next.
+                    // then we can just continue to the next. We
+                    // are assuming the kill details already is
+                    // known here.
                     if (CharacterKillMail::where('characterID', $character->characterID)
                         ->where('killID', $kill->killID)
                         ->first()

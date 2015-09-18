@@ -43,13 +43,11 @@ class ChatChannels extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->ChatChannels([
                 'characterID' => $character->characterID]);
 
-            // Update the Channels for this Character
             foreach ($result->channels as $channel) {
 
                 // Characters have some form of affiliation with

@@ -43,11 +43,9 @@ class Jumps extends Base
 
         foreach ($result->solarSystems as $solar_system) {
 
-            // Get or create the Outpost...
             $system = MapJumps::firstOrNew([
                 'solarSystemID' => $solar_system->solarSystemID]);
 
-            // ... and set its fields
             $system->fill([
                 'shipJumps' => $solar_system->shipJumps
             ]);

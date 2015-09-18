@@ -44,34 +44,21 @@ class APIKeyInfo extends Base
             ->getPheal()
             ->APIKeyInfo();
 
-        // Get or create the record...
         $key_info = AccountApiKeyInfo::firstOrNew([
             'keyID' => $this->api_info->key_id]);
 
-        // ... and set its fields
         $key_info->fill([
             'accessMask' => $result->key->accessMask,
             'type'       => $result->key->type,
-            'expires'    => strlen($result->key->expires) > 0 ? $result->key->expires : null
+            'expires'    => strlen($result->key->expires) > 0 ?
+                $result->key->expires : null
         ]);
 
         $key_info->save();
 
-        // Next, lets process the characters for this API
+        // Lets process the characters for this API
         // Key. We need to be aware of the fact that it
         // is possible for characters to move around.
-
-        // We create a list of known characters in the
-        // database and remove from it as we update.
-        // Once we are done, we will delete any of
-        // the remaining characterID's
-        $known_characters = AccountApiKeyInfoCharacters::where('keyID', $this->api_info->key_id)
-            ->lists('characterID')->toArray();
-
-        // Next up, we iterate of the chatacters we got from
-        // the API response and update them keeping in mind
-        // that we should remove them form the new array
-        // we just built too
         foreach ($result->key->characters as $character) {
 
             $character_info = AccountApiKeyInfoCharacters::firstOrNew([
@@ -86,16 +73,15 @@ class APIKeyInfo extends Base
 
             $character_info->save();
 
-            // Remove this characterID from the known_characters
-            $known_characters = array_diff(
-                $known_characters, [$character->characterID]);
         }
 
-        // Finally, remove the characters that are no longer
-        // on this API Key. As a reminder, these are the
-        // ids that remained after the previous update.
-        AccountApiKeyInfoCharacters::whereIn('characterID', $known_characters)
-            ->where('keyID', $this->api_info->key_id)
+        // Cleanup Characters no longer on this key
+        AccountApiKeyInfoCharacters::where('keyID', $this->api_info->key_id)
+            ->whereNotIn('characterID', array_map(function ($character) {
+
+                return $character->characterID;
+
+            }, (array)$result->key->characters))
             ->delete();
 
         return;

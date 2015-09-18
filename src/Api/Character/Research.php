@@ -41,21 +41,17 @@ class Research extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->Research([
                 'characterID' => $character->characterID]);
 
-            // Update the Research Information
             foreach ($result->research as $research_agent) {
 
-                // Get or create the record...
                 $research_info = CharacterResearch::firstOrNew([
                     'characterID' => $character->characterID,
                     'agentID'     => $research_agent->agentID]);
 
-                // ... and set its fields
                 $research_info->fill([
                     'skillTypeID'       => $research_agent->skillTypeID,
                     'researchStartDate' => $research_agent->researchStartDate,

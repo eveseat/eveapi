@@ -52,7 +52,6 @@ class WalletJournal extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             // Define the first MAX from_id to use when
@@ -83,8 +82,6 @@ class WalletJournal extends Base
                     ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
                 );
 
-                // Loop over the response transactions, checking the
-                //existance and updating as required
                 foreach ($result->transactions as $transaction) {
 
                     // Ensure that $from_id is at its lowest
@@ -117,7 +114,6 @@ class WalletJournal extends Base
                         continue;
                     }
 
-                    // Create the transaction for this character
                     CharacterWalletJournal::create([
                         'characterID'   => $character->characterID,
                         'hash'          => $transaction_hash,

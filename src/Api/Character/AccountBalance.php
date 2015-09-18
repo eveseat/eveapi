@@ -41,7 +41,6 @@ class AccountBalance extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->AccountBalance([
@@ -52,12 +51,10 @@ class AccountBalance extends Base
             // and loop over them in case...
             foreach ($result->accounts as $account) {
 
-                // Get or create the record...
                 $account_balance = CharacterAccountBalance::firstOrNew([
                     'characterID' => $character->characterID,
                     'accountID'   => $account->accountID]);
 
-                // ... and set its fields
                 $account_balance->fill([
                     'accountKey' => $account->accountKey,
                     'balance'    => $account->balance

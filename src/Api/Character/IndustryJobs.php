@@ -41,13 +41,11 @@ class IndustryJobs extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->IndustryJobs([
                 'characterID' => $character->characterID]);
 
-            // Update the Industry Jobs for the character
             foreach ($result->jobs as $industry_job) {
 
                 $new_industry_job = CharacterIndustryJob::firstOrNew([
@@ -87,7 +85,7 @@ class IndustryJobs extends Base
 
                 $new_industry_job->save();
 
-            }
+            } // Foreach Industry Job
         }
 
         return;

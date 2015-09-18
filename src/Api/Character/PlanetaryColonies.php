@@ -41,7 +41,6 @@ class PlanetaryColonies extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->PlanetaryColonies([
@@ -53,12 +52,10 @@ class PlanetaryColonies extends Base
             // this update call.
             foreach ($result->colonies as $colony) {
 
-                // Get or create the record...
                 $colony_info = CharacterPlanetaryColony::firstOrNew([
                     'ownerID'  => $colony->ownerID,
                     'planetID' => $colony->planetID]);
 
-                // ... and set its fields
                 $colony_info->fill([
                     'solarSystemID'   => $colony->solarSystemID,
                     'solarSystemName' => $colony->solarSystemName,
@@ -73,6 +70,7 @@ class PlanetaryColonies extends Base
                 ]);
 
                 $colony_info->save();
+
             } // Foreach colony
 
             // Cleanup the Colonies that are not in the reponse.

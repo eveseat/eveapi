@@ -43,11 +43,9 @@ class ConquerableStationList extends Base
 
         foreach ($result->outposts as $outpost) {
 
-            // Get or create the Outpost...
             $station = EveConquerableStationList::firstOrNew([
                 'stationID' => $outpost->stationID]);
 
-            // ... and set its fields
             $station->fill([
                 'stationID'       => $outpost->stationID,
                 'stationName'     => $outpost->stationName,

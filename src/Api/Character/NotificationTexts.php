@@ -42,7 +42,6 @@ class NotificationTexts extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             // Get a list of notificationIDs that we do
@@ -68,7 +67,6 @@ class NotificationTexts extends Base
                     'characterID' => $character->characterID,
                     'ids'         => implode(',', $notification_id_chunk)]);
 
-                // Populate the mail bodies
                 foreach ($result->notifications as $notification) {
 
                     CharacterNotificationsText::create([
@@ -76,6 +74,7 @@ class NotificationTexts extends Base
                         'text'           => $notification->__toString()
                     ]);
                 }
+
             } // Foreach messageID chunk
         }
 

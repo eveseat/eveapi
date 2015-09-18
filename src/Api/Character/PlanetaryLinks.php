@@ -48,7 +48,6 @@ class PlanetaryLinks extends Base
         // updating the information as well as clean up
         // the routes that are no longer applicable.
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             // Query the database for known planets from

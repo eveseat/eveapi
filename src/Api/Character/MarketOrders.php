@@ -41,21 +41,17 @@ class MarketOrders extends Base
 
         $pheal = $this->setScope('char')->getPheal();
 
-        // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->MarketOrders([
                 'characterID' => $character->characterID]);
 
-            // Update the Market Orders
             foreach ($result->orders as $order) {
 
-                // Get or create the record...
                 $order_info = CharacterMarketOrder::firstOrNew([
                     'charID'  => $character->characterID,
                     'orderID' => $order->orderID]);
 
-                // ... and set its fields
                 $order_info->fill([
                     'stationID'    => $order->stationID,
                     'volEntered'   => $order->volEntered,
@@ -73,6 +69,7 @@ class MarketOrders extends Base
                 ]);
 
                 $order_info->save();
+
             }
         }
 
