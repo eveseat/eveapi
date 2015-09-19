@@ -16,8 +16,6 @@ class CreateCharacterAssetListContentsTable extends Migration
 
         Schema::create('character_asset_list_contents', function (Blueprint $table) {
 
-//            $table->increments('id');
-
             $table->integer('characterID');
             $table->bigInteger('itemID');
             $table->bigInteger('typeID');

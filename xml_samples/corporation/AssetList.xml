@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-18 19:12:21</currentTime>
+  <result>
+    <rowset name="assets" key="itemID" columns="itemID,locationID,typeID,quantity,flag,singleton">
+      <row itemID="123" locationID="123" typeID="12608" quantity="12167" flag="62" singleton="0" />
+      <row itemID="123" locationID="123" typeID="27" quantity="1" flag="82" singleton="1" rawQuantity="-1">
+        <rowset name="contents" key="itemID" columns="itemID,typeID,quantity,flag,singleton">
+          <row itemID="123" typeID="17192" quantity="7" flag="116" singleton="0" />
+          <row itemID="123" typeID="17218" quantity="1" flag="116" singleton="0" />
+          <row itemID="123" typeID="12541" quantity="1" flag="116" singleton="0" />
+          <row itemID="123" typeID="622" quantity="1" flag="120" singleton="1" rawQuantity="-1">
+            <rowset name="contents" key="itemID" columns="itemID,typeID,quantity,flag,singleton">
+              <row itemID="123" typeID="8263" quantity="1" flag="11" singleton="1" rawQuantity="-1" />
+              <row itemID="123" typeID="16469" quantity="1" flag="31" singleton="1" rawQuantity="-1" />
+              <row itemID="123" typeID="16469" quantity="1" flag="32" singleton="1" rawQuantity="-1" />
+              <row itemID="123" typeID="2456" quantity="5" flag="87" singleton="0" />
+            </rowset>
+          </row>
+      </row>
+      <row itemID="123" locationID="123" typeID="27" quantity="1" flag="4" singleton="1" rawQuantity="-1" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-19 01:12:21</cachedUntil>
+</eveapi>

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateCharacterAssetListsTable extends Migration
+class CreateCorporationAssetListContentsTable extends Migration
 {
 
     /**
@@ -14,11 +14,13 @@ class CreateCharacterAssetListsTable extends Migration
     public function up()
     {
 
-        Schema::create('character_asset_lists', function (Blueprint $table) {
+        Schema::create('corporation_asset_list_contents', function (Blueprint $table) {
 
-            $table->integer('characterID');
+            $table->integer('corporationID');
+
             $table->bigInteger('itemID');
-            $table->bigInteger('locationID');
+            $table->bigInteger('parentAssetItemID')->nullable();
+            $table->bigInteger('parentItemID')->nullable();
             $table->bigInteger('typeID');
             $table->integer('quantity');
             $table->integer('flag');
@@ -26,8 +28,10 @@ class CreateCharacterAssetListsTable extends Migration
             $table->integer('rawQuantity')->default(0);
 
             // Indexes
-            $table->index('characterID');
-            $table->index('locationID');
+            $table->index('corporationID');
+            $table->index('itemID');
+            $table->index('parentAssetItemID');
+            $table->index('parentItemID');
             $table->index('typeID');
 
             $table->timestamps();
@@ -42,6 +46,6 @@ class CreateCharacterAssetListsTable extends Migration
     public function down()
     {
 
-        Schema::drop('character_asset_lists');
+        Schema::drop('corporation_asset_list_contents');
     }
 }
