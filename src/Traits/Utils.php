@@ -21,6 +21,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Traits;
 
+use Illuminate\Support\Facades\DB;
+
 /**
  * Class Utils
  * @package Seat\Eveapi\Traits
@@ -42,5 +44,82 @@ trait Utils
     {
 
         return md5(implode(',', [$owner_id, $date, $seed1, $seed2]));
+    }
+
+    /**
+     * Finds the itemID (as mapID) and itemName (as mapName)
+     * of the celestial closest to the x, y, z in a given
+     * solar system.
+     *
+     * @param $solar_system_id
+     * @param $x
+     * @param $y
+     * @param $z
+     *
+     * @return array
+     */
+    public function find_nearest_celestial($solar_system_id, $x, $y, $z)
+    {
+
+        // Querying mapDenormalized with [1] we can see
+        // the available different group types in the
+        // table is basically:
+        //
+        //        groupID	typeName
+        //        ------------------
+        //        3	        Region
+        //        4	        Constellation
+        //        5	        Solar System
+        //        6	        Sun
+        //        7	        Planet
+        //        8	        Moon
+        //        9	        Asteroid Belt
+        //        10	    Stargate
+        //        15	    Caldari Logistics Station
+        //        995	    EVE Gate
+
+        // For 'nearest to' resolution we will only be
+        // matching coordinates in groups 6,7,8,9 and 10.
+
+        // [1] select `invTypes`.`groupID`, `invTypes`.`typeName`,
+        // `mapDenormalize`.`itemName` from `mapDenormalize`
+        // join `invTypes` on `mapDenormalize`.`groupID` = `invTypes`.`groupID`
+        // group by `invTypes`.`typeName` order by `mapDenormalize`.`groupID`;
+
+        // The basic idea when determining the closest celestial
+        // is to calculate the closest celestial to the x, y, z's
+        // that we have. For that, we have to start with the max
+        // possible distance, infinity.
+        $closest_distance = INF;
+
+        // As a response, we will return an array with
+        // the closest ID and name from mapDenormallized
+        $response = [
+            'mapID'   => null,
+            'mapName' => null
+        ];
+
+        $possible_celestials = DB::table('mapDenormalize')
+            ->where('solarSystemID', $solar_system_id)
+            ->whereIn('groupID', [6, 7, 8, 9, 10])
+            ->get();
+
+        foreach ($possible_celestials as $celestial) {
+
+            // See: http://math.stackexchange.com/a/42642
+            $distance = sqrt(
+                pow(($x - $celestial->x), 2) + pow(($y - $celestial->y), 2) + pow(($z - $celestial->z), 2));
+
+            // Are we there yet?
+            if ($distance < $closest_distance) {
+
+                $response = [
+                    'mapID'   => $celestial->itemID,
+                    'mapName' => $celestial->itemName
+                ];
+            }
+        }
+
+        return $response;
     }
 }
