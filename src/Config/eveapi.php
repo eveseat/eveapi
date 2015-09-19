@@ -82,6 +82,7 @@ return [
         'corporation' => [
             Seat\Eveapi\Api\Corporation\AccountBalance::class,
             Seat\Eveapi\Api\Corporation\AssetList::class,
+            Seat\Eveapi\Api\Corporation\Locations::class,
         ],
 
         'eve'         => [
