@@ -84,6 +84,8 @@ return [
             Seat\Eveapi\Api\Corporation\AssetList::class,
             Seat\Eveapi\Api\Corporation\Locations::class,
             Seat\Eveapi\Api\Corporation\ContactList::class,
+            Seat\Eveapi\Api\Corporation\Contracts::class,
+            Seat\Eveapi\Api\Corporation\ContractsItems::class,
         ],
 
         'eve'         => [
@@ -163,6 +165,7 @@ return [
             'membertrackingextended' => 33554432,
             'locations'              => 16777216,
             'contracts'              => 8388608,
+            'contractitems'          => 8388608,
             'titles'                 => 4194304,
             'wallettransactions'     => 2097152,
             'walletjournal'          => 1048576,
