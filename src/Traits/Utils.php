@@ -74,9 +74,9 @@ trait Utils
         //        7	        Planet
         //        8	        Moon
         //        9	        Asteroid Belt
-        //        10	    Stargate
-        //        15	    Caldari Logistics Station
-        //        995	    EVE Gate
+        //        10        Stargate
+        //        15        Caldari Logistics Station
+        //        995       EVE Gate
 
         // For 'nearest to' resolution we will only be
         // matching coordinates in groups 6,7,8,9 and 10.
@@ -87,7 +87,7 @@ trait Utils
         // group by `invTypes`.`typeName` order by `mapDenormalize`.`groupID`;
 
         // The basic idea when determining the closest celestial
-        // is to calculate the closest celestial to the x, y, z's
+        // is to calculate the distance celestial to the x, y, z's
         // that we have. For that, we have to start with the max
         // possible distance, infinity.
         $closest_distance = INF;
