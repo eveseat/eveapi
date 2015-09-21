@@ -90,6 +90,7 @@ return [
             Seat\Eveapi\Api\Corporation\CustomsOffices::class,
             Seat\Eveapi\Api\Corporation\IndustryJobs::class,
             Seat\Eveapi\Api\Corporation\KillMails::class,
+            Seat\Eveapi\Api\Corporation\MarketOrders::class,
         ],
 
         'eve'         => [
