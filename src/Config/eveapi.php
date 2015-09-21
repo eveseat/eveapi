@@ -87,6 +87,7 @@ return [
             Seat\Eveapi\Api\Corporation\Contracts::class,
             Seat\Eveapi\Api\Corporation\ContractsItems::class,
             Seat\Eveapi\Api\Corporation\CorporationSheet::class,
+            Seat\Eveapi\Api\Corporation\CustomsOffices::class,
         ],
 
         'eve'         => [
@@ -189,6 +190,7 @@ return [
             'corporationsheet'       => 8,
             'membermedals'           => 4,
             'assetlist'              => 2,
+            'customsoffices'         => 2,
             'accountbalance'         => 1,
         ],
     ]
