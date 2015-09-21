@@ -144,15 +144,20 @@ class MemberSecurity extends Base
             CorporationMemberSecurityTitle::where(
                 'characterID', $member->characterID)->delete();
 
-            foreach ($member->titles as $title) {
+            // Only set titles if the API response had some
+            if($member->titles) {
 
-                CorporationMemberSecurityTitle::create([
-                    'characterID'   => $member->characterID,
-                    'characterName' => $member->name,
-                    'titleID'       => $title->titleID,
-                    'titleName'     => $title->titleName
-                ]);
+                foreach ($member->titles as $title) {
+
+                    CorporationMemberSecurityTitle::create([
+                        'characterID'   => $member->characterID,
+                        'characterName' => $member->name,
+                        'titleID'       => $title->titleID,
+                        'titleName'     => $title->titleName
+                    ]);
+                }
             }
+
         } // Foreach member
 
         return;
