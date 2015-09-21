@@ -88,6 +88,7 @@ return [
             Seat\Eveapi\Api\Corporation\ContractsItems::class,
             Seat\Eveapi\Api\Corporation\CorporationSheet::class,
             Seat\Eveapi\Api\Corporation\CustomsOffices::class,
+            Seat\Eveapi\Api\Corporation\IndustryJobs::class,
         ],
 
         'eve'         => [
