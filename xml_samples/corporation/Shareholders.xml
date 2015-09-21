@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-21 17:58:05</currentTime>
+  <result>
+    <rowset name="characters" key="shareholderID" columns="shareholderID,shareholderName,shareholderCorporationID,shareholderCorporationName,shares">
+      <row shareholderID="123" shareholderName="ABC" shareholderCorporationID="123" shareholderCorporationName="ABC" shares="1" />
+    </rowset>
+    <rowset name="corporations" key="shareholderID" columns="shareholderID,shareholderName,shares" />
+  </result>
+  <cachedUntil>2015-09-21 18:10:18</cachedUntil>
+</eveapi>
