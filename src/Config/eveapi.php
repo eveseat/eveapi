@@ -94,6 +94,7 @@ return [
             Seat\Eveapi\Api\Corporation\Medals::class,
             Seat\Eveapi\Api\Corporation\MemberMedals::class,
             Seat\Eveapi\Api\Corporation\MemberSecurity::class,
+            Seat\Eveapi\Api\Corporation\MemberTracking::class,
         ],
 
         'eve'         => [
@@ -186,6 +187,7 @@ return [
             'medals'                 => 8192,
             'marketorders'           => 4096,
             'membertrackinglimited'  => 2048,
+            'membertracking'         => 2048,
             'membersecuritylog'      => 1024,
             'membersecurity'         => 512,
             'killmails'              => 256,
