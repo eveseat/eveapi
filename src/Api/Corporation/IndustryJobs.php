@@ -38,7 +38,7 @@ class IndustryJobs extends Base
      */
     public function call()
     {
-        
+
         $pheal = $this->setScope('corp')
             ->setCorporationID()->getPheal();
 
