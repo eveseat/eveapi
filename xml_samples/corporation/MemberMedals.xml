@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-21 09:59:46</currentTime>
+  <result>
+    <rowset name="issuedMedals" key="medalID" columns="medalID,characterID,reason,status,issuerID,issued">
+      <row medalID="123" characterID="123" reason="ABC" status="private" issuerID="123" issued="2013-08-31 21:20:58" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-21 15:11:03</cachedUntil>
+</eveapi>
