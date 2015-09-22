@@ -16,6 +16,8 @@ class CreateCorporationMemberTrackingsTable extends Migration
 
         Schema::create('corporation_member_trackings', function (Blueprint $table) {
 
+            $table->increments('id');
+
             $table->integer('corporationID');
             $table->integer('characterID');
             $table->string('name');
