@@ -104,6 +104,7 @@ return [
             Seat\Eveapi\Api\Corporation\StarbaseList::class,
             Seat\Eveapi\Api\Corporation\StarbaseDetail::class,
             Seat\Eveapi\Api\Corporation\Titles::class,
+            Seat\Eveapi\Api\Corporation\WalletJournal::class,
         ],
 
         'eve'         => [
