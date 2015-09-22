@@ -78,7 +78,8 @@ class WalletJournal extends Base
             while (true) {
 
                 $result = $pheal->WalletJournal([
-                        'rowCount' => $this->rows_per_call
+                        'accountKey' => $account_id,
+                        'rowCount'   => $this->rows_per_call,
 
                         // If the from_id is not PHP_INT_MAX, the we can
                         // specify it for the API call. If not, we will
