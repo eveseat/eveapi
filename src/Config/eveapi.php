@@ -103,6 +103,7 @@ return [
             // call as it depends on itemID's from the list.
             Seat\Eveapi\Api\Corporation\StarbaseList::class,
             Seat\Eveapi\Api\Corporation\StarbaseDetail::class,
+            Seat\Eveapi\Api\Corporation\Titles::class,
         ],
 
         'eve'         => [

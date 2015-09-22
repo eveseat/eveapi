@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-22 06:25:32</currentTime>
+  <result>
+    <rowset name="titles" key="titleID" columns="titleID,titleName">
+      <row titleID="1" titleName="ABC">
+        <rowset name="roles" key="roleID" columns="roleID,roleName,roleDescription" />
+        <rowset name="grantableRoles" key="roleID" columns="roleID,roleName,roleDescription" />
+        <rowset name="rolesAtHQ" key="roleID" columns="roleID,roleName,roleDescription" />
+        <rowset name="grantableRolesAtHQ" key="roleID" columns="roleID,roleName,roleDescription" />
+        <rowset name="rolesAtBase" key="roleID" columns="roleID,roleName,roleDescription" />
+        <rowset name="grantableRolesAtBase" key="roleID" columns="roleID,roleName,roleDescription" />
+        <rowset name="rolesAtOther" key="roleID" columns="roleID,roleName,roleDescription" />
+        <rowset name="grantableRolesAtOther" key="roleID" columns="roleID,roleName,roleDescription" />
+      </row>
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-22 06:57:10</cachedUntil>
+</eveapi>
