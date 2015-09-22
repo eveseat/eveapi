@@ -97,6 +97,7 @@ return [
             Seat\Eveapi\Api\Corporation\MemberTracking::class,
             Seat\Eveapi\Api\Corporation\MemberSecurityLog::class,
             Seat\Eveapi\Api\Corporation\Shareholders::class,
+            Seat\Eveapi\Api\Corporation\Standings::class,
         ],
 
         'eve'         => [

@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-22 04:34:50</currentTime>
+  <result>
+    <corporationNPCStandings>
+      <rowset name="agents" key="fromID" columns="fromID,fromName,standing">
+        <row fromID="123" fromName="ABC" standing="0.13" />
+      </rowset>
+      <rowset name="NPCCorporations" key="fromID" columns="fromID,fromName,standing">
+        <row fromID="123" fromName="ABC" standing="1.20" />
+      </rowset>
+      <rowset name="factions" key="fromID" columns="fromID,fromName,standing">
+        <row fromID="123" fromName="ABC" standing="-4.62" />
+      </rowset>
+    </corporationNPCStandings>
+  </result>
+  <cachedUntil>2015-09-22 05:11:51</cachedUntil>
+</eveapi>
