@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2015-09-22 05:08:15</currentTime>
+  <result>
+    <rowset name="starbases" key="itemID" columns="itemID,typeID,locationID,moonID,state,stateTimestamp,onlineTimestamp,standingOwnerID">
+      <row itemID="123" typeID="16213" locationID="123" moonID="123" state="4" stateTimestamp="2015-09-22 05:54:59" onlineTimestamp="2014-10-21 02:39:09" standingOwnerID="123" />
+    </rowset>
+  </result>
+  <cachedUntil>2015-09-22 07:57:33</cachedUntil>
+</eveapi>

@@ -98,6 +98,11 @@ return [
             Seat\Eveapi\Api\Corporation\MemberSecurityLog::class,
             Seat\Eveapi\Api\Corporation\Shareholders::class,
             Seat\Eveapi\Api\Corporation\Standings::class,
+
+            // The Listing call should happen before the details
+            // call as it depends on itemID's from the list.
+            Seat\Eveapi\Api\Corporation\StarbaseList::class,
+            Seat\Eveapi\Api\Corporation\StarbaseDetail::class,
         ],
 
         'eve'         => [
