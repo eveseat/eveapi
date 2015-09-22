@@ -100,8 +100,8 @@ class WalletJournal extends Base
                     $transaction_hash = $this->hash_transaction(
                         $this->corporationID,
                         $account_id,
-                        $transaction->ownerID1,
-                        $transaction->refID);
+                        $transaction->date . $transaction->ownerID1,
+                        $transaction->ownerID1 . $transaction->refID);
 
                     // Check if the transaction is known. If it is,
                     // then we can just continue to the next. We will
