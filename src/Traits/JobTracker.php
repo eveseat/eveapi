@@ -21,6 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Traits;
 
+use Illuminate\Support\Facades\Log;
 use Seat\Eveapi\Models\EveApiKey;
 use Seat\Eveapi\Models\JobTracking;
 
@@ -83,6 +84,13 @@ trait JobTracker
      */
     public function reportJobError(JobTracking $job_tracker, \Exception $e)
     {
+
+        // Write an entry to the log file.
+        Log::error(
+            $job_tracker->api . '/' . $job_tracker->scope . ' for '
+            . $job_tracker->owner_id . ' failed with ' . get_class($e)
+            . ': ' . $e->getMessage() . '. See the job tracker for more ' .
+            'information.');
 
         // Prepare some useful information about the error.
         $output = 'Last Updater: ' . $job_tracker->output . PHP_EOL;
