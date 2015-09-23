@@ -1,10 +1,11 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateCorporationMarketOrdersTable extends Migration
 {
+
     /**
      * Run the migrations.
      *
@@ -12,6 +13,7 @@ class CreateCorporationMarketOrdersTable extends Migration
      */
     public function up()
     {
+
         Schema::create('corporation_market_orders', function (Blueprint $table) {
 
             $table->bigInteger('orderID')->unique();
@@ -47,6 +49,7 @@ class CreateCorporationMarketOrdersTable extends Migration
      */
     public function down()
     {
+
         Schema::drop('corporation_market_orders');
     }
 }

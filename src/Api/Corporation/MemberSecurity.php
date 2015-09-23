@@ -145,7 +145,7 @@ class MemberSecurity extends Base
                 'characterID', $member->characterID)->delete();
 
             // Only set titles if the API response had some
-            if($member->titles) {
+            if ($member->titles) {
 
                 foreach ($member->titles as $title) {
 
