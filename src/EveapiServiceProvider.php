@@ -41,7 +41,6 @@ class EveapiServiceProvider extends ServiceProvider
         // Publish migrations
         $this->publishes([
             __DIR__ . '/database/migrations/' => database_path('migrations'),
-            __DIR__ . '/Config/'              => config_path(),
         ]);
 
     }
@@ -53,6 +52,12 @@ class EveapiServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
+        $this->mergeConfigFrom(
+            __DIR__ . '/Config/eveapi.access_bits.php', 'eveapi.access_bits');
+        $this->mergeConfigFrom(
+            __DIR__ . '/Config/eveapi.config.php', 'eveapi.config');
+        $this->mergeConfigFrom(
+            __DIR__ . '/Config/eveapi.workers.php', 'eveapi.workers');
     }
 }
