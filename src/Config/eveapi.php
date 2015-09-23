@@ -27,56 +27,56 @@ return [
     'workers'     => [
 
         'api'         => [
-            \Seat\Eveapi\Api\Api\CallList::class
+            Seat\Eveapi\Api\Api\CallList::class
         ],
 
         'character'   => [
             // The very first call to determine the
             // access mask and characters
-            \Seat\Eveapi\Api\Account\AccountStatus::class,
-            \Seat\Eveapi\Api\Eve\CharacterInfo::class,
-            \Seat\Eveapi\Api\Character\AccountBalance::class,
-            \Seat\Eveapi\Api\Character\AssetList::class,
-            \Seat\Eveapi\Api\Character\Bookmarks::class,
-            \Seat\Eveapi\Api\Character\CharacterSheet::class,
-            \Seat\Eveapi\Api\Character\ChatChannels::class,
-            \Seat\Eveapi\Api\Character\ContactList::class,
-            \Seat\Eveapi\Api\Character\ContactNotifications::class,
+            Seat\Eveapi\Api\Account\AccountStatus::class,
+            Seat\Eveapi\Api\Eve\CharacterInfo::class,
+            Seat\Eveapi\Api\Character\AccountBalance::class,
+            Seat\Eveapi\Api\Character\AssetList::class,
+            Seat\Eveapi\Api\Character\Bookmarks::class,
+            Seat\Eveapi\Api\Character\CharacterSheet::class,
+            Seat\Eveapi\Api\Character\ChatChannels::class,
+            Seat\Eveapi\Api\Character\ContactList::class,
+            Seat\Eveapi\Api\Character\ContactNotifications::class,
 
             // Contracts are updated first and then the
             // respective items
-            \Seat\Eveapi\Api\Character\Contracts::class,
-            \Seat\Eveapi\Api\Character\ContractsItems::class,
-            \Seat\Eveapi\Api\Character\IndustryJobs::class,
-            \Seat\Eveapi\Api\Character\KillMails::class,
+            Seat\Eveapi\Api\Character\Contracts::class,
+            Seat\Eveapi\Api\Character\ContractsItems::class,
+            Seat\Eveapi\Api\Character\IndustryJobs::class,
+            Seat\Eveapi\Api\Character\KillMails::class,
 
             // Mail Messages is called first so that the
             // headers are populated for the body updates.
             // This is also a requirement from CCP's side
             // before the body is callable via the API.
-            \Seat\Eveapi\Api\Character\MailMessages::class,
-            \Seat\Eveapi\Api\Character\MailBodies::class,
-            \Seat\Eveapi\Api\Character\MailingLists::class,
-            \Seat\Eveapi\Api\Character\MarketOrders::class,
+            Seat\Eveapi\Api\Character\MailMessages::class,
+            Seat\Eveapi\Api\Character\MailBodies::class,
+            Seat\Eveapi\Api\Character\MailingLists::class,
+            Seat\Eveapi\Api\Character\MarketOrders::class,
 
             // Notifications is called first so that the
             // texts can be updated.
-            \Seat\Eveapi\Api\Character\Notifications::class,
-            \Seat\Eveapi\Api\Character\NotificationTexts::class,
+            Seat\Eveapi\Api\Character\Notifications::class,
+            Seat\Eveapi\Api\Character\NotificationTexts::class,
 
             // Planetary Interaction relies totally on the
             // Colonies to be up to date
-            \Seat\Eveapi\Api\Character\PlanetaryColonies::class,
-            \Seat\Eveapi\Api\Character\PlanetaryPins::class,
-            \Seat\Eveapi\Api\Character\PlanetaryRoutes::class,
-            \Seat\Eveapi\Api\Character\PlanetaryLinks::class,
-            \Seat\Eveapi\Api\Character\Research::class,
-            \Seat\Eveapi\Api\Character\SkillInTraining::class,
-            \Seat\Eveapi\Api\Character\SkillQueue::class,
-            \Seat\Eveapi\Api\Character\Standings::class,
-            \Seat\Eveapi\Api\Character\UpcomingCalendarEvents::class,
-            \Seat\Eveapi\Api\Character\WalletJournal::class,
-            \Seat\Eveapi\Api\Character\WalletTransactions::class
+            Seat\Eveapi\Api\Character\PlanetaryColonies::class,
+            Seat\Eveapi\Api\Character\PlanetaryPins::class,
+            Seat\Eveapi\Api\Character\PlanetaryRoutes::class,
+            Seat\Eveapi\Api\Character\PlanetaryLinks::class,
+            Seat\Eveapi\Api\Character\Research::class,
+            Seat\Eveapi\Api\Character\SkillInTraining::class,
+            Seat\Eveapi\Api\Character\SkillQueue::class,
+            Seat\Eveapi\Api\Character\Standings::class,
+            Seat\Eveapi\Api\Character\UpcomingCalendarEvents::class,
+            Seat\Eveapi\Api\Character\WalletJournal::class,
+            Seat\Eveapi\Api\Character\WalletTransactions::class
         ],
 
         'corporation' => [
@@ -109,20 +109,20 @@ return [
         ],
 
         'eve'         => [
-            \Seat\Eveapi\Api\Eve\AllianceList::class,
-            \Seat\Eveapi\Api\Eve\ConquerableStationList::class,
-            \Seat\Eveapi\Api\Eve\ErrorList::class,
-            \Seat\Eveapi\Api\Eve\RefTypes::class
+            Seat\Eveapi\Api\Eve\AllianceList::class,
+            Seat\Eveapi\Api\Eve\ConquerableStationList::class,
+            Seat\Eveapi\Api\Eve\ErrorList::class,
+            Seat\Eveapi\Api\Eve\RefTypes::class
         ],
 
         'map'         => [
-            \Seat\Eveapi\Api\Map\Jumps::class,
-            \Seat\Eveapi\Api\Map\Kills::class,
-            \Seat\Eveapi\Api\Map\Sovereignty::class
+            Seat\Eveapi\Api\Map\Jumps::class,
+            Seat\Eveapi\Api\Map\Kills::class,
+            Seat\Eveapi\Api\Map\Sovereignty::class
         ],
 
         'server'      => [
-            \Seat\Eveapi\Api\Server\ServerStatus::class
+            Seat\Eveapi\Api\Server\ServerStatus::class
         ]
     ],
 
