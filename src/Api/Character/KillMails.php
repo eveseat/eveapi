@@ -23,9 +23,9 @@ namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CharacterKillMail;
-use Seat\Eveapi\Models\CharacterKillMailAttacker;
-use Seat\Eveapi\Models\CharacterKillMailDetail;
-use Seat\Eveapi\Models\CharacterKillMailItem;
+use Seat\Eveapi\Models\KillMailAttacker;
+use Seat\Eveapi\Models\KillMailDetail;
+use Seat\Eveapi\Models\KillMailItem;
 
 /**
  * Class KillMails
@@ -146,14 +146,14 @@ class KillMails extends Base
                     // work again. Remember, from this point on, we
                     // refer to a kill by killID, regardless of the
                     // assosiated characterID
-                    if (CharacterKillMailDetail::where('killID', $kill->killID)
+                    if (KillMailDetail::where('killID', $kill->killID)
                         ->first()
                     ) {
                         continue;
                     }
 
                     // Create the killDetails, attacker and item info
-                    CharacterKillMailDetail::create([
+                    KillMailDetail::create([
                         'killID'          => $kill->killID,
                         'solarSystemID'   => $kill->solarSystemID,
                         'killTime'        => $kill->killTime,
@@ -172,7 +172,7 @@ class KillMails extends Base
 
                     foreach ($kill->attackers as $attacker) {
 
-                        CharacterKillMailAttacker::create([
+                        KillMailAttacker::create([
                             'killID'          => $kill->killID,
                             'characterID'     => $attacker->characterID,
                             'characterName'   => $attacker->characterName,
@@ -192,7 +192,7 @@ class KillMails extends Base
 
                     foreach ($kill->items as $item) {
 
-                        CharacterKillMailItem::create([
+                        KillMailItem::create([
                             'killID'       => $kill->killID,
                             'typeID'       => $item->typeID,
                             'flag'         => $item->flag,

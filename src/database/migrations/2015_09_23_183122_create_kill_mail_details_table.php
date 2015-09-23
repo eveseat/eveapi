@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateCorporationKillMailDetailsTable extends Migration
+class CreateKillMailDetailsTable extends Migration
 {
 
     /**
@@ -14,7 +14,7 @@ class CreateCorporationKillMailDetailsTable extends Migration
     public function up()
     {
 
-        Schema::create('corporation_kill_mail_details', function (Blueprint $table) {
+        Schema::create('kill_mail_details', function (Blueprint $table) {
 
             $table->integer('killID')->unique();
             $table->integer('solarSystemID');
@@ -49,6 +49,6 @@ class CreateCorporationKillMailDetailsTable extends Migration
     public function down()
     {
 
-        Schema::drop('corporation_kill_mail_details');
+        Schema::drop('kill_mail_details');
     }
 }

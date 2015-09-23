@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateCharacterKillMailAttackersTable extends Migration
+class CreateKillMailAttackersTable extends Migration
 {
 
     /**
@@ -14,7 +14,7 @@ class CreateCharacterKillMailAttackersTable extends Migration
     public function up()
     {
 
-        Schema::create('character_kill_mail_attackers', function (Blueprint $table) {
+        Schema::create('kill_mail_attackers', function (Blueprint $table) {
 
             $table->integer('killID');
             $table->integer('characterID');
@@ -47,6 +47,6 @@ class CreateCharacterKillMailAttackersTable extends Migration
     public function down()
     {
 
-        Schema::drop('character_kill_mail_attackers');
+        Schema::drop('kill_mail_attackers');
     }
 }

@@ -23,9 +23,9 @@ namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\CorporationKillMail;
-use Seat\Eveapi\Models\CorporationKillMailAttacker;
-use Seat\Eveapi\Models\CorporationKillMailDetail;
-use Seat\Eveapi\Models\CorporationKillMailItem;
+use Seat\Eveapi\Models\KillMailAttacker;
+use Seat\Eveapi\Models\KillMailDetail;
+use Seat\Eveapi\Models\KillMailItem;
 
 /**
  * Class KillMails
@@ -107,14 +107,14 @@ class KillMails extends Base
                 // work again. Remember, from this point on, we
                 // refer to a kill by killID, regardless of the
                 // assosiated corporationID
-                if (CorporationKillMailDetail::where('killID', $kill->killID)
+                if (KillMailDetail::where('killID', $kill->killID)
                     ->first()
                 ) {
                     continue;
                 }
 
                 // Create the killDetails, attacker and item info
-                CorporationKillMailDetail::create([
+                KillMailDetail::create([
                     'killID'          => $kill->killID,
                     'solarSystemID'   => $kill->solarSystemID,
                     'killTime'        => $kill->killTime,
@@ -133,7 +133,7 @@ class KillMails extends Base
 
                 foreach ($kill->attackers as $attacker) {
 
-                    CorporationKillMailAttacker::create([
+                    KillMailAttacker::create([
                         'killID'          => $kill->killID,
                         'characterID'     => $attacker->characterID,
                         'characterName'   => $attacker->characterName,
@@ -153,7 +153,7 @@ class KillMails extends Base
 
                 foreach ($kill->items as $item) {
 
-                    CorporationKillMailItem::create([
+                    KillMailItem::create([
                         'killID'       => $kill->killID,
                         'typeID'       => $item->typeID,
                         'flag'         => $item->flag,
