@@ -110,6 +110,26 @@ trait JobTracker
     }
 
     /**
+     * Load worker classes from the configuration
+     * file based on the 'api' type in the
+     * job tracker.
+     *
+     * @param \Seat\Eveapi\Models\JobTracking $job
+     *
+     * @return mixed
+     */
+    public function load_workers(JobTracking $job)
+    {
+
+        // Dermine if this is a Character / Corporation
+        // update request and load the applicable workers
+        $type = strtolower($job->api);
+
+        return config('eveapi.workers.' . $type);
+
+    }
+
+    /**
      * Attempt to take the appropriate action based on the
      * EVE API Exception.
      *

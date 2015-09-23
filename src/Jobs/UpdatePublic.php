@@ -28,7 +28,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\AccessException;
 use Pheal\Exceptions\APIException;
-use Seat\Eveapi\Models\JobTracking;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -117,23 +116,4 @@ class UpdatePublic extends Job implements SelfHandling, ShouldQueue
         $job_tracker->save();
     }
 
-    /**
-     * Load worker classes from the configuration
-     * file based on the 'api' type in the
-     * job tracker.
-     *
-     * @param \Seat\Eveapi\Models\JobTracking $job
-     *
-     * @return mixed
-     */
-    public function load_workers(JobTracking $job)
-    {
-
-        // Dermine if this is a Character / Corporation
-        // update request and load the applicable workers
-        $type = strtolower($job->api);
-
-        return config('eveapi.workers.' . $type);
-
-    }
 }
