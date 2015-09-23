@@ -28,13 +28,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\AccessException;
 use Pheal\Exceptions\APIException;
+use Seat\Eveapi\Models\JobTracking;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
- * Class UpdateCharacter
+ * Class UpdatePublic
  * @package Seat\Eveapi\Jobs
  */
-class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
+class UpdatePublic extends Job implements SelfHandling, ShouldQueue
 {
 
     use InteractsWithQueue, SerializesModels, JobTracker;
@@ -75,17 +76,21 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
         // that may come of it.
         $job_tracker->status = 'Working';
         $job_tracker->save();
+
+        // Attempt to run the Updaters based on the
+        // type of key we are working with.
         try {
 
-            foreach (config('eveapi.workers.character') as $worker) {
+            foreach ($this->load_workers($job_tracker) as $worker) {
 
                 try {
 
-                    $job_tracker->output = 'Processing: ' . class_basename($worker);
+                    $job_tracker->output = 'Processing: '
+                        . class_basename($worker);
                     $job_tracker->save();
 
                     // Perform the update
-                    (new $worker)->setApi($this->eve_api_key)->call();
+                    (new $worker)->call();
 
                 } catch (AccessException $e) {
 
@@ -110,5 +115,25 @@ class UpdateCharacter extends Job implements SelfHandling, ShouldQueue
         $job_tracker->status = 'Done';
         $job_tracker->output = null;
         $job_tracker->save();
+    }
+
+    /**
+     * Load worker classes from the configuration
+     * file based on the 'api' type in the
+     * job tracker.
+     *
+     * @param \Seat\Eveapi\Models\JobTracking $job
+     *
+     * @return mixed
+     */
+    public function load_workers(JobTracking $job)
+    {
+
+        // Dermine if this is a Character / Corporation
+        // update request and load the applicable workers
+        $type = strtolower($job->api);
+
+        return config('eveapi.workers.' . $type);
+
     }
 }
