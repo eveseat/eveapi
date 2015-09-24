@@ -51,6 +51,7 @@ class ContractsItems extends Base
             // to date.
             $contract_ids = DB::table('character_contracts')
                 ->where('characterID', $character->characterID)
+                ->where('type', '<>', 'Courier')
                 ->whereNotIn('contractID', function ($query) use ($character) {
 
                     $query->select('contractID')
