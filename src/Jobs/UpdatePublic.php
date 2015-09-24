@@ -28,6 +28,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\AccessException;
 use Pheal\Exceptions\APIException;
+use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Traits\JobTracker;
 
 /**
@@ -40,21 +41,22 @@ class UpdatePublic extends Job implements SelfHandling, ShouldQueue
     use InteractsWithQueue, SerializesModels, JobTracker;
 
     /**
-     * The EveApiKey instance
+     * The JobContainer Instance containing
+     * extra payload information.
      *
      * @var
      */
-    protected $eve_api_key;
+    protected $job_payload;
 
     /**
      * Create a new job instance.
      *
-     * @param $eve_api_key
+     * @param \Seat\Eveapi\Helpers\JobContainer $job_payload
      */
-    public function __construct($eve_api_key)
+    public function __construct(JobContainer $job_payload)
     {
 
-        $this->eve_api_key = $eve_api_key;
+        $this->job_payload = $job_payload;
     }
 
     /**
@@ -100,7 +102,8 @@ class UpdatePublic extends Job implements SelfHandling, ShouldQueue
 
         } catch (APIException $e) {
 
-            $this->handleApiException($job_tracker, $this->eve_api_key, $e);
+            $this->handleApiException(
+                $job_tracker, $this->job_payload->eve_api_key, $e);
 
             return;
 

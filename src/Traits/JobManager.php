@@ -57,7 +57,8 @@ trait JobManager
             return $job_id;
 
         // Add a new job onto the queue...
-        $job_id = $this->dispatchFrom($job, $args);
+        $new_job = (new $job($args))->onQueue($args->queue);
+        $job_id = $this->dispatch($new_job);
 
         // ...and add tracking information
         JobTracking::create([

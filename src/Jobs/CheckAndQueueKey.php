@@ -43,20 +43,22 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
     use InteractsWithQueue, SerializesModels, JobTracker, JobManager;
 
     /**
-     * The EveApiKey instance
+     * The JobContainer Instance containing
+     * extra payload information.
      *
      * @var
      */
-    protected $eve_api_key;
+    protected $job_payload;
 
     /**
      * Create a new job instance.
      *
+     * @param \Seat\Eveapi\Helpers\JobContainer $job_payload
      */
-    public function __construct($eve_api_key)
+    public function __construct(JobContainer $job_payload)
     {
 
-        $this->eve_api_key = $eve_api_key;
+        $this->job_payload = $job_payload;
     }
 
     /**
@@ -86,16 +88,16 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
             $job_tracker->save();
 
             // https://api.eveonline.com/account/APIKeyInfo.xml.aspx
-            (new APIKeyInfo())->setApi($this->eve_api_key)->call();
+            (new APIKeyInfo())->setApi($this->job_payload->eve_api_key)->call();
 
             // Populate the new Job with some defaults
             $fresh_job->scope = 'Eve';
-            $fresh_job->owner_id = $this->eve_api_key->key_id;
-            $fresh_job->eve_api_key = $this->eve_api_key;
+            $fresh_job->owner_id = $this->job_payload->eve_api_key->key_id;
+            $fresh_job->eve_api_key = $this->job_payload->eve_api_key;
 
             // Now, based on the type of key, set the 'api'
             // value and queue an Authenticated Update job
-            switch ($this->eve_api_key->fresh()->info->type) {
+            switch ($this->job_payload->eve_api_key->fresh()->info->type) {
 
                 // Account & Character Key types are essentially
                 // the same, except for the fact that one only
@@ -113,7 +115,7 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
 
                 default:
                     throw new InvalidKeyTypeException(
-                        'Key type \'' . $this->eve_api_key->type .
+                        'Key type \'' . $this->job_payload->eve_api_key->type .
                         '\' is unknown. No update job was queued!');
 
                     return;
@@ -130,7 +132,8 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
 
         } catch (APIException $e) {
 
-            $this->handleApiException($job_tracker, $this->eve_api_key, $e);
+            $this->handleApiException(
+                $job_tracker, $this->job_payload->eve_api_key, $e);
 
             return;
 
