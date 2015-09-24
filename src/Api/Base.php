@@ -28,6 +28,7 @@ use Pheal\Cache\HashedNameFileStorage;
 use Pheal\Core\Config;
 use Pheal\Log\PsrLogger;
 use Pheal\Pheal;
+use Pheal\RateLimiter\FileLockRateLimiter;
 use Seat\Eveapi\Exception\InvalidScopeException;
 use Seat\Eveapi\Helpers\EveApiAccess;
 use Seat\Eveapi\Models\EveApiKey;
@@ -142,6 +143,7 @@ abstract class Base
         $config->cache = new HashedNameFileStorage(storage_path() . '/app/pheal/');
         $config->access = new EveApiAccess(config('eveapi.access_bits'));
         $config->log = new PsrLogger($this->getLogger());
+        $config->rateLimiter = new FileLockRateLimiter(storage_path() . '/app/pheal/');
         $config->api_customkeys = true;
         $config->http_method = 'curl';
         $config->http_timeout = 60;
