@@ -158,7 +158,7 @@ trait JobTracker
      *
      * @throws \Exception
      */
-    public function handleApiException(JobTracking $job_tracker, EveApiKey $api_key, \Exception $e)
+    public function handleApiException(JobTracking $job_tracker, EveApiKey $api_key, $e)
     {
 
         // Errors from the EVE API should be treated seriously. If
