@@ -112,7 +112,9 @@ trait JobTracker
     /**
      * Load worker classes from the configuration
      * file based on the 'api' type in the
-     * job tracker.
+     * job tracker. This method honors the class
+     * definitions in eveapi.config.disabled_workers
+     * as well as the key specific disabled_workers.
      *
      * @param \Seat\Eveapi\Models\JobTracking $job
      *
@@ -121,11 +123,23 @@ trait JobTracker
     public function load_workers(JobTracking $job)
     {
 
-        // Dermine if this is a Character / Corporation
-        // update request and load the applicable workers
         $type = strtolower($job->api);
+        $workers = config('eveapi.workers.' . $type);
 
-        return config('eveapi.workers.' . $type);
+        $global_disabled_workers = config(
+            'eveapi.config.disabled_workers.' . $type);
+
+        $key_disabled_workers = $job->owner_id == 0 ?
+            [] : json_decode(EveApiKey::find($job->owner_id)->disabled_calls);
+
+        // Check if any workers are ignored either via
+        // the global config or this specific key.
+        foreach ($workers as $worker)
+            if (in_array($worker, array_merge($global_disabled_workers, $key_disabled_workers)))
+                // Remove the worker.
+                $workers = array_diff($workers, [$worker]);
+
+        return $workers;
 
     }
 

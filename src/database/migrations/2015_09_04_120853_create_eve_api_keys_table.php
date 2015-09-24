@@ -21,7 +21,8 @@ class CreateEveApiKeysTable extends Migration
             $table->string('v_code', 64);
             $table->integer('user_id');
             $table->tinyInteger('enabled')->default(1);
-            $table->string('last_error')->nullable();
+            $table->text('last_error')->nullable();
+            $table->longText('disabled_calls')->nullable();
 
             // Index
             $table->primary('key_id');
