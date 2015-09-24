@@ -26,8 +26,10 @@ use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Pheal\Exceptions\AccessException;
 use Pheal\Exceptions\APIException;
+use Pheal\Exceptions\ConnectionException;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -96,16 +98,28 @@ class UpdatePublic extends Job implements SelfHandling, ShouldQueue
                 } catch (AccessException $e) {
 
                     // TODO: Write to some audit log file maybe?
+
+                } catch (APIException $e) {
+
+                    $this->handleApiException(
+                        $job_tracker, $this->job_payload->eve_api_key, $e);
+
+                    return;
+
+                } catch (ConnectionException $e) {
+
+                    // Some connection error occured to the
+                    // EVE API that is not necessarily related
+                    // to key access or anything.
+                    Log::warning(
+                        'A connection exception occured to the API server.' .
+                        $e->getCode() . ':' . $e->getMessage());
+
+                    sleep(2);
+                    continue;
                 }
 
             } // Foreach worker
-
-        } catch (APIException $e) {
-
-            $this->handleApiException(
-                $job_tracker, $this->job_payload->eve_api_key, $e);
-
-            return;
 
         } catch (\Exception $e) {
 
