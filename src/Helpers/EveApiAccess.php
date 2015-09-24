@@ -60,6 +60,12 @@ class EveApiAccess implements CanCheck
     public function check($scope, $name, $keyType, $accessMask)
     {
 
+        // AccountStatus is this odd one out that needs
+        // an access_mask check. If the $name is that,
+        // then flip the scope to char for checking
+        if ($name == 'AccountStatus')
+            $scope = 'char';
+
         // Check if we have the scope for this key defined
         // in our access_bits array. If we dont, we will
         // assume that it is not a type of call that has
