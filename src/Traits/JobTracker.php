@@ -132,6 +132,11 @@ trait JobTracker
         $key_disabled_workers = $job->owner_id == 0 ?
             [] : json_decode(EveApiKey::find($job->owner_id)->disabled_calls);
 
+        // Check that we do not have a null result
+        // for the key specific disabled workers
+        if (is_null($key_disabled_workers))
+            $key_disabled_workers = [];
+
         // Check if any workers are ignored either via
         // the global config or this specific key.
         foreach ($workers as $worker)
