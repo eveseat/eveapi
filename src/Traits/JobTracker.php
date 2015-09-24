@@ -66,7 +66,8 @@ trait JobTracker
             }
 
             // Remove yourself from the queue
-            // TODO: Log this event.
+            Log::error(
+                'Error finding a JobTracker for job ' . $this->job->getJobID());
             $this->delete();
 
             return null;
