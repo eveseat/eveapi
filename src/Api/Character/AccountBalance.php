@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterAccountBalance;
+use Seat\Eveapi\Models\Character\AccountBalance as AccountBalanceModel;
 
 /**
  * Class AccountBalance
@@ -51,7 +51,7 @@ class AccountBalance extends Base
             // and loop over them in case...
             foreach ($result->accounts as $account) {
 
-                $account_balance = CharacterAccountBalance::firstOrNew([
+                $account_balance = AccountBalanceModel::firstOrNew([
                     'characterID' => $character->characterID,
                     'accountID'   => $account->accountID]);
 

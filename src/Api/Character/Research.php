@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterResearch;
+use Seat\Eveapi\Models\Character\Research as ResearchModel;
 
 /**
  * Class Research
@@ -48,7 +48,7 @@ class Research extends Base
 
             foreach ($result->research as $research_agent) {
 
-                $research_info = CharacterResearch::firstOrNew([
+                $research_info = ResearchModel::firstOrNew([
                     'characterID' => $character->characterID,
                     'agentID'     => $research_agent->agentID]);
 

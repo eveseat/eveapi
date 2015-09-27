@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationAccountBalance;
-use Seat\Eveapi\Models\CorporationWalletTransaction;
+use Seat\Eveapi\Models\Corporation\AccountBalance as AccountBalanceModel;
+use Seat\Eveapi\Models\Corporation\WalletTransaction;
 use Seat\Eveapi\Traits\Utils;
 
 /**
@@ -54,7 +54,7 @@ class WalletTransactions extends Base
         $pheal = $this->setScope('corp')
             ->setCorporationID()->getPheal();
 
-        $account_ids = CorporationAccountBalance::where(
+        $account_ids = AccountBalanceModel::where(
             'corporationID', $this->corporationID)
             ->lists('accountKey');
 
@@ -111,7 +111,7 @@ class WalletTransactions extends Base
                     // transactions. We dont immediately break because
                     // the transactions are not always received in any
                     // order for the fromID that was specified.
-                    if (CorporationWalletTransaction::where('corporationID', $this->corporationID)
+                    if (WalletTransaction::where('corporationID', $this->corporationID)
                         ->where('hash', $transaction_hash)
                         ->first()
                     ) {
@@ -120,7 +120,7 @@ class WalletTransactions extends Base
                         continue;
                     }
 
-                    CorporationWalletTransaction::create([
+                    WalletTransaction::create([
                         'hash'                 => $transaction_hash,
                         'corporationID'        => $this->corporationID,
                         'accountKey'           => $account_id,

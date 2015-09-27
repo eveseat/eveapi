@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterSkillInTraining;
+use Seat\Eveapi\Models\Character\SkillInTraining as SkillInTrainingModel;
 
 /**
  * Class SkillInTraining
@@ -47,7 +47,7 @@ class SkillInTraining extends Base
             $result = $pheal->SkillInTraining([
                 'characterID' => $character->characterID]);
 
-            $training = CharacterSkillInTraining::firstOrNew([
+            $training = SkillInTrainingModel::firstOrNew([
                 'characterID' => $character->characterID]);
 
             $training->fill([

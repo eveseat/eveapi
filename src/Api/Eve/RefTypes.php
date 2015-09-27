@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Eve;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\EveRefTypes;
+use Seat\Eveapi\Models\Eve\RefTypes as RefTypesModel;
 
 /**
  * Class RefTypes
@@ -43,7 +43,7 @@ class RefTypes extends Base
 
         foreach ($result->refTypes as $ref_type) {
 
-            EveRefTypes::firstOrCreate([
+            RefTypesModel::firstOrCreate([
                 'refTypeID'   => $ref_type->refTypeID,
                 'refTypeName' => $ref_type->refTypeName
             ]);

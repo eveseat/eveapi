@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Traits;
 
 use Illuminate\Support\Facades\Log;
-use Seat\Eveapi\Models\EveApiKey;
+use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Models\JobTracking;
 
 /**
@@ -131,7 +131,7 @@ trait JobTracker
             'eveapi.config.disabled_workers.' . $type);
 
         $key_disabled_workers = $job->owner_id == 0 ?
-            [] : json_decode(EveApiKey::find($job->owner_id)->disabled_calls);
+            [] : json_decode(ApiKey::find($job->owner_id)->disabled_calls);
 
         // Check that we do not have a null result
         // for the key specific disabled workers
@@ -154,12 +154,12 @@ trait JobTracker
      * EVE API Exception.
      *
      * @param \Seat\Eveapi\Models\JobTracking $job_tracker
-     * @param \Seat\Eveapi\Models\EveApiKey   $api_key
+     * @param \Seat\Eveapi\Models\Eve\ApiKey  $api_key
      * @param \Exception                      $e
      *
      * @throws \Exception
      */
-    public function handleApiException(JobTracking $job_tracker, EveApiKey $api_key, $e)
+    public function handleApiException(JobTracking $job_tracker, ApiKey $api_key, $e)
     {
 
         // Errors from the EVE API should be treated seriously. If

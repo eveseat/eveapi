@@ -23,7 +23,7 @@ namespace Seat\Eveapi\Api\Character;
 
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterNotificationsText;
+use Seat\Eveapi\Models\Character\NotificationsText;
 
 /**
  * Class NotificationTexts
@@ -69,7 +69,7 @@ class NotificationTexts extends Base
 
                 foreach ($result->notifications as $notification) {
 
-                    CharacterNotificationsText::create([
+                    NotificationsText::create([
                         'notificationID' => $notification->notificationID,
                         'text'           => $notification->__toString()
                     ]);

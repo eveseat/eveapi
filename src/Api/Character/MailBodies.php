@@ -23,7 +23,7 @@ namespace Seat\Eveapi\Api\Character;
 
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterMailMessageBody;
+use Seat\Eveapi\Models\Character\MailMessageBody;
 
 /**
  * Class MailBodies
@@ -70,7 +70,7 @@ class MailBodies extends Base
 
                 foreach ($result->messages as $body) {
 
-                    CharacterMailMessageBody::create([
+                    MailMessageBody::create([
                         'messageID' => $body->messageID,
                         'body'      => $body->__toString()
                     ]);

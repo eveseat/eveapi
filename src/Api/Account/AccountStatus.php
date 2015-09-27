@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Account;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\AccountAccountStatus;
+use Seat\Eveapi\Models\Account\AccountStatus as AccountStatusModel;
 
 /**
  * Class AccountStatus
@@ -43,7 +43,7 @@ class AccountStatus extends Base
             ->getPheal()
             ->AccountStatus();
 
-        $account_status = AccountAccountStatus::firstOrNew([
+        $account_status = AccountStatusModel::firstOrNew([
             'keyID' => $this->api_info->key_id]);
 
         $account_status->fill([

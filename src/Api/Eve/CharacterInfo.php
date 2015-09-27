@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Eve;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\EveCharacterInfo;
-use Seat\Eveapi\Models\EveCharacterInfoEmploymentHistory;
+use Seat\Eveapi\Models\Eve\CharacterInfo as CharacterInfoModel;
+use Seat\Eveapi\Models\Eve\CharacterInfoEmploymentHistory;
 
 /**
  * Class CharacterInfo
@@ -80,7 +80,7 @@ class CharacterInfo extends Base
     public function _update_character_info($result)
     {
 
-        $character_info = EveCharacterInfo::firstOrNew([
+        $character_info = CharacterInfoModel::firstOrNew([
             'characterID' => $result->characterID]);
 
         $character_info->fill([
@@ -112,7 +112,7 @@ class CharacterInfo extends Base
 
         foreach ($result->employmentHistory as $employment) {
 
-            EveCharacterInfoEmploymentHistory::firstOrCreate([
+            CharacterInfoEmploymentHistory::firstOrCreate([
                 'characterID'     => $result->characterID,
                 'recordID'        => $employment->recordID,
                 'corporationID'   => $employment->corporationID,

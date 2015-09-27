@@ -23,7 +23,7 @@ namespace Seat\Eveapi\Api\Character;
 
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterPlanetaryRoute;
+use Seat\Eveapi\Models\Character\PlanetaryRoute;
 
 /**
  * Class PlanetaryRoutes
@@ -66,7 +66,7 @@ class PlanetaryRoutes extends Base
 
                 foreach ($result->routes as $route) {
 
-                    $route_info = CharacterPlanetaryRoute::firstOrNew([
+                    $route_info = PlanetaryRoute::firstOrNew([
                         'ownerID'  => $character->characterID,
                         'planetID' => $planet_id,
                         'routeID'  => $route->routeID]);
@@ -90,7 +90,7 @@ class PlanetaryRoutes extends Base
 
                 // Cleanup the Routes that are not in the reponse
                 // for this specific planet.
-                CharacterPlanetaryRoute::where('ownerID', $character->characterID)
+                PlanetaryRoute::where('ownerID', $character->characterID)
                     ->where('planetID', $planet_id)
                     ->whereNotIn('routeID', array_map(function ($route) {
 
@@ -104,7 +104,7 @@ class PlanetaryRoutes extends Base
             // Cleanup routes for planets that do not exist
             // for this character anymore. It could be that
             // the entire colony was deleted.
-            CharacterPlanetaryRoute::where('ownerID', $character->characterID)
+            PlanetaryRoute::where('ownerID', $character->characterID)
                 ->whereNotIn('planetID', $colonies)
                 ->delete();
 

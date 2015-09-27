@@ -23,7 +23,7 @@ namespace Seat\Eveapi\Api\Character;
 
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterPlanetaryLink;
+use Seat\Eveapi\Models\Character\PlanetaryLink;
 
 /**
  * Class PlanetaryLinks
@@ -66,14 +66,14 @@ class PlanetaryLinks extends Base
                 // There isnt a concept such as a unique
                 // linkID, so for now we will just delete
                 // all of the link we have for this planet.
-                CharacterPlanetaryLink::where('ownerID', $character->characterID)
+                PlanetaryLink::where('ownerID', $character->characterID)
                     ->where('planetID', $planet_id)
                     ->delete();
 
                 // Create the Links
                 foreach ($result->links as $link) {
 
-                    CharacterPlanetaryLink::create([
+                    PlanetaryLink::create([
                         'ownerID'          => $character->characterID,
                         'planetID'         => $planet_id,
                         'sourcePinID'      => $link->sourcePinID,
@@ -88,7 +88,7 @@ class PlanetaryLinks extends Base
             // Cleanup links for planets that do not exist
             // for this character anymore. It could be that
             // the entire colony was deleted.
-            CharacterPlanetaryLink::where('ownerID', $character->characterID)
+            PlanetaryLink::where('ownerID', $character->characterID)
                 ->whereNotIn('planetID', $colonies)
                 ->delete();
 

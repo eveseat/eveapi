@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationStanding;
+use Seat\Eveapi\Models\Corporation\Standing;
 
 /**
  * Class Standings
@@ -72,7 +72,7 @@ class Standings extends Base
     public function _update_standing($standing, $type)
     {
 
-        $standing_info = CorporationStanding::firstOrNew([
+        $standing_info = Standing::firstOrNew([
             'corporationID' => $this->corporationID,
             'fromID'        => $standing->fromID]);
 

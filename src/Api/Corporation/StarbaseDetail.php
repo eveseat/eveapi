@@ -23,7 +23,7 @@ namespace Seat\Eveapi\Api\Corporation;
 
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationStarbaseDetail;
+use Seat\Eveapi\Models\Corporation\StarbaseDetail as StarbaseDetailModel;
 
 /**
  * Class StarbaseDetail
@@ -51,7 +51,7 @@ class StarbaseDetail extends Base
 
             $result = $pheal->StarbaseDetail(['itemID' => $starbase_id]);
 
-            $detail_info = CorporationStarbaseDetail::firstOrNew([
+            $detail_info = StarbaseDetailModel::firstOrNew([
                 'corporationID' => $this->corporationID,
                 'itemID'        => $starbase_id
             ]);

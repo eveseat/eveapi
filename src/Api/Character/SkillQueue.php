@@ -23,7 +23,7 @@ namespace Seat\Eveapi\Api\Character;
 
 use Carbon\Carbon;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterSkillQueue;
+use Seat\Eveapi\Models\Character\SkillQueue as SkillQueueModel;
 
 /**
  * Class SkillQueue
@@ -50,7 +50,7 @@ class SkillQueue extends Base
             // Skill Queues can change at anytime, so we
             // will clean up the current queue and re-
             // poulate it
-            CharacterSkillQueue::where(
+            SkillQueueModel::where(
                 'characterID', $character->characterID)->delete();
 
             $skill_queue = array_filter(
@@ -77,7 +77,7 @@ class SkillQueue extends Base
             // If there were any skills derived form the array_map
             // then we can bulk insert it into the table.
             if (count($skill_queue) > 0)
-                CharacterSkillQueue::insert($skill_queue);
+                SkillQueueModel::insert($skill_queue);
 
         }
 

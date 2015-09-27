@@ -22,9 +22,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterChatChannel;
-use Seat\Eveapi\Models\CharacterChatChannelInfo;
-use Seat\Eveapi\Models\CharacterChatChannelMember;
+use Seat\Eveapi\Models\Character\ChatChannel;
+use Seat\Eveapi\Models\Character\ChatChannelInfo;
+use Seat\Eveapi\Models\Character\ChatChannelMember;
 
 /**
  * Class ChatChannels
@@ -56,14 +56,14 @@ class ChatChannels extends Base
                 // Regardless of the applicable role, the character
                 // is affiliated to it, and should therefore have
                 // the link to the channels details.
-                CharacterChatChannel::firstOrCreate([
+                ChatChannel::firstOrCreate([
                     'characterID' => $character->characterID,
                     'channelID'   => $channel->channelID
                 ]);
 
                 // Check and update the channels details such as
                 // owner information as well as the motd
-                $channel_info = CharacterChatChannelInfo::firstOrNew([
+                $channel_info = ChatChannelInfo::firstOrNew([
                     'channelID' => $channel->channelID]);
 
                 // TODO: Check if the current MOTD and the one that
@@ -123,7 +123,7 @@ class ChatChannels extends Base
                     ));
 
                 // Cleanup the channel
-                CharacterChatChannelMember::where('channelID', $channel->channelID)
+                ChatChannelMember::where('channelID', $channel->channelID)
                     ->whereNotIn('accessorID', $existing_members)
                     ->delete();
 
@@ -132,7 +132,7 @@ class ChatChannels extends Base
             // Cleanup any channels where there is no longer any
             // affiliation. This may happen in cases where
             // operator access is removed etc.
-            CharacterChatChannel::where('characterID', $character->characterID)
+            ChatChannel::where('characterID', $character->characterID)
                 ->whereNotIn('channelID', array_map(function ($channel) {
 
                     return $channel->channelID;
@@ -156,7 +156,7 @@ class ChatChannels extends Base
     {
 
         // Get or create the record...
-        $member_info = CharacterChatChannelMember::firstOrNew([
+        $member_info = ChatChannelMember::firstOrNew([
             'channelID'  => $channel_id,
             'accessorID' => $member->accessorID]);
 

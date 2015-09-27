@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Eve;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\EveConquerableStationList;
+use Seat\Eveapi\Models\Eve\ConquerableStationList as ConquerableStationListModel;
 
 /**
  * Class ConquerableStationList
@@ -43,7 +43,7 @@ class ConquerableStationList extends Base
 
         foreach ($result->outposts as $outpost) {
 
-            $station = EveConquerableStationList::firstOrNew([
+            $station = ConquerableStationListModel::firstOrNew([
                 'stationID' => $outpost->stationID]);
 
             $station->fill([

@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Api;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\EveApiCallList;
+use Seat\Eveapi\Models\Api\CallList as CallListModel;
 
 /**
  * Class CallList
@@ -44,7 +44,7 @@ class CallList extends Base
         foreach ($result->calls as $call) {
 
             // Get or create the Call...
-            $info = EveApiCallList::firstOrNew([
+            $info = CallListModel::firstOrNew([
                 'name' => $call->name,
                 'type' => $call->type
             ]);

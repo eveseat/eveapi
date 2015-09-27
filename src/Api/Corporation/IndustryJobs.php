@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationIndustryJob;
+use Seat\Eveapi\Models\Corporation\IndustryJob;
 
 /**
  * Class IndustryJobs
@@ -46,7 +46,7 @@ class IndustryJobs extends Base
 
         foreach ($result->jobs as $industry_job) {
 
-            $new_industry_job = CorporationIndustryJob::firstOrNew([
+            $new_industry_job = IndustryJob::firstOrNew([
                 'corporationID' => $this->corporationID,
                 'jobID'         => $industry_job->jobID,
             ]);

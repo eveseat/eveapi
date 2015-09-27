@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationContract;
+use Seat\Eveapi\Models\Corporation\Contract;
 
 /**
  * Class Contracts
@@ -46,7 +46,7 @@ class Contracts extends Base
 
         foreach ($result->contractList as $contract) {
 
-            $contract_data = CorporationContract::firstOrNew([
+            $contract_data = Contract::firstOrNew([
                 'corporationID' => $this->corporationID,
                 'contractID'    => $contract->contractID
             ]);

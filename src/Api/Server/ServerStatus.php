@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Server;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\ServerServerStatus;
+use Seat\Eveapi\Models\Server\ServerStatus as StatusModel;
 
 /**
  * Class ServerStatus
@@ -42,11 +42,11 @@ class ServerStatus extends Base
             ->ServerStatus();
 
         if (
-            ServerServerStatus::orderBy('currentTime', 'desc')
+            StatusModel::orderBy('currentTime', 'desc')
                 ->value('currentTime') <> $result->request_time
         ) {
 
-            ServerServerStatus::create([
+            StatusModel::create([
                 'currentTime'   => $result->request_time,
                 'serverOpen'    => $result->serverOpen,
                 'onlinePlayers' => $result->onlinePlayers

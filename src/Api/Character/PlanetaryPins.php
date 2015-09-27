@@ -23,7 +23,7 @@ namespace Seat\Eveapi\Api\Character;
 
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterPlanetaryPin;
+use Seat\Eveapi\Models\Character\PlanetaryPin;
 
 /**
  * Class PlanetaryPins
@@ -65,7 +65,7 @@ class PlanetaryPins extends Base
 
                 foreach ($result->pins as $pin) {
 
-                    $pin_info = CharacterPlanetaryPin::firstOrNew([
+                    $pin_info = PlanetaryPin::firstOrNew([
                         'ownerID'  => $character->characterID,
                         'planetID' => $planet_id,
                         'pinID'    => $pin->pinID]);
@@ -92,7 +92,7 @@ class PlanetaryPins extends Base
 
                 // Cleanup the Pins that are not in the reponse
                 // for this specific planet.
-                CharacterPlanetaryPin::where('ownerID', $character->characterID)
+                PlanetaryPin::where('ownerID', $character->characterID)
                     ->where('planetID', $planet_id)
                     ->whereNotIn('pinID', array_map(function ($pin) {
 
@@ -106,7 +106,7 @@ class PlanetaryPins extends Base
             // Cleanup pins for planets that do not exist
             // for this character anymore. It could be that
             // the entire colony was deleted.
-            CharacterPlanetaryPin::where('ownerID', $character->characterID)
+            PlanetaryPin::where('ownerID', $character->characterID)
                 ->whereNotIn('planetID', $colonies)
                 ->delete();
 

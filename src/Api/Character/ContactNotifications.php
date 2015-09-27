@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterContactNotifications;
+use Seat\Eveapi\Models\Character\ContactNotifications as ContactNotificationsModel;
 
 /**
  * Class ContactNotifications
@@ -48,7 +48,7 @@ class ContactNotifications extends Base
 
             foreach ($result->contactNotifications as $notification) {
 
-                CharacterContactNotifications::firstOrCreate([
+                ContactNotificationsModel::firstOrCreate([
                     'characterID'    => $character->characterID,
                     'notificationID' => $notification->notificationID,
                     'senderID'       => $notification->senderID,

@@ -23,8 +23,8 @@ namespace Seat\Eveapi\Api\Character;
 
 use Carbon\Carbon;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterAssetList;
-use Seat\Eveapi\Models\CharacterAssetListContents;
+use Seat\Eveapi\Models\Character\AssetList as AssetListModel;
+use Seat\Eveapi\Models\Character\AssetListContents;
 
 /**
  * Class AssetList
@@ -54,9 +54,9 @@ class AssetList extends Base
             // have for this character and repopulate them.
             //
             // [1] https://neweden-dev.com/Character/Asset_List
-            CharacterAssetList::where(
+            AssetListModel::where(
                 'characterID', $character->characterID)->delete();
-            CharacterAssetListContents::where(
+            AssetListContents::where(
                 'characterID', $character->characterID)->delete();
 
             // We take the resuls and chunk it up into parts of 1000
@@ -93,7 +93,7 @@ class AssetList extends Base
                 // If there were any assets derived form the array_map
                 // then we can bulk insert it into the table.
                 if (count($asset_list) > 0)
-                    CharacterAssetList::insert($asset_list);
+                    AssetListModel::insert($asset_list);
 
                 // Next we process the assets contents for this chunk
                 // of assets data. We need to iterate over each of
@@ -126,7 +126,7 @@ class AssetList extends Base
 
                         // Again, if there is any contents to add, do so.
                         if (count($asset_contents) > 0)
-                            CharacterAssetListContents::insert($asset_contents);
+                            AssetListContents::insert($asset_contents);
 
                     }
 

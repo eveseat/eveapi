@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Account;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\AccountApiKeyInfo;
-use Seat\Eveapi\Models\AccountApiKeyInfoCharacters;
+use Seat\Eveapi\Models\Account\ApiKeyInfo as ApiKeyInfoModel;
+use Seat\Eveapi\Models\Account\ApiKeyInfoCharacters;
 
 /**
  * Class APIKeyInfo
@@ -44,7 +44,7 @@ class APIKeyInfo extends Base
             ->getPheal()
             ->APIKeyInfo();
 
-        $key_info = AccountApiKeyInfo::firstOrNew([
+        $key_info = ApiKeyInfoModel::firstOrNew([
             'keyID' => $this->api_info->key_id]);
 
         $key_info->fill([
@@ -61,7 +61,7 @@ class APIKeyInfo extends Base
         // is possible for characters to move around.
         foreach ($result->key->characters as $character) {
 
-            $character_info = AccountApiKeyInfoCharacters::firstOrNew([
+            $character_info = ApiKeyInfoCharacters::firstOrNew([
                 'keyID'       => $this->api_info->key_id,
                 'characterID' => $character->characterID]);
 
@@ -76,7 +76,7 @@ class APIKeyInfo extends Base
         }
 
         // Cleanup Characters no longer on this key
-        AccountApiKeyInfoCharacters::where('keyID', $this->api_info->key_id)
+        ApiKeyInfoCharacters::where('keyID', $this->api_info->key_id)
             ->whereNotIn('characterID', array_map(function ($character) {
 
                 return $character->characterID;

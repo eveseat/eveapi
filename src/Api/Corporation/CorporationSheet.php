@@ -22,9 +22,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationSheet as CorporationSheetModel;
-use Seat\Eveapi\Models\CorporationSheetDivision;
-use Seat\Eveapi\Models\CorporationSheetWalletDivision;
+use Seat\Eveapi\Models\Corporation\CorporationSheet as CorporationSheetModel;
+use Seat\Eveapi\Models\Corporation\CorporationSheetDivision;
+use Seat\Eveapi\Models\Corporation\CorporationSheetWalletDivision;
 
 /**
  * Class CorporationSheet

@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationCustomsOffice;
+use Seat\Eveapi\Models\Corporation\CustomsOffice as CustomsOfficeModel;
 
 /**
  * Class CustomsOffices
@@ -46,12 +46,12 @@ class CustomsOffices extends Base
 
         // Items can apparently change ID's, so we need to
         // delete everything we have for now.
-        CorporationCustomsOffice::where(
+        CustomsOfficeModel::where(
             'corporationID', $this->corporationID)->delete();
 
         foreach ($result->pocos as $poco) {
 
-            CorporationCustomsOffice::create([
+            CustomsOfficeModel::create([
                 'corporationID'           => $this->corporationID,
                 'itemID'                  => $poco->itemID,
                 'solarSystemID'           => $poco->solarSystemID,

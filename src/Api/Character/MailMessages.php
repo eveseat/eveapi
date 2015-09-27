@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterMailMessage;
+use Seat\Eveapi\Models\Character\MailMessage;
 
 /**
  * Class MailMessagese
@@ -48,7 +48,7 @@ class MailMessages extends Base
 
             foreach ($result->messages as $message) {
 
-                CharacterMailMessage::firstOrCreate([
+                MailMessage::firstOrCreate([
                     'characterID'        => $character->characterID,
                     'messageID'          => $message->messageID,
                     'senderID'           => $message->senderID,

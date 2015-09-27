@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationMemberMedal;
+use Seat\Eveapi\Models\Corporation\MemberMedal;
 
 /**
  * Class MemberMedals
@@ -46,7 +46,7 @@ class MemberMedals extends Base
 
         foreach ($result->issuedMedals as $medal) {
 
-            $medal_info = CorporationMemberMedal::firstOrNew([
+            $medal_info = MemberMedal::firstOrNew([
                 'corporationID' => $this->corporationID,
                 'characterID'   => $medal->characterID,
                 'medalID'       => $medal->medalID]);

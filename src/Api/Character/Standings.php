@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterStanding;
+use Seat\Eveapi\Models\Character\Standing;
 
 /**
  * Class Standings
@@ -79,7 +79,7 @@ class Standings extends Base
     public function _update_standing($characterID, $standing, $type)
     {
 
-        $standing_info = CharacterStanding::firstOrNew([
+        $standing_info = Standing::firstOrNew([
             'characterID' => $characterID,
             'fromID'      => $standing->fromID]);
 

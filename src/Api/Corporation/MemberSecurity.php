@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationMemberSecurity;
-use Seat\Eveapi\Models\CorporationMemberSecurityTitle;
+use Seat\Eveapi\Models\Corporation\MemberSecurity as MemberSecurityModel;
+use Seat\Eveapi\Models\Corporation\MemberSecurityTitle;
 
 /**
  * Class MemberSecurity
@@ -48,13 +48,13 @@ class MemberSecurity extends Base
         foreach ($result->members as $member) {
 
             // Cleanup the known roles for this character
-            CorporationMemberSecurity::where(
+            MemberSecurityModel::where(
                 'characterID', $member->characterID)->delete();
 
             // Add each type of role for this character
             foreach ($member->roles as $role) {
 
-                CorporationMemberSecurity::create([
+                MemberSecurityModel::create([
                     'characterID'   => $member->characterID,
                     'characterName' => $member->name,
                     'roleType'      => 'roles',
@@ -65,7 +65,7 @@ class MemberSecurity extends Base
 
             foreach ($member->grantableRoles as $role) {
 
-                CorporationMemberSecurity::create([
+                MemberSecurityModel::create([
                     'characterID'   => $member->characterID,
                     'characterName' => $member->name,
                     'roleType'      => 'grantableRoles',
@@ -76,7 +76,7 @@ class MemberSecurity extends Base
 
             foreach ($member->rolesAtHQ as $role) {
 
-                CorporationMemberSecurity::create([
+                MemberSecurityModel::create([
                     'characterID'   => $member->characterID,
                     'characterName' => $member->name,
                     'roleType'      => 'rolesAtHQ',
@@ -87,7 +87,7 @@ class MemberSecurity extends Base
 
             foreach ($member->grantableRolesAtHQ as $role) {
 
-                CorporationMemberSecurity::create([
+                MemberSecurityModel::create([
                     'characterID'   => $member->characterID,
                     'characterName' => $member->name,
                     'roleType'      => 'grantableRolesAtHQ',
@@ -98,7 +98,7 @@ class MemberSecurity extends Base
 
             foreach ($member->rolesAtBase as $role) {
 
-                CorporationMemberSecurity::create([
+                MemberSecurityModel::create([
                     'characterID'   => $member->characterID,
                     'characterName' => $member->name,
                     'roleType'      => 'rolesAtBase',
@@ -109,7 +109,7 @@ class MemberSecurity extends Base
 
             foreach ($member->grantableRolesAtBase as $role) {
 
-                CorporationMemberSecurity::create([
+                MemberSecurityModel::create([
                     'characterID'   => $member->characterID,
                     'characterName' => $member->name,
                     'roleType'      => 'grantableRolesAtBase',
@@ -120,7 +120,7 @@ class MemberSecurity extends Base
 
             foreach ($member->rolesAtOther as $role) {
 
-                CorporationMemberSecurity::create([
+                MemberSecurityModel::create([
                     'characterID'   => $member->characterID,
                     'characterName' => $member->name,
                     'roleType'      => 'rolesAtOther',
@@ -131,7 +131,7 @@ class MemberSecurity extends Base
 
             foreach ($member->grantableRolesAtOther as $role) {
 
-                CorporationMemberSecurity::create([
+                MemberSecurityModel::create([
                     'characterID'   => $member->characterID,
                     'characterName' => $member->name,
                     'roleType'      => 'grantableRolesAtOther',
@@ -141,7 +141,7 @@ class MemberSecurity extends Base
             }
 
             // Lastly, cleanup and add the titles
-            CorporationMemberSecurityTitle::where(
+            MemberSecurityTitle::where(
                 'characterID', $member->characterID)->delete();
 
             // Only set titles if the API response had some
@@ -149,7 +149,7 @@ class MemberSecurity extends Base
 
                 foreach ($member->titles as $title) {
 
-                    CorporationMemberSecurityTitle::create([
+                    MemberSecurityTitle::create([
                         'characterID'   => $member->characterID,
                         'characterName' => $member->name,
                         'titleID'       => $title->titleID,

@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Eve;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\EveErrorList;
+use Seat\Eveapi\Models\Eve\ErrorList as ErrorListModel;
 
 /**
  * Class ErrorList
@@ -43,7 +43,7 @@ class ErrorList extends Base
 
         foreach ($result->errors as $error) {
 
-            EveErrorList::firstOrCreate([
+            ErrorListModel::firstOrCreate([
                 'errorCode' => $error->errorCode,
                 'errorText' => $error->errorText
             ]);

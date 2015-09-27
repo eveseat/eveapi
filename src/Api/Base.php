@@ -31,7 +31,7 @@ use Pheal\Pheal;
 use Pheal\RateLimiter\FileLockRateLimiter;
 use Seat\Eveapi\Exception\InvalidScopeException;
 use Seat\Eveapi\Helpers\EveApiAccess;
-use Seat\Eveapi\Models\EveApiKey;
+use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Traits\Validation;
 
 /**
@@ -157,14 +157,14 @@ abstract class Base
     /**
      * Sets the API credentials to use with API requests.
      *
-     * @param \Seat\Eveapi\Models\EveApiKey $api_info
+     * @param \Seat\Eveapi\Models\Eve\ApiKey $api_info
      *
      * @return $this
      * @throws \Seat\Eveapi\Exception\InvalidKeyPairException
      * @throws \Seat\Eveapi\Exception\MissingKeyPairException
      *
      */
-    public function setApi(EveApiKey $api_info)
+    public function setApi(ApiKey $api_info)
     {
 
         $this->validateKeyPair(
@@ -176,7 +176,7 @@ abstract class Base
         $this->key_id = $api_info->key_id;
         $this->v_code = $api_info->v_code;
 
-        // Set the EveApiKey Object
+        // Set the ApiKey Object
         $this->api_info = $api_info;
 
         return $this;

@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Map;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\MapKills;
+use Seat\Eveapi\Models\Map\Kills as KillsModel;
 
 /**
  * Class Kills
@@ -43,7 +43,7 @@ class Kills extends Base
 
         foreach ($result->solarSystems as $solar_system) {
 
-            $system = MapKills::firstOrNew([
+            $system = KillsModel::firstOrNew([
                 'solarSystemID' => $solar_system->solarSystemID]);
 
             $system->fill([

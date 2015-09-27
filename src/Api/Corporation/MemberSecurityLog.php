@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationMemberSecurityLog;
+use Seat\Eveapi\Models\Corporation\MemberSecurityLog as MemberSecurityLogModel;
 use Seat\Eveapi\Traits\Utils;
 
 /**
@@ -57,10 +57,10 @@ class MemberSecurityLog extends Base
                 $log_entry->roleLocationType);
 
             // If we have the log entry, move to the next
-            if (CorporationMemberSecurityLog::where('hash', $hash)->first())
+            if (MemberSecurityLogModel::where('hash', $hash)->first())
                 continue;
 
-            CorporationMemberSecurityLog::create([
+            MemberSecurityLogModel::create([
                 'hash'             => $hash,
                 'corporationID'    => $this->corporationID,
                 'characterID'      => $log_entry->characterID,

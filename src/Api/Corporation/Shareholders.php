@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationShareholder;
+use Seat\Eveapi\Models\Corporation\Shareholder;
 
 /**
  * Class Shareholders
@@ -47,7 +47,7 @@ class Shareholders extends Base
         // Process shareholding Characters
         foreach ($result->characters as $character) {
 
-            $share_info = CorporationShareholder::firstOrNew([
+            $share_info = Shareholder::firstOrNew([
                 'corporationID'   => $this->corporationID,
                 'shareholderType' => 'character',
                 'shareholderID'   => $character->shareholderID]);
@@ -63,7 +63,7 @@ class Shareholders extends Base
         }
 
         // Cleanup Old Shareholding Characters
-        CorporationShareholder::where('corporationID', $this->corporationID)
+        Shareholder::where('corporationID', $this->corporationID)
             ->where('shareholderType', 'character')
             ->whereNotIn('shareholderID', array_map(function ($character) {
 
@@ -75,7 +75,7 @@ class Shareholders extends Base
         // Process Shareholding Corporations
         foreach ($result->corporations as $corporation) {
 
-            $share_info = CorporationShareholder::firstOrNew([
+            $share_info = Shareholder::firstOrNew([
                 'corporationID'   => $this->corporationID,
                 'shareholderType' => 'corporation',
                 'shareholderID'   => $corporation->shareholderID]);
@@ -89,7 +89,7 @@ class Shareholders extends Base
         }
 
         // Cleanup Old Shareholding Corporations
-        CorporationShareholder::where('corporationID', $this->corporationID)
+        Shareholder::where('corporationID', $this->corporationID)
             ->where('shareholderType', 'corporation')
             ->whereNotIn('shareholderID', array_map(function ($corporation) {
 

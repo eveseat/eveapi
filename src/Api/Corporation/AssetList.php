@@ -23,8 +23,8 @@ namespace Seat\Eveapi\Api\Corporation;
 
 use Carbon\Carbon;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationAssetList;
-use Seat\Eveapi\Models\CorporationAssetListContents;
+use Seat\Eveapi\Models\Corporation\AssetList as AssetListModel;
+use Seat\Eveapi\Models\Corporation\AssetListContents;
 
 /**
  * Class AssetList
@@ -52,9 +52,9 @@ class AssetList extends Base
         // have for this character and repopulate them.
         //
         // [1] https://neweden-dev.com/Corporation/Asset_List
-        CorporationAssetList::where(
+        AssetListModel::where(
             'corporationID', $this->corporationID)->delete();
-        CorporationAssetListContents::where(
+        AssetListContents::where(
             'corporationID', $this->corporationID)->delete();
 
         // We take the resuls and chunk it up into parts of 1000
@@ -91,7 +91,7 @@ class AssetList extends Base
             // If there were any assets derived form the array_map
             // then we can bulk insert it into the table.
             if (count($asset_list) > 0)
-                CorporationAssetList::insert($asset_list);
+                AssetListModel::insert($asset_list);
 
             // Next we process the assets contents for this chunk
             // of assets data. We iterate over each of the assets
@@ -164,7 +164,7 @@ class AssetList extends Base
 
         // Again, if there is any contents to add, do so.
         if (count($asset_contents) > 0)
-            CorporationAssetListContents::insert($asset_contents);
+            AssetListContents::insert($asset_contents);
 
         return;
     }

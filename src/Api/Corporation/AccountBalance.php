@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationAccountBalance;
+use Seat\Eveapi\Models\Corporation\AccountBalance as AccountBalanceModel;
 
 /**
  * Class AccountBalance
@@ -46,7 +46,7 @@ class AccountBalance extends Base
 
         foreach ($result->accounts as $account) {
 
-            $account_balance = CorporationAccountBalance::firstOrNew([
+            $account_balance = AccountBalanceModel::firstOrNew([
                 'corporationID' => $this->corporationID,
                 'accountID'     => $account->accountID]);
 

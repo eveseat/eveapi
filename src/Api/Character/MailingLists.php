@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterMailingList;
-use Seat\Eveapi\Models\CharacterMailingListInfo;
+use Seat\Eveapi\Models\Character\MailingList;
+use Seat\Eveapi\Models\Character\MailingListInfo;
 
 /**
  * Class MailingLists
@@ -51,20 +51,20 @@ class MailingLists extends Base
             // any time. For this reason, we need to clean
             // the linking table and repopulate the list
             // memberships for this character.
-            CharacterMailingList::where(
+            MailingList::where(
                 'characterID', $character->characterID)->delete();
 
             // Re-populate the mailing lists and info if needed
             foreach ($result->mailingLists as $list) {
 
-                CharacterMailingList::create([
+                MailingList::create([
                     'characterID' => $character->characterID,
                     'listID'      => $list->listID
                 ]);
 
                 // Add the list information if we are not already
                 // aware of it.
-                CharacterMailingListInfo::firstOrCreate([
+                MailingListInfo::firstOrCreate([
                     'listID'      => $list->listID,
                     'displayName' => $list->displayName
                 ]);

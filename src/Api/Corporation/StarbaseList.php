@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationStarbase;
-use Seat\Eveapi\Models\CorporationStarbaseDetail;
+use Seat\Eveapi\Models\Corporation\Starbase;
+use Seat\Eveapi\Models\Corporation\StarbaseDetail as StarbaseDetailModel;
 
 /**
  * Class StarbaseList
@@ -47,7 +47,7 @@ class StarbaseList extends Base
 
         foreach ($result->starbases as $starbase) {
 
-            $starbase_info = CorporationStarbase::firstOrNew([
+            $starbase_info = Starbase::firstOrNew([
                 'corporationID' => $this->corporationID,
                 'itemID'        => $starbase->itemID]);
 
@@ -65,7 +65,7 @@ class StarbaseList extends Base
         }
 
         // Cleanup old Starbases
-        CorporationStarbase::where('corporationID', $this->corporationID)
+        Starbase::where('corporationID', $this->corporationID)
             ->whereNotIn('itemID', array_map(function ($starbase) {
 
                 return $starbase->itemID;
@@ -74,7 +74,7 @@ class StarbaseList extends Base
             ->delete();
 
         // Cleanup old Starbase details.
-        CorporationStarbaseDetail::where('corporationID', $this->corporationID)
+        StarbaseDetailModel::where('corporationID', $this->corporationID)
             ->whereNotIn('itemID', array_map(function ($starbase) {
 
                 return $starbase->itemID;

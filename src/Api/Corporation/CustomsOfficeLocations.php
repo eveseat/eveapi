@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationCustomsOffice;
-use Seat\Eveapi\Models\CorporationCustomsOfficeLocation;
+use Seat\Eveapi\Models\Corporation\CustomsOffice as CustomsOfficeModel;
+use Seat\Eveapi\Models\Corporation\CustomsOfficeLocation;
 use Seat\Eveapi\Traits\Utils;
 
 /**
@@ -52,7 +52,7 @@ class CustomsOfficeLocations extends Base
         // to the Locations endpoint, we will also have
         // to cleanup as we will be referencing the same
         // itemID's
-        CorporationCustomsOfficeLocation::where(
+        CustomsOfficeLocation::where(
             'corporationID', $this->corporationID)
             ->delete();
 
@@ -60,7 +60,7 @@ class CustomsOfficeLocations extends Base
         // by the itemID's so that we can later use this
         // same array to lookup the locationID for the
         // nearest_celestial lookup.
-        $item_ids = CorporationCustomsOffice::where(
+        $item_ids = CustomsOfficeModel::where(
             'corporationID', $this->corporationID)
             ->get()
             ->keyBy('itemID')
@@ -85,7 +85,7 @@ class CustomsOfficeLocations extends Base
                     $location->z
                 );
 
-                CorporationCustomsOfficeLocation::create([
+                CustomsOfficeLocation::create([
                     'corporationID' => $this->corporationID,
                     'itemID'        => $location->itemID,
                     'itemName'      => $location->itemName,

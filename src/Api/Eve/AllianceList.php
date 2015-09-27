@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Eve;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\EveAllianceList;
-use Seat\Eveapi\Models\EveAllianceListMemberCorporations;
+use Seat\Eveapi\Models\Eve\AllianceList as AllianceListModel;
+use Seat\Eveapi\Models\Eve\AllianceListMemberCorporations;
 
 /**
  * Class AllianceList
@@ -44,7 +44,7 @@ class AllianceList extends Base
 
         foreach ($result->alliances as $alliance) {
 
-            $alliance_data = EveAllianceList::firstOrNew([
+            $alliance_data = AllianceListModel::firstOrNew([
                 'allianceID' => $alliance->allianceID]);
 
             $alliance_data->fill([
@@ -59,7 +59,7 @@ class AllianceList extends Base
 
             // Get a list of known corporationID's for this
             // alliance
-            $known_corporations = EveAllianceListMemberCorporations::where(
+            $known_corporations = AllianceListMemberCorporations::where(
                 'allianceID', $alliance->allianceID)
                 ->lists('corporationID')->all();
 
@@ -69,7 +69,7 @@ class AllianceList extends Base
             foreach ($alliance->memberCorporations as $corporation) {
 
                 if (!in_array($corporation->corporationID, $known_corporations))
-                    EveAllianceListMemberCorporations::create([
+                    AllianceListMemberCorporations::create([
                         'allianceID'    => $alliance->allianceID,
                         'corporationID' => $corporation->corporationID,
                         'startDate'     => $corporation->startDate
@@ -78,7 +78,7 @@ class AllianceList extends Base
 
             // Cleanup Corporations that are no longer part
             // of this alliance
-            EveAllianceListMemberCorporations::where('allianceID', $alliance->allianceID)
+            AllianceListMemberCorporations::where('allianceID', $alliance->allianceID)
                 ->whereNotIn('corporationID', array_map(function ($corporation) {
 
                     return $corporation->corporationID;

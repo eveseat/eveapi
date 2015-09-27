@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Map;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\MapJumps;
+use Seat\Eveapi\Models\Map\Jumps as JumpsModel;
 
 /**
  * Class Jumps
@@ -43,7 +43,7 @@ class Jumps extends Base
 
         foreach ($result->solarSystems as $solar_system) {
 
-            $system = MapJumps::firstOrNew([
+            $system = JumpsModel::firstOrNew([
                 'solarSystemID' => $solar_system->solarSystemID]);
 
             $system->fill([

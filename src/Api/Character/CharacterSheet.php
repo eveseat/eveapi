@@ -22,12 +22,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterCharacterSheet;
-use Seat\Eveapi\Models\CharacterCharacterSheetCorporationTitles;
-use Seat\Eveapi\Models\CharacterCharacterSheetImplants;
-use Seat\Eveapi\Models\CharacterCharacterSheetJumpClone;
-use Seat\Eveapi\Models\CharacterCharacterSheetJumpCloneImplants;
-use Seat\Eveapi\Models\CharacterCharacterSheetSkills;
+use Seat\Eveapi\Models\Character\CharacterSheet as CharacterSheetModel;
+use Seat\Eveapi\Models\Character\CharacterSheetCorporationTitles;
+use Seat\Eveapi\Models\Character\CharacterSheetImplants;
+use Seat\Eveapi\Models\Character\CharacterSheetJumpClone;
+use Seat\Eveapi\Models\Character\CharacterSheetJumpCloneImplants;
+use Seat\Eveapi\Models\Character\CharacterSheetSkills;
 
 /**
  * Class CharacterSheet
@@ -58,7 +58,7 @@ class CharacterSheet extends Base
             // Lets start with the easy stuff first ok.
 
             // Get the CharacterSheet Data
-            $character_data = CharacterCharacterSheet::firstOrNew([
+            $character_data = CharacterSheetModel::firstOrNew([
                 'characterID' => $character->characterID]);
 
             // .. and update it
@@ -104,13 +104,13 @@ class CharacterSheet extends Base
             // Next up, Implants. We need to clear up the ones
             // that we already know of as implants can change
             // at any given time.
-            CharacterCharacterSheetImplants::where(
+            CharacterSheetImplants::where(
                 'characterID', $character->characterID)->delete();
 
             // Lets loop over the implants and create them
             foreach ($result->implants as $implant) {
 
-                CharacterCharacterSheetImplants::create([
+                CharacterSheetImplants::create([
                     'characterID' => $character->characterID,
                     'typeID'      => $implant->typeID,
                     'typeName'    => $implant->typeName
@@ -122,15 +122,15 @@ class CharacterSheet extends Base
             // change at any moment, we will have to take the ones
             // we know of and remove them, and then re-add what
             // we got from the API
-            CharacterCharacterSheetJumpClone::where(
+            CharacterSheetJumpClone::where(
                 'characterID', $character->characterID)->delete();
-            CharacterCharacterSheetJumpCloneImplants::where(
+            CharacterSheetJumpCloneImplants::where(
                 'characterID', $character->characterID)->delete();
 
             // Lets loop over the clones for the character.
             foreach ($result->jumpClones as $jump_clone) {
 
-                CharacterCharacterSheetJumpClone::create([
+                CharacterSheetJumpClone::create([
                     'characterID' => $character->characterID,
                     'jumpCloneID' => $jump_clone->jumpCloneID,
                     'typeID'      => $jump_clone->typeID,
@@ -143,7 +143,7 @@ class CharacterSheet extends Base
             // Lets loop over the Jump Clone Implants for the character
             foreach ($result->jumpCloneImplants as $jump_clone_implant) {
 
-                CharacterCharacterSheetJumpCloneImplants::create([
+                CharacterSheetJumpCloneImplants::create([
                     'characterID' => $character->characterID,
                     'jumpCloneID' => $jump_clone_implant->jumpCloneID,
                     'typeID'      => $jump_clone_implant->typeID,
@@ -156,7 +156,7 @@ class CharacterSheet extends Base
             // create them as needed
             foreach ($result->skills as $skill) {
 
-                $skill_info = CharacterCharacterSheetSkills::firstOrNew([
+                $skill_info = CharacterSheetSkills::firstOrNew([
                     'characterID' => $character->characterID,
                     'typeID'      => $skill->typeID]);
 
@@ -173,13 +173,13 @@ class CharacterSheet extends Base
             // Next, Corporation Titles. Again, this is something that
             // can change as they are granted / revoked, so delete
             // the known once and repopulate
-            CharacterCharacterSheetCorporationTitles::where(
+            CharacterSheetCorporationTitles::where(
                 'characterID', $character->characterID)->delete();
 
             // Lets loop over the corporation titles and populate
             foreach ($result->corporationTitles as $title) {
 
-                CharacterCharacterSheetCorporationTitles::create([
+                CharacterSheetCorporationTitles::create([
                     'characterID' => $character->characterID,
                     'titleID'     => $title->titleID,
                     'titleName'   => $title->titleName

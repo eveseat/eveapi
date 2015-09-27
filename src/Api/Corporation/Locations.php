@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationAssetList;
-use Seat\Eveapi\Models\CorporationLocations;
+use Seat\Eveapi\Models\Corporation\AssetList as AssetListModel;
+use Seat\Eveapi\Models\Corporation\Locations as LocationsModel;
 use Seat\Eveapi\Traits\Utils;
 
 /**
@@ -52,7 +52,7 @@ class Locations extends Base
         // to the Locations endpoint, we will also have
         // to cleanup as we will be referencing the same
         // itemID's
-        CorporationLocations::where(
+        LocationsModel::where(
             'corporationID', $this->corporationID)
             ->delete();
 
@@ -60,7 +60,7 @@ class Locations extends Base
         // by the itemID's so that we can later use this
         // same array to lookup the locationID for the
         // nearest_celestial lookup.
-        $item_ids = CorporationAssetList::where(
+        $item_ids = AssetListModel::where(
             'corporationID', $this->corporationID)
             ->get()
             ->keyBy('itemID')
@@ -85,7 +85,7 @@ class Locations extends Base
                     $location->z
                 );
 
-                CorporationLocations::create([
+                LocationsModel::create([
                     'corporationID' => $this->corporationID,
                     'itemID'        => $location->itemID,
                     'itemName'      => $location->itemName,

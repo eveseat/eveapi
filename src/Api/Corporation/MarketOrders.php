@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationMarketOrder;
+use Seat\Eveapi\Models\Corporation\MarketOrder;
 
 /**
  * Class MarketOrders
@@ -46,7 +46,7 @@ class MarketOrders extends Base
 
         foreach ($result->orders as $order) {
 
-            $order_info = CorporationMarketOrder::firstOrNew([
+            $order_info = MarketOrder::firstOrNew([
                 'corporationID' => $this->corporationID,
                 'orderID'       => $order->orderID]);
 

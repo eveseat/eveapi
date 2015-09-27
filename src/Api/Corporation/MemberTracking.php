@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationMemberTracking;
+use Seat\Eveapi\Models\Corporation\MemberTracking as MemberTrackingModel;
 
 /**
  * Class MemberTracking
@@ -46,7 +46,7 @@ class MemberTracking extends Base
 
         foreach ($result->members as $member) {
 
-            $member_info = CorporationMemberTracking::firstOrNew([
+            $member_info = MemberTrackingModel::firstOrNew([
                 'corporationID' => $this->corporationID,
                 'characterID'   => $member->characterID]);
 
@@ -70,7 +70,7 @@ class MemberTracking extends Base
         }
 
         // Cleanup members no longer in this corporation
-        CorporationMemberTracking::where('corporationID', $this->corporationID)
+        MemberTrackingModel::where('corporationID', $this->corporationID)
             ->whereNotIn('characterID', array_map(function ($member) {
 
                 return $member->characterID;

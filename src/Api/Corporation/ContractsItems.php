@@ -23,7 +23,7 @@ namespace Seat\Eveapi\Api\Corporation;
 
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationContractItem;
+use Seat\Eveapi\Models\Corporation\ContractItem;
 
 /**
  * Class ContractsItems
@@ -82,7 +82,7 @@ class ContractsItems extends Base
 
             foreach ($result->itemList as $item) {
 
-                CorporationContractItem::create([
+                ContractItem::create([
                     'corporationID' => $this->corporationID,
                     'contractID'    => $contract_id,
                     'recordID'      => $item->recordID,

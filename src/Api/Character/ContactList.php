@@ -22,12 +22,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterContactList;
-use Seat\Eveapi\Models\CharacterContactListAlliance;
-use Seat\Eveapi\Models\CharacterContactListAllianceLabel;
-use Seat\Eveapi\Models\CharacterContactListCorporate;
-use Seat\Eveapi\Models\CharacterContactListCorporateLabel;
-use Seat\Eveapi\Models\CharacterContactListLabel;
+use Seat\Eveapi\Models\Character\ContactList as ContactListModel;
+use Seat\Eveapi\Models\Character\ContactListAlliance;
+use Seat\Eveapi\Models\Character\ContactListAllianceLabel;
+use Seat\Eveapi\Models\Character\ContactListCorporate;
+use Seat\Eveapi\Models\Character\ContactListCorporateLabel;
+use Seat\Eveapi\Models\Character\ContactListLabel;
 
 /**
  * Class ContactList
@@ -55,12 +55,12 @@ class ContactList extends Base
             // types of information. So, we have to delete
             // the current list and recreate it with the
             // new data we sourced from the API.
-            CharacterContactList::where(
+            ContactListModel::where(
                 'characterID', $character->characterID)->delete();
 
             foreach ($result->contactList as $contact) {
 
-                CharacterContactList::create([
+                ContactListModel::create([
                     'characterID'   => $character->characterID,
                     'contactID'     => $contact->contactID,
                     'contactName'   => $contact->contactName,
@@ -72,12 +72,12 @@ class ContactList extends Base
             }
 
             // Next up, the Contact List Labels
-            CharacterContactListLabel::where(
+            ContactListLabel::where(
                 'characterID', $character->characterID)->delete();
 
             foreach ($result->contactLabels as $label) {
 
-                CharacterContactListLabel::create([
+                ContactListLabel::create([
                     'characterID' => $character->characterID,
                     'labelID'     => $label->labelID,
                     'name'        => $label->name
@@ -87,12 +87,12 @@ class ContactList extends Base
             // Characters also expose Corp / Alliance contacts
             // information. As these can also change we will
             // update them as needed
-            CharacterContactListCorporate::where(
+            ContactListCorporate::where(
                 'characterID', $character->characterID)->delete();
 
             foreach ($result->corporateContactList as $contact) {
 
-                CharacterContactListCorporate::create([
+                ContactListCorporate::create([
                     'characterID'   => $character->characterID,
                     'corporationID' => $character->corporationID,
                     'contactID'     => $contact->contactID,
@@ -104,12 +104,12 @@ class ContactList extends Base
             }
 
             // Corporation Contacts also have Labels.
-            CharacterContactListCorporateLabel::where(
+            ContactListCorporateLabel::where(
                 'characterID', $character->characterID)->delete();
 
             foreach ($result->corporateContactLabels as $label) {
 
-                CharacterContactListCorporateLabel::create([
+                ContactListCorporateLabel::create([
                     'characterID'   => $character->characterID,
                     'corporationID' => $character->corporationID,
                     'labelID'       => $label->labelID,
@@ -119,12 +119,12 @@ class ContactList extends Base
 
             // Next up, Alliance Contacts. Exactly the same applies
             // to these as the above personal / corporate contacts
-            CharacterContactListAlliance::where(
+            ContactListAlliance::where(
                 'characterID', $character->characterID)->delete();
 
             foreach ($result->allianceContactList as $contact) {
 
-                CharacterContactListAlliance::create([
+                ContactListAlliance::create([
                     'characterID'   => $character->characterID,
                     'contactID'     => $contact->contactID,
                     'contactName'   => $contact->contactName,
@@ -135,12 +135,12 @@ class ContactList extends Base
             }
 
             // And now, the labels for the Alliance Contact List
-            CharacterContactListAllianceLabel::where(
+            ContactListAllianceLabel::where(
                 'characterID', $character->characterID)->delete();
 
             foreach ($result->allianceContactLabels as $label) {
 
-                CharacterContactListAllianceLabel::create([
+                ContactListAllianceLabel::create([
                     'characterID' => $character->characterID,
                     'labelID'     => $label->labelID,
                     'name'        => $label->name

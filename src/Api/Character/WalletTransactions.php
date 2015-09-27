@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterWalletTransaction;
+use Seat\Eveapi\Models\Character\WalletTransaction;
 use Seat\Eveapi\Traits\Utils;
 
 /**
@@ -105,7 +105,7 @@ class WalletTransactions extends Base
                     // transactions. We dont immediately break because
                     // the transactions are not always received in any
                     // order for the fromID that was specified.
-                    if (CharacterWalletTransaction::where('characterID', $character->characterID)
+                    if (WalletTransaction::where('characterID', $character->characterID)
                         ->where('hash', $transaction_hash)
                         ->first()
                     ) {
@@ -114,7 +114,7 @@ class WalletTransactions extends Base
                         continue;
                     }
 
-                    CharacterWalletTransaction::create([
+                    WalletTransaction::create([
                         'characterID'          => $character->characterID,
                         'hash'                 => $transaction_hash,
                         'transactionID'        => $transaction->transactionID,

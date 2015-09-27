@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterBookmark;
+use Seat\Eveapi\Models\Character\Bookmark;
 
 /**
  * Class Bookmarks
@@ -54,7 +54,7 @@ class Bookmarks extends Base
                 // themselves.
                 foreach ($folder->bookmarks as $bookmark) {
 
-                    $bookmark_info = CharacterBookmark::firstOrNew([
+                    $bookmark_info = Bookmark::firstOrNew([
                         'characterID' => $character->characterID,
                         'folderID'    => $folder->folderID,
                         'bookmarkID'  => $bookmark->bookmarkID,
@@ -79,7 +79,7 @@ class Bookmarks extends Base
                 } // Foreach Bookmark
 
                 // Cleanup old bookmarks in this folder
-                CharacterBookmark::where('characterID', $character->characterID)
+                Bookmark::where('characterID', $character->characterID)
                     ->where('folderID', $folder->folderID)
                     ->whereNotIn('bookmarkID', array_map(function ($bookmark) {
 
@@ -91,7 +91,7 @@ class Bookmarks extends Base
             } // Foreach Folder
 
             // Cleanup old folders
-            CharacterBookmark::where('characterID', $character->characterID)
+            Bookmark::where('characterID', $character->characterID)
                 ->whereNotIn('folderID', array_map(function ($folder) {
 
                     return $folder->folderID;

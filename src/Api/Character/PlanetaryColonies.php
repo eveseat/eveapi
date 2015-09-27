@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterPlanetaryColony;
+use Seat\Eveapi\Models\Character\PlanetaryColony;
 
 /**
  * Class PlanetaryColonies
@@ -52,7 +52,7 @@ class PlanetaryColonies extends Base
             // this update call.
             foreach ($result->colonies as $colony) {
 
-                $colony_info = CharacterPlanetaryColony::firstOrNew([
+                $colony_info = PlanetaryColony::firstOrNew([
                     'ownerID'  => $colony->ownerID,
                     'planetID' => $colony->planetID]);
 
@@ -74,7 +74,7 @@ class PlanetaryColonies extends Base
             } // Foreach colony
 
             // Cleanup the Colonies that are not in the reponse.
-            CharacterPlanetaryColony::where('ownerID', $character->characterID)
+            PlanetaryColony::where('ownerID', $character->characterID)
                 ->whereNotIn('planetID', array_map(function ($colony) {
 
                     return $colony->planetID;

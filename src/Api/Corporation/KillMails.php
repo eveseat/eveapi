@@ -22,10 +22,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationKillMail;
-use Seat\Eveapi\Models\KillMailAttacker;
-use Seat\Eveapi\Models\KillMailDetail;
-use Seat\Eveapi\Models\KillMailItem;
+use Seat\Eveapi\Models\Corporation\KillMail;
+use Seat\Eveapi\Models\KillMail\Attacker;
+use Seat\Eveapi\Models\KillMail\Detail;
+use Seat\Eveapi\Models\KillMail\Item;
 
 /**
  * Class KillMails
@@ -87,7 +87,7 @@ class KillMails extends Base
                 // then we can just continue to the next. We
                 // are assuming the kill details already is
                 // known here.
-                if (CorporationKillMail::where('corporationID', $this->corporationID)
+                if (KillMail::where('corporationID', $this->corporationID)
                     ->where('killID', $kill->killID)
                     ->first()
                 ) {
@@ -95,7 +95,7 @@ class KillMails extends Base
                 }
 
                 // Create the killmail link to this corporation
-                CorporationKillMail::create([
+                KillMail::create([
                     'corporationID' => $this->corporationID,
                     'killID'        => $kill->killID
                 ]);
@@ -107,14 +107,14 @@ class KillMails extends Base
                 // work again. Remember, from this point on, we
                 // refer to a kill by killID, regardless of the
                 // assosiated corporationID
-                if (KillMailDetail::where('killID', $kill->killID)
+                if (Detail::where('killID', $kill->killID)
                     ->first()
                 ) {
                     continue;
                 }
 
                 // Create the killDetails, attacker and item info
-                KillMailDetail::create([
+                Detail::create([
                     'killID'          => $kill->killID,
                     'solarSystemID'   => $kill->solarSystemID,
                     'killTime'        => $kill->killTime,
@@ -133,7 +133,7 @@ class KillMails extends Base
 
                 foreach ($kill->attackers as $attacker) {
 
-                    KillMailAttacker::create([
+                    Attacker::create([
                         'killID'          => $kill->killID,
                         'characterID'     => $attacker->characterID,
                         'characterName'   => $attacker->characterName,
@@ -153,7 +153,7 @@ class KillMails extends Base
 
                 foreach ($kill->items as $item) {
 
-                    KillMailItem::create([
+                    Item::create([
                         'killID'       => $kill->killID,
                         'typeID'       => $item->typeID,
                         'flag'         => $item->flag,

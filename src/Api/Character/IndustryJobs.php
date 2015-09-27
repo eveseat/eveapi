@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterIndustryJob;
+use Seat\Eveapi\Models\Character\IndustryJob;
 
 /**
  * Class IndustryJobs
@@ -48,7 +48,7 @@ class IndustryJobs extends Base
 
             foreach ($result->jobs as $industry_job) {
 
-                $new_industry_job = CharacterIndustryJob::firstOrNew([
+                $new_industry_job = IndustryJob::firstOrNew([
                     'characterID' => $character->characterID,
                     'jobID'       => $industry_job->jobID,
                 ]);

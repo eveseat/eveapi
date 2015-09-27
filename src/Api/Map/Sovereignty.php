@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Map;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\MapSovereignty;
+use Seat\Eveapi\Models\Map\Sovereignty as SovereigntyModel;
 
 /**
  * Class Sovereignty
@@ -43,7 +43,7 @@ class Sovereignty extends Base
 
         foreach ($result->solarSystems as $solar_system) {
 
-            $system = MapSovereignty::firstOrNew([
+            $system = SovereigntyModel::firstOrNew([
                 'solarSystemID' => $solar_system->solarSystemID]);
 
             $system->fill([

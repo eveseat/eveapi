@@ -22,10 +22,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationContactList;
-use Seat\Eveapi\Models\CorporationContactListAlliance;
-use Seat\Eveapi\Models\CorporationContactListAllianceLabel;
-use Seat\Eveapi\Models\CorporationContactListLabel;
+use Seat\Eveapi\Models\Corporation\ContactList as ContactListModel;
+use Seat\Eveapi\Models\Corporation\ContactListAlliance;
+use Seat\Eveapi\Models\Corporation\ContactListAllianceLabel;
+use Seat\Eveapi\Models\Corporation\ContactListLabel;
 
 /**
  * Class ContactList
@@ -51,12 +51,12 @@ class ContactList extends Base
         // types of information. So, we have to delete
         // the current list and recreate it with the
         // new data we sourced from the API.
-        CorporationContactList::where(
+        ContactListModel::where(
             'corporationID', $this->corporationID)->delete();
 
         foreach ($result->corporateContactList as $contact) {
 
-            CorporationContactList::create([
+            ContactListModel::create([
                 'corporationID' => $this->corporationID,
                 'contactID'     => $contact->contactID,
                 'contactName'   => $contact->contactName,
@@ -67,12 +67,12 @@ class ContactList extends Base
         }
 
         // Corporation Contacts also have Labels.
-        CorporationContactListLabel::where(
+        ContactListLabel::where(
             'corporationID', $this->corporationID)->delete();
 
         foreach ($result->corporateContactLabels as $label) {
 
-            CorporationContactListLabel::create([
+            ContactListLabel::create([
                 'corporationID' => $this->corporationID,
                 'labelID'       => $label->labelID,
                 'name'          => $label->name
@@ -81,12 +81,12 @@ class ContactList extends Base
 
         // Next up, Alliance Contacts. Exactly the same applies
         // to these as the above corporate contacts
-        CorporationContactListAlliance::where(
+        ContactListAlliance::where(
             'corporationID', $this->corporationID)->delete();
 
         foreach ($result->allianceContactList as $contact) {
 
-            CorporationContactListAlliance::create([
+            ContactListAlliance::create([
                 'corporationID' => $this->corporationID,
                 'contactID'     => $contact->contactID,
                 'contactName'   => $contact->contactName,
@@ -97,12 +97,12 @@ class ContactList extends Base
         }
 
         // And now, the labels for the Alliance Contact List
-        CorporationContactListAllianceLabel::where(
+        ContactListAllianceLabel::where(
             'corporationID', $this->corporationID)->delete();
 
         foreach ($result->allianceContactLabels as $label) {
 
-            CorporationContactListAllianceLabel::create([
+            ContactListAllianceLabel::create([
                 'corporationID' => $this->corporationID,
                 'labelID'       => $label->labelID,
                 'name'          => $label->name

@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Corporation;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CorporationTitle;
+use Seat\Eveapi\Models\Corporation\Title;
 
 /**
  * Class Titles
@@ -46,7 +46,7 @@ class Titles extends Base
 
         foreach ($result->titles as $title) {
 
-            $title_info = CorporationTitle::firstOrNew([
+            $title_info = Title::firstOrNew([
                 'corporationID' => $this->corporationID,
                 'titleID'       => $title->titleID]);
 

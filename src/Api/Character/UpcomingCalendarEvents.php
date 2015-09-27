@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\CharacterUpcomingCalendarEvent;
+use Seat\Eveapi\Models\Character\UpcomingCalendarEvent;
 
 /**
  * Class UpcomingCalendarEvents
@@ -48,7 +48,7 @@ class UpcomingCalendarEvents extends Base
 
             foreach ($result->upcomingEvents as $event) {
 
-                $event_info = CharacterUpcomingCalendarEvent::firstOrNew([
+                $event_info = UpcomingCalendarEvent::firstOrNew([
                     'characterID' => $character->characterID,
                     'eventID'     => $event->eventID]);
 
