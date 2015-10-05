@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Eve;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Account\ApiKeyInfo;
 use Seat\Eveapi\Models\Account\ApiKeyInfoCharacters;
+use Seat\Web\Models\User;
 
 /**
  * Class ApiKey
@@ -46,6 +47,17 @@ class ApiKey extends Model
      * @var array
      */
     protected $fillable = ['key_id', 'v_code', 'user_id', 'enabled', 'last_error'];
+
+    /**
+     * Returns the owner of this key
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function owner()
+    {
+
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 
     /**
      * Returns the key information such as accessMask
