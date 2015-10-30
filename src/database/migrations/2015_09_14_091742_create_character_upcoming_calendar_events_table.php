@@ -23,7 +23,7 @@ class CreateCharacterUpcomingCalendarEventsTable extends Migration
             $table->bigInteger('ownerID');
             $table->string('ownerName')->nullable();
             $table->dateTime('eventDate');
-            $table->string('eventTitle');
+            $table->text('eventTitle');
             $table->integer('duration');
             $table->boolean('importance');
             $table->enum('response', ['Undecided', 'Accepted', 'Declined', 'Tentative']);
