@@ -62,10 +62,9 @@ class PhealSetup
         $config = Config::getInstance();
 
         // Configure Pheal
+        $config->access = new EveApiAccess();
         $config->cache = new HashedNameFileStorage(
             config('eveapi.config.pheal.cache_path'));
-        $config->access = new EveApiAccess(
-            config('eveapi.access_bits'));
         $config->log = new PsrLogger(
             $this->getPhealLogger());
         $config->rateLimiter = new FileLockRateLimiter(

@@ -37,15 +37,13 @@ class EveApiAccess implements CanCheck
     protected $access_bits = [];
 
     /**
-     * Construct the Access Checking class by
-     * passing an array of access_bit definitions
-     *
-     * @param $access_bits
+     * Construct an API Access Checker. AccessMask
+     * definitions live in the configuration files.
      */
-    public function __construct($access_bits)
+    public function __construct()
     {
 
-        $this->access_bits = $access_bits;
+        $this->access_bits = config('eveapi.access_bits');
     }
 
     /**
