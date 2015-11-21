@@ -48,7 +48,7 @@ class PhealSetup
     protected $logger;
 
     /**
-     *
+     * Set the configuration parameters for Pheal
      */
     public function __construct()
     {
@@ -74,6 +74,9 @@ class PhealSetup
         $config->http_method = 'curl';
         $config->http_timeout = 60;
         $config->http_user_agent = config('eveapi.config.pheal.user-agent');
+
+        // Set the instance
+        $this->instance = $config;
 
         return $this->instance;
     }
