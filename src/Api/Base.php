@@ -21,16 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Api;
 
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\RotatingFileHandler;
-use Monolog\Logger;
-use Pheal\Cache\HashedNameFileStorage;
-use Pheal\Core\Config;
-use Pheal\Log\PsrLogger;
-use Pheal\Pheal;
-use Pheal\RateLimiter\FileLockRateLimiter;
 use Seat\Eveapi\Exception\InvalidScopeException;
-use Seat\Eveapi\Helpers\EveApiAccess;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Traits\Validation;
 
@@ -46,6 +37,11 @@ abstract class Base
 {
 
     use Validation;
+
+    /**
+     * @var mixed|null
+     */
+    protected $pheal_instance = null;
 
     /**
      * @var null
@@ -96,62 +92,10 @@ abstract class Base
     public function __construct()
     {
 
-        $this->setup();
+        // Resolve the configured instance out of the IoC
+        $this->pheal_instance = app()
+            ->make('Seat\Eveapi\Helpers\PhealSetup');
 
-    }
-
-    /**
-     * Configure a Psr-Style logger to be given
-     * to PhealNG for logging requests. This logger
-     * will rotate logs within a timespan of 30 days.
-     *
-     * @return \Monolog\Logger|null
-     */
-    private function getLogger()
-    {
-
-        // If its already setup, just return it.
-        if (!is_null($this->logger))
-            return $this->logger;
-
-        // Configure the logger by setting the logfile
-        // path and the format logs should be.
-        $log_file = storage_path('logs/pheal.log');
-        $format = new LineFormatter(null, null, false, true);
-
-        $stream = new RotatingFileHandler($log_file, 30, Logger::INFO);
-        $stream->setFormatter($format);
-
-        $this->logger = new Logger('pheal');
-        $this->logger->pushHandler($stream);
-
-        return $this->logger;
-
-    }
-
-    /**
-     * Configure PhealNG for use.
-     *
-     * @return $this
-     */
-    public function setup()
-    {
-
-        $config = Config::getInstance();
-
-        // Configure Pheal
-        $config->cache = new HashedNameFileStorage(storage_path() . '/app/pheal/');
-        $config->access = new EveApiAccess(config('eveapi.access_bits'));
-        $config->log = new PsrLogger($this->getLogger());
-        $config->rateLimiter = new FileLockRateLimiter(storage_path() . '/app/pheal/');
-        $config->api_customkeys = true;
-        $config->http_method = 'curl';
-        $config->http_timeout = 60;
-
-        // TODO: Setup the identifying User-Agent
-        $config->http_user_agent = 'Testing SeAT 1.0 (harro foxfour!)';
-
-        return $this;
     }
 
     /**
@@ -210,10 +154,8 @@ abstract class Base
     {
 
         // Setup the Pheal instance with the key
-        $this->pheal = new Pheal(
-            $this->key_id,
-            $this->v_code
-        );
+        $this->pheal = $this->pheal_instance
+            ->getPheal($this->key_id, $this->v_code);
 
         // Give Pheal the key type and accessMask
         // information if we have it. This will be

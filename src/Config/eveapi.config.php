@@ -23,6 +23,13 @@ return [
 
     'version'          => '1.0',
 
+    // PhealNG Specific Configuration
+    'pheal'            => [
+        'user-agent' => 'Testing SeAT 1.0 (harro foxfour!)',
+        'cache_path' => storage_path() . '/app/pheal/',
+        'log_file'   => storage_path('logs/pheal.log')
+    ],
+
     // Worker classes present in this array
     // will be ignored globally. This applies
     // to public and authenticated API calls.

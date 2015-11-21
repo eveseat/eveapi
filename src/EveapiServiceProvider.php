@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi;
 
 use Illuminate\Support\ServiceProvider;
+use Seat\Eveapi\Helpers\PhealSetup;
 
 /**
  * Class EveapiServiceProvider
@@ -59,5 +60,13 @@ class EveapiServiceProvider extends ServiceProvider
             __DIR__ . '/Config/eveapi.config.php', 'eveapi.config');
         $this->mergeConfigFrom(
             __DIR__ . '/Config/eveapi.workers.php', 'eveapi.workers');
+
+        // Register the Pheal Configuration Singleton
+        $this->app->singleton('Seat\Eveapi\Helpers\PhealSetup', function () {
+
+            return new PhealSetup();
+        });
+
     }
+
 }
