@@ -33,6 +33,13 @@ class MemberSecurity extends Base
 {
 
     /**
+     * The member that is currently in scope
+     *
+     * @var
+     */
+    protected $member;
+
+    /**
      * Run the Update
      *
      * @return mixed|void
@@ -47,98 +54,22 @@ class MemberSecurity extends Base
 
         foreach ($result->members as $member) {
 
+            // Update the membe that is currently in scope
+            $this->member = $member;
+
             // Cleanup the known roles for this character
             MemberSecurityModel::where(
                 'characterID', $member->characterID)->delete();
 
-            // Add each type of role for this character
-            foreach ($member->roles as $role) {
-
-                MemberSecurityModel::create([
-                    'characterID'   => $member->characterID,
-                    'characterName' => $member->name,
-                    'roleType'      => 'roles',
-                    'roleID'        => $role->roleID,
-                    'roleName'      => $role->roleName
-                ]);
-            }
-
-            foreach ($member->grantableRoles as $role) {
-
-                MemberSecurityModel::create([
-                    'characterID'   => $member->characterID,
-                    'characterName' => $member->name,
-                    'roleType'      => 'grantableRoles',
-                    'roleID'        => $role->roleID,
-                    'roleName'      => $role->roleName
-                ]);
-            }
-
-            foreach ($member->rolesAtHQ as $role) {
-
-                MemberSecurityModel::create([
-                    'characterID'   => $member->characterID,
-                    'characterName' => $member->name,
-                    'roleType'      => 'rolesAtHQ',
-                    'roleID'        => $role->roleID,
-                    'roleName'      => $role->roleName
-                ]);
-            }
-
-            foreach ($member->grantableRolesAtHQ as $role) {
-
-                MemberSecurityModel::create([
-                    'characterID'   => $member->characterID,
-                    'characterName' => $member->name,
-                    'roleType'      => 'grantableRolesAtHQ',
-                    'roleID'        => $role->roleID,
-                    'roleName'      => $role->roleName
-                ]);
-            }
-
-            foreach ($member->rolesAtBase as $role) {
-
-                MemberSecurityModel::create([
-                    'characterID'   => $member->characterID,
-                    'characterName' => $member->name,
-                    'roleType'      => 'rolesAtBase',
-                    'roleID'        => $role->roleID,
-                    'roleName'      => $role->roleName
-                ]);
-            }
-
-            foreach ($member->grantableRolesAtBase as $role) {
-
-                MemberSecurityModel::create([
-                    'characterID'   => $member->characterID,
-                    'characterName' => $member->name,
-                    'roleType'      => 'grantableRolesAtBase',
-                    'roleID'        => $role->roleID,
-                    'roleName'      => $role->roleName
-                ]);
-            }
-
-            foreach ($member->rolesAtOther as $role) {
-
-                MemberSecurityModel::create([
-                    'characterID'   => $member->characterID,
-                    'characterName' => $member->name,
-                    'roleType'      => 'rolesAtOther',
-                    'roleID'        => $role->roleID,
-                    'roleName'      => $role->roleName
-                ]);
-            }
-
-            foreach ($member->grantableRolesAtOther as $role) {
-
-                MemberSecurityModel::create([
-                    'characterID'   => $member->characterID,
-                    'characterName' => $member->name,
-                    'roleType'      => 'grantableRolesAtOther',
-                    'roleID'        => $role->roleID,
-                    'roleName'      => $role->roleName
-                ]);
-            }
+            // Write the new roles
+            $this->writeEntry($member->roles, 'roles');
+            $this->writeEntry($member->grantableRoles, 'grantableRoles');
+            $this->writeEntry($member->rolesAtHQ, 'rolesAtHQ');
+            $this->writeEntry($member->grantableRolesAtHQ, 'grantableRolesAtHQ');
+            $this->writeEntry($member->rolesAtBase, 'rolesAtBase');
+            $this->writeEntry($member->grantableRolesAtBase, 'grantableRolesAtBase');
+            $this->writeEntry($member->rolesAtOther, 'rolesAtOther');
+            $this->writeEntry($member->grantableRolesAtOther, 'grantableRolesAtOther');
 
             // Lastly, cleanup and add the titles
             MemberSecurityTitle::where(
@@ -150,6 +81,7 @@ class MemberSecurity extends Base
                 foreach ($member->titles as $title) {
 
                     MemberSecurityTitle::create([
+                        'corporationID' => $this->getCorporationID(),
                         'characterID'   => $member->characterID,
                         'characterName' => $member->name,
                         'titleID'       => $title->titleID,
@@ -161,5 +93,28 @@ class MemberSecurity extends Base
         } // Foreach member
 
         return;
+    }
+
+    /**
+     * Write an entry to the MemberSecurity table
+     *
+     * @param $rawRoles
+     * @param $roleType
+     */
+    private function writeEntry($rawRoles, $roleType)
+    {
+
+        // Add each type of role for this character
+        foreach ($rawRoles as $role) {
+
+            MemberSecurityModel::create([
+                'corporationID' => $this->getCorporationID(),
+                'characterID'   => $this->member->characterID,
+                'characterName' => $this->member->name,
+                'roleType'      => $roleType,
+                'roleID'        => $role->roleID,
+                'roleName'      => $role->roleName
+            ]);
+        }
     }
 }

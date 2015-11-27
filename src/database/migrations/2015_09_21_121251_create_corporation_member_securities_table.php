@@ -16,6 +16,7 @@ class CreateCorporationMemberSecuritiesTable extends Migration
 
         Schema::create('corporation_member_securities', function (Blueprint $table) {
 
+            $table->integer('corporationID');
             $table->integer('characterID');
             $table->string('characterName');
             $table->integer('roleID');
@@ -27,6 +28,7 @@ class CreateCorporationMemberSecuritiesTable extends Migration
             $table->string('roleName');
 
             //Indexes
+            $table->index('corporationID');
             $table->index('characterID');
             $table->index('roleID');
 
