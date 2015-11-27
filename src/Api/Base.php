@@ -195,6 +195,17 @@ abstract class Base
     }
 
     /**
+     * Gets the CorporationID from this object
+     *
+     * @return null
+     */
+    public function getCorporationID()
+    {
+
+        return $this->corporationID;
+    }
+
+    /**
      * Cleanup actions.
      */
     public function __destruct()
