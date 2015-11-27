@@ -7,4 +7,5 @@
 [![Latest Unstable Version](https://poser.pugx.org/eveseat/eveapi/v/unstable)](https://packagist.org/packages/eveseat/eveapi)
 [![License](https://poser.pugx.org/eveseat/eveapi/license)](https://packagist.org/packages/eveseat/eveapi)
 
-This repository contains the EVE API Updater code for SeAT
+## This repository contains the EVE API Updater code for SeAT
+Please use the main SeAT repository [here](https://github.com/eveseat/seat) for issues.
