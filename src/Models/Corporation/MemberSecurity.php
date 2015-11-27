@@ -39,5 +39,5 @@ class MemberSecurity extends Model
      * @var array
      */
     protected $fillable = [
-        'characterID', 'characterName', 'roleID', 'roleType', 'roleName'];
+        'corporationID', 'characterID', 'characterName', 'roleID', 'roleType', 'roleName'];
 }
