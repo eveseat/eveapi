@@ -1,3 +1,4 @@
+![SeAT](http://i.imgur.com/aPPOxSK.png)
 # eveapi
 
 [![Build Status](https://travis-ci.org/eveseat/eveapi.svg?branch=master)](https://travis-ci.org/eveseat/eveapi)
