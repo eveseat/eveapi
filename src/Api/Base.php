@@ -157,6 +157,10 @@ abstract class Base
         $this->pheal = $this->pheal_instance
             ->getPheal($this->key_id, $this->v_code);
 
+        // 'Refresh' the api_info as the accessMask
+        // may have changed
+        $this->api_info->load('info');
+
         // Give Pheal the key type and accessMask
         // information if we have it. This will be
         // used by the access checking logic.
