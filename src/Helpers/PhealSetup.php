@@ -29,6 +29,7 @@ use Pheal\Core\Config;
 use Pheal\Log\PsrLogger;
 use Pheal\Pheal;
 use Pheal\RateLimiter\FileLockRateLimiter;
+use Pheal\Fetcher\Guzzle;
 
 /**
  * Class PhealSetup
@@ -62,16 +63,16 @@ class PhealSetup
         $config = Config::getInstance();
 
         // Configure Pheal
-        $config->access = new EveApiAccess();
+        $config->access = new EveApiAccess;
         $config->cache = new HashedNameFileStorage(
             config('eveapi.config.pheal.cache_path'));
         $config->log = new PsrLogger(
             $this->getPhealLogger());
         $config->rateLimiter = new FileLockRateLimiter(
             config('eveapi.config.pheal.cache_path'));
+        $config->fetcher = new Guzzle;
 
         $config->api_customkeys = true;
-        $config->http_method = 'curl';
         $config->http_timeout = 60;
         $config->http_user_agent = config('eveapi.config.pheal.user-agent');
 
