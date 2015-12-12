@@ -26,7 +26,6 @@ use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Pheal\Exceptions\AccessException;
 use Pheal\Exceptions\APIException;
 use Pheal\Exceptions\ConnectionException;
@@ -86,6 +85,10 @@ class UpdateAuthenticated extends Job implements SelfHandling, ShouldQueue
 
             foreach ($this->load_workers($job_tracker) as $worker) {
 
+                // Check that the EveApi is considered up
+                if ($this->isEveApiDown($job_tracker))
+                    return;
+
                 try {
 
                     $job_tracker->output = 'Processing: '
@@ -94,29 +97,25 @@ class UpdateAuthenticated extends Job implements SelfHandling, ShouldQueue
 
                     // Perform the update
                     (new $worker)->setApi($this->job_payload->eve_api_key)->call();
+                    $this->decrementErrorCounters();
 
                 } catch (AccessException $e) {
 
-                    // TODO: Write to some audit log file maybe?
                     continue;
 
                 } catch (APIException $e) {
 
-                    $this->handleApiException(
-                        $job_tracker, $this->job_payload->eve_api_key, $e);
+                    // If we should not continue, simply return.
+                    if (!$this->handleApiException(
+                        $job_tracker, $this->job_payload->eve_api_key, $e)
+                    )
+                        return;
 
-                    return;
+                    continue;
 
                 } catch (ConnectionException $e) {
 
-                    // Some connection error occured to the
-                    // EVE API that is not necessarily related
-                    // to key access or anything.
-                    Log::warning(
-                        'A connection exception occured to the API server.' .
-                        $e->getCode() . ':' . $e->getMessage());
-
-                    sleep(2);
+                    $this->handleConnectionException($e);
                     continue;
                 }
 

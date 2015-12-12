@@ -21,6 +21,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Traits;
 
+use Cache;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Models\JobTracking;
@@ -151,23 +153,38 @@ trait JobTracker
 
     /**
      * Attempt to take the appropriate action based on the
-     * EVE API Exception.
+     * EVE API Exception. Returns a boolean indicating
+     * if the calling job should continue or not.
      *
      * @param \Seat\Eveapi\Models\JobTracking $job_tracker
      * @param \Seat\Eveapi\Models\Eve\ApiKey  $api_key
-     * @param \Exception                      $e
+     * @param \Exception                      $exception
      *
+     * @return bool
      * @throws \Exception
      */
-    public function handleApiException(JobTracking $job_tracker, ApiKey $api_key, $e)
+    public function handleApiException(JobTracking $job_tracker, ApiKey $api_key, $exception)
     {
+
+        // Start by allowing the parent job to continue.
+        $should_continue = true;
+
+        // No matter what the error, we will increment the
+        // Api Error Counter.
+        $this->incrementApiErrorCount();
 
         // Errors from the EVE API should be treated seriously. If
         // these are ignored, one may risk having the calling IP
         // banned entirely. We don't want that, so lets check
         // and act accordingly based on the error code. We also rely
         // entirely on PhealNG to pass us the proper error codes.
-        switch ($e->getCode()) {
+        switch ($exception->getCode()) {
+
+            // Invalid contractID something. Probably the
+            // most annoying freaking response code that
+            // CCP has!
+            case 135:
+                break;
 
             // "API key authentication failure."
             case 202:
@@ -180,22 +197,22 @@ trait JobTracker
             case 210:
                 // "Authentication failure (final pass)."
             case 212:
-                // The API is probably entirely wrong.
                 $api_key->update([
                     'enabled'    => false,
-                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
                 ]);
+                $should_continue = false;
 
                 break;
 
             // "Invalid Corporation Key. Key owner does not fullfill role
             // requirements anymore."
             case 220:
-                // Owner of the corporation key doesnt have hes roles anymore?
                 $api_key->update([
                     'enabled'    => false,
-                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
                 ]);
+                $should_continue = false;
 
                 break;
 
@@ -204,18 +221,18 @@ trait JobTracker
                 // Not 100% sure how to handle this one. This call has no
                 // access mask requirement...
                 $api_key->update([
-                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
                 ]);
 
                 break;
 
             // "Key has expired. Contact key owner for access renewal."
             case 222:
-                // We have a invalid key. Expired or deleted.
                 $api_key->update([
                     'enabled'    => false,
-                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
                 ]);
+                $should_continue = false;
 
                 break;
 
@@ -227,26 +244,23 @@ trait JobTracker
                 // The API we are working with is waaaaaay too old.
                 $api_key->update([
                     'enabled'    => false,
-                    'last_error' => $e->getCode() . ':' . $e->getMessage()
+                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
                 ]);
+                $should_continue = false;
 
                 break;
 
             // "Web site database temporarily disabled."
             case 901:
-                // The EVE API Database is apparently down, so mark the
-                // server as 'down' in the cache so that subsequent
-                // calls don't fail because of this.
-                \Cache::put('eve_api_down', true, 30);
+                $this->markEveApiDown();
+                $should_continue = false;
 
                 break;
 
             // "EVE backend database temporarily disabled.""
             case 902:
-                // The EVE API Database is apparently down, so mark the
-                // server as 'down' in the cache so that subsequent
-                // calls don't fail because of this.
-                \Cache::put('eve_api_down', true, 30);
+                $this->markEveApiDown();
+                $should_continue = false;
 
                 break;
 
@@ -259,29 +273,194 @@ trait JobTracker
             // problematic API calls from your
             // application."
             case 904:
-                // If we are rate limited, set the status of the eveapi
-                // server to 'down' in the cache so that subsequent
-                // calls don't fail because of this.
-
                 // Get time of IP ban in minutes, rounded up to the next whole minute
                 $time = round((
-                        $e->cached_until_unixtime - $e->request_time_unixtime) / 60, 0, PHP_ROUND_HALF_UP);
-                \Cache::put('eve_api_down', true, $time);
+                        $exception->cached_until_unixtime -
+                        $exception->request_time_unixtime) / 60, 0, PHP_ROUND_HALF_UP);
+                $this->markEveApiDown($time);
+                $should_continue = false;
 
                 break;
 
             // We got a problem we don't know what to do with, so log
             // and throw the exception so that the can debug it.
             default:
-                throw $e;
+                throw $exception;
                 break;
 
         }
 
         // Update the Job itself with the error information
-        $this->reportJobError($job_tracker, $e);
+        $this->reportJobError($job_tracker, $exception);
+
+        return $should_continue;
+    }
+
+    /* Attempt to take the appropriate action based on the
+     * EVE API Connection Exception.
+     *
+     * @param $exception
+     */
+    /**
+     * @param $exception
+     */
+    public function handleConnectionException($exception)
+    {
+
+        $this->incrementConnectionErrorCount();
+
+        Log::warning(
+            'A connection exception occured to the API server. ' .
+            $exception->getCode() . ':' . $exception->getMessage());
+
+        sleep(1);
 
         return;
+    }
+
+    /**
+     * Increment the API Error Count. If we reach the configured
+     * threshold then we mark the EVE Api as down for a few
+     * minutes
+     *
+     * @param int $amount
+     */
+    public function incrementApiErrorCount($amount = 1)
+    {
+
+        Cache::increment(
+            config('eveapi.config.cache_keys.api_error_count'), $amount);
+
+        if (Cache::get(
+                config('eveapi.config.cache_keys.api_error_count')) >
+            config('eveapi.config.limits.eveapi_errors')
+        )
+            $this->markEveApiDown(10);
+
+        return;
+
+    }
+
+    /**
+     * Decrement the Api Error Counter
+     *
+     * @param int $amount
+     */
+    public function decrementApiErrorCount($amount = 1)
+    {
+
+        if (Cache::get(
+                config('eveapi.config.cache_keys.api_error_count')) > 0
+        )
+            Cache::decrement(
+                config('eveapi.config.cache_keys.api_error_count'), $amount);
+
+        return;
+
+    }
+
+    /**
+     * Increment the Connection Error Count. If we reach the
+     * configured threshold then we mark the EVE Api as
+     * down for a few minutes
+     *
+     * @param int $amount
+     */
+    public function incrementConnectionErrorCount($amount = 1)
+    {
+
+        Cache::increment(
+            config('eveapi.config.cache_keys.connection_error_count'), $amount);
+
+        if (Cache::get(
+                config('eveapi.config.cache_keys.connection_error_count')) >
+            config('eveapi.config.limits.connection_errors')
+        )
+            $this->markEveApiDown(15);
+
+        return;
+
+    }
+
+    /**
+     * Decrement the Connection Error Counter
+     *
+     * @param int $amount
+     */
+    public function decrementConnectionErrorCount($amount = 1)
+    {
+
+        if (Cache::get(
+                config('eveapi.config.cache_keys.connection_error_count')) > 0
+        )
+            Cache::decrement(
+                config('eveapi.config.cache_keys.connection_error_count'), $amount);
+
+        return;
+
+    }
+
+    /**
+     * Decrement all the error counters
+     *
+     * @param int $amount
+     */
+    public function decrementErrorCounters($amount = 1)
+    {
+
+        $this->decrementApiErrorCount($amount);
+        $this->decrementConnectionErrorCount($amount);
+
+        return;
+    }
+
+    /**
+     * Mark the EVE Api as down by setting a key to
+     * true in the cache.
+     *
+     * @param int $minutes
+     *
+     * @return mixed
+     */
+    public function markEveApiDown($minutes = 30)
+    {
+
+        $down_expiration = Carbon::now()->addMinutes($minutes)
+            ->toDateTimeString();
+
+        Cache::put(
+            config('eveapi.config.cache_keys.down_until'),
+            $down_expiration,
+            $minutes);
+
+        Log::warning('Eve Api Marked as down for ' . $minutes . ' minutes');
+
+        return Cache::put(
+            config('eveapi.config.cache_keys.down'), true, $minutes);
+    }
+
+    /**
+     * Check if the EVE Api is considered 'down'
+     *
+     * @param \Seat\Eveapi\Models\JobTracking $job_tracker
+     *
+     * @return mixed
+     */
+    public function isEveApiDown(JobTracking $job_tracker = null)
+    {
+
+        $down = Cache::get(config('eveapi.config.cache_keys.down'));
+
+        // If the server is down and we have a job that
+        // we can update, update it.
+        if($down && !is_null($job_tracker)) {
+
+            $job_tracker->status = 'Done';
+            $job_tracker->output = 'The EVE Api Server is currently down';
+            $job_tracker->save();
+        }
+
+        return $down;
     }
 
 }

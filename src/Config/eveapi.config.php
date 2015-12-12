@@ -30,6 +30,26 @@ return [
         'log_file'   => storage_path('logs/pheal.log')
     ],
 
+    // Define the keys used in the cache
+    'cache_keys'       => [
+        'down'                   => 'eve_api_down',
+        'down_until'             => 'eve_api_down_until',
+        'api_error_count'        => 'eve_api_error_count',
+        'connection_error_count' => 'eve_api_conn_error_count'
+    ],
+
+    // These limits define how many times either
+    // the eveapi should respond with an error status
+    // or we fail to connect before we consider the
+    // eveapi to be 'down'.
+    // See the Rate Limits section here:
+    //  https://eveonline-third-party-documentation.
+    //      readthedocs.org/en/latest/xmlapi/intro/
+    'limits'           => [
+        'eveapi_errors'     => 150,
+        'connection_errors' => 15
+    ],
+
     // Worker classes present in this array
     // will be ignored globally. This applies
     // to public and authenticated API calls.

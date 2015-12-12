@@ -79,6 +79,9 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
         if (!$job_tracker)
             return;
 
+        if ($this->isEveApiDown($job_tracker))
+            return;
+
         // Do the update work and catch any errors
         // that may come of it.
         try {
