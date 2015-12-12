@@ -328,11 +328,15 @@ trait JobTracker
     public function incrementApiErrorCount($amount = 1)
     {
 
-        Cache::increment(
-            config('eveapi.config.cache_keys.api_error_count'), $amount);
+        if (Cache::get(
+                config('eveapi.config.cache_keys.api_error_count')) <
+            config('eveapi.config.limits.eveapi_errors')
+        )
+            Cache::increment(
+                config('eveapi.config.cache_keys.api_error_count'), $amount);
 
         if (Cache::get(
-                config('eveapi.config.cache_keys.api_error_count')) >
+                config('eveapi.config.cache_keys.api_error_count')) >=
             config('eveapi.config.limits.eveapi_errors')
         )
             $this->markEveApiDown(10);
@@ -369,11 +373,15 @@ trait JobTracker
     public function incrementConnectionErrorCount($amount = 1)
     {
 
-        Cache::increment(
-            config('eveapi.config.cache_keys.connection_error_count'), $amount);
+        if (Cache::get(
+                config('eveapi.config.cache_keys.connection_error_count')) <
+            config('eveapi.config.limits.connection_errors')
+        )
+            Cache::increment(
+                config('eveapi.config.cache_keys.connection_error_count'), $amount);
 
         if (Cache::get(
-                config('eveapi.config.cache_keys.connection_error_count')) >
+                config('eveapi.config.cache_keys.connection_error_count')) >=
             config('eveapi.config.limits.connection_errors')
         )
             $this->markEveApiDown(15);
@@ -453,7 +461,7 @@ trait JobTracker
 
         // If the server is down and we have a job that
         // we can update, update it.
-        if($down && !is_null($job_tracker)) {
+        if ($down && !is_null($job_tracker)) {
 
             $job_tracker->status = 'Done';
             $job_tracker->output = 'The EVE Api Server is currently down';
