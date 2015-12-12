@@ -16,7 +16,7 @@ class CreateCharacterPlanetaryColoniesTable extends Migration
 
         Schema::create('character_planetary_colonies', function (Blueprint $table) {
 
-//            $table->increments('id');
+            $table->increments('id');
 
             $table->integer('solarSystemID');
             $table->string('solarSystemName');
