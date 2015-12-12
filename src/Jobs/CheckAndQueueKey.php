@@ -27,6 +27,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\APIException;
+use Pheal\Exceptions\ConnectionException;
 use Seat\Eveapi\Api\Account\APIKeyInfo;
 use Seat\Eveapi\Exception\InvalidKeyTypeException;
 use Seat\Eveapi\Helpers\JobContainer;
@@ -140,6 +141,10 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
                 $job_tracker, $this->job_payload->eve_api_key, $e);
 
             return;
+
+        } catch (ConnectionException $e) {
+
+            $this->handleConnectionException($e);
 
         } catch (\Exception $e) {
 
