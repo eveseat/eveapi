@@ -92,6 +92,7 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
 
             // https://api.eveonline.com/account/APIKeyInfo.xml.aspx
             (new APIKeyInfo())->setApi($this->job_payload->eve_api_key)->call();
+            $this->decrementErrorCounters();
 
             // Populate the new Job with some defaults
             $fresh_job->scope = 'Eve';
