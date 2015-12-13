@@ -30,6 +30,7 @@ use Pheal\Log\PsrLogger;
 use Pheal\Pheal;
 use Pheal\RateLimiter\FileLockRateLimiter;
 use Pheal\Fetcher\Guzzle;
+use Seat\Services\Settings\Seat;
 
 /**
  * Class PhealSetup
@@ -74,7 +75,10 @@ class PhealSetup
 
         $config->api_customkeys = true;
         $config->http_timeout = 60;
-        $config->http_user_agent = config('eveapi.config.pheal.user_agent');
+
+        // Compile a user-agent string
+        $config->http_user_agent = 'eveseat/' . config('eveapi.config.version') .
+            ' ' . Seat::get('admin_contact');
 
         // Set the instance
         $this->instance = $config;
