@@ -25,7 +25,7 @@ return [
 
     // PhealNG Specific Configuration
     'pheal'            => [
-        'user-agent' => 'Testing SeAT 1.0 (harro foxfour!)',
+        'user_agent' => 'Testing SeAT 1.0 (harro foxfour!)',
         'cache_path' => storage_path() . '/app/pheal/',
         'log_file'   => storage_path('logs/pheal.log')
     ],

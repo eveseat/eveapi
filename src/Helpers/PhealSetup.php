@@ -74,7 +74,7 @@ class PhealSetup
 
         $config->api_customkeys = true;
         $config->http_timeout = 60;
-        $config->http_user_agent = config('eveapi.config.pheal.user-agent');
+        $config->http_user_agent = config('eveapi.config.pheal.user_agent');
 
         // Set the instance
         $this->instance = $config;
