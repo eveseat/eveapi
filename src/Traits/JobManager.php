@@ -60,6 +60,16 @@ trait JobManager
         $new_job = (new $job($args))->onQueue($args->queue);
         $job_id = $this->dispatch($new_job);
 
+        // Check that the id we got back is a random
+        // string and not 0. In fact, normal job_ids
+        // are like a 32char string, so just check that
+        // its more than 2. If its not, we can assume
+        // the job itself was not sucesfully added.
+        // If it actually is queued, it will get discarded
+        // when trackOrDismiss() is called.
+        if(strlen($job_id) < 2)
+            return;
+
         // ...and add tracking information
         JobTracking::create([
             'job_id'   => $job_id,
