@@ -41,6 +41,6 @@ class Bookmark extends Model
     protected $fillable = [
         'characterID', 'folderID', 'folderName', 'bookmarkID',
         'creatorID', 'created', 'itemID', 'typeID', 'locationID',
-        'x', 'y', 'z', 'memo', 'note'
+        'x', 'y', 'z', 'mapID', 'mapName', 'memo', 'note'
     ];
 }

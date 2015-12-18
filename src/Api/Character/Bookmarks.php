@@ -23,6 +23,7 @@ namespace Seat\Eveapi\Api\Character;
 
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\Character\Bookmark;
+use Seat\Eveapi\Traits\Utils;
 
 /**
  * Class Bookmarks
@@ -30,6 +31,8 @@ use Seat\Eveapi\Models\Character\Bookmark;
  */
 class Bookmarks extends Base
 {
+
+    use Utils;
 
     /**
      * Run the Update
@@ -54,6 +57,12 @@ class Bookmarks extends Base
                 // themselves.
                 foreach ($folder->bookmarks as $bookmark) {
 
+                    $location_info = $this->find_nearest_celestial(
+                        $bookmark->locationID,
+                        $bookmark->x,
+                        $bookmark->y,
+                        $bookmark->z);
+
                     $bookmark_info = Bookmark::firstOrNew([
                         'characterID' => $character->characterID,
                         'folderID'    => $folder->folderID,
@@ -70,6 +79,8 @@ class Bookmarks extends Base
                         'x'          => $bookmark->x,
                         'y'          => $bookmark->y,
                         'z'          => $bookmark->z,
+                        'mapID'      => $location_info['mapID'],
+                        'mapName'    => $location_info['mapName'],
                         'memo'       => $bookmark->memo,
                         'note'       => $bookmark->note
                     ]);
