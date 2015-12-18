@@ -101,6 +101,7 @@ trait Utils
 
         $possible_celestials = DB::table('mapDenormalize')
             ->where('solarSystemID', $solar_system_id)
+            ->whereNotNull('itemName')
             ->whereIn('groupID', [6, 7, 8, 9, 10])
             ->get();
 
