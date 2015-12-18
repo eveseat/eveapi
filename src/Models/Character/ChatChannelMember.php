@@ -42,4 +42,16 @@ class ChatChannelMember extends Model
         'channelID', 'accessorID', 'accessorName', 'role', 'untilWhen',
         'reason'
     ];
+
+    /**
+     * Return the channels this member belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function channel()
+    {
+
+        return $this->belongsToMany(
+            ChatChannel::class, 'channelID', 'channelID');
+    }
 }

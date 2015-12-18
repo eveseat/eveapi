@@ -47,4 +47,17 @@ class ChatChannelInfo extends Model
         'channelID', 'ownerID', 'ownerName', 'displayName', 'comparisonKey',
         'hasPassword', 'motd'
     ];
+
+    /**
+     * Return the channel that this info
+     * belongs to
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function channel()
+    {
+
+        return $this->belongsTo(
+            ChatChannel::class, 'channelID', 'channelID');
+    }
 }

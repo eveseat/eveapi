@@ -39,4 +39,28 @@ class ChatChannel extends Model
      * @var array
      */
     protected $fillable = ['characterID', 'channelID'];
+
+    /**
+     * Return the channel info
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function info()
+    {
+
+        return $this->hasOne(
+            ChatChannelInfo::class, 'channelID', 'channelID');
+    }
+
+    /**
+     * Return the channel members
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function members()
+    {
+
+        return $this->hasMany(
+            ChatChannelMember::class, 'channelID', 'channelID');
+    }
 }
