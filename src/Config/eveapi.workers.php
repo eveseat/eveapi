@@ -78,6 +78,7 @@ return [
         Seat\Eveapi\Api\Corporation\AccountBalance::class,
         Seat\Eveapi\Api\Corporation\AssetList::class,
         Seat\Eveapi\Api\Corporation\Locations::class,
+        Seat\Eveapi\Api\Corporation\Bookmarks::class,
         Seat\Eveapi\Api\Corporation\ContactList::class,
         Seat\Eveapi\Api\Corporation\Contracts::class,
         Seat\Eveapi\Api\Corporation\ContractsItems::class,
