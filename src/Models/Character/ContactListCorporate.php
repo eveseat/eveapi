@@ -42,4 +42,11 @@ class ContactListCorporate extends Model
         'characterID', 'corporationID', 'contactID', 'contactName', 'standing',
         'contactTypeID', 'labelMask'
     ];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'labelMask' => 'integer'
+    ];
 }
