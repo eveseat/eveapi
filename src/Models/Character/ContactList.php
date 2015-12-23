@@ -42,4 +42,11 @@ class ContactList extends Model
         'characterID', 'contactID', 'contactName', 'standing', 'contactTypeID',
         'labelMask', 'inWatchlist'
     ];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'labelMask' => 'integer'
+    ];
 }

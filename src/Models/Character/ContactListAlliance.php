@@ -42,4 +42,11 @@ class ContactListAlliance extends Model
         'characterID', 'allianceID', 'contactID', 'contactName', 'standing',
         'contactTypeID', 'labelMask'
     ];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'labelMask' => 'integer'
+    ];
 }

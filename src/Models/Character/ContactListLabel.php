@@ -39,4 +39,11 @@ class ContactListLabel extends Model
      * @var array
      */
     protected $fillable = ['characterID', 'labelID', 'name'];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'labelID' => 'integer'
+    ];
 }
