@@ -114,6 +114,9 @@ trait Utils
             // Are we there yet?
             if ($distance < $closest_distance) {
 
+                // Update the current closest distance
+                $closest_distance = $distance;
+
                 $response = [
                     'mapID'   => $celestial->itemID,
                     'mapName' => $celestial->itemName
