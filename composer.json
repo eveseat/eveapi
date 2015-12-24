@@ -17,7 +17,7 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
-        "3rdpartyeve/phealng": "2.3.*",
+        "3rdpartyeve/phealng": "~2.3",
         "eveseat/services": "~1.0"
     },
     "require-dev": {
