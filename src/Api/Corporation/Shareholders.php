@@ -81,8 +81,8 @@ class Shareholders extends Base
                 'shareholderID'   => $corporation->shareholderID]);
 
             $share_info->fill([
-                'shareholderName' => $character->shareholderName,
-                'shares'          => $character->shares
+                'shareholderName' => $corporation->shareholderName,
+                'shares'          => $corporation->shares
             ]);
 
             $share_info->save();
