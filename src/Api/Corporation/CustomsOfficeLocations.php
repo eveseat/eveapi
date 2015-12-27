@@ -79,7 +79,7 @@ class CustomsOfficeLocations extends Base
             foreach ($result->locations as $location) {
 
                 $nearest_celestial = $this->find_nearest_celestial(
-                    $item_ids[$location->itemID]['locationID'],
+                    $item_ids[$location->itemID]['solarSystemID'],
                     $location->x,
                     $location->y,
                     $location->z
