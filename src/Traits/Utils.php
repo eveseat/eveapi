@@ -93,9 +93,11 @@ trait Utils
         $closest_distance = INF;
 
         // As a response, we will return an array with
-        // the closest ID and name from mapDenormallized
+        // the closest ID and name from mapDenormallized.
+        // The default response will be the system this
+        // location is in.
         $response = [
-            'mapID'   => null,
+            'mapID'   => $solar_system_id,
             'mapName' => null
         ];
 
