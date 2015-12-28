@@ -98,7 +98,7 @@ trait Utils
         // location is in.
         $response = [
             'mapID'   => $solar_system_id,
-            'mapName' => null
+            'mapName' => 'Unknown'
         ];
 
         $possible_celestials = DB::table('mapDenormalize')
