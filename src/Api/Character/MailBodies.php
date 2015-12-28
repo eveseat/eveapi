@@ -70,7 +70,7 @@ class MailBodies extends Base
 
                 foreach ($result->messages as $body) {
 
-                    MailMessageBody::create([
+                    MailMessageBody::firstOrCreate([
                         'messageID' => $body->messageID,
                         'body'      => $body->__toString()
                     ]);

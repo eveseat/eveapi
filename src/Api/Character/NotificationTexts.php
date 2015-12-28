@@ -69,7 +69,7 @@ class NotificationTexts extends Base
 
                 foreach ($result->notifications as $notification) {
 
-                    NotificationsText::create([
+                    NotificationsText::firstOrCreate([
                         'notificationID' => $notification->notificationID,
                         'text'           => $notification->__toString()
                     ]);
