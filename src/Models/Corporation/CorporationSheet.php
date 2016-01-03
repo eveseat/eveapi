@@ -46,8 +46,8 @@ class CorporationSheet extends Model
     protected $fillable = [
         'corporationID', 'corporationName', 'ticker', 'ceoID', 'ceoName',
         'stationID', 'stationName', 'description', 'url', 'allianceID',
-        'factionID', 'allianceName', 'memberCount', 'memberLimit', 'shares',
-        'graphicID', 'shape1', 'shape2', 'shape3', 'color1', 'color2',
+        'factionID', 'allianceName', 'memberCount', 'memberLimit', 'taxRate',
+        'shares', 'graphicID', 'shape1', 'shape2', 'shape3', 'color1', 'color2',
         'color3'
     ];
 }

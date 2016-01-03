@@ -61,6 +61,7 @@ class CorporationSheet extends Base
             'allianceID'      => $result->allianceID,
             'factionID'       => $result->factionID,
             'allianceName'    => $result->allianceName,
+            'taxRate'         => $result->taxRate,
             'memberCount'     => $result->memberCount,
             'memberLimit'     => $result->memberLimit,
             'shares'          => $result->shares,
