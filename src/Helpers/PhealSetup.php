@@ -26,10 +26,10 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Pheal\Cache\HashedNameFileStorage;
 use Pheal\Core\Config;
+use Pheal\Fetcher\Guzzle;
 use Pheal\Log\PsrLogger;
 use Pheal\Pheal;
 use Pheal\RateLimiter\FileLockRateLimiter;
-use Pheal\Fetcher\Guzzle;
 use Seat\Services\Settings\Seat;
 
 /**

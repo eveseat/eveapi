@@ -67,7 +67,7 @@ trait JobManager
         // the job itself was not sucesfully added.
         // If it actually is queued, it will get discarded
         // when trackOrDismiss() is called.
-        if(strlen($job_id) < 2)
+        if (strlen($job_id) < 2)
             return;
 
         // ...and add tracking information
