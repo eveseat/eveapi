@@ -50,7 +50,7 @@ class RefTypes extends Base
             $ref_type->fill([
                 'refTypeName' => $ref_type->refTypeName
             ]);
-            
+
             $ref_type->save();
         }
 
