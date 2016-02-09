@@ -144,26 +144,6 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
 
             $this->handleConnectionException($e);
 
-            // Some HTTP Error codes here may indicate that the
-            // key is expired/invalid or what not. Based on
-            // the HTTP Codes, lets action a key disable if
-            // needed
-            switch ($e->getCode()) {
-
-                case 401:
-                case 403:
-                    $this->job_payload->eve_api_key->update([
-                        'enabled'    => false,
-                        'last_error' => $e->getCode() . ':' . $e->getMessage()
-                    ]);
-
-                    $this->markAsDone($job_tracker);
-
-                default:
-                    break;
-
-            }
-
         } catch (\Exception $e) {
 
             $this->reportJobError($job_tracker, $e);
