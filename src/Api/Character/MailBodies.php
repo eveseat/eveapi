@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Api\Character;
 
 use Illuminate\Support\Facades\DB;
+use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\Character\MailMessageBody;
 
@@ -64,16 +65,24 @@ class MailBodies extends Base
             // ids we want to update.
             foreach (array_chunk($message_ids, 10) as $message_id_chunk) {
 
-                $result = $pheal->MailBodies([
-                    'characterID' => $character->characterID,
-                    'ids'         => implode(',', $message_id_chunk)]);
+                try {
 
-                foreach ($result->messages as $body) {
+                    $result = $pheal->MailBodies([
+                        'characterID' => $character->characterID,
+                        'ids'         => implode(',', $message_id_chunk)]);
 
-                    MailMessageBody::firstOrCreate([
-                        'messageID' => $body->messageID,
-                        'body'      => $body->__toString()
-                    ]);
+                    foreach ($result->messages as $body) {
+
+                        MailMessageBody::firstOrCreate([
+                            'messageID' => $body->messageID,
+                            'body'      => $body->__toString()
+                        ]);
+                    }
+
+                } catch (PhealException $e) {
+
+                    // TODO: Log this into some form of job log.
+                    continue;
 
                 }
 
