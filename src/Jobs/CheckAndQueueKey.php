@@ -138,11 +138,19 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
             $this->handleApiException(
                 $job_tracker, $this->job_payload->eve_api_key, $e);
 
+            // TODO: Add some logging so that the keys
+            // could be troubleshooted later
+            $this->markAsDone($job_tracker);
+
             return;
 
         } catch (ConnectionException $e) {
 
             $this->handleConnectionException($e);
+
+            // TODO: Add some logging so that the keys
+            // could be troubleshooted later
+            $this->markAsDone($job_tracker);
 
         } catch (\Exception $e) {
 
