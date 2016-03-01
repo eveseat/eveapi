@@ -28,6 +28,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\APIException;
 use Pheal\Exceptions\ConnectionException;
+use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Api\Account\APIKeyInfo;
 use Seat\Eveapi\Exception\InvalidKeyTypeException;
 use Seat\Eveapi\Helpers\JobContainer;
@@ -150,6 +151,16 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
 
             // TODO: Add some logging so that the keys
             // could be troubleshooted later
+            $this->markAsDone($job_tracker);
+
+        } catch (PhealException $e) {
+
+            // Typically, this will be the XML parsing errors that
+            // will end up here. Catch them and handle them as a connection
+            // exception for now.
+            $this->handleConnectionException($e);
+
+            // TODO: Add some logging
             $this->markAsDone($job_tracker);
 
         } catch (\Exception $e) {

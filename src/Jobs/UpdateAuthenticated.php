@@ -29,6 +29,7 @@ use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\AccessException;
 use Pheal\Exceptions\APIException;
 use Pheal\Exceptions\ConnectionException;
+use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Traits\JobTracker;
 
@@ -115,6 +116,13 @@ class UpdateAuthenticated extends Job implements SelfHandling, ShouldQueue
 
                 } catch (ConnectionException $e) {
 
+                    $this->handleConnectionException($e);
+                    continue;
+
+                } catch (PhealException $e) {
+
+                    // Handle the tyipcal XML related exceptions as a
+                    // connection exception for now.
                     $this->handleConnectionException($e);
                     continue;
                 }
