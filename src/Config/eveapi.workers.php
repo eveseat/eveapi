@@ -35,6 +35,7 @@ return [
         Seat\Eveapi\Api\Character\Bookmarks::class,
         Seat\Eveapi\Api\Character\CharacterSheet::class,
         Seat\Eveapi\Api\Character\ChatChannels::class,
+        Seat\Eveapi\Api\Character\Clones::class,
         Seat\Eveapi\Api\Character\ContactList::class,
         Seat\Eveapi\Api\Character\ContactNotifications::class,
 
@@ -66,6 +67,7 @@ return [
         Seat\Eveapi\Api\Character\PlanetaryRoutes::class,
         Seat\Eveapi\Api\Character\PlanetaryLinks::class,
         Seat\Eveapi\Api\Character\Research::class,
+        Seat\Eveapi\Api\Character\Skills::class,
         Seat\Eveapi\Api\Character\SkillInTraining::class,
         Seat\Eveapi\Api\Character\SkillQueue::class,
         Seat\Eveapi\Api\Character\Standings::class,

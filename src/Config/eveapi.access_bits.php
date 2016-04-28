@@ -34,6 +34,8 @@ return [
 
     'char' => [
 
+        'clones'                 => 2147483648,
+        'skills'                 => 1073741824,
         'chatchannels'           => 536870912,
         'bookmarks'              => 268435456,
         'locations'              => 134217728,

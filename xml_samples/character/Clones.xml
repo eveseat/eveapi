@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eveapi version="2">
+  <currentTime>2016-04-28 15:07:20</currentTime>
+  <result>
+    <DoB>2009-12-17 19:24:00</DoB>
+    <race>Caldari</race>
+    <bloodLineID>2</bloodLineID>
+    <bloodLine>Civire</bloodLine>
+    <ancestryID>8</ancestryID>
+    <ancestry>Mercs</ancestry>
+    <gender>Male</gender>
+    <freeRespecs>0</freeRespecs>
+    <cloneJumpDate>2015-12-26 09:21:13</cloneJumpDate>
+    <lastRespecDate>2011-12-27 15:15:27</lastRespecDate>
+    <lastTimedRespec>2011-12-27 15:15:27</lastTimedRespec>
+    <remoteStationDate>0001-01-01 00:00:00</remoteStationDate>
+    <attributes>
+      <intelligence>19</intelligence>
+      <memory>19</memory>
+      <charisma>17</charisma>
+      <perception>22</perception>
+      <willpower>22</willpower>
+    </attributes>
+    <rowset name="implants" key="typeID" columns="typeID,typeName">
+      <row typeID="9899" typeName="Ocular Filter - Basic" />
+      <row typeID="9941" typeName="Memory Augmentation - Basic" />
+      <row typeID="9942" typeName="Neural Boost - Basic" />
+      <row typeID="9943" typeName="Cybernetic Subprocessor - Basic" />
+      <row typeID="13225" typeName="Eifyr and Co. 'Gunslinger' Small Projectile Turret SP-603" />
+    </rowset>
+    <rowset name="jumpClones" key="jumpCloneID" columns="jumpCloneID,typeID,locationID,cloneName">
+      <row jumpCloneID="23644173" typeID="164" locationID="123" cloneName="" />
+    </rowset>
+    <rowset name="jumpCloneImplants" key="jumpCloneID" columns="jumpCloneID,typeID,typeName">
+      <row jumpCloneID="23644173" typeID="13247" typeName="Zainou 'Deadeye' Missile Bombardment MB-703" />
+      <row jumpCloneID="23644173" typeID="13249" typeName="Zainou 'Deadeye' Rapid Launch RL-1003" />
+      <row jumpCloneID="23644173" typeID="13250" typeName="Zainou 'Deadeye' Target Navigation Prediction TN-903" />
+      <row jumpCloneID="23644173" typeID="20121" typeName="High-grade Crystal Alpha" />
+      <row jumpCloneID="23644173" typeID="20157" typeName="High-grade Crystal Beta" />
+      <row jumpCloneID="23644173" typeID="20158" typeName="High-grade Crystal Gamma" />
+      <row jumpCloneID="23644173" typeID="20159" typeName="High-grade Crystal Delta" />
+      <row jumpCloneID="23644173" typeID="20160" typeName="High-grade Crystal Epsilon" />
+      <row jumpCloneID="23644173" typeID="24632" typeName="Zainou 'Deadeye' Guided Missile Precision GP-803" />
+      <row jumpCloneID="23644173" typeID="24641" typeName="Zainou 'Gnome' Launcher CPU Efficiency LE-603" />
+      <row jumpCloneID="20908129" typeID="9899" typeName="Ocular Filter - Basic" />
+      <row jumpCloneID="20908129" typeID="9941" typeName="Memory Augmentation - Basic" />
+      <row jumpCloneID="20908129" typeID="9942" typeName="Neural Boost - Basic" />
+      <row jumpCloneID="20908129" typeID="9943" typeName="Cybernetic Subprocessor - Basic" />
+    </rowset>
+    <jumpActivation>2015-02-18 08:10:17</jumpActivation>
+    <jumpFatigue>2015-02-19 01:23:33</jumpFatigue>
+    <jumpLastUpdate>2015-02-18 07:50:00</jumpLastUpdate>
+  </result>
+  <cachedUntil>2016-04-28 16:02:58</cachedUntil>
+</eveapi>
