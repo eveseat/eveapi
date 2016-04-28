@@ -153,6 +153,23 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
             // could be troubleshooted later
             $this->markAsDone($job_tracker);
 
+            // In the case of the Account/APIKeyInfo call, CCP
+            // will respond with a HTTP 403, and then have error code
+            // 222 in the reponse XML detailing the fact that the
+            // API key is expired. JobTracker/handleApiException would
+            // have handled this correctly, except for the fact that
+            // the reponse ExceptionCode from the Pheal ConnectionException
+            // is the HTTP 403 we got, and not the 222.
+            // For this reason, we are going to assume there is something
+            // wrong with the API key if we get an HTTP 403 on this
+            // worker to check the key.
+            if ($e->getCode() == 403)
+                $this->job_payload->eve_api_key->update([
+                    'enabled'    => false,
+                    'last_error' => 'Disabled due to possibly expired key. ' .
+                        $e->getCode() . ':' . $e->getMessage()
+                ]);
+
         } catch (PhealException $e) {
 
             // Typically, this will be the XML parsing errors that
