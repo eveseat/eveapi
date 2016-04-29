@@ -22,8 +22,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Traits;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Log;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Models\JobTracking;
+use Seat\Services\Settings\Seat;
 
 /**
  * Class JobManager
@@ -45,6 +47,17 @@ trait JobManager
      */
     public function addUniqueJob($job, JobContainer $args)
     {
+
+        // Refuse to pop a job onto the queue if the admin
+        // has not yet configured an administrative contact.
+        // See: https://github.com/eveseat/seat/issues/77 (Request by CCP)
+        if ($this->hasDefaultAdminContact()) {
+
+            Log::error(
+                'Default admin contact still set. Not queuing job for: ' . $args->api);
+
+            return 'Failed to queue due to default config';
+        }
 
         // Look for an existing job
         $job_id = JobTracking::where('owner_id', $args->owner_id)
@@ -81,5 +94,20 @@ trait JobManager
 
         return $job_id;
 
+    }
+
+    /**
+     * Checks if the administrative contact has been
+     * configured
+     *
+     * @return bool
+     */
+    public function hasDefaultAdminContact()
+    {
+
+        if (Seat::get('admin_contact') === 'seatadmin@localhost.local')
+            return true;
+
+        return false;
     }
 }
