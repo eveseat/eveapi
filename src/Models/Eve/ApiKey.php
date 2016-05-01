@@ -49,6 +49,24 @@ class ApiKey extends Model
     protected $fillable = ['key_id', 'v_code', 'user_id', 'enabled', 'last_error'];
 
     /**
+     * Make sure we cleanup when a key is deleted
+     *
+     * @return bool|null
+     * @throws \Exception
+     */
+    public function delete()
+    {
+
+        // Cleanup the info
+        $this->info()->delete();
+
+        // Cleanup the characters this key had
+        $this->characters()->delete();
+
+        return parent::delete();
+    }
+
+    /**
      * Returns the owner of this key
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
