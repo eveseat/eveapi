@@ -43,10 +43,9 @@ class ErrorList extends Base
 
         foreach ($result->errors as $error) {
 
-            ErrorListModel::firstOrCreate([
-                'errorCode' => $error->errorCode,
-                'errorText' => $error->errorText
-            ]);
+            ErrorListModel::firstOrNew(['errorCode' => $error->errorCode,])
+                ->fill(['errorText' => $error->errorText])
+                ->save();
         }
 
         return;
