@@ -188,6 +188,18 @@ class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
     }
 
     /**
+     * Update the job tracker to a failed state
+     */
+    public function failed()
+    {
+
+        $this->handleFailedJob($this->job_payload);
+
+        return;
+
+    }
+
+    /**
      * Mark a Job as Done
      *
      * @param  $job_tracker

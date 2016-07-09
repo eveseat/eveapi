@@ -66,8 +66,13 @@ trait JobManager
             ->value('job_id');
 
         // Just return if the job already exists
-        if ($job_id)
+        if ($job_id) {
+
+            Log::warning('A job for Api ' . $args->api . ' and owner ' .
+                $args->owner_id . ' already exists.');
+
             return $job_id;
+        }
 
         // Add a new job onto the queue...
         $new_job = (new $job($args))->onQueue($args->queue);

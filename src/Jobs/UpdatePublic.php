@@ -126,6 +126,19 @@ class UpdatePublic extends Job implements SelfHandling, ShouldQueue
         $job_tracker->status = 'Done';
         $job_tracker->output = null;
         $job_tracker->save();
+
+    }
+
+    /**
+     * Update the job tracker to a failed state
+     */
+    public function failed()
+    {
+
+        $this->handleFailedJob($this->job_payload);
+
+        return;
+
     }
 
 }

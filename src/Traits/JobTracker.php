@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Traits;
 use Cache;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Models\JobTracking;
 
@@ -301,6 +302,9 @@ trait JobTracker
      *
      * @param $exception
      */
+    /**
+     * @param $exception
+     */
     public function handleConnectionException($exception)
     {
 
@@ -313,6 +317,45 @@ trait JobTracker
         sleep(1);
 
         return;
+    }
+
+    /**
+     * Queued jobs can fail outside of the large try/catch block
+     * that it is wrapped in. Unfortunately when this happens,
+     * the job tracker will never get updated, preventing another
+     * job from entering the queue.
+     *
+     * What really sucks about this is that the actual why gets
+     * lots when the `failed()` method is called, meaning we never
+     * know what actually went wrong. Hopefully by updating the
+     * jon tracker record, we have a time to narrow any possible
+     * exceptions down in the global log.
+     *
+     * @param \Seat\Eveapi\Helpers\JobContainer $job
+     */
+    public function handleFailedJob(JobContainer $job)
+    {
+
+        Log::error('A job failure occured in ' . __CLASS__ . '. Marking it as failed.');
+
+        // Try and find the jobtracking entry. Sadly, because the context
+        // seems logs in the `failed()` methods, we cant just lookup by
+        // job_id :((
+        $job_tracker = JobTracking::where('owner_id', $job->owner_id)
+            ->where('api', $job->api)
+            ->where('scope', $job->scope)
+            ->where('status', '<>', 'Error')
+            ->first();
+
+        if (!$job_tracker)
+            Log::error('Unable to find the job tracking entry for the failed job in ' . __CLASS__);
+
+        $job_tracker->status = 'Error';
+        $job_tracker->output = 'An unknown failure  in ' . __CLASS__ . ' occured.';
+        $job_tracker->save();
+
+        return;
+
     }
 
     /**
