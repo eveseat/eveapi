@@ -302,9 +302,6 @@ trait JobTracker
      *
      * @param $exception
      */
-    /**
-     * @param $exception
-     */
     public function handleConnectionException($exception)
     {
 
