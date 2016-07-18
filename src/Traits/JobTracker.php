@@ -348,7 +348,9 @@ trait JobTracker
             Log::error('Unable to find the job tracking entry for the failed job in ' . __CLASS__);
 
         $job_tracker->status = 'Error';
-        $job_tracker->output = 'An unknown failure  in ' . __CLASS__ . ' occured.';
+        $job_tracker->output = 'An unknown failure  in ' . __CLASS__ . ' occured. ' .
+            'Refer to the logs at ' . Carbon::now()->toDateTimeString() . ' for more ' .
+            'information.';
         $job_tracker->save();
 
         return;
