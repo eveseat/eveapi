@@ -23,7 +23,7 @@ namespace Seat\Eveapi\Traits;
 
 use Cache;
 use Carbon\Carbon;
-use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Models\Eve\ApiKey;
@@ -37,8 +37,6 @@ use Seat\Services\Jobs\Analytics;
  */
 trait JobTracker
 {
-
-    use DispatchesJobs;
 
     /**
      * Checks the Job Tracking table if the current job
@@ -116,7 +114,7 @@ trait JobTracker
         $job_tracker->save();
 
         // Analytics. Report only the Exception class and message.
-        $this->dispatch((new Analytics((new AnalyticsContainer)
+        Bus::dispatch((new Analytics((new AnalyticsContainer)
             ->set('type', 'exception')
             ->set('exd', get_class($e) . ':' . $e->getMessage())
             ->set('exf', 1)))
