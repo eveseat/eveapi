@@ -59,16 +59,17 @@ class CharacterInfo extends Base
             $this->_update_character_info($result);
 
         } else {
-            // Init access check used by Pheal
-            $access_check = new EveApiAccess();
-
             // Check if key does not have access to authenticated CharacterInfo
             try {
                 // use 'char' scope for check instead of 'eve' to test access
-                $access_check->check('char', 'CharacterInfo', $this->api_info->info->type, $this->api_info->info->accessMask);
+                (new EveApiAccess)->check(
+                    'char',
+                    'CharacterInfo',
+                    $this->api_info->info->type,
+                    $this->api_info->info->accessMask);
 
             // Downgrade to public api if access check failed
-            } catch (\Exception $ex) {
+            } catch (\Pheal\Exceptions\AccessException $ex) {
                 // Get pheal without API key.
                 // Maybe update the Seat\Eveapi\Api\Base class
                 // to give an option to override key_id and v_code handling
