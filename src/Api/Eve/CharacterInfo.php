@@ -40,60 +40,44 @@ class CharacterInfo extends Base
      *
      * @return mixed|void
      */
-    public function call($pub_character_id = null)
+    public function call()
     {
-
-        // This worker requires a slightly different bit
-        // of logic to start off. This is because the api
-        // endpoint works if you supply an api/vcode or
-        // not.
+        // CharacterInfo can be called with an API key or without
         $pheal = $this->setScope('eve')->getPheal();
 
-        // In the case of this being an update with a
-        // specified characterID, use that one.
-        if (!is_null($pub_character_id)) {
+        // Check if key has access to authenticated CharacterInfo
+        try {
+            // use 'char' scope for check instead of 'eve' to test access
+            (new EveApiAccess)->check(
+                'char',
+                'CharacterInfo',
+                $this->api_info->info->type,
+                $this->api_info->info->accessMask);
+
+        // Downgrade to public api if access check failed
+        } catch (\Pheal\Exceptions\AccessException $ex) {
+
+            // Get pheal without API key.
+            // Maybe update the Seat\Eveapi\Api\Base class
+            // to give an option to override key_id and v_code handling
+            $pheal = $this->pheal_instance->getPheal();
+
+            // Set access and scope
+            $pheal->setAccess(
+                $this->api_info->info->type,
+                $this->api_info->info->accessMask);
+
+            $pheal->scope = $this->scope;
+        }
+
+        foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->CharacterInfo([
-                'characterID' => $pub_character_id]);
+                'characterID' => $character->characterID]);
 
             $this->_update_character_info($result);
 
-        } else {
-            // Check if key does not have access to authenticated CharacterInfo
-            try {
-                // use 'char' scope for check instead of 'eve' to test access
-                (new EveApiAccess)->check(
-                    'char',
-                    'CharacterInfo',
-                    $this->api_info->info->type,
-                    $this->api_info->info->accessMask);
-
-            // Downgrade to public api if access check failed
-            } catch (\Pheal\Exceptions\AccessException $ex) {
-                // Get pheal without API key.
-                // Maybe update the Seat\Eveapi\Api\Base class
-                // to give an option to override key_id and v_code handling
-                $pheal = $this->pheal_instance->getPheal();
-
-                // Set access and scope
-                $pheal->setAccess(
-                    $this->api_info->info->type,
-                    $this->api_info->info->accessMask);
-
-                $pheal->scope = $this->scope;
-            }
-
-            // Otherwise, update all of the character on the
-            // ApiKey that we got as normal
-            foreach ($this->api_info->characters as $character) {
-
-                $result = $pheal->CharacterInfo([
-                    'characterID' => $character->characterID]);
-
-                $this->_update_character_info($result);
-
-            } // Foreach Character
-        }
+        } // Foreach Character
 
         return;
     }
