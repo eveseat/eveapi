@@ -21,10 +21,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Api\Eve;
 
+use Pheal\Exceptions\AccessException;
 use Seat\Eveapi\Api\Base;
+use Seat\Eveapi\Helpers\EveApiAccess;
 use Seat\Eveapi\Models\Eve\CharacterInfo as CharacterInfoModel;
 use Seat\Eveapi\Models\Eve\CharacterInfoEmploymentHistory;
-use Seat\Eveapi\Helpers\EveApiAccess;
 
 /**
  * Class CharacterInfo
@@ -36,17 +37,17 @@ class CharacterInfo extends Base
     /**
      * Run the Update
      *
-     * @param str $pub_character_id
-     *
      * @return mixed|void
      */
     public function call()
     {
+
         // CharacterInfo can be called with an API key or without
         $pheal = $this->setScope('eve')->getPheal();
 
         // Check if key has access to authenticated CharacterInfo
         try {
+
             // use 'char' scope for check instead of 'eve' to test access
             (new EveApiAccess)->check(
                 'char',
@@ -54,11 +55,12 @@ class CharacterInfo extends Base
                 $this->api_info->info->type,
                 $this->api_info->info->accessMask);
 
-        // Downgrade to public api if access check failed
-        } catch (\Pheal\Exceptions\AccessException $ex) {
+        } catch (AccessException $ex) {
+
+            // Downgrade to public api if access check failed
 
             // Get pheal without API key.
-            // Maybe update the Seat\Eveapi\Api\Base class
+            // TODO: Maybe update the Seat\Eveapi\Api\Base class
             // to give an option to override key_id and v_code handling
             $pheal = $this->pheal_instance->getPheal();
 
