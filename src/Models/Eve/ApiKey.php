@@ -102,8 +102,14 @@ class ApiKey extends Model
             ApiKeyInfoCharacters::class, 'keyID', 'key_id');
     }
 
+    /**
+     * Returns the account status for the key
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function status()
     {
+
         return $this->hasOne(
             AccountStatus::class, 'keyID', 'key_id');
     }
