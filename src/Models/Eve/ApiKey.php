@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Models\Eve;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Account\AccountStatus;
 use Seat\Eveapi\Models\Account\ApiKeyInfo;
 use Seat\Eveapi\Models\Account\ApiKeyInfoCharacters;
 use Seat\Web\Models\User;
@@ -99,5 +100,11 @@ class ApiKey extends Model
 
         return $this->hasMany(
             ApiKeyInfoCharacters::class, 'keyID', 'key_id');
+    }
+
+    public function status()
+    {
+        return $this->hasOne(
+            AccountStatus::class, 'keyID', 'key_id');
     }
 }
