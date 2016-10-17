@@ -76,7 +76,7 @@ trait JobManager
 
         // Add a new job onto the queue...
         $new_job = (new $job($args))->onQueue($args->queue);
-        $job_id = $this->dispatch($new_job);
+        $job_id = dispatch($new_job);
 
         // Check that the id we got back is a random
         // string and not 0. In fact, normal job_ids

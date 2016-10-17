@@ -21,8 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Jobs;
 
-use App\Jobs\Job;
-use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -39,10 +38,10 @@ use Seat\Eveapi\Traits\JobTracker;
  * Class CheckAndQueueKey
  * @package Seat\Eveapi\Jobs
  */
-class CheckAndQueueKey extends Job implements SelfHandling, ShouldQueue
+class CheckAndQueueKey implements ShouldQueue
 {
 
-    use InteractsWithQueue, SerializesModels, JobTracker, JobManager;
+    use InteractsWithQueue, Queueable, SerializesModels, JobTracker, JobManager;
 
     /**
      * The JobContainer Instance containing
