@@ -36,6 +36,11 @@ class JobTracking extends Model
     protected $primaryKey = 'job_id';
 
     /**
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
      * @var array
      */
     protected $fillable = ['job_id', 'owner_id', 'api', 'scope', 'status'];
