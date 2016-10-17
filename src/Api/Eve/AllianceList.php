@@ -61,7 +61,7 @@ class AllianceList extends Base
             // alliance
             $known_corporations = AllianceListMemberCorporations::where(
                 'allianceID', $alliance->allianceID)
-                ->lists('corporationID')->all();
+                ->pluck('corporationID')->all();
 
             // Populate the member corporations for the current
             // alliance if the corporationID is not in the

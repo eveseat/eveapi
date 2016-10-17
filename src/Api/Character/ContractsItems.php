@@ -59,7 +59,7 @@ class ContractsItems extends Base
                         ->where('characterID', $character->characterID);
 
                 })
-                ->lists('contractID');
+                ->pluck('contractID');
 
             // Process the contractID's as we have received them
             foreach ($contract_ids as $contract_id) {

@@ -56,7 +56,7 @@ class WalletTransactions extends Base
 
         $account_ids = AccountBalanceModel::where(
             'corporationID', $this->corporationID)
-            ->lists('accountKey');
+            ->pluck('accountKey');
 
         foreach ($account_ids as $account_id) {
 

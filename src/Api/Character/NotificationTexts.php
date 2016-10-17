@@ -54,7 +54,7 @@ class NotificationTexts extends Base
                         ->from('character_notifications_texts');
 
                 })
-                ->lists('notificationID');
+                ->pluck('notificationID');
 
             // It is possible to provide a comma seperated list
             // of notificationIDs to the NotificationTexts

@@ -56,7 +56,7 @@ class MailBodies extends Base
                         ->from('character_mail_message_bodies');
 
                 })
-                ->lists('messageID');
+                ->pluck('messageID');
 
             // It is possible to provide a comma seperated list
             // of messageIDs to the MailBodies endpoint. Pheal

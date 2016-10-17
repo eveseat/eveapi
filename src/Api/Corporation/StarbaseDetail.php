@@ -45,7 +45,7 @@ class StarbaseDetail extends Base
 
         $starbase_ids = DB::table('corporation_starbases')
             ->where('corporationID', $this->corporationID)
-            ->lists('itemID');
+            ->pluck('itemID');
 
         foreach ($starbase_ids as $starbase_id) {
 

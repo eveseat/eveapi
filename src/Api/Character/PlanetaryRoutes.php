@@ -56,7 +56,7 @@ class PlanetaryRoutes extends Base
             // character owns.
             $colonies = DB::table('character_planetary_colonies')
                 ->where('ownerID', $character->characterID)
-                ->lists('planetID');
+                ->pluck('planetID');
 
             foreach ($colonies as $planet_id) {
 
