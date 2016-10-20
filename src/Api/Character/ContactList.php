@@ -67,7 +67,8 @@ class ContactList extends Base
                     'standing'      => $contact->standing,
                     'contactTypeID' => $contact->contactTypeID,
                     'labelMask'     => $contact->labelMask,
-                    'inWatchlist'   => $contact->inWatchlist
+                    'inWatchlist'   => strtolower($contact->inWatchlist) === 'true' ?
+                        true : false
                 ]);
             }
 

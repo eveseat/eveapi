@@ -64,8 +64,10 @@ class SkillQueue extends Base
                         'level'         => $skill->level,
                         'startSP'       => $skill->startSP,
                         'endSP'         => $skill->endSP,
-                        'startTime'     => $skill->startTime,
-                        'endTime'       => $skill->endTime,
+                        'startTime'     => $skill->startTime === '' ?
+                            null : $skill->startTime,
+                        'endTime'       => $skill->endTime === '' ?
+                            null : $skill->endTime,
 
                         // Timestamps
                         'created_at'    => Carbon::now()->toDateTimeString(),

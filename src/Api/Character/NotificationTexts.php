@@ -61,11 +61,11 @@ class NotificationTexts extends Base
             // endpoint. Pheal caches XML's on disk by file name.
             // To prevent file names from becoming too long, we
             // will chunk the ids we want to update.
-            foreach (array_chunk($notification_ids, 10) as $notification_id_chunk) {
+            foreach ($notification_ids->chunk(10) as $notification_id_chunk) {
 
                 $result = $pheal->NotificationTexts([
                     'characterID' => $character->characterID,
-                    'ids'         => implode(',', $notification_id_chunk)]);
+                    'ids'         => $notification_id_chunk->implode(',')]);
 
                 foreach ($result->notifications as $notification) {
 

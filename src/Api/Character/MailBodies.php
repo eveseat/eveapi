@@ -63,13 +63,13 @@ class MailBodies extends Base
             // caches XML's on disk by file name. To prevent file
             // names from becoming too long, we will chunk the
             // ids we want to update.
-            foreach (array_chunk($message_ids, 10) as $message_id_chunk) {
+            foreach ($message_ids->chunk(10) as $message_id_chunk) {
 
                 try {
 
                     $result = $pheal->MailBodies([
                         'characterID' => $character->characterID,
-                        'ids'         => implode(',', $message_id_chunk)]);
+                        'ids'         => $message_id_chunk->implode(',')]);
 
                     foreach ($result->messages as $body) {
 

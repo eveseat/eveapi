@@ -55,9 +55,12 @@ class MailMessages extends Base
                     'senderName'         => $message->senderName,
                     'sentDate'           => $message->sentDate,
                     'title'              => $message->title,
-                    'toCorpOrAllianceID' => $message->toCorpOrAllianceID,
-                    'toCharacterIDs'     => $message->toCharacterIDs,
-                    'toListID'           => $message->toListID
+                    'toCorpOrAllianceID' => $message->toCorpOrAllianceID === '' ?
+                        null : $message->toCorpOrAllianceID,
+                    'toCharacterIDs'     => $message->toCharacterIDs === '' ?
+                        null : $message->toCharacterIDs,
+                    'toListID'           => $message->toListID === '' ?
+                        null : $message->toListID
                 ]);
             }
         }

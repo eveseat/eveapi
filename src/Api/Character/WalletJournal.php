@@ -129,8 +129,10 @@ class WalletJournal extends Base
                         'amount'        => $transaction->amount,
                         'balance'       => $transaction->balance,
                         'reason'        => $transaction->reason,
-                        'taxReceiverID' => $transaction->taxReceiverID,
-                        'taxAmount'     => $transaction->taxAmount,
+                        'taxReceiverID' => $transaction->taxReceiverID === '' ?
+                            null : $transaction->taxReceiverID,
+                        'taxAmount'     => $transaction->taxAmount === '' ?
+                            null : $transaction->taxAmount,
                         'owner1TypeID'  => $transaction->owner1TypeID,
                         'owner2TypeID'  => $transaction->owner2TypeID
                     ]);

@@ -75,7 +75,8 @@ class ChatChannels extends Base
                     'ownerName'     => $channel->ownerName,
                     'displayName'   => $channel->displayName,
                     'comparisonKey' => $channel->comparisonKey,
-                    'hasPassword'   => $channel->hasPassword,
+                    'hasPassword'   => strtolower($channel->hasPassword) === 'true' ?
+                        true : false,
                     'motd'          => $channel->motd
                 ]);
 

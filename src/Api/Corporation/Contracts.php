@@ -65,9 +65,11 @@ class Contracts extends Base
                 'availability'   => $contract->availability,
                 'dateIssued'     => $contract->dateIssued,
                 'dateExpired'    => $contract->dateExpired,
-                'dateAccepted'   => $contract->dateAccepted,
+                'dateAccepted'   => $contract->dateAccepted === '' ?
+                    null : $contract->dateAccepted,
                 'numDays'        => $contract->numDays,
-                'dateCompleted'  => $contract->dateCompleted,
+                'dateCompleted'  => $contract->dateCompleted == '' ?
+                    null : $contract->dateCompleted,
                 'price'          => $contract->price,
                 'reward'         => $contract->reward,
                 'collateral'     => $contract->collateral,
