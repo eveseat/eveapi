@@ -21,6 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Jobs;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -130,11 +131,13 @@ class UpdatePublic implements ShouldQueue
 
     /**
      * Update the job tracker to a failed state
+     *
+     * @param \Exception $exception
      */
-    public function failed()
+    public function failed(Exception $exception)
     {
 
-        $this->handleFailedJob($this->job_payload);
+        $this->handleFailedJob($this->job_payload, $exception);
 
         return;
 

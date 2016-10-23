@@ -23,6 +23,7 @@ namespace Seat\Eveapi\Traits;
 
 use Cache;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 use Seat\Eveapi\Helpers\JobContainer;
@@ -89,7 +90,7 @@ trait JobTracker
      * @param \Seat\Eveapi\Models\JobTracking $job_tracker
      * @param \Exception                      $e
      */
-    public function reportJobError(JobTracking $job_tracker, \Exception $e)
+    public function reportJobError(JobTracking $job_tracker, Exception $e)
     {
 
         // Write an entry to the log file.
@@ -340,8 +341,9 @@ trait JobTracker
      * exceptions down in the global log.
      *
      * @param \Seat\Eveapi\Helpers\JobContainer $job
+     * @param \Exception                        $exception
      */
-    public function handleFailedJob(JobContainer $job)
+    public function handleFailedJob(JobContainer $job, Exception $exception)
     {
 
         Log::error('A job failure occured in ' . __CLASS__ . '. Marking it as failed.');
@@ -359,9 +361,17 @@ trait JobTracker
             Log::error('Unable to find the job tracking entry for the failed job in ' . __CLASS__);
 
         $job_tracker->status = 'Error';
-        $job_tracker->output = 'An unknown failure  in ' . __CLASS__ . ' occured. ' .
+        $job_tracker->output = 'An general failure  in ' . __CLASS__ . ' occured. ' .
             'Refer to the logs at ' . Carbon::now()->toDateTimeString() . ' for more ' .
-            'information.';
+            'information. Details about the exception: ' . PHP_EOL .
+            PHP_EOL .
+            'Exception: ' . get_class($exception) . PHP_EOL .
+            'Error Code: ' . $exception->getCode() . PHP_EOL .
+            'Error Message: ' . $exception->getMessage() . PHP_EOL .
+            'File: ' . $exception->getFile() . ' - Line: ' . $exception->getLine() . PHP_EOL .
+            PHP_EOL .
+            'Traceback: ' . $exception->getTraceAsString() . PHP_EOL;
+
         $job_tracker->save();
 
         return;

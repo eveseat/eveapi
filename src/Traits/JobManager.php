@@ -21,7 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Traits;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Log;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Models\JobTracking;
@@ -33,8 +32,6 @@ use Seat\Services\Settings\Seat;
  */
 trait JobManager
 {
-
-    use DispatchesJobs;
 
     /**
      * Adds a Job to the queue only if one does not
