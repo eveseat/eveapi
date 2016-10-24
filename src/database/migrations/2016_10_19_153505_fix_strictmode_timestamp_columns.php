@@ -25,6 +25,7 @@ class FixStrictmodeTimestampColumns extends Migration
 
         // Temporarily disable the string SQL mode for this session.
         config(['database.connections.mysql.strict' => false]);
+        config(['database.connections.mysql.modes' => null]);
 
         // Reconnect the database connection after we changed the mode.
         DB::reconnect();
