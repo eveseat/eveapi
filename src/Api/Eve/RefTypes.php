@@ -43,15 +43,9 @@ class RefTypes extends Base
 
         foreach ($result->refTypes as $ref_type) {
 
-            $ref_type = RefTypesModel::firstOrCreate([
-                'refTypeID' => $ref_type->refTypeID,
-            ]);
-
-            $ref_type->fill([
-                'refTypeName' => $ref_type->refTypeName
-            ]);
-
-            $ref_type->save();
+            RefTypesModel::firstOrNew(['refTypeID' => $ref_type->refTypeID])
+                ->fill(['refTypeName' => $ref_type->refTypeName])
+                ->save();
         }
 
         return;
