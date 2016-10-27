@@ -40,6 +40,16 @@ class FixStrictmodeIntegerSizes extends Migration
             $table->bigInteger('homeStationID')->change();
         });
 
+        Schema::table('character_contact_list_alliances', function (Blueprint $table) {
+
+            $table->bigInteger('labelMask')->change();
+        });
+
+        Schema::table('character_contact_list_corporates', function (Blueprint $table) {
+
+            $table->bigInteger('labelMask')->change();
+        });
+
         Schema::table('character_contracts', function (Blueprint $table) {
 
             $table->bigInteger('startStationID')->change();
