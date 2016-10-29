@@ -40,14 +40,34 @@ class FixStrictmodeIntegerSizes extends Migration
             $table->bigInteger('homeStationID')->change();
         });
 
+        Schema::table('character_contact_lists', function (Blueprint $table) {
+
+            $table->bigInteger('labelMask')->change();
+        });
+
+        Schema::table('character_contact_list_labels', function (Blueprint $table) {
+
+            $table->bigInteger('labelID')->change();
+        });
+
         Schema::table('character_contact_list_alliances', function (Blueprint $table) {
 
             $table->bigInteger('labelMask')->change();
         });
 
+        Schema::table('character_contact_list_alliance_labels', function (Blueprint $table) {
+
+            $table->bigInteger('labelID')->change();
+        });
+
         Schema::table('character_contact_list_corporates', function (Blueprint $table) {
 
             $table->bigInteger('labelMask')->change();
+        });
+
+        Schema::table('character_contact_list_corporate_labels', function (Blueprint $table) {
+
+            $table->bigInteger('labelID')->change();
         });
 
         Schema::table('character_contracts', function (Blueprint $table) {
@@ -82,6 +102,26 @@ class FixStrictmodeIntegerSizes extends Migration
         Schema::table('corporation_bookmarks', function (Blueprint $table) {
 
             $table->bigInteger('itemID')->change();
+        });
+
+        Schema::table('corporation_contact_list_labels', function (Blueprint $table) {
+
+            $table->bigInteger('labelID')->change();
+        });
+
+        Schema::table('corporation_contact_lists', function (Blueprint $table) {
+
+            $table->bigInteger('labelMask')->change();
+        });
+
+        Schema::table('corporation_contact_list_alliances', function (Blueprint $table) {
+
+            $table->bigInteger('labelMask')->change();
+        });
+
+        Schema::table('corporation_contact_list_alliance_labels', function (Blueprint $table) {
+
+            $table->bigInteger('labelID')->change();
         });
 
         Schema::table('corporation_contracts', function (Blueprint $table) {
