@@ -21,7 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Jobs;
 
-use Exception;
 use Pheal\Exceptions\AccessException;
 use Pheal\Exceptions\APIException;
 use Pheal\Exceptions\ConnectionException;
@@ -40,12 +39,9 @@ class UpdateAuthenticated extends Base
     public function handle()
     {
 
-        // Find the tracking record for this job
-        $this->trackOrDismiss();
-
-        // If no tracking record was returned, we
-        // will simply end here.
-        if (!$this->job_tracker)
+        // Find the tracking record for this job. If there
+        // is none, simply return and do nothing.
+        if (!$this->trackOrDismiss())
             return;
 
         // Do the update work and catch any errors
@@ -54,52 +50,44 @@ class UpdateAuthenticated extends Base
 
         // Attempt to run the Updaters based on the
         // type of key we are working with.
-        try {
+        foreach ($this->load_workers() as $worker) {
 
-            foreach ($this->load_workers() as $worker) {
+            try {
 
-                try {
+                $this->updateJobStatus([
+                    'output' => 'Processing: ' . class_basename($worker)
+                ]);
 
-                    $this->updateJobStatus(['output' => 'Processing: '
-                        . class_basename($worker)]);
+                // Perform the update for the specific worker.
+                (new $worker)->setApi($this->job_payload->eve_api_key)->call();
+                $this->decrementErrorCounters();
 
-                    // Perform the update for the specific worker.
-                    (new $worker)->setApi($this->job_payload->eve_api_key)->call();
-                    $this->decrementErrorCounters();
+            } catch (AccessException $e) {
 
-                } catch (AccessException $e) {
+                continue;
 
-                    continue;
+            } catch (APIException $e) {
 
-                } catch (APIException $e) {
+                // If we should not continue, simply return.
+                if (!$this->handleApiException($this->job_payload->eve_api_key, $e))
+                    return;
 
-                    // If we should not continue, simply return.
-                    if (!$this->handleApiException($this->job_payload->eve_api_key, $e))
-                        return;
+                continue;
 
-                    continue;
+            } catch (ConnectionException $e) {
 
-                } catch (ConnectionException $e) {
+                $this->handleConnectionException($e);
+                continue;
 
-                    $this->handleConnectionException($e);
-                    continue;
+            } catch (PhealException $e) {
 
-                } catch (PhealException $e) {
+                // Handle the tyipcal XML related exceptions as a
+                // connection exception for now.
+                $this->handleConnectionException($e);
+                continue;
+            }
 
-                    // Handle the tyipcal XML related exceptions as a
-                    // connection exception for now.
-                    $this->handleConnectionException($e);
-                    continue;
-                }
-
-            } // Foreach worker
-
-        } catch (Exception $e) {
-
-            $this->reportJobError($e);
-
-            return;
-        }
+        } // Foreach worker
 
         // Mark the Job as complete.
         $this->updateJobStatus([

@@ -29,6 +29,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Pheal\Exceptions\APIException;
+use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Helpers\JobPayloadContainer;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Models\JobTracking;
@@ -85,7 +87,7 @@ abstract class Base implements ShouldQueue
      * We also check that the EVE API is considered 'UP'
      * before we allow the job to be updated.
      *
-     * @return mixed
+     * @return bool
      */
     public function trackOrDismiss()
     {
@@ -110,7 +112,7 @@ abstract class Base implements ShouldQueue
                 // for 2 seconds before releasing it.
                 $this->release(2);
 
-                return null;
+                return false;
             }
 
             // Remove yourself from the queue
@@ -118,16 +120,14 @@ abstract class Base implements ShouldQueue
                 'Error finding a JobTracker for job ' . $this->job->getJobID());
             $this->delete();
 
-            return null;
+            return false;
         }
 
-        // Check if the EVE API is down. If it is, null
-        // the job tracker so that the extended class
-        // will stop execution.
+        // Check if the EVE API is down.
         if ($this->isEveApiDown())
-            $this->job_tracker = null;
+            return false;
 
-        return;
+        return true;
     }
 
     /**
@@ -552,10 +552,39 @@ abstract class Base implements ShouldQueue
     }
 
     /**
+     * Handle an exception that can be thrown by a job.
+     *
+     * This is the failed method that Laravel itself will call
+     * when a jobs `handle` method throws any uncaught exception.
+     *
      * @param \Exception $exception
      */
     public function failed(Exception $exception)
     {
+
+        if ($exception instanceof APIException) {
+
+            $this->handleApiException($exception);
+
+            // TODO: Add some logging so that the keys
+            // could be troubleshooted later
+            $this->markAsDone();
+
+            return;
+        }
+
+        if ($exception instanceof PhealException) {
+
+            // Typically, this will be the XML parsing errors that
+            // will end up here. Catch them and handle them as a connection
+            // exception for now.
+            $this->handleConnectionException($exception);
+
+            // TODO: Add some logging
+            $this->markAsDone();
+
+            return;
+        }
 
         $this->reportJobError($exception);
 

@@ -21,10 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Jobs;
 
-use Exception;
-use Pheal\Exceptions\APIException;
 use Pheal\Exceptions\ConnectionException;
-use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Api\Account\APIKeyInfo;
 use Seat\Eveapi\Exception\InvalidKeyTypeException;
 use Seat\Eveapi\Helpers\JobPayloadContainer;
@@ -43,16 +40,14 @@ class CheckAndQueueKey extends Base
      * Execute the job.
      *
      * @return mixed|void
+     * @throws \Seat\Eveapi\Exception\InvalidKeyTypeException
      */
     public function handle()
     {
 
-        // Find the tracking record for this job
-        $this->trackOrDismiss();
-
-        // If no tracking record was returned, we
-        // will simply end here.
-        if (!$this->job_tracker)
+        // Find the tracking record for this job. If there
+        // is none, simply return and do nothing.
+        if (!$this->trackOrDismiss())
             return;
 
         // Do the update work and catch any errors
@@ -108,16 +103,6 @@ class CheckAndQueueKey extends Base
 
             $this->markAsDone();
 
-        } catch (APIException $e) {
-
-            $this->handleApiException($this->job_payload->eve_api_key, $e);
-
-            // TODO: Add some logging so that the keys
-            // could be troubleshooted later
-            $this->markAsDone();
-
-            return;
-
         } catch (ConnectionException $e) {
 
             $this->handleConnectionException($e);
@@ -142,22 +127,10 @@ class CheckAndQueueKey extends Base
                     'last_error' => 'Disabled due to possibly expired key. ' .
                         $e->getCode() . ':' . $e->getMessage()
                 ]);
-
-        } catch (PhealException $e) {
-
-            // Typically, this will be the XML parsing errors that
-            // will end up here. Catch them and handle them as a connection
-            // exception for now.
-            $this->handleConnectionException($e);
-
-            // TODO: Add some logging
-            $this->markAsDone();
-
-        } catch (Exception $e) {
-
-            $this->reportJobError($this->job_tracker, $e);
-
         }
+
+        return;
+
     }
 
 }

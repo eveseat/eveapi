@@ -21,7 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Jobs;
 
-use Exception;
 use Pheal\Exceptions\APIException;
 use Pheal\Exceptions\ConnectionException;
 
@@ -38,12 +37,9 @@ class UpdatePublic extends Base
     public function handle()
     {
 
-        // Find the tracking record for this job
-        $this->trackOrDismiss();
-
-        // If no tracking record was returned, we
-        // will simply end here.
-        if (!$this->job_tracker)
+        // Find the tracking record for this job. If there
+        // is none, simply return and do nothing.
+        if (!$this->trackOrDismiss())
             return;
 
         // Do the update work and catch any errors
@@ -52,41 +48,33 @@ class UpdatePublic extends Base
 
         // Attempt to run the Updaters based on the
         // type of key we are working with.
-        try {
+        foreach ($this->load_workers() as $worker) {
 
-            foreach ($this->load_workers() as $worker) {
+            try {
 
-                try {
+                $this->updateJobStatus([
+                    'output' => 'Processing: ' . class_basename($worker)
+                ]);
 
-                    $this->updateJobStatus(['output' => 'Processing: '
-                        . class_basename($worker)]);
+                // Perform the update
+                (new $worker)->call();
+                $this->decrementErrorCounters();
 
-                    // Perform the update
-                    (new $worker)->call();
-                    $this->decrementErrorCounters();
+            } catch (APIException $e) {
 
-                } catch (APIException $e) {
+                // If we should not continue, simply return.
+                if (!$this->handleApiException($e))
+                    return;
 
-                    // If we should not continue, simply return.
-                    if (!$this->handleApiException($e))
-                        return;
+                continue;
 
-                    continue;
+            } catch (ConnectionException $e) {
 
-                } catch (ConnectionException $e) {
+                $this->handleConnectionException($e);
+                continue;
+            }
 
-                    $this->handleConnectionException($e);
-                    continue;
-                }
-
-            } // Foreach worker
-
-        } catch (Exception $e) {
-
-            $this->reportJobError($e);
-
-            return;
-        }
+        } // Foreach worker
 
         // Mark the Job as complete.
         $this->updateJobStatus([
