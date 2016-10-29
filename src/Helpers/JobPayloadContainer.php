@@ -26,10 +26,10 @@ namespace Seat\Eveapi\Helpers;
  * of a default job for the API worker
  * queues
  *
- * Class JobContainer
+ * Class JobPayloadContainer
  * @package Seat\Eveapi\Helpers
  */
-class JobContainer implements \ArrayAccess
+class JobPayloadContainer implements \ArrayAccess
 {
 
     /**

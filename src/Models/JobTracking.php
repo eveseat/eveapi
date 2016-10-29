@@ -43,5 +43,5 @@ class JobTracking extends Model
     /**
      * @var array
      */
-    protected $fillable = ['job_id', 'owner_id', 'api', 'scope', 'status'];
+    protected $fillable = ['job_id', 'owner_id', 'api', 'scope', 'output', 'status'];
 }

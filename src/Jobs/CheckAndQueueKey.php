@@ -22,81 +22,55 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Jobs;
 
 use Exception;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\APIException;
 use Pheal\Exceptions\ConnectionException;
 use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Api\Account\APIKeyInfo;
 use Seat\Eveapi\Exception\InvalidKeyTypeException;
-use Seat\Eveapi\Helpers\JobContainer;
+use Seat\Eveapi\Helpers\JobPayloadContainer;
 use Seat\Eveapi\Traits\JobManager;
-use Seat\Eveapi\Traits\JobTracker;
 
 /**
  * Class CheckAndQueueKey
  * @package Seat\Eveapi\Jobs
  */
-class CheckAndQueueKey implements ShouldQueue
+class CheckAndQueueKey extends Base
 {
 
-    use InteractsWithQueue, Queueable, SerializesModels, JobTracker, JobManager;
-
-    /**
-     * The JobContainer Instance containing
-     * extra payload information.
-     *
-     * @var
-     */
-    protected $job_payload;
-
-    /**
-     * Create a new job instance.
-     *
-     * @param \Seat\Eveapi\Helpers\JobContainer $job_payload
-     */
-    public function __construct(JobContainer $job_payload)
-    {
-
-        $this->job_payload = $job_payload;
-    }
+    use JobManager;
 
     /**
      * Execute the job.
      *
-     * @param \Seat\Eveapi\Helpers\JobContainer $fresh_job
-     *
-     * @throws \Seat\Eveapi\Exception\InvalidKeyTypeException
+     * @return mixed|void
      */
-    public function handle(JobContainer $fresh_job)
+    public function handle()
     {
 
         // Find the tracking record for this job
-        $job_tracker = $this->trackOrDismiss();
+        $this->trackOrDismiss();
 
         // If no tracking record was returned, we
         // will simply end here.
-        if (!$job_tracker)
-            return;
-
-        if ($this->isEveApiDown($job_tracker))
+        if (!$this->job_tracker)
             return;
 
         // Do the update work and catch any errors
         // that may come of it.
         try {
 
-            $job_tracker->status = 'Working';
-            $job_tracker->output = 'Started APIKeyInfo Update';
-            $job_tracker->save();
+            // Update the Jobs status
+            $this->updateJobStatus([
+                'status' => 'Working',
+                'output' => 'Started APIKeyInfo Update'
+            ]);
 
             // https://api.eveonline.com/account/APIKeyInfo.xml.aspx
             (new APIKeyInfo())->setApi($this->job_payload->eve_api_key)->call();
             $this->decrementErrorCounters();
 
             // Populate the new Job with some defaults
+            $fresh_job = new JobPayloadContainer();
             $fresh_job->scope = 'Eve';
             $fresh_job->owner_id = $this->job_payload->eve_api_key->key_id;
             $fresh_job->eve_api_key = $this->job_payload->eve_api_key;
@@ -128,20 +102,19 @@ class CheckAndQueueKey implements ShouldQueue
             }
 
             // Queue the actual update job with a populated
-            // JobContainer
+            // JobPayloadContainer
             $this->addUniqueJob(
                 'Seat\Eveapi\Jobs\UpdateAuthenticated', $fresh_job);
 
-            $this->markAsDone($job_tracker);
+            $this->markAsDone();
 
         } catch (APIException $e) {
 
-            $this->handleApiException(
-                $job_tracker, $this->job_payload->eve_api_key, $e);
+            $this->handleApiException($this->job_payload->eve_api_key, $e);
 
             // TODO: Add some logging so that the keys
             // could be troubleshooted later
-            $this->markAsDone($job_tracker);
+            $this->markAsDone();
 
             return;
 
@@ -151,7 +124,7 @@ class CheckAndQueueKey implements ShouldQueue
 
             // TODO: Add some logging so that the keys
             // could be troubleshooted later
-            $this->markAsDone($job_tracker);
+            $this->markAsDone();
 
             // In the case of the Account/APIKeyInfo call, CCP
             // will respond with a HTTP 403, and then have error code
@@ -178,41 +151,13 @@ class CheckAndQueueKey implements ShouldQueue
             $this->handleConnectionException($e);
 
             // TODO: Add some logging
-            $this->markAsDone($job_tracker);
+            $this->markAsDone();
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
-            $this->reportJobError($job_tracker, $e);
+            $this->reportJobError($this->job_tracker, $e);
 
         }
     }
 
-    /**
-     * Update the job tracker to a failed state
-     *
-     * @param \Exception $exception
-     */
-    public function failed(Exception $exception)
-    {
-
-        $this->handleFailedJob($this->job_payload, $exception);
-
-        return;
-
-    }
-
-    /**
-     * Mark a Job as Done
-     *
-     * @param  $job_tracker
-     */
-    public function markAsDone($job_tracker)
-    {
-
-        $job_tracker->status = 'Done';
-        $job_tracker->output = null;
-        $job_tracker->save();
-
-        return;
-    }
 }

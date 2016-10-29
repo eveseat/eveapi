@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Traits;
 
 use Log;
-use Seat\Eveapi\Helpers\JobContainer;
+use Seat\Eveapi\Helpers\JobPayloadContainer;
 use Seat\Eveapi\Models\JobTracking;
 use Seat\Services\Settings\Seat;
 
@@ -42,7 +42,7 @@ trait JobManager
      *
      * @return mixed
      */
-    public function addUniqueJob($job, JobContainer $args)
+    public function addUniqueJob($job, JobPayloadContainer $args)
     {
 
         // Refuse to pop a job onto the queue if the admin

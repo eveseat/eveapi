@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Test\Helpers;
 
-use Seat\Eveapi\Helpers\JobContainer;
+use Seat\Eveapi\Helpers\JobPayloadContainer;
 
 /**
  * Class JobContainerTest
@@ -41,7 +41,7 @@ class JobContainerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
 
-        $this->container = new JobContainer();
+        $this->container = new JobPayloadContainer();
     }
 
     /**

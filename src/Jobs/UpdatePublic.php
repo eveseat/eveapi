@@ -22,42 +22,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Jobs;
 
 use Exception;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Pheal\Exceptions\APIException;
 use Pheal\Exceptions\ConnectionException;
-use Seat\Eveapi\Helpers\JobContainer;
-use Seat\Eveapi\Traits\JobTracker;
 
 /**
  * Class UpdatePublic
  * @package Seat\Eveapi\Jobs
  */
-class UpdatePublic implements ShouldQueue
+class UpdatePublic extends Base
 {
-
-    use InteractsWithQueue, Queueable, SerializesModels, JobTracker;
-
-    /**
-     * The JobContainer Instance containing
-     * extra payload information.
-     *
-     * @var
-     */
-    protected $job_payload;
-
-    /**
-     * Create a new job instance.
-     *
-     * @param \Seat\Eveapi\Helpers\JobContainer $job_payload
-     */
-    public function __construct(JobContainer $job_payload)
-    {
-
-        $this->job_payload = $job_payload;
-    }
 
     /**
      * Execute the job.
@@ -66,33 +39,27 @@ class UpdatePublic implements ShouldQueue
     {
 
         // Find the tracking record for this job
-        $job_tracker = $this->trackOrDismiss();
+        $this->trackOrDismiss();
 
         // If no tracking record was returned, we
         // will simply end here.
-        if (!$job_tracker)
+        if (!$this->job_tracker)
             return;
 
         // Do the update work and catch any errors
         // that may come of it.
-        $job_tracker->status = 'Working';
-        $job_tracker->save();
+        $this->updateJobStatus(['status' => 'Working']);
 
         // Attempt to run the Updaters based on the
         // type of key we are working with.
         try {
 
-            foreach ($this->load_workers($job_tracker) as $worker) {
-
-                // Check that the EveApi is considered up
-                if ($this->isEveApiDown($job_tracker))
-                    return;
+            foreach ($this->load_workers() as $worker) {
 
                 try {
 
-                    $job_tracker->output = 'Processing: '
-                        . class_basename($worker);
-                    $job_tracker->save();
+                    $this->updateJobStatus(['output' => 'Processing: '
+                        . class_basename($worker)]);
 
                     // Perform the update
                     (new $worker)->call();
@@ -101,9 +68,7 @@ class UpdatePublic implements ShouldQueue
                 } catch (APIException $e) {
 
                     // If we should not continue, simply return.
-                    if (!$this->handleApiException(
-                        $job_tracker, $this->job_payload->eve_api_key, $e)
-                    )
+                    if (!$this->handleApiException($e))
                         return;
 
                     continue;
@@ -116,30 +81,18 @@ class UpdatePublic implements ShouldQueue
 
             } // Foreach worker
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
-            $this->reportJobError($job_tracker, $e);
+            $this->reportJobError($e);
 
             return;
         }
 
-        $job_tracker->status = 'Done';
-        $job_tracker->output = null;
-        $job_tracker->save();
-
-    }
-
-    /**
-     * Update the job tracker to a failed state
-     *
-     * @param \Exception $exception
-     */
-    public function failed(Exception $exception)
-    {
-
-        $this->handleFailedJob($this->job_payload, $exception);
-
-        return;
+        // Mark the Job as complete.
+        $this->updateJobStatus([
+            'status' => 'Done',
+            'output' => null
+        ]);
 
     }
 

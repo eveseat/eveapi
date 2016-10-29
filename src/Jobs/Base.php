@@ -19,30 +19,72 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-namespace Seat\Eveapi\Traits;
+namespace Seat\Eveapi\Jobs;
 
 use Cache;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\Bus;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Seat\Eveapi\Helpers\JobContainer;
+use Seat\Eveapi\Helpers\JobPayloadContainer;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Models\JobTracking;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 
 /**
- * Class JobTracker
- * @package Seat\Eveapi\Traits
+ * Class Base
+ * @package Seat\Eveapi\Jobs
  */
-trait JobTracker
+abstract class Base implements ShouldQueue
 {
+
+    use InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * The JobPayloadContainer Instance containing
+     * extra payload information.
+     *
+     * @var \Seat\Eveapi\Helpers\JobPayloadContainer
+     */
+    protected $job_payload;
+
+    /**
+     * The JobTracker instance.
+     *
+     * @var \Seat\Eveapi\Models\JobTracking
+     */
+    protected $job_tracker;
+
+    /**
+     * Force defining the handle method for the Job worker to call.
+     *
+     * @return mixed
+     */
+    abstract public function handle();
+
+    /**
+     * Create a new job instance.
+     *
+     * @param \Seat\Eveapi\Helpers\JobPayloadContainer $job_payload
+     */
+    public function __construct(JobPayloadContainer $job_payload)
+    {
+
+        $this->job_payload = $job_payload;
+        $this->job_tracker = null;
+    }
 
     /**
      * Checks the Job Tracking table if the current job
      * has a tracking entry. If not, the job is just
-     * deleted
+     * deleted.
+     *
+     * We also check that the EVE API is considered 'UP'
+     * before we allow the job to be updated.
      *
      * @return mixed
      */
@@ -51,7 +93,7 @@ trait JobTracker
 
         // Match the current job_id with the tracking
         // record we added when queuing the job
-        $job_tracker = JobTracking::where('job_id',
+        $this->job_tracker = JobTracking::where('job_id',
             $this->job->getJobId())
             ->first();
 
@@ -59,7 +101,7 @@ trait JobTracker
         // the job back in the queue after a few
         // seconds. It could be that the job
         // to add it has not finished yet.
-        if (!$job_tracker) {
+        if (!$this->job_tracker) {
 
             // Check that we have not come by this logic
             // for like the 10th time now.
@@ -80,28 +122,44 @@ trait JobTracker
             return null;
         }
 
-        // Return the Job Tracking handle
-        return $job_tracker;
+        // Check if the EVE API is down. If it is, null
+        // the job tracker so that the extended class
+        // will stop execution.
+        if ($this->isEveApiDown())
+            $this->job_tracker = null;
+
+        return;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function updateJobStatus(array $data)
+    {
+
+        $this->job_tracker->fill($data);
+        $this->job_tracker->save();
+
+        return;
     }
 
     /**
      * Write diagnostic information to the Job Tracker
      *
-     * @param \Seat\Eveapi\Models\JobTracking $job_tracker
-     * @param \Exception                      $e
+     * @param \Exception $e
      */
-    public function reportJobError(JobTracking $job_tracker, Exception $e)
+    public function reportJobError(Exception $e)
     {
 
         // Write an entry to the log file.
         Log::error(
-            $job_tracker->api . '/' . $job_tracker->scope . ' for '
-            . $job_tracker->owner_id . ' failed with ' . get_class($e)
+            $this->job_tracker->api . '/' . $this->job_tracker->scope . ' for '
+            . $this->job_tracker->owner_id . ' failed with ' . get_class($e)
             . ': ' . $e->getMessage() . '. See the job tracker for more ' .
             'information.');
 
         // Prepare some useful information about the error.
-        $output = 'Last Updater: ' . $job_tracker->output . PHP_EOL;
+        $output = 'Last Updater: ' . $this->job_tracker->output . PHP_EOL;
         $output .= PHP_EOL;
         $output .= 'Exception: ' . get_class($e) . PHP_EOL;
         $output .= 'Error Code: ' . $e->getCode() . PHP_EOL;
@@ -110,12 +168,13 @@ trait JobTracker
         $output .= PHP_EOL;
         $output .= 'Traceback: ' . $e->getTraceAsString() . PHP_EOL;
 
-        $job_tracker->status = 'Error';
-        $job_tracker->output = $output;
-        $job_tracker->save();
+        $this->updateJobStatus([
+            'status' => 'Error',
+            'output' => $output
+        ]);
 
         // Analytics. Report only the Exception class and message.
-        Bus::dispatch((new Analytics((new AnalyticsContainer)
+        dispatch((new Analytics((new AnalyticsContainer)
             ->set('type', 'exception')
             ->set('exd', get_class($e) . ':' . $e->getMessage())
             ->set('exf', 1)))
@@ -131,21 +190,19 @@ trait JobTracker
      * definitions in eveapi.config.disabled_workers
      * as well as the key specific disabled_workers.
      *
-     * @param \Seat\Eveapi\Models\JobTracking $job
-     *
      * @return mixed
      */
-    public function load_workers(JobTracking $job)
+    public function load_workers()
     {
 
-        $type = strtolower($job->api);
+        $type = strtolower($this->job_tracker->api);
         $workers = config('eveapi.workers.' . $type);
 
         $global_disabled_workers = config(
             'eveapi.config.disabled_workers.' . $type);
 
-        $key_disabled_workers = $job->owner_id == 0 ?
-            [] : json_decode(ApiKey::find($job->owner_id)->disabled_calls);
+        $key_disabled_workers = $this->job_tracker->owner_id == 0 ?
+            [] : json_decode(ApiKey::find($this->job_tracker->owner_id)->disabled_calls);
 
         // Check that we do not have a null result
         // for the key specific disabled workers
@@ -168,15 +225,16 @@ trait JobTracker
      * EVE API Exception. Returns a boolean indicating
      * if the calling job should continue or not.
      *
-     * @param \Seat\Eveapi\Models\JobTracking $job_tracker
-     * @param \Seat\Eveapi\Models\Eve\ApiKey  $api_key
-     * @param \Exception                      $exception
+     * @param \Exception $exception
      *
      * @return bool
      * @throws \Exception
      */
-    public function handleApiException(JobTracking $job_tracker, ApiKey $api_key, $exception)
+    public function handleApiException(Exception $exception)
     {
+
+        // Get the API Key instance from the Job Payload
+        $api_key = $this->job_payload->eve_api_key;
 
         // Start by allowing the parent job to continue.
         $should_continue = true;
@@ -303,7 +361,7 @@ trait JobTracker
         }
 
         // Update the Job itself with the error information
-        $this->reportJobError($job_tracker, $exception);
+        $this->reportJobError($exception);
 
         return $should_continue;
     }
@@ -340,10 +398,10 @@ trait JobTracker
      * jon tracker record, we have a time to narrow any possible
      * exceptions down in the global log.
      *
-     * @param \Seat\Eveapi\Helpers\JobContainer $job
-     * @param \Exception                        $exception
+     * @param \Seat\Eveapi\Helpers\JobPayloadContainer $job
+     * @param \Exception                               $exception
      */
-    public function handleFailedJob(JobContainer $job, Exception $exception)
+    public function handleFailedJob(JobPayloadContainer $job, Exception $exception)
     {
 
         Log::error('A job failure occured in ' . __CLASS__ . '. Marking it as failed.');
@@ -509,26 +567,49 @@ trait JobTracker
 
     /**
      * Check if the EVE Api is considered 'down'
-     *
-     * @param \Seat\Eveapi\Models\JobTracking $job_tracker
-     *
-     * @return mixed
      */
-    public function isEveApiDown(JobTracking $job_tracker = null)
+    public function isEveApiDown()
     {
 
-        $down = Cache::get(config('eveapi.config.cache_keys.down'));
+        $down = cache(config('eveapi.config.cache_keys.down'));
 
         // If the server is down and we have a job that
         // we can update, update it.
-        if ($down && !is_null($job_tracker)) {
+        if ($down && $this->job_tracker) {
 
-            $job_tracker->status = 'Done';
-            $job_tracker->output = 'The EVE Api Server is currently down';
-            $job_tracker->save();
+            $this->job_tracker->status = 'Done';
+            $this->job_tracker->output = 'The EVE Api Server is currently down';
+            $this->job_tracker->save();
         }
 
         return $down;
+
+    }
+
+    /**
+     * Mark a Job as Done
+     */
+    public function markAsDone()
+    {
+
+        $this->updateJobStatus([
+            'status' => 'Done',
+            'output' => null
+        ]);
+
+        return;
+    }
+
+    /**
+     * @param \Exception $exception
+     */
+    public function failed(Exception $exception)
+    {
+
+        $this->handleFailedJob($this->job_payload, $exception);
+
+        return;
+
     }
 
 }
