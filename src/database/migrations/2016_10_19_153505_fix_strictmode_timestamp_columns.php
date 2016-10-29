@@ -35,6 +35,7 @@ class FixStrictmodeTimestampColumns extends Migration
 
         // Define the tables and their columns that should be updated
         $timestamp_tables_and_columns = [
+
             'account_account_statuses'                      => $timestamp_columns,
             'account_api_key_info_characters'               => $timestamp_columns,
             'account_api_key_infos'                         => $timestamp_columns,

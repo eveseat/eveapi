@@ -23,144 +23,58 @@ class FixStrictmodeIntegerSizes extends Migration
         Schema::getConnection()->getDoctrineSchemaManager()
             ->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
-        // Start the changes to make the columns accept larger integers
-        // Start the changes to make the columns accept larger integers
-        Schema::table('character_bookmarks', function (Blueprint $table) {
+        // Define the tables and columns that need to be changed
+        $integer_tables_and_columns = [
 
-            $table->bigInteger('itemID')->change();
-        });
+            'character_bookmarks'                      => ['itemID'],
+            'eve_conquerable_station_lists'            => ['stationID'],
+            'character_character_sheets'               => ['homeStationID'],
+            'character_contact_lists'                  => ['labelMask'],
+            'character_contact_list_labels'            => ['labelID'],
+            'character_contact_list_alliances'         => ['labelMask'],
+            'character_contact_list_alliance_labels'   => ['labelID'],
+            'character_contact_list_corporates'        => ['labelMask'],
+            'character_contact_list_corporate_labels'  => ['labelID'],
+            'character_contracts'                      => ['startStationID', 'endStationID'],
+            'character_industry_jobs'                  => ['stationID', 'blueprintLocationID', 'outputLocationID'],
+            'character_market_orders'                  => ['stationID'],
+            'character_wallet_journals'                => ['argID1'],
+            'character_wallet_transactions'            => ['stationID'],
+            'corporation_bookmarks'                    => ['itemID'],
+            'corporation_contact_list_labels'          => ['labelID'],
+            'corporation_contact_lists'                => ['labelMask'],
+            'corporation_contact_list_alliances'       => ['labelMask'],
+            'corporation_contact_list_alliance_labels' => ['labelID'],
+            'corporation_contracts'                    => ['startStationID', 'endStationID'],
+            'corporation_member_securities'            => ['roleID'],
+            'corporation_sheets'                       => ['stationID'],
+            'corporation_industry_jobs'                => ['stationID', 'blueprintLocationID', 'outputLocationID'],
+            'corporation_market_orders'                => ['stationID'],
+            'corporation_wallet_journals'              => ['argID1'],
+            'corporation_wallet_transactions'          => ['stationID'],
 
-        Schema::table('eve_conquerable_station_lists', function (Blueprint $table) {
+        ];
 
-            $table->bigInteger('stationID')->change();
-        });
+        // Loop over the changes defined in the above array.
+        foreach ($integer_tables_and_columns as $table => $columns) {
 
-        Schema::table('character_character_sheets', function (Blueprint $table) {
+            Schema::table($table, function (Blueprint $table) use ($columns) {
 
-            $table->bigInteger('homeStationID')->change();
-        });
+                // Loop over the columns that are passed in and change them
+                foreach ($columns as $column)
+                    $table->bigInteger($column)->change();
+            });
+        }
 
-        Schema::table('character_contact_lists', function (Blueprint $table) {
-
-            $table->bigInteger('labelMask')->change();
-        });
-
-        Schema::table('character_contact_list_labels', function (Blueprint $table) {
-
-            $table->bigInteger('labelID')->change();
-        });
-
-        Schema::table('character_contact_list_alliances', function (Blueprint $table) {
-
-            $table->bigInteger('labelMask')->change();
-        });
-
-        Schema::table('character_contact_list_alliance_labels', function (Blueprint $table) {
-
-            $table->bigInteger('labelID')->change();
-        });
-
-        Schema::table('character_contact_list_corporates', function (Blueprint $table) {
-
-            $table->bigInteger('labelMask')->change();
-        });
-
-        Schema::table('character_contact_list_corporate_labels', function (Blueprint $table) {
-
-            $table->bigInteger('labelID')->change();
-        });
-
-        Schema::table('character_contracts', function (Blueprint $table) {
-
-            $table->bigInteger('startStationID')->change();
-            $table->bigInteger('endStationID')->change();
-        });
-
+        // Fix some Wallet values for the industry jobs tables.
         Schema::table('character_industry_jobs', function (Blueprint $table) {
 
-            $table->bigInteger('stationID')->change();
-            $table->bigInteger('blueprintLocationID')->change();
-            $table->bigInteger('outputLocationID')->change();
             $table->decimal('cost', 30, 2)->change();
-        });
-
-        Schema::table('character_market_orders', function (Blueprint $table) {
-
-            $table->bigInteger('stationID')->change();
-        });
-
-        Schema::table('character_wallet_journals', function (Blueprint $table) {
-
-            $table->bigInteger('argID1')->change();
-        });
-
-        Schema::table('character_wallet_transactions', function (Blueprint $table) {
-
-            $table->bigInteger('stationID')->change();
-        });
-
-        Schema::table('corporation_bookmarks', function (Blueprint $table) {
-
-            $table->bigInteger('itemID')->change();
-        });
-
-        Schema::table('corporation_contact_list_labels', function (Blueprint $table) {
-
-            $table->bigInteger('labelID')->change();
-        });
-
-        Schema::table('corporation_contact_lists', function (Blueprint $table) {
-
-            $table->bigInteger('labelMask')->change();
-        });
-
-        Schema::table('corporation_contact_list_alliances', function (Blueprint $table) {
-
-            $table->bigInteger('labelMask')->change();
-        });
-
-        Schema::table('corporation_contact_list_alliance_labels', function (Blueprint $table) {
-
-            $table->bigInteger('labelID')->change();
-        });
-
-        Schema::table('corporation_contracts', function (Blueprint $table) {
-
-            $table->bigInteger('startStationID')->change();
-            $table->bigInteger('endStationID')->change();
-        });
-
-        Schema::table('corporation_member_securities', function (Blueprint $table) {
-
-            $table->bigInteger('roleID')->change();
-        });
-
-        Schema::table('corporation_sheets', function (Blueprint $table) {
-
-            $table->bigInteger('stationID')->change();
         });
 
         Schema::table('corporation_industry_jobs', function (Blueprint $table) {
 
-            $table->bigInteger('stationID')->change();
-            $table->bigInteger('blueprintLocationID')->change();
-            $table->bigInteger('outputLocationID')->change();
             $table->decimal('cost', 30, 2)->change();
-        });
-
-        Schema::table('corporation_market_orders', function (Blueprint $table) {
-
-            $table->bigInteger('stationID')->change();
-        });
-
-        Schema::table('corporation_wallet_journals', function (Blueprint $table) {
-
-            $table->bigInteger('argID1')->change();
-        });
-
-        Schema::table('corporation_wallet_transactions', function (Blueprint $table) {
-
-            $table->bigInteger('stationID')->change();
         });
 
     }
