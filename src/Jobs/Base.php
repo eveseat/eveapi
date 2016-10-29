@@ -75,7 +75,6 @@ abstract class Base implements ShouldQueue
     {
 
         $this->job_payload = $job_payload;
-        $this->job_tracker = null;
     }
 
     /**
@@ -132,6 +131,8 @@ abstract class Base implements ShouldQueue
     }
 
     /**
+     * Update the JobTracker with a new status.
+     *
      * @param array $data
      */
     public function updateJobStatus(array $data)
@@ -146,27 +147,29 @@ abstract class Base implements ShouldQueue
     /**
      * Write diagnostic information to the Job Tracker
      *
-     * @param \Exception $e
+     * @param \Exception $exception
      */
-    public function reportJobError(Exception $e)
+    public function reportJobError(Exception $exception)
     {
 
         // Write an entry to the log file.
         Log::error(
             $this->job_tracker->api . '/' . $this->job_tracker->scope . ' for '
-            . $this->job_tracker->owner_id . ' failed with ' . get_class($e)
-            . ': ' . $e->getMessage() . '. See the job tracker for more ' .
+            . $this->job_tracker->owner_id . ' failed with ' . get_class($exception)
+            . ': ' . $exception->getMessage() . '. See the job tracker for more ' .
             'information.');
 
         // Prepare some useful information about the error.
         $output = 'Last Updater: ' . $this->job_tracker->output . PHP_EOL;
         $output .= PHP_EOL;
-        $output .= 'Exception: ' . get_class($e) . PHP_EOL;
-        $output .= 'Error Code: ' . $e->getCode() . PHP_EOL;
-        $output .= 'Error Message: ' . $e->getMessage() . PHP_EOL;
-        $output .= 'File: ' . $e->getFile() . ' - Line: ' . $e->getLine() . PHP_EOL;
+        $output .= 'Exception       : ' . get_class($exception) . PHP_EOL;
+        $output .= 'Error Code      : ' . $exception->getCode() . PHP_EOL;
+        $output .= 'Error Message   : ' . $exception->getMessage() . PHP_EOL;
+        $output .= 'File            : ' . $exception->getFile() . PHP_EOL;
+        $output .= 'Line            : ' . $exception->getLine() . PHP_EOL;
         $output .= PHP_EOL;
-        $output .= 'Traceback: ' . $e->getTraceAsString() . PHP_EOL;
+        $output .= 'Traceback: ' . PHP_EOL;
+        $output .= $exception->getTraceAsString() . PHP_EOL;
 
         $this->updateJobStatus([
             'status' => 'Error',
@@ -176,7 +179,7 @@ abstract class Base implements ShouldQueue
         // Analytics. Report only the Exception class and message.
         dispatch((new Analytics((new AnalyticsContainer)
             ->set('type', 'exception')
-            ->set('exd', get_class($e) . ':' . $e->getMessage())
+            ->set('exd', get_class($exception) . ':' . $exception->getMessage())
             ->set('exf', 1)))
             ->onQueue('medium'));
 
@@ -370,9 +373,9 @@ abstract class Base implements ShouldQueue
      * Attempt to take the appropriate action based on the
      * EVE API Connection Exception.
      *
-     * @param $exception
+     * @param \Exception $exception
      */
-    public function handleConnectionException($exception)
+    public function handleConnectionException(Exception $exception)
     {
 
         $this->incrementConnectionErrorCount();
@@ -387,76 +390,25 @@ abstract class Base implements ShouldQueue
     }
 
     /**
-     * Queued jobs can fail outside of the large try/catch block
-     * that it is wrapped in. Unfortunately when this happens,
-     * the job tracker will never get updated, preventing another
-     * job from entering the queue.
-     *
-     * What really sucks about this is that the actual why gets
-     * lots when the `failed()` method is called, meaning we never
-     * know what actually went wrong. Hopefully by updating the
-     * jon tracker record, we have a time to narrow any possible
-     * exceptions down in the global log.
-     *
-     * @param \Seat\Eveapi\Helpers\JobPayloadContainer $job
-     * @param \Exception                               $exception
-     */
-    public function handleFailedJob(JobPayloadContainer $job, Exception $exception)
-    {
-
-        Log::error('A job failure occured in ' . __CLASS__ . '. Marking it as failed.');
-
-        // Try and find the jobtracking entry. Sadly, because the context
-        // seems logs in the `failed()` methods, we cant just lookup by
-        // job_id :((
-        $job_tracker = JobTracking::where('owner_id', $job->owner_id)
-            ->where('api', $job->api)
-            ->where('scope', $job->scope)
-            ->where('status', '<>', 'Error')
-            ->first();
-
-        if (!$job_tracker)
-            Log::error('Unable to find the job tracking entry for the failed job in ' . __CLASS__);
-
-        $job_tracker->status = 'Error';
-        $job_tracker->output = 'An general failure  in ' . __CLASS__ . ' occured. ' .
-            'Refer to the logs at ' . Carbon::now()->toDateTimeString() . ' for more ' .
-            'information. Details about the exception: ' . PHP_EOL .
-            PHP_EOL .
-            'Exception: ' . get_class($exception) . PHP_EOL .
-            'Error Code: ' . $exception->getCode() . PHP_EOL .
-            'Error Message: ' . $exception->getMessage() . PHP_EOL .
-            'File: ' . $exception->getFile() . ' - Line: ' . $exception->getLine() . PHP_EOL .
-            PHP_EOL .
-            'Traceback: ' . $exception->getTraceAsString() . PHP_EOL;
-
-        $job_tracker->save();
-
-        return;
-
-    }
-
-    /**
      * Increment the API Error Count. If we reach the configured
      * threshold then we mark the EVE Api as down for a few
      * minutes
      *
      * @param int $amount
      */
-    public function incrementApiErrorCount($amount = 1)
+    public function incrementApiErrorCount(int $amount = 1)
     {
 
-        if (Cache::get(
-                config('eveapi.config.cache_keys.api_error_count')) <
-            config('eveapi.config.limits.eveapi_errors')
-        )
-            Cache::increment(
-                config('eveapi.config.cache_keys.api_error_count'), $amount);
+        // Get the key names to use in the cache
+        $api_error_count = config('eveapi.config.cache_keys.api_error_count');
+        $api_error_limit = config('eveapi.config.limits.eveapi_errors');
 
-        if (Cache::get(
-                config('eveapi.config.cache_keys.api_error_count')) >=
-            config('eveapi.config.limits.eveapi_errors')
-        )
+        // Update the cache by $amount
+        if (cache($api_error_count) < $api_error_limit)
+            Cache::increment($api_error_count, $amount);
+
+        // If we have hit the error limit, mark the api as down
+        if (cache($api_error_count) >= $api_error_limit)
             $this->markEveApiDown(10);
 
         return;
@@ -468,14 +420,14 @@ abstract class Base implements ShouldQueue
      *
      * @param int $amount
      */
-    public function decrementApiErrorCount($amount = 1)
+    public function decrementApiErrorCount(int $amount = 1)
     {
 
-        if (Cache::get(
-                config('eveapi.config.cache_keys.api_error_count')) > 0
-        )
-            Cache::decrement(
-                config('eveapi.config.cache_keys.api_error_count'), $amount);
+        // Get the key names to use in the cache
+        $api_error_count = config('eveapi.config.cache_keys.api_error_count');
+
+        if (cache($api_error_count) > 0)
+            Cache::decrement($api_error_count, $amount);
 
         return;
 
@@ -488,20 +440,19 @@ abstract class Base implements ShouldQueue
      *
      * @param int $amount
      */
-    public function incrementConnectionErrorCount($amount = 1)
+    public function incrementConnectionErrorCount(int $amount = 1)
     {
 
-        if (Cache::get(
-                config('eveapi.config.cache_keys.connection_error_count')) <
-            config('eveapi.config.limits.connection_errors')
-        )
-            Cache::increment(
-                config('eveapi.config.cache_keys.connection_error_count'), $amount);
+        // Get the key names to use in the cache
+        $connection_error_count = config('eveapi.config.cache_keys.connection_error_count');
+        $connection_error_limit = config('eveapi.config.limits.connection_errors');
 
-        if (Cache::get(
-                config('eveapi.config.cache_keys.connection_error_count')) >=
-            config('eveapi.config.limits.connection_errors')
-        )
+        // Increment the error count.
+        if (cache($connection_error_count) < $connection_error_limit)
+            Cache::increment($connection_error_count, $amount);
+
+        // If needed, mark the API down for a few minutes.
+        if (cache($connection_error_count) >= $connection_error_limit)
             $this->markEveApiDown(15);
 
         return;
@@ -513,14 +464,14 @@ abstract class Base implements ShouldQueue
      *
      * @param int $amount
      */
-    public function decrementConnectionErrorCount($amount = 1)
+    public function decrementConnectionErrorCount(int $amount = 1)
     {
 
-        if (Cache::get(
-                config('eveapi.config.cache_keys.connection_error_count')) > 0
-        )
-            Cache::decrement(
-                config('eveapi.config.cache_keys.connection_error_count'), $amount);
+        // Get the key names to use in the cache
+        $connection_error_count = config('eveapi.config.cache_keys.connection_error_count');
+
+        if (cache($connection_error_count) > 0)
+            Cache::decrement($connection_error_count, $amount);
 
         return;
 
@@ -531,7 +482,7 @@ abstract class Base implements ShouldQueue
      *
      * @param int $amount
      */
-    public function decrementErrorCounters($amount = 1)
+    public function decrementErrorCounters(int $amount = 1)
     {
 
         $this->decrementApiErrorCount($amount);
@@ -548,7 +499,7 @@ abstract class Base implements ShouldQueue
      *
      * @return mixed
      */
-    public function markEveApiDown($minutes = 30)
+    public function markEveApiDown(int $minutes = 30)
     {
 
         $down_expiration = Carbon::now()->addMinutes($minutes)
@@ -606,7 +557,7 @@ abstract class Base implements ShouldQueue
     public function failed(Exception $exception)
     {
 
-        $this->handleFailedJob($this->job_payload, $exception);
+        $this->reportJobError($exception);
 
         return;
 
