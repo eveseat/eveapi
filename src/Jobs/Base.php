@@ -28,7 +28,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Pheal\Exceptions\APIException;
 use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Helpers\JobPayloadContainer;
@@ -116,7 +115,7 @@ abstract class Base implements ShouldQueue
             }
 
             // Remove yourself from the queue
-            Log::error(
+            logger()->error(
                 'Error finding a JobTracker for job ' . $this->job->getJobID());
             $this->delete();
 
@@ -153,7 +152,7 @@ abstract class Base implements ShouldQueue
     {
 
         // Write an entry to the log file.
-        Log::error(
+        logger()->error(
             $this->job_tracker->api . '/' . $this->job_tracker->scope . ' for '
             . $this->job_tracker->owner_id . ' failed with ' . get_class($exception)
             . ': ' . $exception->getMessage() . '. See the job tracker for more ' .
@@ -380,7 +379,7 @@ abstract class Base implements ShouldQueue
 
         $this->incrementConnectionErrorCount();
 
-        Log::warning(
+        logger()->warning(
             'A connection exception occured to the API server. ' .
             $exception->getCode() . ':' . $exception->getMessage());
 
@@ -510,7 +509,7 @@ abstract class Base implements ShouldQueue
             $down_expiration,
             $minutes);
 
-        Log::warning('Eve Api Marked as down for ' . $minutes . ' minutes');
+        logger()->warning('Eve Api Marked as down for ' . $minutes . ' minutes');
 
         return Cache::put(
             config('eveapi.config.cache_keys.down'), true, $minutes);

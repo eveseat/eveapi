@@ -21,7 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Eveapi\Traits;
 
-use Log;
 use Seat\Eveapi\Helpers\JobPayloadContainer;
 use Seat\Eveapi\Models\JobTracking;
 use Seat\Services\Settings\Seat;
@@ -50,7 +49,7 @@ trait JobManager
         // See: https://github.com/eveseat/seat/issues/77 (Request by CCP)
         if ($this->hasDefaultAdminContact()) {
 
-            Log::error(
+            logger()->error(
                 'Default admin contact still set. Not queuing job for: ' . $args->api);
 
             return 'Failed to queue due to default config';
@@ -65,7 +64,7 @@ trait JobManager
         // Just return if the job already exists
         if ($job_id) {
 
-            Log::warning('A job for Api ' . $args->api . ' and owner ' .
+            logger()->warning('A job for Api ' . $args->api . ' and owner ' .
                 $args->owner_id . ' already exists.');
 
             return $job_id;
