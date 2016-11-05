@@ -79,14 +79,6 @@ abstract class Base
     protected $logger = null;
 
     /**
-     * The contract for the update call. All
-     * update should at least have this function
-     *
-     * @return mixed
-     */
-    abstract protected function call();
-
-    /**
      * Setup the updater instance
      */
     public function __construct()
@@ -181,6 +173,17 @@ abstract class Base
     }
 
     /**
+     * Gets the CorporationID from this object
+     *
+     * @return null
+     */
+    public function getCorporationID()
+    {
+
+        return $this->corporationID;
+    }
+
+    /**
      * Sets the corporationID to use in Corporation
      * related API update work
      *
@@ -201,17 +204,6 @@ abstract class Base
     }
 
     /**
-     * Gets the CorporationID from this object
-     *
-     * @return null
-     */
-    public function getCorporationID()
-    {
-
-        return $this->corporationID;
-    }
-
-    /**
      * Cleanup actions.
      */
     public function __destruct()
@@ -224,5 +216,13 @@ abstract class Base
 
         return;
     }
+
+    /**
+     * The contract for the update call. All
+     * update should at least have this function
+     *
+     * @return mixed
+     */
+    abstract protected function call();
 
 }

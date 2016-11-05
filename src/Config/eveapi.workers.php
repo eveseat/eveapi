@@ -21,11 +21,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 return [
 
-    'api'         => [
+    'api' => [
         Seat\Eveapi\Api\Api\CallList::class
     ],
 
-    'character'   => [
+    'character' => [
         // The very first call to determine the
         // access mask and characters
         Seat\Eveapi\Api\Account\AccountStatus::class,
@@ -107,20 +107,20 @@ return [
         Seat\Eveapi\Api\Corporation\WalletTransactions::class,
     ],
 
-    'eve'         => [
+    'eve' => [
         Seat\Eveapi\Api\Eve\AllianceList::class,
         Seat\Eveapi\Api\Eve\ConquerableStationList::class,
         Seat\Eveapi\Api\Eve\ErrorList::class,
         Seat\Eveapi\Api\Eve\RefTypes::class
     ],
 
-    'map'         => [
+    'map' => [
         Seat\Eveapi\Api\Map\Jumps::class,
         Seat\Eveapi\Api\Map\Kills::class,
         Seat\Eveapi\Api\Map\Sovereignty::class
     ],
 
-    'server'      => [
+    'server' => [
         Seat\Eveapi\Api\Server\ServerStatus::class
     ]
 ];

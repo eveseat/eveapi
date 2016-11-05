@@ -68,17 +68,6 @@ class ApiKey extends Model
     }
 
     /**
-     * Returns the owner of this key
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function owner()
-    {
-
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
-
-    /**
      * Returns the key information such as accessMask
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -100,6 +89,17 @@ class ApiKey extends Model
 
         return $this->hasMany(
             ApiKeyInfoCharacters::class, 'keyID', 'key_id');
+    }
+
+    /**
+     * Returns the owner of this key
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function owner()
+    {
+
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
     /**

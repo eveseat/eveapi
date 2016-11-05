@@ -61,13 +61,6 @@ abstract class Base implements ShouldQueue
     protected $job_tracker;
 
     /**
-     * Force defining the handle method for the Job worker to call.
-     *
-     * @return mixed
-     */
-    abstract public function handle();
-
-    /**
      * Create a new job instance.
      *
      * @param \Seat\Eveapi\Helpers\JobPayloadContainer $job_payload
@@ -77,6 +70,13 @@ abstract class Base implements ShouldQueue
 
         $this->job_payload = $job_payload;
     }
+
+    /**
+     * Force defining the handle method for the Job worker to call.
+     *
+     * @return mixed
+     */
+    abstract public function handle();
 
     /**
      * Checks the Job Tracking table if the current job
@@ -130,59 +130,24 @@ abstract class Base implements ShouldQueue
     }
 
     /**
-     * Update the JobTracker with a new status.
-     *
-     * @param array $data
+     * Check if the EVE Api is considered 'down'
      */
-    public function updateJobStatus(array $data)
+    public function isEveApiDown()
     {
 
-        $this->job_tracker->fill($data);
-        $this->job_tracker->save();
+        $down = cache(config('eveapi.config.cache_keys.down'));
 
-        return;
-    }
+        // If the server is down and we have a job that
+        // we can update, update it.
+        if ($down && $this->job_tracker) {
 
-    /**
-     * Write diagnostic information to the Job Tracker
-     *
-     * @param \Exception $exception
-     */
-    public function reportJobError(Exception $exception)
-    {
+            $this->job_tracker->status = 'Done';
+            $this->job_tracker->output = 'The EVE Api Server is currently down';
+            $this->job_tracker->save();
+        }
 
-        // Write an entry to the log file.
-        logger()->error(
-            $this->job_tracker->api . '/' . $this->job_tracker->scope . ' for '
-            . $this->job_tracker->owner_id . ' failed with ' . get_class($exception)
-            . ': ' . $exception->getMessage() . '. See the job tracker for more ' .
-            'information.');
+        return $down;
 
-        // Prepare some useful information about the error.
-        $output = 'Last Updater: ' . $this->job_tracker->output . PHP_EOL;
-        $output .= PHP_EOL;
-        $output .= 'Exception       : ' . get_class($exception) . PHP_EOL;
-        $output .= 'Error Code      : ' . $exception->getCode() . PHP_EOL;
-        $output .= 'Error Message   : ' . $exception->getMessage() . PHP_EOL;
-        $output .= 'File            : ' . $exception->getFile() . PHP_EOL;
-        $output .= 'Line            : ' . $exception->getLine() . PHP_EOL;
-        $output .= PHP_EOL;
-        $output .= 'Traceback: ' . PHP_EOL;
-        $output .= $exception->getTraceAsString() . PHP_EOL;
-
-        $this->updateJobStatus([
-            'status' => 'Error',
-            'output' => $output
-        ]);
-
-        // Analytics. Report only the Exception class and message.
-        dispatch((new Analytics((new AnalyticsContainer)
-            ->set('type', 'exception')
-            ->set('exd', get_class($exception) . ':' . $exception->getMessage())
-            ->set('exf', 1)))
-            ->onQueue('medium'));
-
-        return;
     }
 
     /**
@@ -219,6 +184,97 @@ abstract class Base implements ShouldQueue
                 $workers = array_diff($workers, [$worker]);
 
         return $workers;
+
+    }
+
+    /**
+     * Decrement all the error counters
+     *
+     * @param int $amount
+     */
+    public function decrementErrorCounters(int $amount = 1)
+    {
+
+        $this->decrementApiErrorCount($amount);
+        $this->decrementConnectionErrorCount($amount);
+
+        return;
+    }
+
+    /**
+     * Decrement the Api Error Counter
+     *
+     * @param int $amount
+     */
+    public function decrementApiErrorCount(int $amount = 1)
+    {
+
+        // Get the key names to use in the cache
+        $api_error_count = config('eveapi.config.cache_keys.api_error_count');
+
+        if (cache($api_error_count) > 0)
+            Cache::decrement($api_error_count, $amount);
+
+        return;
+
+    }
+
+    /**
+     * Decrement the Connection Error Counter
+     *
+     * @param int $amount
+     */
+    public function decrementConnectionErrorCount(int $amount = 1)
+    {
+
+        // Get the key names to use in the cache
+        $connection_error_count = config('eveapi.config.cache_keys.connection_error_count');
+
+        if (cache($connection_error_count) > 0)
+            Cache::decrement($connection_error_count, $amount);
+
+        return;
+
+    }
+
+    /**
+     * Handle an exception that can be thrown by a job.
+     *
+     * This is the failed method that Laravel itself will call
+     * when a jobs `handle` method throws any uncaught exception.
+     *
+     * @param \Exception $exception
+     */
+    public function failed(Exception $exception)
+    {
+
+        if ($exception instanceof APIException) {
+
+            $this->handleApiException($exception);
+
+            // TODO: Add some logging so that the keys
+            // could be troubleshooted later
+            $this->markAsDone();
+
+            return;
+        }
+
+        if ($exception instanceof PhealException) {
+
+            // Typically, this will be the XML parsing errors that
+            // will end up here. Catch them and handle them as a connection
+            // exception for now.
+            $this->handleConnectionException($exception);
+
+            // TODO: Add some logging
+            $this->markAsDone();
+
+            return;
+        }
+
+        $this->reportJobError($exception);
+
+        return;
 
     }
 
@@ -369,26 +425,6 @@ abstract class Base implements ShouldQueue
     }
 
     /**
-     * Attempt to take the appropriate action based on the
-     * EVE API Connection Exception.
-     *
-     * @param \Exception $exception
-     */
-    public function handleConnectionException(Exception $exception)
-    {
-
-        $this->incrementConnectionErrorCount();
-
-        logger()->warning(
-            'A connection exception occured to the API server. ' .
-            $exception->getCode() . ':' . $exception->getMessage());
-
-        sleep(1);
-
-        return;
-    }
-
-    /**
      * Increment the API Error Count. If we reach the configured
      * threshold then we mark the EVE Api as down for a few
      * minutes
@@ -412,82 +448,6 @@ abstract class Base implements ShouldQueue
 
         return;
 
-    }
-
-    /**
-     * Decrement the Api Error Counter
-     *
-     * @param int $amount
-     */
-    public function decrementApiErrorCount(int $amount = 1)
-    {
-
-        // Get the key names to use in the cache
-        $api_error_count = config('eveapi.config.cache_keys.api_error_count');
-
-        if (cache($api_error_count) > 0)
-            Cache::decrement($api_error_count, $amount);
-
-        return;
-
-    }
-
-    /**
-     * Increment the Connection Error Count. If we reach the
-     * configured threshold then we mark the EVE Api as
-     * down for a few minutes
-     *
-     * @param int $amount
-     */
-    public function incrementConnectionErrorCount(int $amount = 1)
-    {
-
-        // Get the key names to use in the cache
-        $connection_error_count = config('eveapi.config.cache_keys.connection_error_count');
-        $connection_error_limit = config('eveapi.config.limits.connection_errors');
-
-        // Increment the error count.
-        if (cache($connection_error_count) < $connection_error_limit)
-            Cache::increment($connection_error_count, $amount);
-
-        // If needed, mark the API down for a few minutes.
-        if (cache($connection_error_count) >= $connection_error_limit)
-            $this->markEveApiDown(15);
-
-        return;
-
-    }
-
-    /**
-     * Decrement the Connection Error Counter
-     *
-     * @param int $amount
-     */
-    public function decrementConnectionErrorCount(int $amount = 1)
-    {
-
-        // Get the key names to use in the cache
-        $connection_error_count = config('eveapi.config.cache_keys.connection_error_count');
-
-        if (cache($connection_error_count) > 0)
-            Cache::decrement($connection_error_count, $amount);
-
-        return;
-
-    }
-
-    /**
-     * Decrement all the error counters
-     *
-     * @param int $amount
-     */
-    public function decrementErrorCounters(int $amount = 1)
-    {
-
-        $this->decrementApiErrorCount($amount);
-        $this->decrementConnectionErrorCount($amount);
-
-        return;
     }
 
     /**
@@ -516,24 +476,59 @@ abstract class Base implements ShouldQueue
     }
 
     /**
-     * Check if the EVE Api is considered 'down'
+     * Write diagnostic information to the Job Tracker
+     *
+     * @param \Exception $exception
      */
-    public function isEveApiDown()
+    public function reportJobError(Exception $exception)
     {
 
-        $down = cache(config('eveapi.config.cache_keys.down'));
+        // Write an entry to the log file.
+        logger()->error(
+            $this->job_tracker->api . '/' . $this->job_tracker->scope . ' for '
+            . $this->job_tracker->owner_id . ' failed with ' . get_class($exception)
+            . ': ' . $exception->getMessage() . '. See the job tracker for more ' .
+            'information.');
 
-        // If the server is down and we have a job that
-        // we can update, update it.
-        if ($down && $this->job_tracker) {
+        // Prepare some useful information about the error.
+        $output = 'Last Updater: ' . $this->job_tracker->output . PHP_EOL;
+        $output .= PHP_EOL;
+        $output .= 'Exception       : ' . get_class($exception) . PHP_EOL;
+        $output .= 'Error Code      : ' . $exception->getCode() . PHP_EOL;
+        $output .= 'Error Message   : ' . $exception->getMessage() . PHP_EOL;
+        $output .= 'File            : ' . $exception->getFile() . PHP_EOL;
+        $output .= 'Line            : ' . $exception->getLine() . PHP_EOL;
+        $output .= PHP_EOL;
+        $output .= 'Traceback: ' . PHP_EOL;
+        $output .= $exception->getTraceAsString() . PHP_EOL;
 
-            $this->job_tracker->status = 'Done';
-            $this->job_tracker->output = 'The EVE Api Server is currently down';
-            $this->job_tracker->save();
-        }
+        $this->updateJobStatus([
+            'status' => 'Error',
+            'output' => $output
+        ]);
 
-        return $down;
+        // Analytics. Report only the Exception class and message.
+        dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'exception')
+            ->set('exd', get_class($exception) . ':' . $exception->getMessage())
+            ->set('exf', 1)))
+            ->onQueue('medium'));
 
+        return;
+    }
+
+    /**
+     * Update the JobTracker with a new status.
+     *
+     * @param array $data
+     */
+    public function updateJobStatus(array $data)
+    {
+
+        $this->job_tracker->fill($data);
+        $this->job_tracker->save();
+
+        return;
     }
 
     /**
@@ -551,41 +546,46 @@ abstract class Base implements ShouldQueue
     }
 
     /**
-     * Handle an exception that can be thrown by a job.
-     *
-     * This is the failed method that Laravel itself will call
-     * when a jobs `handle` method throws any uncaught exception.
+     * Attempt to take the appropriate action based on the
+     * EVE API Connection Exception.
      *
      * @param \Exception $exception
      */
-    public function failed(Exception $exception)
+    public function handleConnectionException(Exception $exception)
     {
 
-        if ($exception instanceof APIException) {
+        $this->incrementConnectionErrorCount();
 
-            $this->handleApiException($exception);
+        logger()->warning(
+            'A connection exception occured to the API server. ' .
+            $exception->getCode() . ':' . $exception->getMessage());
 
-            // TODO: Add some logging so that the keys
-            // could be troubleshooted later
-            $this->markAsDone();
+        sleep(1);
 
-            return;
-        }
+        return;
+    }
 
-        if ($exception instanceof PhealException) {
+    /**
+     * Increment the Connection Error Count. If we reach the
+     * configured threshold then we mark the EVE Api as
+     * down for a few minutes
+     *
+     * @param int $amount
+     */
+    public function incrementConnectionErrorCount(int $amount = 1)
+    {
 
-            // Typically, this will be the XML parsing errors that
-            // will end up here. Catch them and handle them as a connection
-            // exception for now.
-            $this->handleConnectionException($exception);
+        // Get the key names to use in the cache
+        $connection_error_count = config('eveapi.config.cache_keys.connection_error_count');
+        $connection_error_limit = config('eveapi.config.limits.connection_errors');
 
-            // TODO: Add some logging
-            $this->markAsDone();
+        // Increment the error count.
+        if (cache($connection_error_count) < $connection_error_limit)
+            Cache::increment($connection_error_count, $amount);
 
-            return;
-        }
-
-        $this->reportJobError($exception);
+        // If needed, mark the API down for a few minutes.
+        if (cache($connection_error_count) >= $connection_error_limit)
+            $this->markEveApiDown(15);
 
         return;
 
