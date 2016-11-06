@@ -73,7 +73,10 @@ return [
         Seat\Eveapi\Api\Character\Standings::class,
         Seat\Eveapi\Api\Character\UpcomingCalendarEvents::class,
         Seat\Eveapi\Api\Character\WalletJournal::class,
-        Seat\Eveapi\Api\Character\WalletTransactions::class
+        Seat\Eveapi\Api\Character\WalletTransactions::class,
+
+        // Lastly, process affiliations.
+        Seat\Eveapi\Api\Character\Affiliation::class,
     ],
 
     'corporation' => [

@@ -19,17 +19,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-namespace Seat\Eveapi\Api\Eve;
+namespace Seat\Eveapi\Api\Character;
 
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Api\Base;
-use Seat\Eveapi\Models\Eve\CharacterAffiliation as CharacterAffiliationModel;
+use Seat\Eveapi\Models\Eve\CharacterAffiliation;
 
-/**
- * Class CharacterAffiliation
- * @package Seat\Eveapi\Api\Eve
- */
-class CharacterAffiliation extends Base
+class Affiliation extends Base
 {
 
     /**
@@ -84,11 +80,22 @@ class CharacterAffiliation extends Base
     public function call()
     {
 
-        foreach ($this->tables_and_columns as $table_name => $columns) {
+        // For every character on the key...
+        foreach ($this->api_info->characters as $character) {
 
-            foreach ($columns as $column)
-                $this->getDbDataAndUpdate($table_name, $column);
+            // ... and evey table with information...
+            foreach ($this->tables_and_columns as $table_name => $columns) {
 
+                // ... and evey column...
+                foreach ($columns as $column)
+
+                    /// Update the affiliation data!
+                    $this->getDbDataAndUpdate(
+                        $table_name,
+                        $column,
+                        $character->characterID);
+
+            }
         }
 
     }
@@ -99,11 +106,12 @@ class CharacterAffiliation extends Base
      *
      * @param string $table
      * @param string $column
+     * @param string $character_id
      */
-    public function getDbDataAndUpdate(string $table, string $column)
+    public function getDbDataAndUpdate(string $table, string $column, string $character_id)
     {
 
-        DB::table($table)->select($column)
+        DB::table($table)->select($column)->where('characterID', $character_id)
             ->groupBy($column)->chunk($this->ids_to_process, function ($character_ids) use ($column) {
 
                 $ids_to_process = $character_ids->filter(function ($value, $_) use ($column) {
@@ -152,7 +160,7 @@ class CharacterAffiliation extends Base
 
         foreach ($result->characters as $character) {
 
-            CharacterAffiliationModel::firstOrNew([
+            CharacterAffiliation::firstOrNew([
                 'characterID' => $character->characterID])
                 ->fill([
                     'characterName'   => $character->characterName,
