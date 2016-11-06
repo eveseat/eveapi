@@ -106,9 +106,9 @@ class Affiliation extends Base
      *
      * @param string $table
      * @param string $column
-     * @param string $character_id
+     * @param int    $character_id
      */
-    public function getDbDataAndUpdate(string $table, string $column, string $character_id)
+    public function getDbDataAndUpdate(string $table, string $column, int $character_id)
     {
 
         DB::table($table)->select($column)->where('characterID', $character_id)
