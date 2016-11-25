@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Traits\NotableTrait;
 
 /**
  * Class CharacterSheet
@@ -29,6 +30,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CharacterSheet extends Model
 {
+
+    use NotableTrait;
 
     /**
      * @var string
