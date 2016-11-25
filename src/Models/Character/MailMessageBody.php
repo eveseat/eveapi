@@ -44,4 +44,13 @@ class MailMessageBody extends Model
      * @var array
      */
     protected $fillable = ['messageID', 'body'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function headers()
+    {
+
+        return $this->hasMany(MailMessage::class, 'messageID', 'messageID');
+    }
 }

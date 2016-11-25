@@ -42,4 +42,13 @@ class MailMessage extends Model
         'characterID', 'messageID', 'senderID', 'senderName', 'sentDate',
         'title', 'toCorpOrAllianceID', 'toCharacterIDs', 'toListID'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function body()
+    {
+
+        return $this->hasOne(MailMessageBody::class, 'messageID', 'messageID');
+    }
 }
