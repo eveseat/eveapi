@@ -18,9 +18,9 @@
         "php": ">=7.0",
         "laravel/framework": "5.3.*",
         "3rdpartyeve/phealng": "~2.3",
-        "eveseat/services": "~1.0"
+        "eveseat/services": "2.0.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.0"
+        "phpunit/phpunit": "~5.0"
     }
 }
