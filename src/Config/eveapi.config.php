@@ -48,23 +48,4 @@ return [
         'eveapi_errors'     => 150,
         'connection_errors' => 15
     ],
-
-    // Worker classes present in this array
-    // will be ignored globally. This applies
-    // to public and authenticated API calls.
-    // If the AccountBalance call were to be
-    // uncommented, no character updates will
-    // have the AccountBalance call made. See
-    // Config/eveapi.workers.php for a reference
-    // to the possible workers to add here.
-    'disabled_workers' => [
-        'api'         => [],
-        'character'   => [
-            // Seat\Eveapi\Api\Character\AccountBalance::class,
-        ],
-        'corporation' => [],
-        'eve'         => [],
-        'map'         => [],
-        'server'      => []
-    ]
 ];

@@ -29,7 +29,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Seat\Eveapi\Helpers\JobPayloadContainer;
-use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Models\JobTracking;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
@@ -149,39 +148,82 @@ abstract class Base implements ShouldQueue
     }
 
     /**
-     * Load worker classes from the configuration
-     * file based on the 'api' type in the
-     * job tracker. This method honors the class
-     * definitions in eveapi.config.disabled_workers
-     * as well as the key specific disabled_workers.
+     * Retreive the worker classes to run.
+     *
+     * Classes can be defined in the Eve\ApiKey models
+     * api_call_constraints column, or globally in the
+     * api_constraint key.
+     *
+     * Class constraints are honoured first based on the
+     * key specific configuration, and then the global
+     * configuration as a fallback. If neither have a
+     * definition, then all the Classes will be run.
      *
      * @return mixed
      */
     public function load_workers()
     {
 
-        $type = strtolower($this->job_tracker->api);
-        $workers = config('eveapi.workers.' . $type);
+        // Check the type of updater running.
+        $updater_type = strtolower($this->job_tracker->api);
 
-        $global_disabled_workers = config(
-            'eveapi.config.disabled_workers.' . $type);
+        // If needed, get the constraints defined in the API key.
+        // Calls such EVE Universe Info and Server Status wont have
+        // an API key to query for this. Those can just be skipped.
+        if ($this->job_payload->eve_api_key) {
 
-        $key_disabled_workers = $this->job_tracker->owner_id == 0 ?
-            [] : json_decode(ApiKey::find($this->job_tracker->owner_id)->disabled_calls);
+            // Get the constraints saved to the key.
+            if ($classes = $this->extractWorkerClasses(
+                $updater_type, $this->job_payload->eve_api_key->api_call_constraints)
+            )
+                return $classes;
+        }
 
-        // Check that we do not have a null result
-        // for the key specific disabled workers
-        if (is_null($key_disabled_workers))
-            $key_disabled_workers = [];
+        // Check the global constraints from Settings::Seat
+        if ($classes = $this->extractWorkerClasses(
+            $updater_type, json_decode(setting('api_constraint', true), true))
+        )
+            return $classes;
 
-        // Check if any workers are ignored either via
-        // the global config or this specific key.
-        foreach ($workers as $worker)
-            if (in_array($worker, array_merge($global_disabled_workers, $key_disabled_workers)))
-                // Remove the worker.
-                $workers = array_diff($workers, [$worker]);
+        // No constraints are defined, so return all of the
+        // workers appliable to this updater.
+        return collect(config('eveapi.worker_groups.' . $updater_type))
+            ->flatten();
 
-        return $workers;
+    }
+
+    /**
+     * Take an updater type and constraints array and determine
+     * if there are any affective constraints applied. If so,
+     * the worker classes in those constraint groups are returned.
+     *
+     * @param string     $type
+     * @param array|null $constraints
+     *
+     * @return static
+     */
+    private function extractWorkerClasses(string $type, $constraints)
+    {
+
+        // If there are constraints for this update type load those workers.
+        if ($constraints &&
+            array_key_exists($type, $constraints) &&
+            count($constraints[$type]) > 0
+        ) {
+
+            // Get the constraints that we can use in the closure
+            // that follows.
+            $constraints = $constraints[$type];
+
+            return collect(config('eveapi.worker_groups.' . $type))
+                ->filter(function ($_, $key) use ($constraints) {
+
+                    // Return if the updater category is in the constraints.
+                    return in_array($key, $constraints);
+                })
+                ->flatten();
+        }
+
 
     }
 

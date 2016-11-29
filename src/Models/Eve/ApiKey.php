@@ -47,6 +47,13 @@ class ApiKey extends Model
     /**
      * @var array
      */
+    protected $casts = [
+        'api_call_constraints' => 'array'
+    ];
+
+    /**
+     * @var array
+     */
     protected $fillable = ['key_id', 'v_code', 'user_id', 'enabled', 'last_error'];
 
     /**

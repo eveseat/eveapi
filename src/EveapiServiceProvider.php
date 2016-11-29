@@ -59,7 +59,7 @@ class EveapiServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/Config/eveapi.config.php', 'eveapi.config');
         $this->mergeConfigFrom(
-            __DIR__ . '/Config/eveapi.workers.php', 'eveapi.workers');
+            __DIR__ . '/Config/eveapi.worker_groups.php', 'eveapi.worker_groups');
 
         // Register the Pheal Configuration Singleton
         $this->app->singleton('Seat\Eveapi\Helpers\PhealSetup', function () {
