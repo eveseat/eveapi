@@ -28,8 +28,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Pheal\Exceptions\APIException;
-use Pheal\Exceptions\PhealException;
 use Seat\Eveapi\Helpers\JobPayloadContainer;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Models\JobTracking;
@@ -248,31 +246,47 @@ abstract class Base implements ShouldQueue
     public function failed(Exception $exception)
     {
 
-        if ($exception instanceof APIException) {
+        logger()->error(
+            'An error occured in ' . __CLASS__ . '. The exception thrown was ' .
+            $exception->getMessage() . ' in file ' . $exception->getFile() .
+            ' on line ' . $exception->getLine()
+        );
 
-            $this->handleApiException($exception);
+        // Try and find the jobtracking entry. Sadly, because the context
+        // seems logs in the `failed()` methods, we cant just lookup by job_id :(
+        $job_tracker = JobTracking::where('owner_id', $this->job_payload->owner_id)
+            ->where('api', $this->job_payload->api)
+            ->where('scope', $this->job_payload->scope)
+            ->where('status', '<>', 'Error')
+            ->first();
 
-            // TODO: Add some logging so that the keys
-            // could be troubleshooted later
-            $this->markAsDone();
+        if ($job_tracker) {
 
-            return;
+            // Prepare some useful information about the error.
+            $output = 'Last Updater: ' . $job_tracker->output . PHP_EOL;
+            $output .= PHP_EOL;
+            $output .= 'Exception       : ' . get_class($exception) . PHP_EOL;
+            $output .= 'Error Code      : ' . $exception->getCode() . PHP_EOL;
+            $output .= 'Error Message   : ' . $exception->getMessage() . PHP_EOL;
+            $output .= 'File            : ' . $exception->getFile() . PHP_EOL;
+            $output .= 'Line            : ' . $exception->getLine() . PHP_EOL;
+            $output .= PHP_EOL;
+            $output .= 'Traceback: ' . PHP_EOL;
+            $output .= $exception->getTraceAsString() . PHP_EOL;
+
+            $job_tracker->fill([
+                'status' => 'Error',
+                'output' => $output
+            ])->save();
+
         }
 
-        if ($exception instanceof PhealException) {
-
-            // Typically, this will be the XML parsing errors that
-            // will end up here. Catch them and handle them as a connection
-            // exception for now.
-            $this->handleConnectionException($exception);
-
-            // TODO: Add some logging
-            $this->markAsDone();
-
-            return;
-        }
-
-        $this->reportJobError($exception);
+        // Analytics. Report only the Exception class and message.
+        dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'exception')
+            ->set('exd', get_class($exception) . ':' . $exception->getMessage())
+            ->set('exf', 1)))
+            ->onQueue('medium'));
 
         return;
 

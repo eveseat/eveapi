@@ -64,6 +64,7 @@ class UpdateAuthenticated extends Base
 
             } catch (AccessException $e) {
 
+                // The EveApiAccess Class will throw this and log the exception.
                 continue;
 
             } catch (APIException $e) {
