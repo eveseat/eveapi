@@ -17,13 +17,13 @@ class CreateCharacterAffiliationsTable extends Migration
 
         Schema::create('character_affiliations', function (Blueprint $table) {
 
-            $table->integer('characterID')->primary();
+            $table->bigInteger('characterID')->primary();
             $table->string('characterName')->nullable();
-            $table->integer('corporationID');
+            $table->bigInteger('corporationID');
             $table->string('corporationName')->nullable();
-            $table->integer('allianceID');
+            $table->bigInteger('allianceID');
             $table->string('allianceName')->nullable();
-            $table->integer('factionID');
+            $table->bigInteger('factionID');
             $table->string('factionName')->nullable();
 
             $table->index('corporationID');
