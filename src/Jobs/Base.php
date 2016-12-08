@@ -289,13 +289,13 @@ abstract class Base implements ShouldQueue
     {
 
         logger()->error(
-            'An error occured in ' . __CLASS__ . '. The exception thrown was ' .
+            'A worker error occured. The exception thrown was ' .
             $exception->getMessage() . ' in file ' . $exception->getFile() .
             ' on line ' . $exception->getLine()
         );
 
         // Try and find the jobtracking entry. Sadly, because the context
-        // seems logs in the `failed()` methods, we cant just lookup by job_id :(
+        // seems lost in the `failed()` methods, we cant just lookup by job_id :(
         $job_tracker = JobTracking::where('owner_id', $this->job_payload->owner_id)
             ->where('api', $this->job_payload->api)
             ->where('scope', $this->job_payload->scope)
