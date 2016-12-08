@@ -75,8 +75,10 @@ class MailBodies extends Base
 
                         MailMessageBody::firstOrCreate([
                             'messageID' => $body->messageID,
-                            'body'      => $body->__toString()
+                            'body'      => mb_convert_encoding(
+                                $body->__toString(), 'HTML-ENTITIES', 'UTF-8')
                         ]);
+
                     }
 
                 } catch (PhealException $e) {
