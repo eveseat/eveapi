@@ -21,16 +21,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 return [
 
-    'version'          => '2.0.0-alpha2',
+    'version'    => '2.0.0',
 
     // PhealNG Specific Configuration
-    'pheal'            => [
+    'pheal'      => [
         'cache_path' => storage_path() . '/app/pheal/',
         'log_file'   => storage_path('logs/pheal.log')
     ],
 
     // Define the keys used in the cache
-    'cache_keys'       => [
+    'cache_keys' => [
         'down'                   => 'eve_api_down',
         'down_until'             => 'eve_api_down_until',
         'api_error_count'        => 'eve_api_error_count',
@@ -44,7 +44,7 @@ return [
     // See the Rate Limits section here:
     //  https://eveonline-third-party-documentation.
     //      readthedocs.org/en/latest/xmlapi/intro/
-    'limits'           => [
+    'limits'     => [
         'eveapi_errors'     => 150,
         'connection_errors' => 15
     ],
