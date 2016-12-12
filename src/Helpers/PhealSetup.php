@@ -29,7 +29,6 @@ use Pheal\Core\Config;
 use Pheal\Fetcher\Guzzle;
 use Pheal\Log\PsrLogger;
 use Pheal\Pheal;
-use Pheal\RateLimiter\FileLockRateLimiter;
 use Seat\Services\Settings\Seat;
 
 /**
@@ -69,8 +68,8 @@ class PhealSetup
             config('eveapi.config.pheal.cache_path'));
         $config->log = new PsrLogger(
             $this->getPhealLogger());
-        $config->rateLimiter = new FileLockRateLimiter(
-            config('eveapi.config.pheal.cache_path'));
+//        $config->rateLimiter = new FileLockRateLimiter(
+//            config('eveapi.config.pheal.cache_path'));
         $config->fetcher = new Guzzle;
 
         $config->api_customkeys = true;
