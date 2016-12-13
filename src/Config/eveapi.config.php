@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 return [
 
-    'version'    => '2.0.3',
+    'version'    => '2.0.4',
 
     // PhealNG Specific Configuration
     'pheal'      => [
