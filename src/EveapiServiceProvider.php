@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Eveapi;
 
 use Illuminate\Support\ServiceProvider;
+use Pheal\Fetcher\Guzzle;
 use Seat\Eveapi\Helpers\PhealSetup;
 
 /**
@@ -65,6 +66,12 @@ class EveapiServiceProvider extends ServiceProvider
         $this->app->singleton('Seat\Eveapi\Helpers\PhealSetup', function () {
 
             return new PhealSetup();
+        });
+
+        // Singleton the PhealGuzzle Fetcher too
+        $this->app->singleton('Pheal\Fetcher\Guzzle', function () {
+
+            return new Guzzle();
         });
 
     }
