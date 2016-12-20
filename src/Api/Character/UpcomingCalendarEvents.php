@@ -43,8 +43,14 @@ class UpcomingCalendarEvents extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('calendar',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->UpcomingCalendarEvents([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('calendar',
+                'API responsed with ' . count($result->upcomingEvents) . ' events');
 
             foreach ($result->upcomingEvents as $event) {
 

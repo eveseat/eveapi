@@ -43,6 +43,9 @@ class Bookmarks extends Base
 
         $result = $pheal->Bookmarks();
 
+        $this->writeJobLog('bookmarks',
+            'API responded with ' . count($result->folders) . ' bookmark folders');
+
         // Process each folder and the bookmarks therein
         foreach ($result->folders as $folder) {
 

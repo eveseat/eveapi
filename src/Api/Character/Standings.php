@@ -43,6 +43,9 @@ class Standings extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('standings',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->Standings([
                 'characterID' => $character->characterID]);
 

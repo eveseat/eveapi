@@ -23,6 +23,7 @@ namespace Seat\Eveapi\Api;
 
 use Seat\Eveapi\Exception\InvalidScopeException;
 use Seat\Eveapi\Models\Eve\ApiKey;
+use Seat\Eveapi\Models\JobLog;
 use Seat\Eveapi\Traits\Validation;
 
 /**
@@ -201,6 +202,25 @@ abstract class Base
             ->characters()->first()->corporationID;
 
         return $this;
+    }
+
+    /**
+     * Write a new entry to a keys joblog
+     *
+     * @param string $type
+     * @param string $message
+     */
+    public function writeJobLog(string $type, string $message)
+    {
+
+        // TODO: Make a configuration item to turn this off!
+        if ($this->api_info)
+            $this->api_info->job_logs()->save(new JobLog([
+                    'type'    => $type,
+                    'message' => $message
+                ])
+            );
+
     }
 
     /**

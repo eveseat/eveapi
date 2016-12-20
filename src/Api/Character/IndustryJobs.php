@@ -43,8 +43,14 @@ class IndustryJobs extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('industryjobs',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->IndustryJobs([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('industryjobs',
+                'API responsed with ' . count($result->jobs) . ' jobs');
 
             foreach ($result->jobs as $industry_job) {
 

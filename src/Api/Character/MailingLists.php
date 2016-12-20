@@ -44,8 +44,14 @@ class MailingLists extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('mailinglists',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->MailingLists([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('mailinglists',
+                'API responsed with ' . count($result->mailingLists) . ' mailing lists');
 
             // Characters can join/leave mailing lists at
             // any time. For this reason, we need to clean

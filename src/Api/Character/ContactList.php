@@ -48,6 +48,9 @@ class ContactList extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('contactlist',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->ContactList([
                 'characterID' => $character->characterID]);
 

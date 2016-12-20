@@ -44,6 +44,9 @@ class NotificationTexts extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('notificationtexts',
+                'Processing characterID: ' . $character->characterID);
+
             // Get a list of notificationIDs that we do
             // not have the text content for.
             $notification_ids = DB::table('character_notifications')
@@ -55,6 +58,9 @@ class NotificationTexts extends Base
 
                 })
                 ->pluck('notificationID');
+
+            $this->writeJobLog('notificationtexts', 'Updating ' . count($notification_ids) .
+                'notification texts');
 
             // It is possible to provide a comma seperated list
             // of notificationIDs to the NotificationTexts

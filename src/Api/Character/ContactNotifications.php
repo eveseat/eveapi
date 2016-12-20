@@ -43,6 +43,9 @@ class ContactNotifications extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('contactnotifications',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->ContactNotifications([
                 'characterID' => $character->characterID]);
 

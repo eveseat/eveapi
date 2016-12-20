@@ -45,8 +45,14 @@ class ChatChannels extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('chatchannels',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->ChatChannels([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('chatchannels',
+                'API responsed with ' . count($result->channels) . ' channels');
 
             foreach ($result->channels as $channel) {
 

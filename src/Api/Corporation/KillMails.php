@@ -78,6 +78,9 @@ class KillMails extends Base
                 ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
             );
 
+            $this->writeJobLog('killmails',
+                'API responsed with ' . count($result->kills) . ' kills');
+
             foreach ($result->kills as $kill) {
 
                 // Ensure that $from_id is at its lowest

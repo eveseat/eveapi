@@ -48,26 +48,51 @@ class UpdateAuthenticated extends Base
         // that may come of it.
         $this->updateJobStatus(['status' => 'Working']);
 
+        // Load the workers for this update job.
+        $workers = $this->load_workers();
+
+        // Write a joblog entry.
+        $this->writeInfoJobLog('Started API Updates with ' . $workers->count() . ' workers.');
+
+        // Take note of when the updater started.
+        $job_start = microtime(true);
+
         // Attempt to run the Updaters based on the
         // type of key we are working with.
-        foreach ($this->load_workers() as $worker) {
+        foreach ($workers as $worker) {
 
             try {
 
+                // Update the job status
                 $this->updateJobStatus([
                     'output' => 'Processing: ' . class_basename($worker)
                 ]);
+
+                // Write a joblog entry
+                $this->writeInfoJobLog('Started Worker: ' . class_basename($worker));
+
+                // Keep in mind when we started the work.
+                $worker_start = microtime(true);
 
                 // Perform the update for the specific worker.
                 (new $worker)->setApi($this->job_payload->eve_api_key)->call();
                 $this->decrementErrorCounters();
 
+                $this->writeInfoJobLog(class_basename($worker) .
+                    ' took ' . number_format(microtime(true) - $worker_start, 2) . 's to complete');
+
             } catch (AccessException $e) {
 
                 // The EveApiAccess Class will throw this and log the exception.
+                $this->writeErrorJobLog('An AccessException occured while processing ' .
+                    class_basename($worker) . '. SeAT would have handled this internally.');
+
                 continue;
 
             } catch (APIException $e) {
+
+                $this->writeErrorJobLog('An APIException occured while processing ' .
+                    class_basename($worker) . '. The exception error was: ' . $e->getMessage());
 
                 // If we should not continue, simply return.
                 if (!$this->handleApiException($this->job_payload->eve_api_key, $e))
@@ -77,18 +102,29 @@ class UpdateAuthenticated extends Base
 
             } catch (ConnectionException $e) {
 
+                $this->writeErrorJobLog('A ConnectionException occured while processing ' .
+                    class_basename($worker) . '. The exception error was: ' . $e->getMessage());
+
                 $this->handleConnectionException($e);
                 continue;
 
             } catch (PhealException $e) {
 
+                $this->writeErrorJobLog('A PhealException occured while processing ' .
+                    class_basename($worker) . '. The exception error was: ' . $e->getMessage());
+
                 // Handle the tyipcal XML related exceptions as a
                 // connection exception for now.
                 $this->handleConnectionException($e);
+
                 continue;
             }
 
         } // Foreach worker
+
+        // Note how long it too to run the whole update.
+        $this->writeInfoJobLog('The full update run took ' .
+            number_format(microtime(true) - $job_start, 2) . 's to complete');
 
         // Mark the Job as complete.
         $this->updateJobStatus([

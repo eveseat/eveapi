@@ -44,6 +44,9 @@ class Contracts extends Base
 
         $result = $pheal->Contracts();
 
+        $this->writeJobLog('contracts',
+            'API responsed with ' . count($result->contractList) . ' contracts');
+
         foreach ($result->contractList as $contract) {
 
             $contract_data = Contract::firstOrNew([

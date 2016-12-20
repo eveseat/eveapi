@@ -50,6 +50,9 @@ class PlanetaryLinks extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('planetarylinks',
+                'Processing characterID: ' . $character->characterID);
+
             // Query the database for known planets from
             // the planetary colonies table that this
             // character owns.

@@ -88,6 +88,9 @@ class WalletTransactions extends Base
                     ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
                 );
 
+                $this->writeJobLog('transactions',
+                    'API responsed with ' . count($result->transactions) . ' transactions');
+
                 foreach ($result->transactions as $transaction) {
 
                     // Ensure that $from_id is at its lowest

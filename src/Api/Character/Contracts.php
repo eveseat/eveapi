@@ -43,8 +43,14 @@ class Contracts extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('contracts',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->Contracts([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('contracts',
+                'API responsed with ' . count($result->contractList) . ' contracts');
 
             foreach ($result->contractList as $contract) {
 

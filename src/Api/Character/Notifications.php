@@ -43,8 +43,14 @@ class Notifications extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('notifications',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->Notifications([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('notifications',
+                'API responsed with ' . count($result->notifications) . ' notifications');
 
             foreach ($result->notifications as $notification) {
 

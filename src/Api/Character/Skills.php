@@ -46,8 +46,14 @@ class Skills extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('skills',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->Skills([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('skills',
+                'API responsed with ' . count($result->skills) . ' skills');
 
             // Get the CharacterSheet Data
             $character_data = CharacterSheetModel::firstOrNew([

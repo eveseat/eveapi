@@ -45,6 +45,9 @@ class MailBodies extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('mailbodies',
+                'Processing characterID: ' . $character->characterID);
+
             // Get a list of messageIDs that we do not have mail
             // bodies for. These ID's will be used to try and
             // pull the bodies using this api key
@@ -57,6 +60,9 @@ class MailBodies extends Base
 
                 })
                 ->pluck('messageID');
+
+            $this->writeJobLog('mailbodies', 'Updating ' . count($message_ids) .
+                'mail bodies');
 
             // It is possible to provide a comma seperated list
             // of messageIDs to the MailBodies endpoint. Pheal
@@ -84,6 +90,9 @@ class MailBodies extends Base
                 } catch (PhealException $e) {
 
                     // TODO: Log this into some form of job log.
+                    $this->writeJobLog('error',
+                        'PhealException thrown with message: ' . $e->getMessage());
+
                     continue;
 
                 }

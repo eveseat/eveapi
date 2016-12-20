@@ -44,6 +44,9 @@ class Titles extends Base
 
         $result = $pheal->Titles();
 
+        $this->writeJobLog('titles',
+            'API responsed with ' . count($result->titles) . ' titles');
+
         foreach ($result->titles as $title) {
 
             $title_info = Title::firstOrNew([

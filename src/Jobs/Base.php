@@ -29,6 +29,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Seat\Eveapi\Helpers\JobPayloadContainer;
+use Seat\Eveapi\Models\JobLog;
 use Seat\Eveapi\Models\JobTracking;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
@@ -381,6 +382,7 @@ abstract class Base implements ShouldQueue
             case 210:
                 // "Authentication failure (final pass)."
             case 212:
+                $this->writeErrorJobLog('Disabling key due to response code 212');
                 $api_key->update([
                     'enabled'    => false,
                     'last_error' => $exception->getCode() . ':' . $exception->getMessage()
@@ -392,6 +394,7 @@ abstract class Base implements ShouldQueue
             // "Invalid Corporation Key. Key owner does not fullfill role
             // requirements anymore."
             case 220:
+                $this->writeErrorJobLog('Disabling key due to response code 220');
                 $api_key->update([
                     'enabled'    => false,
                     'last_error' => $exception->getCode() . ':' . $exception->getMessage()
@@ -404,6 +407,7 @@ abstract class Base implements ShouldQueue
             case 221:
                 // Not 100% sure how to handle this one. This call has no
                 // access mask requirement...
+                $this->writeErrorJobLog('Illegal page request occured');
                 $api_key->update([
                     'last_error' => $exception->getCode() . ':' . $exception->getMessage()
                 ]);
@@ -412,6 +416,7 @@ abstract class Base implements ShouldQueue
 
             // "Key has expired. Contact key owner for access renewal."
             case 222:
+                $this->writeErrorJobLog('Disabling key due to response code 222');
                 $api_key->update([
                     'enabled'    => false,
                     'last_error' => $exception->getCode() . ':' . $exception->getMessage()
@@ -426,6 +431,7 @@ abstract class Base implements ShouldQueue
             // API Keys."
             case 223:
                 // The API we are working with is waaaaaay too old.
+                $this->writeErrorJobLog('Disabling key due to response code 223');
                 $api_key->update([
                     'enabled'    => false,
                     'last_error' => $exception->getCode() . ':' . $exception->getMessage()
@@ -585,6 +591,41 @@ abstract class Base implements ShouldQueue
         $this->job_tracker->save();
 
         return;
+    }
+
+    /**
+     * @param string $type
+     * @param string $message
+     */
+    public function writeJobLog(string $type, string $message)
+    {
+
+        if ($this->job_payload->eve_api_key)
+            $this->job_payload->eve_api_key->job_logs()->save(
+                new JobLog([
+                    'type'    => $type,
+                    'message' => $message
+                ])
+            );
+
+    }
+
+    /**
+     * @param string $message
+     */
+    public function writeInfoJobLog(string $message)
+    {
+
+        $this->writeJobLog('info', $message);
+    }
+
+    /**
+     * @param string $message
+     */
+    public function writeErrorJobLog(string $message)
+    {
+
+        $this->writeJobLog('error', $message);
     }
 
     /**

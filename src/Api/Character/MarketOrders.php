@@ -43,8 +43,14 @@ class MarketOrders extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('marketorders',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->MarketOrders([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('marketorders',
+                'API responsed with ' . count($result->orders) . ' orders');
 
             foreach ($result->orders as $order) {
 

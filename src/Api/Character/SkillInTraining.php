@@ -44,6 +44,9 @@ class SkillInTraining extends Base
         // Loop the key characters
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('skillintraining',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->SkillInTraining([
                 'characterID' => $character->characterID]);
 

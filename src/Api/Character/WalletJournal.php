@@ -54,6 +54,9 @@ class WalletJournal extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('journal',
+                'Processing characterID: ' . $character->characterID);
+
             // Define the first MAX from_id to use when
             // retreiving transactions.
             $from_id = PHP_INT_MAX;
@@ -81,6 +84,9 @@ class WalletJournal extends Base
                         //  Error: 121: Invalid fromID provided.
                     ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
                 );
+
+                $this->writeJobLog('journal',
+                    'API responsed with ' . count($result->transactions) . ' transactions');
 
                 foreach ($result->transactions as $transaction) {
 

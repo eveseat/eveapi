@@ -66,6 +66,9 @@ class Locations extends Base
             ->keyBy('itemID')
             ->toArray();
 
+        $this->writeJobLog('locations',
+            'Updating ' . count($item_ids) . ' asset locations');
+
         // Chunk the requests to the API as the ids field
         // could get too long with all of the bigInts inside
         // of the query string.

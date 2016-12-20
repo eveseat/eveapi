@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Account\AccountStatus;
 use Seat\Eveapi\Models\Account\ApiKeyInfo;
 use Seat\Eveapi\Models\Account\ApiKeyInfoCharacters;
+use Seat\Eveapi\Models\JobLog;
 use Seat\Web\Models\User;
 
 /**
@@ -119,5 +120,16 @@ class ApiKey extends Model
 
         return $this->hasOne(
             AccountStatus::class, 'keyID', 'key_id');
+    }
+
+    /**
+     * Returns the update joblogs for this key.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function job_logs()
+    {
+
+        return $this->hasMany(JobLog::class, 'key_id');
     }
 }

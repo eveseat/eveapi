@@ -44,6 +44,9 @@ class Shareholders extends Base
 
         $result = $pheal->Shareholders();
 
+        $this->writeJobLog('shareholders',
+            'API responsed with ' . count($result->characters) . ' shareholders');
+
         // Process shareholding Characters
         foreach ($result->characters as $character) {
 

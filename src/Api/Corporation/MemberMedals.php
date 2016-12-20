@@ -44,6 +44,9 @@ class MemberMedals extends Base
 
         $result = $pheal->MemberMedals();
 
+        $this->writeJobLog('membermedals',
+            'API responsed with ' . count($result->issuedMedals) . ' member medals');
+
         foreach ($result->issuedMedals as $medal) {
 
             $medal_info = MemberMedal::firstOrNew([

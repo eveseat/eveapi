@@ -44,6 +44,9 @@ class IndustryJobs extends Base
 
         $result = $pheal->IndustryJobs();
 
+        $this->writeJobLog('industryjobs',
+            'API responsed with ' . count($result->jobs) . ' jobs');
+
         foreach ($result->jobs as $industry_job) {
 
             $new_industry_job = IndustryJob::firstOrNew([

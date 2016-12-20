@@ -45,6 +45,9 @@ class StarbaseList extends Base
 
         $result = $pheal->StarbaseList();
 
+        $this->writeJobLog('starbaselist',
+            'API responsed with ' . count($result->starbases) . ' starbases');
+
         foreach ($result->starbases as $starbase) {
 
             $starbase_info = Starbase::firstOrNew([

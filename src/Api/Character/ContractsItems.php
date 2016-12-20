@@ -44,6 +44,9 @@ class ContractsItems extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('contractsitems',
+                'Processing characterID: ' . $character->characterID);
+
             // Get a list of all of the contracts that do
             // not have their items updated yet. Since this
             // is hopefully only a one time thing, if the
@@ -60,6 +63,9 @@ class ContractsItems extends Base
 
                 })
                 ->pluck('contractID');
+
+            $this->writeJobLog('contractsitems', 'Updating ' .
+                count($contract_ids) . 'contracts');
 
             // Process the contractID's as we have received them
             foreach ($contract_ids as $contract_id) {

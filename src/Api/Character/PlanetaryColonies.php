@@ -43,8 +43,14 @@ class PlanetaryColonies extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('planetarycolonies',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->PlanetaryColonies([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('planetarycolonies',
+                'API responsed with ' . count($result->colonies) . ' colonies');
 
             // Update the Planetary Colonies for the character.
             // As this can obiously change a lot, we will have

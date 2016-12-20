@@ -43,8 +43,14 @@ class Research extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('research',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->Research([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('research',
+                'API responsed with ' . count($result->research) . ' research agents');
 
             foreach ($result->research as $research_agent) {
 

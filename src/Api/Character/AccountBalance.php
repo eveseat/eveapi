@@ -43,6 +43,9 @@ class AccountBalance extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('accountbalance',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->AccountBalance([
                 'characterID' => $character->characterID]);
 

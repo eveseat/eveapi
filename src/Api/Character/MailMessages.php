@@ -43,8 +43,14 @@ class MailMessages extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('mailmessages',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->MailMessages([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('mailmessages',
+                'API responsed with ' . count($result->messages) . ' messages');
 
             foreach ($result->messages as $message) {
 

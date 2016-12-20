@@ -48,6 +48,9 @@ class Clones extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('clones',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->Clones([
                 'characterID' => $character->characterID]);
 

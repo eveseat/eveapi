@@ -44,6 +44,9 @@ class SkillQueue extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('skillqueue',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->SkillQueue([
                 'characterID' => $character->characterID]);
 

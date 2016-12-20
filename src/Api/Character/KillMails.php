@@ -95,6 +95,9 @@ class KillMails extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('killmails',
+                'Processing characterID: ' . $character->characterID);
+
             // Define the first MAX from_id to use when
             // retreiving killmails.
             $from_id = PHP_INT_MAX;
@@ -116,6 +119,9 @@ class KillMails extends Base
                         //  Error: 121: Invalid beforeKillID provided.
                     ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
                 );
+
+                $this->writeJobLog('killmails',
+                    'API responsed with ' . count($result->kills) . ' kills');
 
                 foreach ($result->kills as $kill) {
 

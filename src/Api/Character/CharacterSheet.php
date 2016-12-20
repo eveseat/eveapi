@@ -48,6 +48,9 @@ class CharacterSheet extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('charactersheet',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->CharacterSheet([
                 'characterID' => $character->characterID]);
 

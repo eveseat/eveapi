@@ -60,6 +60,8 @@ class CheckAndQueueKey extends Base
                 'output' => 'Started APIKeyInfo Update'
             ]);
 
+            $this->writeInfoJobLog('Starting APIKeyInfo Update');
+
             // https://api.eveonline.com/account/APIKeyInfo.xml.aspx
             (new APIKeyInfo())->setApi($this->job_payload->eve_api_key)->call();
             $this->decrementErrorCounters();
@@ -81,10 +83,12 @@ class CheckAndQueueKey extends Base
                 // treat both types exactly the same.
                 case 'Account':
                 case 'Character':
+                    $this->writeInfoJobLog('Key type is Account/Character');
                     $fresh_job->api = 'Character';
                     break;
 
                 case 'Corporation':
+                    $this->writeInfoJobLog('Key type is Corporation');
                     $fresh_job->api = 'Corporation';
                     break;
 
@@ -105,6 +109,8 @@ class CheckAndQueueKey extends Base
 
         } catch (ConnectionException $e) {
 
+            $this->writeErrorJobLog('A ConnectionException occured. The error was: ' .
+                $e->getMessage());
             $this->handleConnectionException($e);
 
             // TODO: Add some logging so that the keys
@@ -121,12 +127,16 @@ class CheckAndQueueKey extends Base
             // For this reason, we are going to assume there is something
             // wrong with the API key if we get an HTTP 403 on this
             // worker to check the key.
-            if ($e->getCode() == 403)
+            if ($e->getCode() == 403) {
+                $this->writeErrorJobLog('A 403 ConnectionException occured. ' .
+                    'Disabling the API key as it might be expired.');
+
                 $this->job_payload->eve_api_key->update([
                     'enabled'    => false,
                     'last_error' => 'Disabled due to possibly expired key. ' .
                         $e->getCode() . ':' . $e->getMessage()
                 ]);
+            }
         }
 
         return;

@@ -47,6 +47,9 @@ class StarbaseDetail extends Base
             ->where('corporationID', $this->corporationID)
             ->pluck('itemID');
 
+        $this->writeJobLog('starbasedetail',
+            'Updating ' . count($starbase_ids) . ' starbases');
+
         foreach ($starbase_ids as $starbase_id) {
 
             $result = $pheal->StarbaseDetail(['itemID' => $starbase_id]);

@@ -88,6 +88,9 @@ class WalletJournal extends Base
                     ] + ($from_id == PHP_INT_MAX ? [] : ['fromID' => $from_id])
                 );
 
+                $this->writeJobLog('journal',
+                    'API responsed with ' . count($result->transactions) . ' transactions');
+
                 foreach ($result->entries as $transaction) {
 
                     // Ensure that $from_id is at its lowest

@@ -46,8 +46,14 @@ class Bookmarks extends Base
 
         foreach ($this->api_info->characters as $character) {
 
+            $this->writeJobLog('bookmarks',
+                'Processing characterID: ' . $character->characterID);
+
             $result = $pheal->Bookmarks([
                 'characterID' => $character->characterID]);
+
+            $this->writeJobLog('bookmarks',
+                'API responded with ' . count($result->folders) . ' bookmark folders');
 
             // Process each folder and the bookmarks therein
             foreach ($result->folders as $folder) {
