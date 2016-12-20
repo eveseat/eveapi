@@ -50,7 +50,7 @@ class MailMessages extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('mailmessages',
-                'API responsed with ' . count($result->messages) . ' messages');
+                'API responded with ' . count($result->messages) . ' messages');
 
             foreach ($result->messages as $message) {
 

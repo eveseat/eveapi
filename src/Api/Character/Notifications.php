@@ -50,7 +50,7 @@ class Notifications extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('notifications',
-                'API responsed with ' . count($result->notifications) . ' notifications');
+                'API responded with ' . count($result->notifications) . ' notifications');
 
             foreach ($result->notifications as $notification) {
 

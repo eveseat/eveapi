@@ -50,7 +50,7 @@ class IndustryJobs extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('industryjobs',
-                'API responsed with ' . count($result->jobs) . ' jobs');
+                'API responded with ' . count($result->jobs) . ' jobs');
 
             foreach ($result->jobs as $industry_job) {
 

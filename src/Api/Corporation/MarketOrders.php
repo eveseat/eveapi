@@ -45,7 +45,7 @@ class MarketOrders extends Base
         $result = $pheal->MarketOrders();
 
         $this->writeJobLog('marketorders',
-            'API responsed with ' . count($result->orders) . ' orders');
+            'API responded with ' . count($result->orders) . ' orders');
 
         foreach ($result->orders as $order) {
 

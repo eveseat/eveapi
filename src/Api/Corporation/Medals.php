@@ -45,7 +45,7 @@ class Medals extends Base
         $result = $pheal->Medals();
 
         $this->writeJobLog('medals',
-            'API responsed with ' . count($result->medals) . ' medals');
+            'API responded with ' . count($result->medals) . ' medals');
 
         foreach ($result->medals as $medal) {
 

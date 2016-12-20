@@ -47,7 +47,7 @@ class AssetList extends Base
         $result = $pheal->AssetList();
 
         $this->writeJobLog('assetlist',
-            'API responsed with ' . count($result->assets) . ' assets');
+            'API responded with ' . count($result->assets) . ' assets');
 
         // The caveat of this API call as can be seen here [1] is
         // that the itemID's may change for a number of reasons.

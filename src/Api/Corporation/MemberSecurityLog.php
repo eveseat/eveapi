@@ -48,7 +48,7 @@ class MemberSecurityLog extends Base
         $result = $pheal->MemberSecurityLog();
 
         $this->writeJobLog('membersecuritylog',
-            'API responsed with ' . count($result->roleHistory) . ' logs');
+            'API responded with ' . count($result->roleHistory) . ' logs');
 
         foreach ($result->roleHistory as $log_entry) {
 

@@ -51,7 +51,7 @@ class MailingLists extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('mailinglists',
-                'API responsed with ' . count($result->mailingLists) . ' mailing lists');
+                'API responded with ' . count($result->mailingLists) . ' mailing lists');
 
             // Characters can join/leave mailing lists at
             // any time. For this reason, we need to clean

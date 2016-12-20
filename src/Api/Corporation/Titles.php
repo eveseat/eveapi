@@ -45,7 +45,7 @@ class Titles extends Base
         $result = $pheal->Titles();
 
         $this->writeJobLog('titles',
-            'API responsed with ' . count($result->titles) . ' titles');
+            'API responded with ' . count($result->titles) . ' titles');
 
         foreach ($result->titles as $title) {
 

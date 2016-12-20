@@ -86,7 +86,7 @@ class WalletJournal extends Base
                 );
 
                 $this->writeJobLog('journal',
-                    'API responsed with ' . count($result->transactions) . ' transactions');
+                    'API responded with ' . count($result->transactions) . ' transactions');
 
                 foreach ($result->transactions as $transaction) {
 

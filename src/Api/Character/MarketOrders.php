@@ -50,7 +50,7 @@ class MarketOrders extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('marketorders',
-                'API responsed with ' . count($result->orders) . ' orders');
+                'API responded with ' . count($result->orders) . ' orders');
 
             foreach ($result->orders as $order) {
 

@@ -50,7 +50,7 @@ class Contracts extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('contracts',
-                'API responsed with ' . count($result->contractList) . ' contracts');
+                'API responded with ' . count($result->contractList) . ' contracts');
 
             foreach ($result->contractList as $contract) {
 

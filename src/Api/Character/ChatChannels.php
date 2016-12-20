@@ -52,7 +52,7 @@ class ChatChannels extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('chatchannels',
-                'API responsed with ' . count($result->channels) . ' channels');
+                'API responded with ' . count($result->channels) . ' channels');
 
             foreach ($result->channels as $channel) {
 

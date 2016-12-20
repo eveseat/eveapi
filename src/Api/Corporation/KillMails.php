@@ -79,7 +79,7 @@ class KillMails extends Base
             );
 
             $this->writeJobLog('killmails',
-                'API responsed with ' . count($result->kills) . ' kills');
+                'API responded with ' . count($result->kills) . ' kills');
 
             foreach ($result->kills as $kill) {
 

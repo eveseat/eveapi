@@ -45,7 +45,7 @@ class MemberTracking extends Base
         $result = $pheal->MemberTracking(['extended' => 1]);
 
         $this->writeJobLog('membertracking',
-            'API responsed with ' . count($result->members) . ' members');
+            'API responded with ' . count($result->members) . ' members');
 
         foreach ($result->members as $member) {
 

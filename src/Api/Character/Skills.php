@@ -53,7 +53,7 @@ class Skills extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('skills',
-                'API responsed with ' . count($result->skills) . ' skills');
+                'API responded with ' . count($result->skills) . ' skills');
 
             // Get the CharacterSheet Data
             $character_data = CharacterSheetModel::firstOrNew([

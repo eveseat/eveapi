@@ -50,7 +50,7 @@ class Research extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('research',
-                'API responsed with ' . count($result->research) . ' research agents');
+                'API responded with ' . count($result->research) . ' research agents');
 
             foreach ($result->research as $research_agent) {
 

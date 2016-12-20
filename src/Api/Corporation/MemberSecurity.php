@@ -53,7 +53,7 @@ class MemberSecurity extends Base
         $result = $pheal->MemberSecurity();
 
         $this->writeJobLog('membersecurity',
-            'API responsed with ' . count($result->members) . ' members');
+            'API responded with ' . count($result->members) . ' members');
 
         foreach ($result->members as $member) {
 

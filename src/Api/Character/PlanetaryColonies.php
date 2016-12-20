@@ -50,7 +50,7 @@ class PlanetaryColonies extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('planetarycolonies',
-                'API responsed with ' . count($result->colonies) . ' colonies');
+                'API responded with ' . count($result->colonies) . ' colonies');
 
             // Update the Planetary Colonies for the character.
             // As this can obiously change a lot, we will have

@@ -50,7 +50,7 @@ class UpcomingCalendarEvents extends Base
                 'characterID' => $character->characterID]);
 
             $this->writeJobLog('calendar',
-                'API responsed with ' . count($result->upcomingEvents) . ' events');
+                'API responded with ' . count($result->upcomingEvents) . ' events');
 
             foreach ($result->upcomingEvents as $event) {
 
