@@ -65,7 +65,7 @@ class ContractsItems extends Base
                 ->pluck('contractID');
 
             $this->writeJobLog('contractsitems', 'Updating ' .
-                count($contract_ids) . 'contracts');
+                count($contract_ids) . ' contracts');
 
             // Process the contractID's as we have received them
             foreach ($contract_ids as $contract_id) {

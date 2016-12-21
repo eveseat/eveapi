@@ -85,7 +85,7 @@ class UpdateAuthenticated extends Base
 
                 // The EveApiAccess Class will throw this and log the exception.
                 $this->writeErrorJobLog('An AccessException occured while processing ' .
-                    class_basename($worker) . '. SeAT would have handled this internally.');
+                    class_basename($worker) . '. This normally means the key does not have access.');
 
                 continue;
 
