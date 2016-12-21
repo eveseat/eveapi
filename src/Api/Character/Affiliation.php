@@ -154,8 +154,6 @@ class Affiliation extends Base
     public function processUpdate(string $ids)
     {
 
-        $this->writeJobLog('affiliation', 'Updating ' . count($ids) . ' affiliations');
-
         $result = $this->setScope('eve')
             ->getPheal()
             ->CharacterAffiliation(['ids' => $ids]);
