@@ -213,7 +213,10 @@ abstract class Base
     public function writeJobLog(string $type, string $message)
     {
 
-        // TODO: Make a configuration item to turn this off!
+        // Ensure that the joblog is enabled first
+        if (!config('eveapi.config.enable_joblog'))
+            return;
+
         if ($this->api_info)
             $this->api_info->job_logs()->save(new JobLog([
                     'type'    => $type,

@@ -600,6 +600,10 @@ abstract class Base implements ShouldQueue
     public function writeJobLog(string $type, string $message)
     {
 
+        // Ensure that the joblog is enabled first
+        if (!config('eveapi.config.enable_joblog'))
+            return;
+
         if ($this->job_payload->eve_api_key)
             $this->job_payload->eve_api_key->job_logs()->save(
                 new JobLog([
