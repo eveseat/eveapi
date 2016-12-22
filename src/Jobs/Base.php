@@ -176,15 +176,27 @@ abstract class Base implements ShouldQueue
             // Get the constraints saved to the key.
             if ($classes = $this->extractWorkerClasses(
                 $updater_type, $this->job_payload->eve_api_key->api_call_constraints)
-            )
+            ) {
+
+                $this->writeInfoJobLog('API Key constraints exist. Loading ' .
+                    $classes->count() . ' workers');
+
                 return $classes;
+            }
         }
 
         // Check the global constraints from Settings::Seat
         if ($classes = $this->extractWorkerClasses(
             $updater_type, json_decode(setting('api_constraint', true), true))
-        )
+        ) {
+
+            $this->writeInfoJobLog('Global constraints exist. Loading ' .
+                $classes->count() . ' workers');
+
             return $classes;
+        }
+
+        $this->writeInfoJobLog('No constraints exist. Loading all workers');
 
         // No constraints are defined, so return all of the
         // workers appliable to this updater.
@@ -224,7 +236,6 @@ abstract class Base implements ShouldQueue
                 })
                 ->flatten();
         }
-
 
     }
 
