@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 return [
 
-    'version'       => '2.0.5',
+    'version'       => '2.0.6',
 
     // API Joblog logging
     'enable_joblog' => true,
