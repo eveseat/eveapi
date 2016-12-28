@@ -129,7 +129,7 @@ class CheckAndQueueKey extends Base
             // worker to check the key.
             if ($e->getCode() == 403) {
                 $this->writeErrorJobLog('A 403 ConnectionException occured. ' .
-                    'Disabling the API key as it might be expired.');
+                    'The API key might be expired.');
 
                 $this->disableKeyIfGracePeriodReached(
                     $this->job_payload->eve_api_key,
