@@ -71,6 +71,7 @@ class CheckAndQueueKey extends Base
             $fresh_job->scope = 'Eve';
             $fresh_job->owner_id = $this->job_payload->eve_api_key->key_id;
             $fresh_job->eve_api_key = $this->job_payload->eve_api_key;
+            $fresh_job->queue = $this->job_payload->queue;
 
             // Now, based on the type of key, set the 'api'
             // value and queue an Authenticated Update job
@@ -102,9 +103,7 @@ class CheckAndQueueKey extends Base
 
             // Queue the actual update job with a populated
             // JobPayloadContainer
-            $this->addUniqueJob(
-                'Seat\Eveapi\Jobs\UpdateAuthenticated', $fresh_job);
-
+            $this->addUniqueJob(UpdateAuthenticated::class, $fresh_job);
             $this->markAsDone();
 
         } catch (ConnectionException $e) {
