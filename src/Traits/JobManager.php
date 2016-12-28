@@ -50,9 +50,11 @@ trait JobManager
         if ($this->hasDefaultAdminContact()) {
 
             logger()->error(
-                'Default admin contact still set. Not queuing job for: ' . $args->api);
+                'Default admin contact still set. Not queuing job for: ' . $args->api .
+                'Please see: http://seat-docs.readthedocs.io/en/latest/admin_guides/eveapi_admin_contact/');
 
-            return 'Failed to queue due to default config';
+            return 'Failed to queue due to default config. Please see: ' .
+                'http://seat-docs.readthedocs.io/en/latest/admin_guides/eveapi_admin_contact/';
         }
 
         // Look for an existing job
