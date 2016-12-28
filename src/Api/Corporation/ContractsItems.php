@@ -62,9 +62,8 @@ class ContractsItems extends Base
         // See: https://forums.eveonline.com/default.aspx?g=posts&m=5791284#post5791284
 
         $contract_ids = DB::table('corporation_contracts')
+            ->where('type', '<>', 'Courier')
             ->where('corporationID', $this->corporationID)
-            ->where('issuerCorpID', $this->corporationID)
-            ->orWhere('assigneeID', $this->corporationID)
             ->whereNotIn('contractID', function ($query) {
 
                 $query->select('contractID')
@@ -75,7 +74,7 @@ class ContractsItems extends Base
             ->pluck('contractID');
 
         $this->writeJobLog('contractsitems', 'Updating ' .
-            count($contract_ids) . 'contracts');
+            count($contract_ids) . ' contracts');
 
         // Process the contractID's as we have received them
         foreach ($contract_ids as $contract_id) {
