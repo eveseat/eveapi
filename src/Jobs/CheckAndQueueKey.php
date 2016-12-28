@@ -131,11 +131,10 @@ class CheckAndQueueKey extends Base
                 $this->writeErrorJobLog('A 403 ConnectionException occured. ' .
                     'Disabling the API key as it might be expired.');
 
-                $this->job_payload->eve_api_key->update([
-                    'enabled'    => false,
-                    'last_error' => 'Disabled due to possibly expired key. ' .
-                        $e->getCode() . ':' . $e->getMessage()
-                ]);
+                $this->disableKeyIfGracePeriodReached(
+                    $this->job_payload->eve_api_key,
+                    'Disabled due to possibly expired key. ' . $e->getCode() . ':' . $e->getMessage()
+                );
             }
         }
 

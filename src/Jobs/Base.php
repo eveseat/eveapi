@@ -29,6 +29,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Seat\Eveapi\Helpers\JobPayloadContainer;
+use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Models\JobLog;
 use Seat\Eveapi\Models\JobTracking;
 use Seat\Services\Helpers\AnalyticsContainer;
@@ -393,11 +394,11 @@ abstract class Base implements ShouldQueue
             case 210:
                 // "Authentication failure (final pass)."
             case 212:
-                $this->writeErrorJobLog('Disabling key due to response code 212');
-                $api_key->update([
-                    'enabled'    => false,
-                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
-                ]);
+                $this->writeErrorJobLog('Checking if key should be disabled due to response code 212');
+
+                $this->disableKeyIfGracePeriodReached(
+                    $api_key, $exception->getCode() . ':' . $exception->getMessage());
+
                 $should_continue = false;
 
                 break;
@@ -405,11 +406,11 @@ abstract class Base implements ShouldQueue
             // "Invalid Corporation Key. Key owner does not fullfill role
             // requirements anymore."
             case 220:
-                $this->writeErrorJobLog('Disabling key due to response code 220');
-                $api_key->update([
-                    'enabled'    => false,
-                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
-                ]);
+                $this->writeErrorJobLog('Checking if key should be disabled due to response code 220');
+
+                $this->disableKeyIfGracePeriodReached(
+                    $api_key, $exception->getCode() . ':' . $exception->getMessage());
+
                 $should_continue = false;
 
                 break;
@@ -427,11 +428,11 @@ abstract class Base implements ShouldQueue
 
             // "Key has expired. Contact key owner for access renewal."
             case 222:
-                $this->writeErrorJobLog('Disabling key due to response code 222');
-                $api_key->update([
-                    'enabled'    => false,
-                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
-                ]);
+                $this->writeErrorJobLog('Checking if key should be disabled due to response code 222');
+
+                $this->disableKeyIfGracePeriodReached(
+                    $api_key, $exception->getCode() . ':' . $exception->getMessage());
+
                 $should_continue = false;
 
                 break;
@@ -442,11 +443,11 @@ abstract class Base implements ShouldQueue
             // API Keys."
             case 223:
                 // The API we are working with is waaaaaay too old.
-                $this->writeErrorJobLog('Disabling key due to response code 223');
-                $api_key->update([
-                    'enabled'    => false,
-                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
-                ]);
+                $this->writeErrorJobLog('Checking if key should be disabled due to response code 223');
+
+                $this->disableKeyIfGracePeriodReached(
+                    $api_key, $exception->getCode() . ':' . $exception->getMessage());
+
                 $should_continue = false;
 
                 break;
@@ -700,6 +701,44 @@ abstract class Base implements ShouldQueue
             $this->markEveApiDown(15);
 
         return;
+
+    }
+
+    /**
+     * Checks an API keys 'grace period' and disables it if the
+     * number of errors has passed the grace count.
+     *
+     * @param \Seat\Eveapi\Models\Eve\ApiKey $api_key
+     * @param string                         $message
+     */
+    public function disableKeyIfGracePeriodReached(ApiKey $api_key, string $message)
+    {
+
+        // Determine what the cache key should be.
+        $cache_key = 'eveapi_api_error_count. ' . $api_key->key_id;
+
+        // Get the current value, or default to 0 if its not present.
+        $count = Cache::get($cache_key, 0);
+
+        // Increment the count by one and place it in the cache for 6 hours.
+        $count += 1;
+        Cache::put($cache_key, $count, 60 * 6);
+
+        $this->writeInfoJobLog('The grace error count is now ' . $count . '. ' .
+            'The key will disable in ' . (config('eveapi.config.error_grace') - $count) .
+            ' errors');
+
+        // If we have passed the grace count, disable the key.
+        if ($count >= config('eveapi.config.error_grace')) {
+
+            $api_key->update([
+                'enabled'    => false,
+                'last_error' => $message
+            ]);
+
+            $this->writeInfoJobLog('Api Key disabled as it has reached the grace error count of ' .
+                config('eveapi.config.error_grace'));
+        }
 
     }
 
