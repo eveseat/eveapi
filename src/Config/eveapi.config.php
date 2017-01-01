@@ -54,5 +54,5 @@ return [
 
     // Number of errors that may occur before an api
     // key will really be disabled.
-    'error_grace' => 3,
+    'error_grace'   => 3,
 ];

@@ -241,6 +241,36 @@ abstract class Base implements ShouldQueue
     }
 
     /**
+     * @param string $message
+     */
+    public function writeInfoJobLog(string $message)
+    {
+
+        $this->writeJobLog('info', $message);
+    }
+
+    /**
+     * @param string $type
+     * @param string $message
+     */
+    public function writeJobLog(string $type, string $message)
+    {
+
+        // Ensure that the joblog is enabled first
+        if (!config('eveapi.config.enable_joblog'))
+            return;
+
+        if ($this->job_payload->eve_api_key)
+            $this->job_payload->eve_api_key->job_logs()->save(
+                new JobLog([
+                    'type'    => $type,
+                    'message' => $message
+                ])
+            );
+
+    }
+
+    /**
      * Decrement all the error counters
      *
      * @param int $amount
@@ -550,6 +580,53 @@ abstract class Base implements ShouldQueue
     }
 
     /**
+     * @param string $message
+     */
+    public function writeErrorJobLog(string $message)
+    {
+
+        $this->writeJobLog('error', $message);
+    }
+
+    /**
+     * Checks an API keys 'grace period' and disables it if the
+     * number of errors has passed the grace count.
+     *
+     * @param \Seat\Eveapi\Models\Eve\ApiKey $api_key
+     * @param string                         $message
+     */
+    public function disableKeyIfGracePeriodReached(ApiKey $api_key, string $message)
+    {
+
+        // Determine what the cache key should be.
+        $cache_key = 'eveapi_api_error_count. ' . $api_key->key_id;
+
+        // Get the current value, or default to 0 if its not present.
+        $count = Cache::get($cache_key, 0);
+
+        // Increment the count by one and place it in the cache for 6 hours.
+        $count += 1;
+        Cache::put($cache_key, $count, 60 * 6);
+
+        $this->writeInfoJobLog('The grace error count is now ' . $count . '. ' .
+            'The key will disable in ' . (config('eveapi.config.error_grace') - $count) .
+            ' errors');
+
+        // If we have passed the grace count, disable the key.
+        if ($count >= config('eveapi.config.error_grace')) {
+
+            $api_key->update([
+                'enabled'    => false,
+                'last_error' => $message
+            ]);
+
+            $this->writeInfoJobLog('Api Key disabled as it has reached the grace error count of ' .
+                config('eveapi.config.error_grace'));
+        }
+
+    }
+
+    /**
      * Write diagnostic information to the Job Tracker
      *
      * @param \Exception $exception
@@ -603,45 +680,6 @@ abstract class Base implements ShouldQueue
         $this->job_tracker->save();
 
         return;
-    }
-
-    /**
-     * @param string $type
-     * @param string $message
-     */
-    public function writeJobLog(string $type, string $message)
-    {
-
-        // Ensure that the joblog is enabled first
-        if (!config('eveapi.config.enable_joblog'))
-            return;
-
-        if ($this->job_payload->eve_api_key)
-            $this->job_payload->eve_api_key->job_logs()->save(
-                new JobLog([
-                    'type'    => $type,
-                    'message' => $message
-                ])
-            );
-
-    }
-
-    /**
-     * @param string $message
-     */
-    public function writeInfoJobLog(string $message)
-    {
-
-        $this->writeJobLog('info', $message);
-    }
-
-    /**
-     * @param string $message
-     */
-    public function writeErrorJobLog(string $message)
-    {
-
-        $this->writeJobLog('error', $message);
     }
 
     /**
@@ -701,44 +739,6 @@ abstract class Base implements ShouldQueue
             $this->markEveApiDown(15);
 
         return;
-
-    }
-
-    /**
-     * Checks an API keys 'grace period' and disables it if the
-     * number of errors has passed the grace count.
-     *
-     * @param \Seat\Eveapi\Models\Eve\ApiKey $api_key
-     * @param string                         $message
-     */
-    public function disableKeyIfGracePeriodReached(ApiKey $api_key, string $message)
-    {
-
-        // Determine what the cache key should be.
-        $cache_key = 'eveapi_api_error_count. ' . $api_key->key_id;
-
-        // Get the current value, or default to 0 if its not present.
-        $count = Cache::get($cache_key, 0);
-
-        // Increment the count by one and place it in the cache for 6 hours.
-        $count += 1;
-        Cache::put($cache_key, $count, 60 * 6);
-
-        $this->writeInfoJobLog('The grace error count is now ' . $count . '. ' .
-            'The key will disable in ' . (config('eveapi.config.error_grace') - $count) .
-            ' errors');
-
-        // If we have passed the grace count, disable the key.
-        if ($count >= config('eveapi.config.error_grace')) {
-
-            $api_key->update([
-                'enabled'    => false,
-                'last_error' => $message
-            ]);
-
-            $this->writeInfoJobLog('Api Key disabled as it has reached the grace error count of ' .
-                config('eveapi.config.error_grace'));
-        }
 
     }
 
