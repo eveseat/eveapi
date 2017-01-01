@@ -133,13 +133,16 @@ class CharacterSheet extends Base
             // Lets loop over the clones for the character.
             foreach ($result->jumpClones as $jump_clone) {
 
-                CharacterSheetJumpClone::create([
-                    'characterID' => $character->characterID,
-                    'jumpCloneID' => $jump_clone->jumpCloneID,
-                    'typeID'      => $jump_clone->typeID,
-                    'locationID'  => $jump_clone->locationID,
-                    'cloneName'   => $jump_clone->cloneName
-                ]);
+                // avoid entry duplication if more than a worker is working on the same character
+                CharacterSheetJumpClone::updateOrCreate([
+                        'jumpCloneID' => $jump_clone->jumpCloneID
+                    ],
+                    [
+                        'characterID' => $character->characterID,
+                        'typeID' => $jump_clone->typeID,
+                        'locationID' => $jump_clone->locationID,
+                        'cloneName' => $jump_clone->cloneName
+                    ]);
 
             } // Foreach JumpClone
 
