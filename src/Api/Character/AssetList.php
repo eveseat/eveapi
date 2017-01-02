@@ -108,37 +108,72 @@ class AssetList extends Base
                 foreach ($asset_chunk as $asset) {
 
                     if (isset($asset->contents)) {
-
-                        $asset_contents = array_filter(
-                            array_map(function ($entry) use ($character, $asset) {
-
-                                return [
-                                    'characterID' => $character->characterID,
-                                    'itemID'      => $asset->itemID,
-                                    'typeID'      => $entry->typeID,
-                                    'quantity'    => $entry->quantity,
-                                    'flag'        => $entry->flag,
-                                    'singleton'   => $entry->singleton,
-                                    'rawQuantity' => isset($entry->rawQuantity) ?
-                                        $entry->rawQuantity : 0,
-
-                                    // Timestamps
-                                    'created_at'  => Carbon::now()->toDateTimeString(),
-                                    'updated_at'  => Carbon::now()->toDateTimeString(),
-                                ];
-
-                            }, (array) $asset->contents)
-                        );
-
-                        // Again, if there is any contents to add, do so.
-                        if (count($asset_contents) > 0)
-                            AssetListContents::insert($asset_contents);
+                        $this->add_asset_content(
+                            $asset->contents, $character->characterID, $asset->itemID);
 
                     }
 
                 } // End foreach $asset_chunk
             } // End array_chunk
         }
+
+    }
+
+    /**
+     * Populate the assets table.
+     *
+     * This function is called recursively if an asset entry has
+     * contents.
+     *
+     * @param      $assets
+     * @param      $characterID
+     * @param null $parentAssetItemID
+     * @param null $parentItemID
+     */
+    public function add_asset_content($assets, $characterID, $parentAssetItemID = null, $parentItemID = null)
+    {
+
+        // Prepare a blank array that will be populated
+        // for the mass insert at the end.
+        $asset_contents = [];
+
+        foreach ($assets as $asset) {
+
+            // Check if this asset has contents, if so,
+            // recursively call this function to do
+            // the population work.
+            //
+            // The $parentItemID variable relates to the
+            // item in the same table. The variable
+            // $parentAssetItemID refers to the original
+            // asset in the char assets table.
+            if (isset($asset->contents))
+                $this->add_asset_content(
+                    $asset->contents, $characterID,
+                    $parentAssetItemID, $asset->itemID);
+
+            array_push($asset_contents, [
+
+                'characterID'       => $characterID,
+                'itemID'            => $asset->itemID,
+                'parentAssetItemID' => $parentAssetItemID,
+                'parentItemID'      => $parentItemID,
+                'typeID'            => $asset->typeID,
+                'quantity'          => $asset->quantity,
+                'flag'              => $asset->flag,
+                'singleton'         => $asset->singleton,
+                'rawQuantity'       => isset($asset->rawQuantity) ?
+                    $asset->rawQuantity : 0,
+
+                // Timestamps
+                'created_at'        => Carbon::now()->toDateTimeString(),
+                'updated_at'        => Carbon::now()->toDateTimeString(),
+            ]);
+        }
+
+        // Again, if there is any contents to add, do so.
+        if (count($asset_contents) > 0)
+            AssetListContents::insert($asset_contents);
 
     }
 }
