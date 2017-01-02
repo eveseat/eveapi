@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Corporation;
 
@@ -28,14 +29,13 @@ use Seat\Eveapi\Models\Corporation\ContactListAllianceLabel;
 use Seat\Eveapi\Models\Corporation\ContactListLabel;
 
 /**
- * Class ContactList
+ * Class ContactList.
  * @package Seat\Eveapi\Api\Corporation
  */
 class ContactList extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -62,7 +62,7 @@ class ContactList extends Base
                 'contactName'   => $contact->contactName,
                 'standing'      => $contact->standing,
                 'contactTypeID' => $contact->contactTypeID,
-                'labelMask'     => $contact->labelMask
+                'labelMask'     => $contact->labelMask,
             ]);
         }
 
@@ -75,7 +75,7 @@ class ContactList extends Base
             ContactListLabel::create([
                 'corporationID' => $this->corporationID,
                 'labelID'       => $label->labelID,
-                'name'          => $label->name
+                'name'          => $label->name,
             ]);
         }
 
@@ -92,7 +92,7 @@ class ContactList extends Base
                 'contactName'   => $contact->contactName,
                 'standing'      => $contact->standing,
                 'contactTypeID' => $contact->contactTypeID,
-                'labelMask'     => $contact->labelMask
+                'labelMask'     => $contact->labelMask,
             ]);
         }
 
@@ -105,10 +105,9 @@ class ContactList extends Base
             ContactListAllianceLabel::create([
                 'corporationID' => $this->corporationID,
                 'labelID'       => $label->labelID,
-                'name'          => $label->name
+                'name'          => $label->name,
             ]);
         }
 
-        return;
     }
 }

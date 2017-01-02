@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api;
 
@@ -36,7 +37,6 @@ use Seat\Eveapi\Traits\Validation;
  */
 abstract class Base
 {
-
     use Validation;
 
     /**
@@ -80,7 +80,7 @@ abstract class Base
     protected $logger = null;
 
     /**
-     * Setup the updater instance
+     * Setup the updater instance.
      */
     public function __construct()
     {
@@ -99,7 +99,6 @@ abstract class Base
      * @return $this
      * @throws \Seat\Eveapi\Exception\InvalidKeyPairException
      * @throws \Seat\Eveapi\Exception\MissingKeyPairException
-     *
      */
     public function setApi(ApiKey $api_info)
     {
@@ -121,7 +120,7 @@ abstract class Base
 
     /**
      * Configure the scope for which API calls will
-     * be made
+     * be made.
      *
      * @param $scope
      *
@@ -139,7 +138,7 @@ abstract class Base
     /**
      * Get a PhealNG instance. This method will prepare
      * the authentication details based on the properties
-     * and return a ready to use Object
+     * and return a ready to use Object.
      *
      * @return null|\Pheal\Pheal
      */
@@ -166,7 +165,7 @@ abstract class Base
         }
 
         // Check if a scope was set.
-        if (!is_null($this->scope))
+        if (! is_null($this->scope))
             $this->pheal->scope = $this->scope;
 
         return $this->pheal;
@@ -174,7 +173,7 @@ abstract class Base
     }
 
     /**
-     * Gets the CorporationID from this object
+     * Gets the CorporationID from this object.
      *
      * @return null
      */
@@ -186,7 +185,7 @@ abstract class Base
 
     /**
      * Sets the corporationID to use in Corporation
-     * related API update work
+     * related API update work.
      *
      * @return $this
      * @throws \Seat\Eveapi\Exception\InvalidScopeException
@@ -205,7 +204,7 @@ abstract class Base
     }
 
     /**
-     * Write a new entry to a keys joblog
+     * Write a new entry to a keys joblog.
      *
      * @param string $type
      * @param string $message
@@ -214,13 +213,13 @@ abstract class Base
     {
 
         // Ensure that the joblog is enabled first
-        if (!config('eveapi.config.enable_joblog'))
+        if (! config('eveapi.config.enable_joblog'))
             return;
 
         if ($this->api_info)
             $this->api_info->job_logs()->save(new JobLog([
                     'type'    => $type,
-                    'message' => $message
+                    'message' => $message,
                 ])
             );
 
@@ -237,15 +236,13 @@ abstract class Base
         $this->scope = null;
         $this->logger = null;
 
-        return;
     }
 
     /**
      * The contract for the update call. All
-     * update should at least have this function
+     * update should at least have this function.
      *
      * @return mixed
      */
     abstract protected function call();
-
 }

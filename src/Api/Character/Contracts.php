@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Character;
 
@@ -25,14 +26,13 @@ use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\Character\Contract;
 
 /**
- * Class Contracts
+ * Class Contracts.
  * @package Seat\Eveapi\Api\Character
  */
 class Contracts extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -47,7 +47,7 @@ class Contracts extends Base
                 'Processing characterID: ' . $character->characterID);
 
             $result = $pheal->Contracts([
-                'characterID' => $character->characterID]);
+                'characterID' => $character->characterID, ]);
 
             $this->writeJobLog('contracts',
                 'API responded with ' . count($result->contractList) . ' contracts');
@@ -56,7 +56,7 @@ class Contracts extends Base
 
                 $contract_data = Contract::firstOrNew([
                     'characterID' => $character->characterID,
-                    'contractID'  => $contract->contractID
+                    'contractID'  => $contract->contractID,
                 ]);
 
                 $contract_data->fill([
@@ -82,7 +82,7 @@ class Contracts extends Base
                     'reward'         => $contract->reward,
                     'collateral'     => $contract->collateral,
                     'buyout'         => $contract->buyout,
-                    'volume'         => $contract->volume
+                    'volume'         => $contract->volume,
                 ]);
 
                 $contract_data->save();
@@ -90,6 +90,5 @@ class Contracts extends Base
 
         } // Foreach Character
 
-        return;
     }
 }

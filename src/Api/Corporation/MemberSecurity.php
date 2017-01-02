@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Corporation;
 
@@ -26,21 +27,20 @@ use Seat\Eveapi\Models\Corporation\MemberSecurity as MemberSecurityModel;
 use Seat\Eveapi\Models\Corporation\MemberSecurityTitle;
 
 /**
- * Class MemberSecurity
+ * Class MemberSecurity.
  * @package Seat\Eveapi\Api\Corporation
  */
 class MemberSecurity extends Base
 {
-
     /**
-     * The member that is currently in scope
+     * The member that is currently in scope.
      *
      * @var
      */
     protected $member;
 
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -88,18 +88,17 @@ class MemberSecurity extends Base
                         'characterID'   => $member->characterID,
                         'characterName' => $member->name,
                         'titleID'       => $title->titleID,
-                        'titleName'     => $title->titleName
+                        'titleName'     => $title->titleName,
                     ]);
                 }
             }
 
         } // Foreach member
 
-        return;
     }
 
     /**
-     * Write an entry to the MemberSecurity table
+     * Write an entry to the MemberSecurity table.
      *
      * @param $rawRoles
      * @param $roleType
@@ -116,7 +115,7 @@ class MemberSecurity extends Base
                 'characterName' => $this->member->name,
                 'roleType'      => $roleType,
                 'roleID'        => $role->roleID,
-                'roleName'      => $role->roleName
+                'roleName'      => $role->roleName,
             ]);
         }
     }

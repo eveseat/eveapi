@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Character;
 
@@ -25,14 +26,13 @@ use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\Character\PlanetaryColony;
 
 /**
- * Class PlanetaryColonies
+ * Class PlanetaryColonies.
  * @package Seat\Eveapi\Api\Character
  */
 class PlanetaryColonies extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -47,7 +47,7 @@ class PlanetaryColonies extends Base
                 'Processing characterID: ' . $character->characterID);
 
             $result = $pheal->PlanetaryColonies([
-                'characterID' => $character->characterID]);
+                'characterID' => $character->characterID, ]);
 
             $this->writeJobLog('planetarycolonies',
                 'API responded with ' . count($result->colonies) . ' colonies');
@@ -60,7 +60,7 @@ class PlanetaryColonies extends Base
 
                 $colony_info = PlanetaryColony::firstOrNew([
                     'ownerID'  => $colony->ownerID,
-                    'planetID' => $colony->planetID]);
+                    'planetID' => $colony->planetID, ]);
 
                 $colony_info->fill([
                     'solarSystemID'   => $colony->solarSystemID,
@@ -72,7 +72,7 @@ class PlanetaryColonies extends Base
                     'ownerName'       => $colony->ownerName,
                     'lastUpdate'      => $colony->lastUpdate,
                     'upgradeLevel'    => $colony->upgradeLevel,
-                    'numberOfPins'    => $colony->numberOfPins
+                    'numberOfPins'    => $colony->numberOfPins,
                 ]);
 
                 $colony_info->save();
@@ -85,10 +85,9 @@ class PlanetaryColonies extends Base
 
                     return $colony->planetID;
 
-                }, (array)$result->colonies))
+                }, (array) $result->colonies))
                 ->delete();
         }
 
-        return;
     }
 }

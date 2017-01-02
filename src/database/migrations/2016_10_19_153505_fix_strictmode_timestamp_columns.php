@@ -1,11 +1,30 @@
 <?php
 
+/*
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 class FixStrictmodeTimestampColumns extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -20,8 +39,8 @@ class FixStrictmodeTimestampColumns extends Migration
     {
 
         // Heads up that this is a heavy migration.
-        print('Running migration to fix strict mode date constraints. ' .
-            'This may take some time to complete.' . PHP_EOL);
+        echo 'Running migration to fix strict mode date constraints. ' .
+            'This may take some time to complete.' . PHP_EOL;
 
         // Temporarily disable the string SQL mode for this session.
         config(['database.connections.mysql.strict' => false]);
@@ -166,11 +185,11 @@ class FixStrictmodeTimestampColumns extends Migration
             'character_bookmarks'                     => ['created'],
             'character_character_sheets'              => [
                 'DoB', 'cloneJumpDate', 'lastRespecDate', 'lastTimedRespec', 'remoteStationDate',
-                'jumpActivation', 'jumpFatigue', 'jumpLastUpdate'
+                'jumpActivation', 'jumpFatigue', 'jumpLastUpdate',
             ],
             'character_chat_channel_members'          => ['untilWhen'],
             'character_contact_notifications'         => ['sentDate'],
-            'character_contracts'                     => ['dateIssued', 'dateExpired', 'dateAccepted', 'dateCompleted',],
+            'character_contracts'                     => ['dateIssued', 'dateExpired', 'dateAccepted', 'dateCompleted'],
             'character_industry_jobs'                 => ['startDate', 'endDate', 'pauseDate', 'completedDate'],
             'character_mail_messages'                 => ['sentDate'],
             'character_market_orders'                 => ['issued'],
@@ -200,7 +219,7 @@ class FixStrictmodeTimestampColumns extends Migration
             'eve_character_info_employment_histories' => ['startDate'],
             'eve_character_infos'                     => ['corporationDate', 'nextTrainingEnds', 'allianceDate'],
             'kill_mail_details'                       => ['killTime'],
-            'server_server_statuses'                  => ['currentTime']
+            'server_server_statuses'                  => ['currentTime'],
         ];
 
         // Loop over the tables and columns and alter the default value for

@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Corporation;
 
@@ -25,14 +26,13 @@ use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\Corporation\Title;
 
 /**
- * Class Titles
+ * Class Titles.
  * @package Seat\Eveapi\Api\Corporation
  */
 class Titles extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -51,7 +51,7 @@ class Titles extends Base
 
             $title_info = Title::firstOrNew([
                 'corporationID' => $this->corporationID,
-                'titleID'       => $title->titleID]);
+                'titleID'       => $title->titleID, ]);
 
             $title_info->fill([
                 'titleName'             => $title->titleName,
@@ -62,17 +62,16 @@ class Titles extends Base
                 'rolesAtBase'           => $this->json_roles($title->rolesAtBase),
                 'grantableRolesAtBase'  => $this->json_roles($title->grantableRolesAtBase),
                 'rolesAtOther'          => $this->json_roles($title->rolesAtOther),
-                'grantableRolesAtOther' => $this->json_roles($title->grantableRolesAtOther)
+                'grantableRolesAtOther' => $this->json_roles($title->grantableRolesAtOther),
             ]);
 
             $title_info->save();
         }
 
-        return;
     }
 
     /**
-     * Returns a Json Encoded array of Title Information
+     * Returns a Json Encoded array of Title Information.
      *
      * @param $roles
      *
@@ -86,10 +85,10 @@ class Titles extends Base
             return [
                 'id'          => $role->roleID,
                 'name'        => $role->roleName,
-                'description' => $role->roleDescription
+                'description' => $role->roleDescription,
             ];
 
-        }, (array)$roles));
+        }, (array) $roles));
 
         return $result;
     }

@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Models\Eve;
 
@@ -29,12 +30,11 @@ use Seat\Eveapi\Models\JobLog;
 use Seat\Web\Models\User;
 
 /**
- * Class ApiKey
+ * Class ApiKey.
  * @package Seat\Eveapi\Models
  */
 class ApiKey extends Model
 {
-
     /**
      * @var string
      */
@@ -49,7 +49,7 @@ class ApiKey extends Model
      * @var array
      */
     protected $casts = [
-        'api_call_constraints' => 'array'
+        'api_call_constraints' => 'array',
     ];
 
     /**
@@ -58,7 +58,7 @@ class ApiKey extends Model
     protected $fillable = ['key_id', 'v_code', 'user_id', 'enabled', 'last_error'];
 
     /**
-     * Make sure we cleanup when a key is deleted
+     * Make sure we cleanup when a key is deleted.
      *
      * @return bool|null
      * @throws \Exception
@@ -76,7 +76,7 @@ class ApiKey extends Model
     }
 
     /**
-     * Returns the key information such as accessMask
+     * Returns the key information such as accessMask.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -88,7 +88,7 @@ class ApiKey extends Model
     }
 
     /**
-     * Returns the characters for the key
+     * Returns the characters for the key.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -100,7 +100,7 @@ class ApiKey extends Model
     }
 
     /**
-     * Returns the owner of this key
+     * Returns the owner of this key.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -111,7 +111,7 @@ class ApiKey extends Model
     }
 
     /**
-     * Returns the account status for the key
+     * Returns the account status for the key.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

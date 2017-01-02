@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Corporation;
 
@@ -27,11 +28,10 @@ use Seat\Eveapi\Traits\Utils;
 
 class Bookmarks extends Base
 {
-
     use Utils;
 
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed
      */
@@ -79,7 +79,7 @@ class Bookmarks extends Base
                     'mapID'      => $location_info['mapID'],
                     'mapName'    => $location_info['mapName'],
                     'memo'       => $bookmark->memo,
-                    'note'       => $bookmark->note
+                    'note'       => $bookmark->note,
                 ]);
 
                 $bookmark_info->save();
@@ -93,7 +93,7 @@ class Bookmarks extends Base
 
                     return $bookmark->bookmarkID;
 
-                }, (array)$folder->bookmarks))
+                }, (array) $folder->bookmarks))
                 ->delete();
 
         } // Foreach Folder
@@ -104,9 +104,8 @@ class Bookmarks extends Base
 
                 return $folder->folderID;
 
-            }, (array)$result->folders))
+            }, (array) $result->folders))
             ->delete();
 
-        return;
     }
 }

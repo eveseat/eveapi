@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Corporation;
 
@@ -27,16 +28,15 @@ use Seat\Eveapi\Models\Corporation\Locations as LocationsModel;
 use Seat\Eveapi\Traits\Utils;
 
 /**
- * Class Locations
+ * Class Locations.
  * @package Seat\Eveapi\Api\Corporation
  */
 class Locations extends Base
 {
-
     use Utils;
 
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -77,7 +77,7 @@ class Locations extends Base
             // Apply array_column so that we only pass the
             // itemID's in the query string to the API
             $result = $pheal->Locations([
-                'ids' => implode(',', array_column($items, 'itemID'))]);
+                'ids' => implode(',', array_column($items, 'itemID')), ]);
 
             foreach ($result->locations as $location) {
 
@@ -96,12 +96,11 @@ class Locations extends Base
                     'y'             => $location->y,
                     'z'             => $location->z,
                     'mapID'         => $nearest_celestial['mapID'],
-                    'mapName'       => $nearest_celestial['mapName']
+                    'mapName'       => $nearest_celestial['mapName'],
                 ]);
 
             } // Foreach Location
         }
 
-        return;
     }
 }

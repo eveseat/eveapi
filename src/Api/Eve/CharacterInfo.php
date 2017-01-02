@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Eve;
 
@@ -28,14 +29,13 @@ use Seat\Eveapi\Models\Eve\CharacterInfo as CharacterInfoModel;
 use Seat\Eveapi\Models\Eve\CharacterInfoEmploymentHistory;
 
 /**
- * Class CharacterInfo
+ * Class CharacterInfo.
  * @package Seat\Eveapi\Api\Eve
  */
 class CharacterInfo extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -75,13 +75,12 @@ class CharacterInfo extends Base
         foreach ($this->api_info->characters as $character) {
 
             $result = $pheal->CharacterInfo([
-                'characterID' => $character->characterID]);
+                'characterID' => $character->characterID, ]);
 
             $this->_update_character_info($result);
 
         } // Foreach Character
 
-        return;
     }
 
     /**
@@ -91,7 +90,7 @@ class CharacterInfo extends Base
     {
 
         $character_info = CharacterInfoModel::firstOrNew([
-            'characterID' => $result->characterID]);
+            'characterID' => $result->characterID, ]);
 
         $character_info->fill([
             'characterName'     => $result->characterName,
@@ -115,7 +114,7 @@ class CharacterInfo extends Base
             'allianceID'        => $result->allianceID,
             'alliance'          => $result->alliance,
             'allianceDate'      => $result->allianceDate,
-            'lastKnownLocation' => $result->lastKnownLocation
+            'lastKnownLocation' => $result->lastKnownLocation,
         ]);
 
         $character_info->save();
@@ -127,10 +126,9 @@ class CharacterInfo extends Base
                 'recordID'        => $employment->recordID,
                 'corporationID'   => $employment->corporationID,
                 'corporationName' => $employment->corporationName,
-                'startDate'       => $employment->startDate
+                'startDate'       => $employment->startDate,
             ]);
         }
 
-        return;
     }
 }

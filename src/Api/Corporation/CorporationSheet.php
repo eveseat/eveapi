@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Corporation;
 
@@ -27,14 +28,13 @@ use Seat\Eveapi\Models\Corporation\CorporationSheetDivision;
 use Seat\Eveapi\Models\Corporation\CorporationSheetWalletDivision;
 
 /**
- * Class CorporationSheet
+ * Class CorporationSheet.
  * @package Seat\Eveapi\Api\Corporation
  */
 class CorporationSheet extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -47,7 +47,7 @@ class CorporationSheet extends Base
         $result = $pheal->CorporationSheet();
 
         $corporation_sheet = CorporationSheetModel::firstOrNew([
-            'corporationID' => $this->corporationID]);
+            'corporationID' => $this->corporationID, ]);
 
         $corporation_sheet->fill([
             'corporationName' => $result->corporationName,
@@ -71,7 +71,7 @@ class CorporationSheet extends Base
             'shape3'          => $result->logo->shape3,
             'color1'          => $result->logo->color1,
             'color2'          => $result->logo->color2,
-            'color3'          => $result->logo->color3
+            'color3'          => $result->logo->color3,
         ]);
 
         $corporation_sheet->save();
@@ -81,11 +81,11 @@ class CorporationSheet extends Base
 
             $division_info = CorporationSheetDivision::firstOrNew([
                 'corporationID' => $this->corporationID,
-                'accountKey'    => $division->accountKey
+                'accountKey'    => $division->accountKey,
             ]);
 
             $division_info->fill([
-                'description' => $division->description
+                'description' => $division->description,
             ]);
 
             $division_info->save();
@@ -96,16 +96,15 @@ class CorporationSheet extends Base
 
             $wallet_division_info = CorporationSheetWalletDivision::firstOrNew([
                 'corporationID' => $this->corporationID,
-                'accountKey'    => $wallet_division->accountKey]);
+                'accountKey'    => $wallet_division->accountKey, ]);
 
             $wallet_division_info->fill([
-                'description' => $wallet_division->description
+                'description' => $wallet_division->description,
             ]);
 
             $wallet_division_info->save();
 
         }
 
-        return;
     }
 }

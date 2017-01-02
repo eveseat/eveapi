@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Jobs;
 
@@ -36,12 +37,11 @@ use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 
 /**
- * Class Base
+ * Class Base.
  * @package Seat\Eveapi\Jobs
  */
 abstract class Base implements ShouldQueue
 {
-
     use InteractsWithQueue, Queueable, SerializesModels;
 
     /**
@@ -100,7 +100,7 @@ abstract class Base implements ShouldQueue
         // the job back in the queue after a few
         // seconds. It could be that the job
         // to add it has not finished yet.
-        if (!$this->job_tracker) {
+        if (! $this->job_tracker) {
 
             // Check that we have not come by this logic
             // for like the 10th time now.
@@ -129,7 +129,7 @@ abstract class Base implements ShouldQueue
     }
 
     /**
-     * Check if the EVE Api is considered 'down'
+     * Check if the EVE Api is considered 'down'.
      */
     public function isEveApiDown()
     {
@@ -257,21 +257,21 @@ abstract class Base implements ShouldQueue
     {
 
         // Ensure that the joblog is enabled first
-        if (!config('eveapi.config.enable_joblog'))
+        if (! config('eveapi.config.enable_joblog'))
             return;
 
         if ($this->job_payload->eve_api_key)
             $this->job_payload->eve_api_key->job_logs()->save(
                 new JobLog([
                     'type'    => $type,
-                    'message' => $message
+                    'message' => $message,
                 ])
             );
 
     }
 
     /**
-     * Decrement all the error counters
+     * Decrement all the error counters.
      *
      * @param int $amount
      */
@@ -281,11 +281,10 @@ abstract class Base implements ShouldQueue
         $this->decrementApiErrorCount($amount);
         $this->decrementConnectionErrorCount($amount);
 
-        return;
     }
 
     /**
-     * Decrement the Api Error Counter
+     * Decrement the Api Error Counter.
      *
      * @param int $amount
      */
@@ -298,12 +297,10 @@ abstract class Base implements ShouldQueue
         if (cache($api_error_count) > 0)
             Cache::decrement($api_error_count, $amount);
 
-        return;
-
     }
 
     /**
-     * Decrement the Connection Error Counter
+     * Decrement the Connection Error Counter.
      *
      * @param int $amount
      */
@@ -315,8 +312,6 @@ abstract class Base implements ShouldQueue
 
         if (cache($connection_error_count) > 0)
             Cache::decrement($connection_error_count, $amount);
-
-        return;
 
     }
 
@@ -361,7 +356,7 @@ abstract class Base implements ShouldQueue
 
             $job_tracker->fill([
                 'status' => 'Error',
-                'output' => $output
+                'output' => $output,
             ])->save();
 
         }
@@ -372,8 +367,6 @@ abstract class Base implements ShouldQueue
             ->set('exd', get_class($exception) . ':' . $exception->getMessage())
             ->set('exf', 1)))
             ->onQueue('medium'));
-
-        return;
 
     }
 
@@ -451,7 +444,7 @@ abstract class Base implements ShouldQueue
                 // access mask requirement...
                 $this->writeErrorJobLog('Illegal page request occured');
                 $api_key->update([
-                    'last_error' => $exception->getCode() . ':' . $exception->getMessage()
+                    'last_error' => $exception->getCode() . ':' . $exception->getMessage(),
                 ]);
 
                 break;
@@ -531,7 +524,7 @@ abstract class Base implements ShouldQueue
     /**
      * Increment the API Error Count. If we reach the configured
      * threshold then we mark the EVE Api as down for a few
-     * minutes
+     * minutes.
      *
      * @param int $amount
      */
@@ -549,8 +542,6 @@ abstract class Base implements ShouldQueue
         // If we have hit the error limit, mark the api as down
         if (cache($api_error_count) >= $api_error_limit)
             $this->markEveApiDown(10);
-
-        return;
 
     }
 
@@ -617,7 +608,7 @@ abstract class Base implements ShouldQueue
 
             $api_key->update([
                 'enabled'    => false,
-                'last_error' => $message
+                'last_error' => $message,
             ]);
 
             $this->writeInfoJobLog('Api Key disabled as it has reached the grace error count of ' .
@@ -627,7 +618,7 @@ abstract class Base implements ShouldQueue
     }
 
     /**
-     * Write diagnostic information to the Job Tracker
+     * Write diagnostic information to the Job Tracker.
      *
      * @param \Exception $exception
      */
@@ -655,7 +646,7 @@ abstract class Base implements ShouldQueue
 
         $this->updateJobStatus([
             'status' => 'Error',
-            'output' => $output
+            'output' => $output,
         ]);
 
         // Analytics. Report only the Exception class and message.
@@ -665,7 +656,6 @@ abstract class Base implements ShouldQueue
             ->set('exf', 1)))
             ->onQueue('medium'));
 
-        return;
     }
 
     /**
@@ -679,21 +669,19 @@ abstract class Base implements ShouldQueue
         $this->job_tracker->fill($data);
         $this->job_tracker->save();
 
-        return;
     }
 
     /**
-     * Mark a Job as Done
+     * Mark a Job as Done.
      */
     public function markAsDone()
     {
 
         $this->updateJobStatus([
             'status' => 'Done',
-            'output' => null
+            'output' => null,
         ]);
 
-        return;
     }
 
     /**
@@ -713,13 +701,12 @@ abstract class Base implements ShouldQueue
 
         sleep(1);
 
-        return;
     }
 
     /**
      * Increment the Connection Error Count. If we reach the
      * configured threshold then we mark the EVE Api as
-     * down for a few minutes
+     * down for a few minutes.
      *
      * @param int $amount
      */
@@ -738,8 +725,5 @@ abstract class Base implements ShouldQueue
         if (cache($connection_error_count) >= $connection_error_limit)
             $this->markEveApiDown(15);
 
-        return;
-
     }
-
 }
