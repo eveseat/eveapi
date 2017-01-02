@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Character;
 
@@ -27,14 +28,13 @@ use Seat\Eveapi\Models\Character\ChatChannelInfo;
 use Seat\Eveapi\Models\Character\ChatChannelMember;
 
 /**
- * Class ChatChannels
+ * Class ChatChannels.
  * @package Seat\Eveapi\Api\Character
  */
 class ChatChannels extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -49,7 +49,7 @@ class ChatChannels extends Base
                 'Processing characterID: ' . $character->characterID);
 
             $result = $pheal->ChatChannels([
-                'characterID' => $character->characterID]);
+                'characterID' => $character->characterID, ]);
 
             $this->writeJobLog('chatchannels',
                 'API responded with ' . count($result->channels) . ' channels');
@@ -64,13 +64,13 @@ class ChatChannels extends Base
                 // the link to the channels details.
                 ChatChannel::firstOrCreate([
                     'characterID' => $character->characterID,
-                    'channelID'   => $channel->channelID
+                    'channelID'   => $channel->channelID,
                 ]);
 
                 // Check and update the channels details such as
                 // owner information as well as the motd
                 $channel_info = ChatChannelInfo::firstOrNew([
-                    'channelID' => $channel->channelID]);
+                    'channelID' => $channel->channelID, ]);
 
                 // TODO: Check if the current MOTD and the one that
                 // was received in the response differs and record
@@ -83,7 +83,7 @@ class ChatChannels extends Base
                     'comparisonKey' => $channel->comparisonKey,
                     'hasPassword'   => strtolower($channel->hasPassword) === 'true' ?
                         true : false,
-                    'motd'          => $channel->motd
+                    'motd'          => $channel->motd,
                 ]);
 
                 $channel_info->save();
@@ -144,16 +144,15 @@ class ChatChannels extends Base
 
                     return $channel->channelID;
 
-                }, (array)$result->channels))
+                }, (array) $result->channels))
                 ->delete();
         }
 
-        return;
     }
 
     /**
      * Process members of a chat channels, updating / adding
-     * them and their access
+     * them and their access.
      *
      * @param $channel_id
      * @param $member
@@ -165,7 +164,7 @@ class ChatChannels extends Base
         // Get or create the record...
         $member_info = ChatChannelMember::firstOrNew([
             'channelID'  => $channel_id,
-            'accessorID' => $member->accessorID]);
+            'accessorID' => $member->accessorID, ]);
 
         // ... and set its fields
         $member_info->fill([
@@ -174,7 +173,7 @@ class ChatChannels extends Base
             'untilWhen'    => isset($member->untilWhen) ?
                 $member->untilWhen : null,
             'reason'       => isset($member->reason) ?
-                $member->reason : null
+                $member->reason : null,
         ]);
 
         $member_info->save();

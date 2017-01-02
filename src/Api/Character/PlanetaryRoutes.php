@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Character;
 
@@ -26,14 +27,13 @@ use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\Character\PlanetaryRoute;
 
 /**
- * Class PlanetaryRoutes
+ * Class PlanetaryRoutes.
  * @package Seat\Eveapi\Api\Character
  */
 class PlanetaryRoutes extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -65,14 +65,14 @@ class PlanetaryRoutes extends Base
 
                 $result = $pheal->PlanetaryRoutes([
                     'characterID' => $character->characterID,
-                    'planetID'    => $planet_id]);
+                    'planetID'    => $planet_id, ]);
 
                 foreach ($result->routes as $route) {
 
                     $route_info = PlanetaryRoute::firstOrNew([
                         'ownerID'  => $character->characterID,
                         'planetID' => $planet_id,
-                        'routeID'  => $route->routeID]);
+                        'routeID'  => $route->routeID, ]);
 
                     $route_info->fill([
                         'sourcePinID'      => $route->sourcePinID,
@@ -84,7 +84,7 @@ class PlanetaryRoutes extends Base
                         'waypoint2'        => $route->waypoint2,
                         'waypoint3'        => $route->waypoint3,
                         'waypoint4'        => $route->waypoint4,
-                        'waypoint5'        => $route->waypoint5
+                        'waypoint5'        => $route->waypoint5,
                     ]);
 
                     $route_info->save();
@@ -99,7 +99,7 @@ class PlanetaryRoutes extends Base
 
                         return $route->routeID;
 
-                    }, (array)$result->routes))
+                    }, (array) $result->routes))
                     ->delete();
 
             } // Foreach Planet
@@ -113,6 +113,5 @@ class PlanetaryRoutes extends Base
 
         } // Foreach Character
 
-        return;
     }
 }

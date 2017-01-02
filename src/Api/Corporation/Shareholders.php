@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Corporation;
 
@@ -25,14 +26,13 @@ use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\Corporation\Shareholder;
 
 /**
- * Class Shareholders
+ * Class Shareholders.
  * @package Seat\Eveapi\Api\Corporation
  */
 class Shareholders extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -53,13 +53,13 @@ class Shareholders extends Base
             $share_info = Shareholder::firstOrNew([
                 'corporationID'   => $this->corporationID,
                 'shareholderType' => 'character',
-                'shareholderID'   => $character->shareholderID]);
+                'shareholderID'   => $character->shareholderID, ]);
 
             $share_info->fill([
                 'shareholderName'            => $character->shareholderName,
                 'shareholderCorporationID'   => $character->shareholderCorporationID,
                 'shareholderCorporationName' => $character->shareholderCorporationName,
-                'shares'                     => $character->shares
+                'shares'                     => $character->shares,
             ]);
 
             $share_info->save();
@@ -72,7 +72,7 @@ class Shareholders extends Base
 
                 return $character->shareholderID;
 
-            }, (array)$result->characters))
+            }, (array) $result->characters))
             ->delete();
 
         // Process Shareholding Corporations
@@ -81,11 +81,11 @@ class Shareholders extends Base
             $share_info = Shareholder::firstOrNew([
                 'corporationID'   => $this->corporationID,
                 'shareholderType' => 'corporation',
-                'shareholderID'   => $corporation->shareholderID]);
+                'shareholderID'   => $corporation->shareholderID, ]);
 
             $share_info->fill([
                 'shareholderName' => $corporation->shareholderName,
-                'shares'          => $corporation->shares
+                'shares'          => $corporation->shares,
             ]);
 
             $share_info->save();
@@ -98,9 +98,8 @@ class Shareholders extends Base
 
                 return $corporation->shareholderID;
 
-            }, (array)$result->corporations))
+            }, (array) $result->corporations))
             ->delete();
 
-        return;
     }
 }

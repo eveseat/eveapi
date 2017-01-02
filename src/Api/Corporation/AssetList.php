@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Corporation;
 
@@ -27,14 +28,13 @@ use Seat\Eveapi\Models\Corporation\AssetList as AssetListModel;
 use Seat\Eveapi\Models\Corporation\AssetListContents;
 
 /**
- * Class AssetList
+ * Class AssetList.
  * @package Seat\Eveapi\Api\Corporation
  */
 class AssetList extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -63,7 +63,7 @@ class AssetList extends Base
         // We take the resuls and chunk it up into parts of 1000
         // entries. For every 1000 entries we bulk insert the
         // assets and the asset contents into the database.
-        foreach (array_chunk((array)$result->assets, 1000) as $asset_chunk) {
+        foreach (array_chunk((array) $result->assets, 1000) as $asset_chunk) {
 
             // Take the chunked array and map the fields to our
             // asset_list variable. This variable is filtered
@@ -86,7 +86,7 @@ class AssetList extends Base
 
                         // Timestamps
                         'created_at'    => Carbon::now()->toDateTimeString(),
-                        'updated_at'    => Carbon::now()->toDateTimeString()
+                        'updated_at'    => Carbon::now()->toDateTimeString(),
                     ];
 
                 }, $asset_chunk));
@@ -110,7 +110,6 @@ class AssetList extends Base
 
         } // End array_chunk
 
-        return;
     }
 
     /**
@@ -161,7 +160,7 @@ class AssetList extends Base
 
                 // Timestamps
                 'created_at'        => Carbon::now()->toDateTimeString(),
-                'updated_at'        => Carbon::now()->toDateTimeString()
+                'updated_at'        => Carbon::now()->toDateTimeString(),
             ]);
         }
 
@@ -169,6 +168,5 @@ class AssetList extends Base
         if (count($asset_contents) > 0)
             AssetListContents::insert($asset_contents);
 
-        return;
     }
 }

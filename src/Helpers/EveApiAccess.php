@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Helpers;
 
@@ -25,12 +26,11 @@ use Pheal\Access\CanCheck;
 use Pheal\Exceptions\AccessException;
 
 /**
- * Class EveApiAccess
+ * Class EveApiAccess.
  * @package Seat\Eveapi\Helpers
  */
 class EveApiAccess implements CanCheck
 {
-
     /**
      * @var array
      */
@@ -40,14 +40,14 @@ class EveApiAccess implements CanCheck
      * Construct an API Access Checker. AccessMask
      * definitions live in the configuration files.
      * It is also possible to set the bits array
-     * via the constructor
+     * via the constructor.
      *
      * @param array|null $access_bits
      */
     public function __construct(array $access_bits = null)
     {
 
-        if (!is_null($access_bits))
+        if (! is_null($access_bits))
             $this->access_bits = $access_bits;
         else
             $this->access_bits = config('eveapi.access_bits');
@@ -75,7 +75,7 @@ class EveApiAccess implements CanCheck
         // in our access_bits array. If we dont, we will
         // assume that it is not a type of call that has
         // an accessMask requirement (such as pub calls)
-        if (!array_key_exists($scope, $this->access_bits))
+        if (! array_key_exists($scope, $this->access_bits))
             return true;
 
         // Get the bit definitions for this scope and change
@@ -83,13 +83,13 @@ class EveApiAccess implements CanCheck
         $scope_bits = $this->access_bits[$scope];
         $call_name = strtolower($name);
 
-        if (!array_key_exists($call_name, $scope_bits))
+        if (! array_key_exists($call_name, $scope_bits))
             throw new AccessException(
                 'Blocked request. Unknown call ' . $call_name .
                 ' in scope ' . $scope);
 
         // Check if the accessMask is valid
-        if ((int)$scope_bits[$call_name] & (int)$accessMask)
+        if ((int) $scope_bits[$call_name] & (int) $accessMask)
             return true;
 
         // As a last resort, block the call by throwing an

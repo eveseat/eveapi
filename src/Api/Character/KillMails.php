@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Character;
 
@@ -28,22 +29,21 @@ use Seat\Eveapi\Models\KillMail\Detail;
 use Seat\Eveapi\Models\KillMail\Item;
 
 /**
- * Class KillMails
+ * Class KillMails.
  * @package Seat\Eveapi\Api\Character
  */
 class KillMails extends Base
 {
-
     /**
      * The amount of row to expect in a
-     * API call to the EVE API
+     * API call to the EVE API.
      *
      * @var int
      */
     protected $rows_per_call = 1000;
 
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -111,7 +111,7 @@ class KillMails extends Base
 
                 $result = $pheal->KillMails([
                         'characterID' => $character->characterID,
-                        'rowCount'    => $this->rows_per_call
+                        'rowCount'    => $this->rows_per_call,
 
                         // If the from_id is not PHP_INT_MAX, the we can
                         // specify it for the API call. If not, we will
@@ -142,7 +142,7 @@ class KillMails extends Base
                     // Create the killmail link to this character
                     KillMail::create([
                         'characterID' => $character->characterID,
-                        'killID'      => $kill->killID
+                        'killID'      => $kill->killID,
                     ]);
 
                     // With the link complete, we should check if we
@@ -173,7 +173,7 @@ class KillMails extends Base
                         'factionID'       => $kill->victim->factionID,
                         'factionName'     => $kill->victim->factionName,
                         'damageTaken'     => $kill->victim->damageTaken,
-                        'shipTypeID'      => $kill->victim->shipTypeID
+                        'shipTypeID'      => $kill->victim->shipTypeID,
                     ]);
 
                     foreach ($kill->attackers as $attacker) {
@@ -192,7 +192,7 @@ class KillMails extends Base
                             'damageDone'      => $attacker->damageDone,
                             'finalBlow'       => $attacker->finalBlow,
                             'weaponTypeID'    => $attacker->weaponTypeID,
-                            'shipTypeID'      => $attacker->shipTypeID
+                            'shipTypeID'      => $attacker->shipTypeID,
                         ]);
                     }
 
@@ -204,7 +204,7 @@ class KillMails extends Base
                             'flag'         => $item->flag,
                             'qtyDropped'   => $item->qtyDropped,
                             'qtyDestroyed' => $item->qtyDestroyed,
-                            'singleton'    => $item->singleton
+                            'singleton'    => $item->singleton,
                         ]);
                     }
 
@@ -223,6 +223,5 @@ class KillMails extends Base
 
         }
 
-        return;
     }
 }

@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Character;
 
@@ -27,7 +28,6 @@ use Seat\Eveapi\Models\Eve\CharacterAffiliation;
 
 class Affiliation extends Base
 {
-
     /**
      * @var string
      */
@@ -60,7 +60,7 @@ class Affiliation extends Base
         'character_wallet_transactions' => ['clientID'],
         'character_contact_lists'       => ['contactID'],
         'character_contracts'           => ['assigneeID', 'acceptorID'],
-        'character_mail_messages'       => ['senderID']
+        'character_mail_messages'       => ['senderID'],
     ];
 
     /**
@@ -122,7 +122,7 @@ class Affiliation extends Base
                     // If its not cached, it means we havent seen this
                     // characterID yet and should push it for an update
                     // request.
-                    if (!cache($cache_key)) {
+                    if (! cache($cache_key)) {
 
                         // Add the characterID to the cache for an hour.
                         cache([$cache_key => true], $this->cache_lifetime_minutes);
@@ -161,7 +161,7 @@ class Affiliation extends Base
         foreach ($result->characters as $character) {
 
             CharacterAffiliation::firstOrNew([
-                'characterID' => $character->characterID])
+                'characterID' => $character->characterID, ])
                 ->fill([
                     'characterName'   => $character->characterName,
                     'corporationID'   => $character->corporationID,
@@ -169,11 +169,10 @@ class Affiliation extends Base
                     'allianceID'      => $character->allianceID,
                     'allianceName'    => $character->allianceName,
                     'factionID'       => $character->factionID,
-                    'factionName'     => $character->factionName
+                    'factionName'     => $character->factionName,
                 ])
                 ->save();
         }
 
     }
-
 }

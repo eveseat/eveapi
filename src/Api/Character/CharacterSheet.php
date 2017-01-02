@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Character;
 
@@ -30,14 +31,13 @@ use Seat\Eveapi\Models\Character\CharacterSheetJumpCloneImplants;
 use Seat\Eveapi\Models\Character\CharacterSheetSkills;
 
 /**
- * Class CharacterSheet
+ * Class CharacterSheet.
  * @package Seat\Eveapi\Api\Character
  */
 class CharacterSheet extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -52,7 +52,7 @@ class CharacterSheet extends Base
                 'Processing characterID: ' . $character->characterID);
 
             $result = $pheal->CharacterSheet([
-                'characterID' => $character->characterID]);
+                'characterID' => $character->characterID, ]);
 
             // The full character sheet is pretty large. We have
             // a few things we can just update the database with
@@ -62,7 +62,7 @@ class CharacterSheet extends Base
 
             // Get the CharacterSheet Data
             $character_data = CharacterSheetModel::firstOrNew([
-                'characterID' => $character->characterID]);
+                'characterID' => $character->characterID, ]);
 
             // .. and update it
             $character_data->fill([
@@ -99,7 +99,7 @@ class CharacterSheet extends Base
                 'memory'            => $result->attributes->memory,
                 'charisma'          => $result->attributes->charisma,
                 'perception'        => $result->attributes->perception,
-                'willpower'         => $result->attributes->willpower
+                'willpower'         => $result->attributes->willpower,
             ]);
 
             $character_data->save();
@@ -116,7 +116,7 @@ class CharacterSheet extends Base
                 CharacterSheetImplants::create([
                     'characterID' => $character->characterID,
                     'typeID'      => $implant->typeID,
-                    'typeName'    => $implant->typeName
+                    'typeName'    => $implant->typeName,
                 ]);
 
             } // Foreach Implants
@@ -135,13 +135,13 @@ class CharacterSheet extends Base
 
                 // avoid entry duplication if more than a worker is working on the same character
                 CharacterSheetJumpClone::updateOrCreate([
-                        'jumpCloneID' => $jump_clone->jumpCloneID
+                        'jumpCloneID' => $jump_clone->jumpCloneID,
                     ],
                     [
                         'characterID' => $character->characterID,
                         'typeID' => $jump_clone->typeID,
                         'locationID' => $jump_clone->locationID,
-                        'cloneName' => $jump_clone->cloneName
+                        'cloneName' => $jump_clone->cloneName,
                     ]);
 
             } // Foreach JumpClone
@@ -153,7 +153,7 @@ class CharacterSheet extends Base
                     'characterID' => $character->characterID,
                     'jumpCloneID' => $jump_clone_implant->jumpCloneID,
                     'typeID'      => $jump_clone_implant->typeID,
-                    'typeName'    => $jump_clone_implant->typeName
+                    'typeName'    => $jump_clone_implant->typeName,
                 ]);
             } // Foreach JumpCloneImplant
 
@@ -164,12 +164,12 @@ class CharacterSheet extends Base
 
                 $skill_info = CharacterSheetSkills::firstOrNew([
                     'characterID' => $character->characterID,
-                    'typeID'      => $skill->typeID]);
+                    'typeID'      => $skill->typeID, ]);
 
                 $skill_info->fill([
                     'skillpoints' => $skill->skillpoints,
                     'level'       => $skill->level,
-                    'published'   => $skill->published
+                    'published'   => $skill->published,
                 ]);
 
                 $skill_info->save();
@@ -188,12 +188,11 @@ class CharacterSheet extends Base
                 CharacterSheetCorporationTitles::create([
                     'characterID' => $character->characterID,
                     'titleID'     => $title->titleID,
-                    'titleName'   => $title->titleName
+                    'titleName'   => $title->titleName,
                 ]);
             } // Foreach Title
 
         } // Foreach Character
 
-        return;
     }
 }

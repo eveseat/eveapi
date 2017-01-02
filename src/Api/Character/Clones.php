@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Character;
 
@@ -28,14 +29,13 @@ use Seat\Eveapi\Models\Character\CharacterSheetJumpClone;
 use Seat\Eveapi\Models\Character\CharacterSheetJumpCloneImplants;
 
 /**
- * Class Clones
+ * Class Clones.
  * @package Seat\Eveapi\Api\Character
  */
 class Clones extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -52,11 +52,11 @@ class Clones extends Base
                 'Processing characterID: ' . $character->characterID);
 
             $result = $pheal->Clones([
-                'characterID' => $character->characterID]);
+                'characterID' => $character->characterID, ]);
 
             // Get the CharacterSheet Data
             $character_data = CharacterSheetModel::firstOrNew([
-                'characterID' => $character->characterID]);
+                'characterID' => $character->characterID, ]);
 
             // .. and update it
             $character_data->fill([
@@ -79,7 +79,7 @@ class Clones extends Base
                 'memory'            => $result->attributes->memory,
                 'charisma'          => $result->attributes->charisma,
                 'perception'        => $result->attributes->perception,
-                'willpower'         => $result->attributes->willpower
+                'willpower'         => $result->attributes->willpower,
             ]);
 
             $character_data->save();
@@ -96,7 +96,7 @@ class Clones extends Base
                 CharacterSheetImplants::create([
                     'characterID' => $character->characterID,
                     'typeID'      => $implant->typeID,
-                    'typeName'    => $implant->typeName
+                    'typeName'    => $implant->typeName,
                 ]);
 
             } // Foreach Implants
@@ -118,7 +118,7 @@ class Clones extends Base
                     'jumpCloneID' => $jump_clone->jumpCloneID,
                     'typeID'      => $jump_clone->typeID,
                     'locationID'  => $jump_clone->locationID,
-                    'cloneName'   => $jump_clone->cloneName
+                    'cloneName'   => $jump_clone->cloneName,
                 ]);
 
             } // Foreach JumpClone
@@ -130,12 +130,11 @@ class Clones extends Base
                     'characterID' => $character->characterID,
                     'jumpCloneID' => $jump_clone_implant->jumpCloneID,
                     'typeID'      => $jump_clone_implant->typeID,
-                    'typeName'    => $jump_clone_implant->typeName
+                    'typeName'    => $jump_clone_implant->typeName,
                 ]);
             } // Foreach JumpCloneImplant
 
         } // Foreach Character
 
-        return;
     }
 }

@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Eveapi\Api\Character;
 
@@ -26,14 +27,13 @@ use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\Character\PlanetaryPin;
 
 /**
- * Class PlanetaryPins
+ * Class PlanetaryPins.
  * @package Seat\Eveapi\Api\Character
  */
 class PlanetaryPins extends Base
 {
-
     /**
-     * Run the Update
+     * Run the Update.
      *
      * @return mixed|void
      */
@@ -64,14 +64,14 @@ class PlanetaryPins extends Base
 
                 $result = $pheal->PlanetaryPins([
                     'characterID' => $character->characterID,
-                    'planetID'    => $planet_id]);
+                    'planetID'    => $planet_id, ]);
 
                 foreach ($result->pins as $pin) {
 
                     $pin_info = PlanetaryPin::firstOrNew([
                         'ownerID'  => $character->characterID,
                         'planetID' => $planet_id,
-                        'pinID'    => $pin->pinID]);
+                        'pinID'    => $pin->pinID, ]);
 
                     $pin_info->fill([
                         'typeID'           => $pin->typeID,
@@ -86,7 +86,7 @@ class PlanetaryPins extends Base
                         'contentTypeName'  => $pin->contentTypeName,
                         'contentQuantity'  => $pin->contentQuantity,
                         'longitude'        => $pin->longitude,
-                        'latitude'         => $pin->latitude
+                        'latitude'         => $pin->latitude,
                     ]);
 
                     $pin_info->save();
@@ -101,7 +101,7 @@ class PlanetaryPins extends Base
 
                         return $pin->pinID;
 
-                    }, (array)$result->pins))
+                    }, (array) $result->pins))
                     ->delete();
 
             } // Foreach Planet
@@ -115,6 +115,5 @@ class PlanetaryPins extends Base
 
         } // Foreach Character
 
-        return;
     }
 }
