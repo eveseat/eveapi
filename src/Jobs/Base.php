@@ -102,17 +102,6 @@ abstract class Base implements ShouldQueue
         // to add it has not finished yet.
         if (! $this->job_tracker) {
 
-            // Check that we have not come by this logic
-            // for like the 10th time now.
-            if ($this->attempts() < 10) {
-
-                // Add the job back into the queue and wait
-                // for 2 seconds before releasing it.
-                $this->release(2);
-
-                return false;
-            }
-
             // Remove yourself from the queue
             logger()->error(
                 'Error finding a JobTracker for job ' . $this->job->getJobID());
