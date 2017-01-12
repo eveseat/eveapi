@@ -32,7 +32,6 @@ use Seat\Services\Settings\Seat;
  */
 trait JobManager
 {
-
     /**
      * Adds a Job to the queue only if one does not
      * already exist.
