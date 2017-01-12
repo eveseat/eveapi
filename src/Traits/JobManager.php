@@ -32,6 +32,7 @@ use Seat\Services\Settings\Seat;
  */
 trait JobManager
 {
+
     /**
      * Adds a Job to the queue only if one does not
      * already exist.
@@ -72,8 +73,16 @@ trait JobManager
             return $job_id;
         }
 
-        // Add a new job onto the queue...
-        $new_job = (new $job($args))->onQueue($args->queue);
+        // Add a new job onto the queue with a delay.
+        // The original priority is preserved.
+        // The delay grants us a small grace period to use to
+        // write a job tracking entry to the database.
+        $new_job = (new $job($args))
+            ->onQueue($args->queue)
+            ->delay(carbon()->addSeconds(3));
+
+        // Pop the job onto the redis queue. This returns the internal
+        // job_id that we use to reference in the tracking table.
         $job_id = dispatch($new_job);
 
         // Check that the id we got back is a random
@@ -83,8 +92,13 @@ trait JobManager
         // the job itself was not sucesfully added.
         // If it actually is queued, it will get discarded
         // when trackOrDismiss() is called.
-        if (strlen($job_id) < 2)
+        if (strlen($job_id) < 2) {
+
+            logger()->error('A job was dispatched but the job id returned ' .
+                'was in valid. The jobid was: ' . $job_id);
+
             return;
+        }
 
         // ...and add tracking information
         JobTracking::create([
