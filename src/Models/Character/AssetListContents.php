@@ -39,8 +39,8 @@ class AssetListContents extends Model
      * @var array
      */
     protected $fillable = [
-        'characterID', 'itemID', 'typeID', 'quantity', 'flag', 'singleton',
-        'rawQuantity',
+        'characterID', 'itemID', 'parentAssetItemID', 'parentItemID',
+        'typeID', 'quantity', 'flag', 'singleton', 'rawQuantity',
     ];
 
     /**
@@ -52,6 +52,6 @@ class AssetListContents extends Model
     {
 
         return $this->belongsTo(
-            AssetList::class, 'itemID', 'itemID');
+            AssetList::class, 'parentAssetItemID', 'itemID');
     }
 }

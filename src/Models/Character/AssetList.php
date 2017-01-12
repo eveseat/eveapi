@@ -52,6 +52,6 @@ class AssetList extends Model
     {
 
         return $this->hasMany(
-            AssetListContents::class, 'itemID', 'itemID');
+            AssetListContents::class, 'itemID', 'parentAssetItemID');
     }
 }
