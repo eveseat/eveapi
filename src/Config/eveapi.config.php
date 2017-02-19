@@ -25,7 +25,7 @@ return [
     'version'       => '2.0.9',
 
     // API Joblog logging
-    'enable_joblog' => true,
+    'enable_joblog' => false,
 
     // PhealNG Specific Configuration
     'pheal'         => [
