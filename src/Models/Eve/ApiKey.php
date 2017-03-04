@@ -27,6 +27,8 @@ use Seat\Eveapi\Models\Account\AccountStatus;
 use Seat\Eveapi\Models\Account\ApiKeyInfo;
 use Seat\Eveapi\Models\Account\ApiKeyInfoCharacters;
 use Seat\Eveapi\Models\JobLog;
+use Seat\Services\Models\Tag;
+use Seat\Services\Traits\TaggableTrait;
 use Seat\Web\Models\User;
 
 /**
@@ -35,6 +37,8 @@ use Seat\Web\Models\User;
  */
 class ApiKey extends Model
 {
+    use TaggableTrait;
+
     /**
      * @var string
      */
@@ -131,5 +135,11 @@ class ApiKey extends Model
     {
 
         return $this->hasMany(JobLog::class, 'key_id');
+    }
+
+    public function tags()
+    {
+        return $this->hasMany(Tag::class, 'object_id')
+            ->where('object_type', __CLASS__);
     }
 }
