@@ -49,16 +49,20 @@ class ContactNotifications extends Base
             $result = $pheal->ContactNotifications([
                 'characterID' => $character->characterID, ]);
 
-            foreach ($result->contactNotifications as $notification) {
+            if (! empty($result->contactNotifications)) {
 
-                ContactNotificationsModel::firstOrCreate([
-                    'characterID'    => $character->characterID,
-                    'notificationID' => $notification->notificationID,
-                    'senderID'       => $notification->senderID,
-                    'senderName'     => $notification->senderName,
-                    'sentDate'       => $notification->sentDate,
-                    'messageData'    => $notification->messageData,
-                ]);
+                foreach ($result->contactNotifications as $notification) {
+
+                    ContactNotificationsModel::firstOrCreate([
+                        'characterID' => $character->characterID,
+                        'notificationID' => $notification->notificationID,
+                        'senderID' => $notification->senderID,
+                        'senderName' => $notification->senderName,
+                        'sentDate' => $notification->sentDate,
+                        'messageData' => $notification->messageData,
+                    ]);
+                }
+
             }
 
         } // Foreach Character
