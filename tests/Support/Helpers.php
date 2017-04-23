@@ -47,6 +47,8 @@ class Helpers
         $config->api_customkeys = true;
         $config->http_method = 'curl';
         $config->http_timeout = 60;
+        $config->http_ssl_verifypeer = false;
+        $config->http_ssl_certificate_file = 'cacert.pem';
 
         // TODO: Setup the identifying User-Agent
         $config->http_user_agent = 'SeAT Test Suite Client';

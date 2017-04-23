@@ -6,6 +6,9 @@ php:
 env:
     - COMPOSER_ROOT_VERSION=2.0.0
 
+install:
+  - wget https://curl.haxx.se/ca/cacert.pem
+
 before_script:
     - travis_retry composer self-update
     - travis_retry composer install
