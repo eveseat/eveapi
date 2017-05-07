@@ -111,8 +111,7 @@ class WalletJournal extends Base
                     // transactions. We dont immediately break because
                     // the transactions are not always received in any
                     // order for the fromID that was specified.
-                    if (WalletJournalModel::where('characterID', $character->characterID)
-                        ->where('hash', $transaction_hash)
+                    if (WalletJournalModel::where('hash', $transaction_hash)
                         ->first()
                     ) {
 
@@ -121,6 +120,7 @@ class WalletJournal extends Base
                     }
 
                     WalletJournalModel::create([
+
                         'characterID'   => $character->characterID,
                         'hash'          => $transaction_hash,
                         'refID'         => $transaction->refID,
