@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Character\IndustryJob;
  * Class IndustryJobs.
  * @package Seat\Eveapi\Api\Character
  */
-class IndustryJobs extends Base
+class IndustryJobsHistory extends Base
 {
     /**
      * Run the Update.
@@ -44,13 +44,13 @@ class IndustryJobs extends Base
 
         foreach ($this->api_info->characters as $character) {
 
-            $this->writeJobLog('industryjobs',
+            $this->writeJobLog('industryjobshistory',
                 'Processing characterID: ' . $character->characterID);
 
-            $result = $pheal->IndustryJobs([
+            $result = $pheal->IndustryJobsHistory([
                 'characterID' => $character->characterID, ]);
 
-            $this->writeJobLog('industryjobs',
+            $this->writeJobLog('industryjobshistory',
                 'API responded with ' . count($result->jobs) . ' jobs');
 
             foreach ($result->jobs as $industry_job) {
@@ -90,7 +90,7 @@ class IndustryJobs extends Base
                     'successfulRuns'       => $industry_job->successfulRuns,
                 ]);
 
-                // CCP shit : https://eveonline-third-party-documentation.readthedocs.io/en/latest/xmlapi/character/char_industryjobs.html#known-bugs
+                // CCP shit : https://eveonline-third-party-documentation.readthedocs.io/en/latest/xmlapi/character/char_industryjobshistory.html#known-bugs
                 if (new DateTime('now') > new DateTime($industry_job->endDate) && $industry_job->status == 1)
                     $new_industry_job->status = 3;
 

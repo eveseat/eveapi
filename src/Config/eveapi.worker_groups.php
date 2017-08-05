@@ -60,6 +60,7 @@ return [
         ],
         'industryjobs'  => [
             Seat\Eveapi\Api\Character\IndustryJobs::class,
+            Seat\Eveapi\Api\Character\IndustryJobsHistory::class,
         ],
         'killmails'     => [
             Seat\Eveapi\Api\Character\KillMails::class,
@@ -143,6 +144,7 @@ return [
         ],
         'industry'        => [
             Seat\Eveapi\Api\Corporation\IndustryJobs::class,
+            Seat\Eveapi\Api\Corporation\IndustryJobsHistory::class,
         ],
         'killmails'       => [
             Seat\Eveapi\Api\Corporation\KillMails::class,
