@@ -33,6 +33,7 @@ class FixJobsStatus extends Migration
      */
     public function up()
     {
+
         // Heads up that this is a heavy migration.
         echo 'Running migration to fix industry jobs status. ' .
             'This may take some time to complete depending of database size.' . PHP_EOL;
@@ -45,8 +46,8 @@ class FixJobsStatus extends Migration
             ->whereDate('endDate', '<=', date('Y-m-d H:i:s'))
             ->get();
 
-        foreach ($jobs as $job)
-        {
+        foreach ($jobs as $job) {
+
             $job->status = 3;
             $job->save();
         }
@@ -61,8 +62,8 @@ class FixJobsStatus extends Migration
             ->whereDate('endDate', '<=', date('Y-m-d H:i:s'))
             ->get();
 
-        foreach ($jobs as $job)
-        {
+        foreach ($jobs as $job) {
+
             $job->status = 3;
             $job->save();
         }
