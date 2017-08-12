@@ -29,7 +29,7 @@ use Seat\Eveapi\Models\Corporation\IndustryJob;
  * Class IndustryJobs.
  * @package Seat\Eveapi\Api\Corporation
  */
-class IndustryJobs extends Base
+class IndustryJobsHistory extends Base
 {
     /**
      * Run the Update.
@@ -42,9 +42,9 @@ class IndustryJobs extends Base
         $pheal = $this->setScope('corp')
             ->setCorporationID()->getPheal();
 
-        $result = $pheal->IndustryJobs();
+        $result = $pheal->IndustryJobsHistory();
 
-        $this->writeJobLog('industryjobs',
+        $this->writeJobLog('industryjobshistory',
             'API responded with ' . count($result->jobs) . ' jobs');
 
         foreach ($result->jobs as $industry_job) {
@@ -84,7 +84,7 @@ class IndustryJobs extends Base
                 'successfulRuns'       => $industry_job->successfulRuns,
             ]);
 
-            // CCP shit : https://eveonline-third-party-documentation.readthedocs.io/en/latest/xmlapi/corporation/corp_industryjobs.html#known-bugs
+            // CCP shit : https://eveonline-third-party-documentation.readthedocs.io/en/latest/xmlapi/corporation/corp_industryjobshistory.html#known-bugs
             if (carbon('now')->gt(carbon($industry_job->endDate)) && $industry_job->status == 1)
                 $new_industry_job->status = 3;
 
