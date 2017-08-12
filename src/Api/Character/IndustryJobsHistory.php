@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Api\Character;
 
-use DateTime;
 use Seat\Eveapi\Api\Base;
 use Seat\Eveapi\Models\Character\IndustryJob;
 
@@ -91,7 +90,7 @@ class IndustryJobsHistory extends Base
                 ]);
 
                 // CCP shit : https://eveonline-third-party-documentation.readthedocs.io/en/latest/xmlapi/character/char_industryjobshistory.html#known-bugs
-                if (new DateTime('now') > new DateTime($industry_job->endDate) && $industry_job->status == 1)
+                if (carbon('now')->gt(carbon($industry_job->endDate)) && $industry_job->status == 1)
                     $new_industry_job->status = 3;
 
                 $new_industry_job->save();
