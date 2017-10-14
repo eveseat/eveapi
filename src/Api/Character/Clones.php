@@ -93,11 +93,16 @@ class Clones extends Base
             // Lets loop over the implants and create them
             foreach ($result->implants as $implant) {
 
-                CharacterSheetImplants::create([
-                    'characterID' => $character->characterID,
-                    'typeID'      => $implant->typeID,
-                    'typeName'    => $implant->typeName,
-                ]);
+                // avoid entry duplication if more than a worker is working on the same character
+                CharacterSheetJumpClone::updateOrCreate([
+                        'jumpCloneID' => $jump_clone->jumpCloneID,
+                    ],
+                    [
+                        'characterID' => $character->characterID,
+                        'typeID' => $jump_clone->typeID,
+                        'locationID' => $jump_clone->locationID,
+                        'cloneName' => $jump_clone->cloneName,
+                    ]);
 
             } // Foreach Implants
 
