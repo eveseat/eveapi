@@ -137,8 +137,12 @@ class ApiKey extends Model
         return $this->hasMany(JobLog::class, 'key_id');
     }
 
+    /**
+     * Cleans up the people groups members related to this API key.
+     */
     private function deleteRelatedPeopleGroups()
     {
+
         // drop any people & place relation directly related to the deleted key
         DB::table('person_members')->where('key_id', $this->key_id)
             ->delete();
@@ -147,16 +151,19 @@ class ApiKey extends Model
         foreach ($this->characters as $character) {
 
             // count character occurrence
-            $nb_character_link = DB::table('account_api_key_info_characters')
+            $linked_character_count = DB::table('account_api_key_info_characters')
                 ->where('characterID', $character->characterID)
                 ->count();
 
-            // if the deleted key is the last one referring to the character, drop the people and group and its children
-            if ($nb_character_link == 1) {
+            // if the deleted key is the last one referring to the character,
+            // drop the people and group and its children
+            if ($linked_character_count == 1) {
 
                 DB::table('person_members')
                     ->where('person_id', function ($query) use ($character) {
-                        $query->select('id')->from('people')->where('main_character_id', $character->characterID);
+
+                        $query->select('id')->from('people')
+                            ->where('main_character_id', $character->characterID);
                     })
                     ->delete();
 
