@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Eve;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\Account\AccountStatus;
 use Seat\Eveapi\Models\Account\ApiKeyInfo;
 use Seat\Eveapi\Models\Account\ApiKeyInfoCharacters;
@@ -68,6 +69,9 @@ class ApiKey extends Model
 
         // Cleanup the info
         $this->info()->delete();
+
+        // Cleanup the people groups this key is related to
+        $this->deleteRelatedPeopleGroups();
 
         // Cleanup the characters this key had
         $this->characters()->delete();
@@ -131,5 +135,34 @@ class ApiKey extends Model
     {
 
         return $this->hasMany(JobLog::class, 'key_id');
+    }
+
+    private function deleteRelatedPeopleGroups()
+    {
+        // drop any people & place relation directly related to the deleted key
+        DB::table('person_members')->where('key_id', $this->key_id)
+            ->delete();
+
+        // retrieve all characters related to the deleted key
+        foreach ($this->characters as $character) {
+
+            // count character occurrence
+            $nb_character_link = DB::table('account_api_key_info_characters')
+                ->where('characterID', $character->characterID)
+                ->count();
+
+            // if the deleted key is the last one referring to the character, drop the people and group and its children
+            if ($nb_character_link == 1) {
+
+                DB::table('person_members')
+                    ->where('person_id', function ($query) use ($character) {
+                        $query->select('id')->from('people')->where('main_character_id', $character->characterID);
+                    })
+                    ->delete();
+
+                DB::table('people')->where('main_character_id', $character->characterID)
+                    ->delete();
+            }
+        }
     }
 }
