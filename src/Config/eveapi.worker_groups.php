@@ -210,4 +210,10 @@ return [
             Seat\Eveapi\Api\Server\ServerStatus::class,
         ],
     ],
+
+    'esi' => [
+        'markets' => [
+            \Seat\Eveapi\Api\Esi\Markets\Prices::class,
+        ],
+    ],
 ];
