@@ -36,6 +36,11 @@ class AssetListContents extends Model
     protected $table = 'corporation_asset_list_contents';
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'itemID';
+
+    /**
      * @var array
      */
     protected $fillable = [
