@@ -44,7 +44,9 @@ class AssetList extends Base
         $pheal = $this->setScope('corp')
             ->setCorporationID()->getPheal();
 
-        $result = $pheal->AssetList();
+        $result = $pheal->AssetList([
+            'flat' => 1,
+        ]);
 
         $this->writeJobLog('assetlist',
             'API responded with ' . count($result->assets) . ' assets');
@@ -60,55 +62,61 @@ class AssetList extends Base
         AssetListContents::where(
             'corporationID', $this->corporationID)->delete();
 
-        // We take the resuls and chunk it up into parts of 1000
-        // entries. For every 1000 entries we bulk insert the
-        // assets and the asset contents into the database.
-        foreach (array_chunk((array) $result->assets, 1000) as $asset_chunk) {
+        $assets = (array) $result->assets;
 
-            // Take the chunked array and map the fields to our
-            // asset_list variable. This variable is filtered
-            // for empty value so that we can prevent a case
-            // where a bulk insert fail because of an empty
-            // data array variable.
-            $asset_list = array_filter(
-                array_map(function ($entry) {
+        $itemIDs = [];
 
-                    return [
-                        'corporationID' => $this->corporationID,
-                        'itemID'        => $entry->itemID,
-                        'locationID'    => $entry->locationID,
-                        'typeID'        => $entry->typeID,
-                        'quantity'      => $entry->quantity,
-                        'flag'          => $entry->flag,
-                        'singleton'     => $entry->singleton,
-                        'rawQuantity'   => isset($entry->rawQuantity) ?
-                            $entry->rawQuantity : 0,
+        // Store all itemIDs in a an array to lookup
+        // items and determine whether their parent
+        // is another item or a structure.
+        foreach ($assets as $asset) {
 
-                        // Timestamps
-                        'created_at'    => Carbon::now()->toDateTimeString(),
-                        'updated_at'    => Carbon::now()->toDateTimeString(),
-                    ];
+            $itemIDs[$asset->itemID] = null;
+        }
 
-                }, $asset_chunk));
+        $asset_contents = [];
 
-            // If there were any assets derived form the array_map
-            // then we can bulk insert it into the table.
-            if (count($asset_list) > 0)
-                AssetListModel::insert($asset_list);
+        // Generate an array with all items being
+        // content of another item.
+        foreach ($assets as $key => $asset) {
 
-            // Next we process the assets contents for this chunk
-            // of assets data. We iterate over each of the assets
-            // to check if there is some contents that we can add
-            // to the database.
-            foreach ($asset_chunk as $asset) {
+            // lookup locationID in our itemID array.
+            // If we found an entry, we add it to our array
+            // of asset contents to insert it later.
+            if (array_key_exists($asset->locationID, $itemIDs)) {
 
-                if (isset($asset->contents))
-                    $this->add_asset_content(
-                        $asset->contents, $this->corporationID, $asset->itemID);
+                $asset_contents[$asset->locationID][] = $asset;
 
-            } // End foreach $asset_chunk
+            } else {
 
-        } // End array_chunk
+                // Insert item to our asset table.
+                AssetListModel::updateOrCreate([
+                    'itemID' => $asset->itemID,
+                ],
+                [
+                    'corporationID' => $this->corporationID,
+                    'locationID'    => $asset->locationID,
+                    'typeID'        => $asset->typeID,
+                    'quantity'      => $asset->quantity,
+                    'flag'          => $asset->flag,
+                    'singleton'     => $asset->singleton,
+                    'rawQuantity'   => isset($asset->rawQuantity) ?
+                        $asset->rawQuantity : 0,
+
+                    // Timestamps
+                    'created_at'    => Carbon::now()->toDateTimeString(),
+                    'updated_at'    => Carbon::now()->toDateTimeString(),
+                ]);
+
+            }
+        }
+
+        // Process asset contents.
+        foreach ($asset_contents as $itemID => $content) {
+
+            $this->add_asset_content(
+                $content, $this->corporationID, $itemID);
+        }
 
     }
 
@@ -126,29 +134,13 @@ class AssetList extends Base
     public function add_asset_content($assets, $corporationID, $parentAssetItemID = null, $parentItemID = null)
     {
 
-        // Prepare a blank array that will be pupulated
-        // for the mass insert at the end.
-        $asset_contents = [];
-
         foreach ($assets as $asset) {
 
-            // Check if this asset has contents, if so,
-            // recursively call this function to do
-            // the population work.
-            //
-            // The $parentItemID variable relates to the
-            // item in the same table. The variable
-            // $parentAssetItemID refers to the original
-            // asset in the corp assets table.
-            if (isset($asset->contents))
-                $this->add_asset_content(
-                    $asset->contents, $corporationID,
-                    $parentAssetItemID, $asset->itemID);
-
-            array_push($asset_contents, [
-
-                'corporationID'     => $corporationID,
+            AssetListContents::updateOrCreate([
                 'itemID'            => $asset->itemID,
+            ],
+            [
+                'corporationID'     => $corporationID,
                 'parentAssetItemID' => $parentAssetItemID,
                 'parentItemID'      => $parentItemID,
                 'typeID'            => $asset->typeID,
@@ -161,12 +153,9 @@ class AssetList extends Base
                 // Timestamps
                 'created_at'        => Carbon::now()->toDateTimeString(),
                 'updated_at'        => Carbon::now()->toDateTimeString(),
+
             ]);
         }
-
-        // Again, if there is any contents to add, do so.
-        if (count($asset_contents) > 0)
-            AssetListContents::insert($asset_contents);
 
     }
 }
