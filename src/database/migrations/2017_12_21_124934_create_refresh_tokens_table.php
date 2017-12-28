@@ -19,6 +19,9 @@ class CreateRefreshTokensTable extends Migration
             $table->integer('character_id')->primary();
             $table->mediumText('refresh_token');
             $table->json('scopes');
+            $table->dateTime('expires_on');
+            $table->string('token');
+
             $table->timestamps();
         });
     }

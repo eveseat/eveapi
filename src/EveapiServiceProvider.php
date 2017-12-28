@@ -24,6 +24,7 @@ namespace Seat\Eveapi;
 
 use Illuminate\Support\ServiceProvider;
 use Pheal\Fetcher\Guzzle;
+use Seat\Eveapi\Helpers\EseyeSetup;
 use Seat\Eveapi\Helpers\PhealSetup;
 
 /**
@@ -75,6 +76,12 @@ class EveapiServiceProvider extends ServiceProvider
         $this->app->singleton('Pheal\Fetcher\Guzzle', function () {
 
             return new Guzzle();
+        });
+
+        // Eseye Singleton
+        $this->app->singleton('esi-client', function () {
+
+            return new EseyeSetup;
         });
 
     }

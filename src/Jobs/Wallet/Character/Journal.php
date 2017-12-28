@@ -20,54 +20,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models;
+namespace Seat\Eveapi\Jobs\Wallet\Character;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Jobs\EsiBase;
 
-/**
- * Class RefreshToken
- * @package Seat\Eveapi\Models
- */
-class RefreshToken extends Model
+class Journal extends EsiBase
 {
-
     /**
-     * @var array
-     */
-    protected $casts = [
-        'scopes' => 'array',
-    ];
-
-    /**
-     * @var array
-     */
-    protected $dates = ['expires_on'];
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'character_id';
-
-    /**
-     * @var array
-     */
-    protected $fillable = ['character_id', 'refresh_token', 'scopes', 'expires_on', 'token'];
-
-    /**
-     * Only return a token value if it is not already
-     * considered expired.
+     * Execute the job.
      *
-     * @param $value
-     *
-     * @return mixed
+     * @return void
+     * @throws \Illuminate\Container\EntryNotFoundException
+     * @throws \Throwable
      */
-    public function getTokenAttribute($value)
+    public function handle()
     {
 
-        if ($this->expires_on->gt(Carbon::now()))
-            return $value;
+        $this->getCharacterClient();
+        $result = $this->client->invoke('get', '/characters/{character_id}/wallet/journal/', [
+            'character_id' => $this->character_id,
+        ]);
 
-        return null;
+        dump($result);
     }
 }
