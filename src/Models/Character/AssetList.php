@@ -36,6 +36,11 @@ class AssetList extends Model
     protected $table = 'character_asset_lists';
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'itemID';
+
+    /**
      * @var array
      */
     protected $fillable = [
