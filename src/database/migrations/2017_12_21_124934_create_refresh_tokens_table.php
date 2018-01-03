@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateRefreshTokensTable extends Migration
 {
@@ -17,6 +17,7 @@ class CreateRefreshTokensTable extends Migration
         Schema::create('refresh_tokens', function (Blueprint $table) {
 
             $table->integer('character_id')->primary();
+
             $table->mediumText('refresh_token');
             $table->json('scopes');
             $table->dateTime('expires_on');
