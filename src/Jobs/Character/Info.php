@@ -55,7 +55,7 @@ class Info extends EsiBase
     public function handle()
     {
 
-        $character_info = $this->retreive([
+        $character_info = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 

@@ -86,7 +86,7 @@ class Blueprints extends EsiBase
         // Start an infinite loop for the paged requests.
         while (true) {
 
-            $blueprints = $this->retreive([
+            $blueprints = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 

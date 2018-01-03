@@ -132,7 +132,7 @@ abstract class EsiBase implements ShouldQueue
      * @return \Seat\Eseye\Containers\EsiResponse
      * @throws \Exception
      */
-    public function retreive(array $path_values = []): EsiResponse
+    public function retrieve(array $path_values = []): EsiResponse
     {
 
         $this->validateCall();

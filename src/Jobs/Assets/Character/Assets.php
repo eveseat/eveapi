@@ -55,7 +55,7 @@ class Assets extends EsiBase
     public function handle(): void
     {
 
-        $data = $this->retreive([
+        $data = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 

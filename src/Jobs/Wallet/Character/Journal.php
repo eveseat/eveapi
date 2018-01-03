@@ -51,7 +51,7 @@ class Journal extends EsiBase
     public function handle()
     {
 
-        $data = $this->retreive([
+        $data = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
