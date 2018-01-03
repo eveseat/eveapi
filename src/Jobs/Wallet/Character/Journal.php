@@ -26,21 +26,35 @@ use Seat\Eveapi\Jobs\EsiBase;
 
 class Journal extends EsiBase
 {
+
+    /**
+     * @var string
+     */
+    public $method = 'get';
+
+    /**
+     * @var string
+     */
+    public $endpoint = '/characters/{character_id}/wallet/journal/';
+
+    /**
+     * @var string
+     */
+    public $version = 'v3';
+
     /**
      * Execute the job.
      *
      * @return void
-     * @throws \Illuminate\Container\EntryNotFoundException
      * @throws \Throwable
      */
     public function handle()
     {
 
-        $this->getCharacterClient();
-        $result = $this->client->invoke('get', '/characters/{character_id}/wallet/journal/', [
-            'character_id' => $this->character_id,
+        $data = $this->retreive([
+            'character_id' => $this->getCharacterId(),
         ]);
 
-        dump($result);
+        dump($data);
     }
 }

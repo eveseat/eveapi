@@ -30,21 +30,35 @@ use Seat\Eveapi\Jobs\EsiBase;
  */
 class Assets extends EsiBase
 {
+
+    /**
+     * @var string
+     */
+    public $method = 'get';
+
+    /**
+     * @var string
+     */
+    public $endpoint = '/characters/{character_id}/assets/';
+
+    /**
+     * @var string
+     */
+    public $version = 'v3';
+
     /**
      * Execute the job.
      *
      * @return void
-     * @throws \Illuminate\Container\EntryNotFoundException
      * @throws \Throwable
      */
     public function handle(): void
     {
 
-        $this->getCharacterClient();
-        $result = $this->client->invoke('get', '/characters/{character_id}/assets/', [
-            'character_id' => $this->character_id,
+        $data = $this->retreive([
+            'character_id' => $this->getCharacterId(),
         ]);
 
-        dump($result);
+        dump($data);
     }
 }

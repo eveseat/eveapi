@@ -28,8 +28,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Seat\Eseye\Containers\EsiAuthentication;
-use Seat\Eseye\Eseye;
-use Seat\Eveapi\Exception\MissingTokenException;
+use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -41,45 +40,135 @@ abstract class EsiBase implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * @var mixed
+     * The HTTP method used for the API Call.
+     *
+     * Eg: GET, POST, PUT, DELETE
+     *
+     * @var string
      */
-    protected $client;
+    protected $method = '';
 
     /**
+     * The ESI endpoint to call.
+     *
+     * Eg: /characters/{character_id}/
+     *
+     * @var string
+     */
+    protected $endpoint = '';
+
+    /**
+     * The endpoint version to use.
+     *
+     * Eg: v1, v4
+     *
      * @var int
      */
-    protected $character_id;
+    protected $version = '';
 
     /**
      * @var
      */
-    protected $token;
+    private $token;
+
+    /**
+     * @var mixed
+     */
+    private $client;
+
+    /**
+     * @var bool
+     */
+    private $public_call;
 
     /**
      * Create a new job instance.
      *
-     * @param int $character_id
+     * If a null refresh token is provided, it is assumed that the
+     * call that should be made is a public one.
+     *
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(int $character_id)
+    public function __construct(RefreshToken $token = null)
     {
 
-        $this->client = app('esi-client');
-        $this->character_id = $character_id;
+        if (is_null($token))
+            $this->public_call = true;
+
+        else
+            $this->token = $token;
     }
 
     /**
-     * @return \Seat\Eseye\Eseye
-     * @throws \Illuminate\Container\EntryNotFoundException
-     * @throws \Throwable
+     * Get the character_id we have for the token in this job.
+     *
+     * An exception will be thrown if an empty token is set.
+     *
+     * @return int
+     * @throws \Exception
      */
-    public function getCharacterClient(): Eseye
+    public function getCharacterId(): int
     {
 
-        $this->token = RefreshToken::find($this->character_id);
+        if (is_null($this->token))
+            throw new \Exception('No token specified');
 
-        throw_if(is_null($this->token),
-            MissingTokenException::class,
-            'Character ' . $this->character_id . ' has no recorded ESI tokens.');
+        return $this->token->character_id;
+    }
+
+    /**
+     * @param array $path_values
+     *
+     * @return \Seat\Eseye\Containers\EsiResponse
+     * @throws \Exception
+     */
+    public function retreive(array $path_values = []): EsiResponse
+    {
+
+        $this->validateCall();
+
+        $client = $this->eseye();
+        $client->setVersion($this->version);
+
+        $result = $client->invoke($this->method, $this->endpoint, $path_values);
+
+        // Perform error checking
+
+        return $result;
+    }
+
+    /**
+     * Validates a call to ensure that a method and endoint is set
+     * in the job that is using this base class.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function validateCall(): void
+    {
+
+        if (! in_array($this->method, ['get', 'post', 'put', 'patch', 'delete']))
+            throw new \Exception('Brokit method used');
+
+        if (trim($this->endpoint) === '')
+            throw new \Exception('Empty endpoint used');
+
+        if (trim($this->version) === '')
+            throw new \Exception('Version is empty');
+
+    }
+
+    /**
+     * Get an instance of Eseye to use for this job.
+     */
+    public function eseye()
+    {
+
+        if (! $this->client)
+            $this->client = app('esi-client');
+
+        if (is_null($this->token))
+            return $this->client;
 
         return $this->client = $this->client->get(new EsiAuthentication([
             'refresh_token' => $this->token->refresh_token,
