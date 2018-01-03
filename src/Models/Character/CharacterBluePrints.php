@@ -25,10 +25,10 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterInfo
- * @package Seat\Eveapi\Models\Character
+ * Class CharacterBluePrints
+ * @package App
  */
-class CharacterInfo extends Model
+class CharacterBluePrints extends Model
 {
     /**
      * @var bool

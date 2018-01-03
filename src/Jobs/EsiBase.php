@@ -67,6 +67,16 @@ abstract class EsiBase implements ShouldQueue
     protected $version = '';
 
     /**
+     * The page to retreive.
+     *
+     * Jobs that expect paged responses should have
+     * this value set.
+     *
+     * @var int
+     */
+    protected $page = null;
+
+    /**
      * @var
      */
     private $token;
@@ -130,9 +140,14 @@ abstract class EsiBase implements ShouldQueue
         $client = $this->eseye();
         $client->setVersion($this->version);
 
+        // Configure the page to get
+        if (! is_null($this->page))
+            $client->page($this->page);
+
         $result = $client->invoke($this->method, $this->endpoint, $path_values);
 
         // Perform error checking
+        $this->logWarnings($result);
 
         return $result;
     }
@@ -164,8 +179,10 @@ abstract class EsiBase implements ShouldQueue
     public function eseye()
     {
 
-        if (! $this->client)
-            $this->client = app('esi-client');
+        if ($this->client)
+            return $this->client;
+
+        $this->client = app('esi-client');
 
         if (is_null($this->token))
             return $this->client;
@@ -176,6 +193,38 @@ abstract class EsiBase implements ShouldQueue
             'token_expires' => $this->token->expires_on,
             'scopes'        => $this->token->scopes,
         ]));
+    }
+
+    /**
+     * @param \Seat\Eseye\Containers\EsiResponse $response
+     */
+    public function logWarnings(EsiResponse $response): void
+    {
+
+        // TODO: Log warnings such as:
+        //
+        //  An X-Pages header was received but no page was set.
+        //  An endpoint was deprecated and is returning a Warning header.
+    }
+
+    /**
+     * Check if there are any pages left in a response
+     * based on the number of pages available and the
+     * current page.
+     *
+     * @param int $pages
+     *
+     * @return bool
+     */
+    public function nextPage(int $pages): bool
+    {
+
+        if ($this->page >= $pages)
+            return false;
+
+        $this->page++;
+
+        return true;
     }
 
     /**

@@ -20,23 +20,45 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
+namespace Seat\Eveapi\Jobs\Character;
 
-use Illuminate\Database\Eloquent\Model;
+
+use Seat\Eveapi\Jobs\EsiBase;
 
 /**
- * Class CharacterInfo
- * @package Seat\Eveapi\Models\Character
+ * Class AgentsResearch
+ * @package Seat\Eveapi\Jobs\Character
  */
-class CharacterInfo extends Model
+class AgentsResearch extends EsiBase
 {
     /**
-     * @var bool
+     * @var string
      */
-    protected static $unguarded = true;
+    protected $method = 'get';
 
     /**
      * @var string
      */
-    protected $primaryKey = 'character_id';
+    protected $endpoint = '/characters/{character_id}/agents_research/';
+
+    /**
+     * @var int
+     */
+    protected $version = 'v1';
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function handle()
+    {
+
+        $agents_research = $this->retreive([
+            'character_id' => $this->getCharacterId(),
+        ]);
+
+        // TODO: Complete
+    }
 }
