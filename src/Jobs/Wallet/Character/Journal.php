@@ -30,17 +30,17 @@ class Journal extends EsiBase
     /**
      * @var string
      */
-    public $method = 'get';
+    protected $method = 'get';
 
     /**
      * @var string
      */
-    public $endpoint = '/characters/{character_id}/wallet/journal/';
+    protected $endpoint = '/characters/{character_id}/wallet/journal/';
 
     /**
      * @var string
      */
-    public $version = 'v3';
+    protected $version = 'v3';
 
     /**
      * Execute the job.

@@ -34,17 +34,17 @@ class Assets extends EsiBase
     /**
      * @var string
      */
-    public $method = 'get';
+    protected $method = 'get';
 
     /**
      * @var string
      */
-    public $endpoint = '/characters/{character_id}/assets/';
+    protected $endpoint = '/characters/{character_id}/assets/';
 
     /**
      * @var string
      */
-    public $version = 'v3';
+    protected $version = 'v3';
 
     /**
      * Execute the job.
