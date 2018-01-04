@@ -197,9 +197,15 @@ abstract class EsiBase implements ShouldQueue
 
     /**
      * @param \Seat\Eseye\Containers\EsiResponse $response
+     *
+     * @throws \Throwable
      */
     public function logWarnings(EsiResponse $response): void
     {
+
+        // While development heavy, throw exceptions to help.
+        throw_if(! is_null($response->pages) && $this->page === null,
+            new \Exception('Response contained pages but none was expected'));
 
         // TODO: Log warnings such as:
         //
