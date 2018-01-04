@@ -24,9 +24,9 @@ namespace Seat\Eveapi\Jobs\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Character\CharacterCorporationHistory;
+use Seat\Eveapi\Models\Character\CharacterFatigue;
 
-class CorporationHistory extends EsiBase
+class Fatigue extends EsiBase
 {
     /**
      * @var string
@@ -36,7 +36,7 @@ class CorporationHistory extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/corporationhistory/';
+    protected $endpoint = '/characters/{character_id}/fatigue/';
 
     /**
      * @var int
@@ -52,19 +52,16 @@ class CorporationHistory extends EsiBase
     public function handle()
     {
 
-        $corporation_history = $this->retrieve([
+        $fatgiue = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        collect($corporation_history)->each(function ($corporation) {
-
-            CharacterCorporationHistory::firstOrCreate([
-                'character_id'   => $this->getCharacterId(),
-                'start_date'     => carbon($corporation->start_date),
-                'corporation_id' => $corporation->corporation_id,
-                'is_deleted'     => isset($corporation->is_deleted) ? $corporation->is_deleted : false,
-                'record_id'      => $corporation->record_id,
-            ]);
-        });
+        CharacterFatigue::firstOrNew([
+            'character_id' => $this->getCharacterId(),
+        ])->fill([
+            'last_jump_date'           => carbon($fatgiue->last_jump_date),
+            'jump_fatigue_expire_date' => carbon($fatgiue->jump_fatigue_expire_date),
+            'last_update_date'         => carbon($fatgiue->last_update_date),
+        ])->save();
     }
 }
