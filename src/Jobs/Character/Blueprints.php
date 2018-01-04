@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Jobs\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Character\CharacterBluePrints;
+use Seat\Eveapi\Models\Character\CharacterBluePrint;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -93,7 +93,7 @@ class Blueprints extends EsiBase
             // Process the blueprints from the response
             collect($blueprints)->each(function ($blueprint) {
 
-                CharacterBluePrints::firstOrNew([
+                CharacterBluePrint::firstOrNew([
                     'character_id' => $this->getCharacterId(),
                     'item_id'      => $blueprint->item_id,
                 ])->fill([
@@ -126,7 +126,7 @@ class Blueprints extends EsiBase
     private function cleanup(): void
     {
 
-        CharacterBluePrints::where('character_id', $this->getCharacterId())
+        CharacterBluePrint::where('character_id', $this->getCharacterId())
             ->whereNotIn('item_id', $this->cleanup_ids->flatten()->unique()->all())
             ->delete();
     }

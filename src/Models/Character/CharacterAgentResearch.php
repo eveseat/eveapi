@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class CharacterAgentsResearch
  * @package App
  */
-class CharacterAgentsResearch extends Model
+class CharacterAgentResearch extends Model
 {
     /**
      * @var bool

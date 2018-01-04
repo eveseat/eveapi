@@ -16,15 +16,18 @@ class CreateCharacterBluePrintsTable extends Migration
 
         Schema::create('character_blue_prints', function (Blueprint $table) {
 
-            $table->bigInteger('item_id')->primary()->unique();
+            $table->bigInteger('item_id')->primary();
 
-            $table->integer('character_id')->primary();
-            $table->integer('type_id')->primary();
+            $table->integer('character_id');
+            $table->integer('type_id');
             $table->string('location_flag');
             $table->integer('quantity');
             $table->integer('time_efficiency');
             $table->integer('material_efficiency');
             $table->integer('runs');
+
+            $table->index(['character_id']);
+            $table->index(['type_id']);
 
             $table->timestamps();
         });

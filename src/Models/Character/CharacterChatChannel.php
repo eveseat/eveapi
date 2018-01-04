@@ -25,18 +25,24 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterBluePrints
- * @package App
+ * Class CharacterChatChannel
+ * @package Seat\Eveapi\Models\Character
  */
-class CharacterBluePrints extends Model
+class CharacterChatChannel extends Model
 {
+
     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
      * @var string
      */
-    protected $primaryKey = 'character_id';
+    protected $primaryKey = null;
 }
