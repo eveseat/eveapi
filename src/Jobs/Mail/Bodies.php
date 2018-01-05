@@ -20,17 +20,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Character;
+namespace Seat\Eveapi\Jobs\Mail;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Character\CharacterTitle;
+use Seat\Eveapi\Models\Mail\MailBody;
+use Seat\Eveapi\Models\Mail\MailHeader;
 
 /**
- * Class Title
- * @package Seat\Eveapi\Jobs\Character
+ * Class Bodies
+ * @package Seat\Eveapi\Jobs\Mail
  */
-class Titles extends EsiBase
+class Bodies extends EsiBase
 {
     /**
      * @var string
@@ -40,7 +41,7 @@ class Titles extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/titles/';
+    protected $endpoint = '/characters/{character_id}/mail/{mail_id}/';
 
     /**
      * @var int
@@ -56,21 +57,26 @@ class Titles extends EsiBase
     public function handle()
     {
 
-        $titles = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
-        ]);
+        // Determine which mail headers do not have bodies yet
+        $mail_ids = MailHeader::where('character_id', $this->getCharacterId())
+            ->whereNotIn('mail_id', function ($query) {
 
-        // This is a small enough list to just wipe and add
-        CharacterTitle::where('character_id', $this->getCharacterId())
-            ->delete();
+                $query->select('mail_id')
+                    ->from('mail_bodies');
+               
+            })->pluck('mail_id');
 
-        // Re-add the updated titles for this character
-        collect($titles)->each(function ($title) {
+        // Process the mailid's that are missing their bodies.
+        $mail_ids->each(function ($mail_id) {
 
-            CharacterTitle::create([
+            $body = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
-                'title_id'     => $title->title_id,
-                'name'         => $title->name,
+                'mail_id'      => $mail_id,
+            ]);
+
+            MailBody::firstOrCreate([
+                'mail_id' => $mail_id,
+                'body'    => $body->body,
             ]);
         });
     }

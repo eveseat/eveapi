@@ -45,7 +45,7 @@ class EseyeSetup
         $config->file_cache_location = storage_path('eseye');
 
         // Temp during testing
-        $config->cache = NullCache::class;
+//        $config->cache = NullCache::class;
     }
 
     /**
