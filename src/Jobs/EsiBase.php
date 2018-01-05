@@ -207,8 +207,9 @@ abstract class EsiBase implements ShouldQueue
         throw_if(! is_null($response->pages) && $this->page === null,
             new \Exception('Response contained pages but none was expected'));
 
-        throw_if(array_key_exists('Warning', $response->headers),
-            new \Exception('A response contained a warning: ' . $response->headers['Warning']));
+        if (array_key_exists('Warning', $response->headers)) {
+            throw new \Exception('A response contained a warning: ' . $response->headers['Warning']);
+        }
 
         // TODO: Log warnings such as:
         //
