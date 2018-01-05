@@ -24,7 +24,12 @@ namespace Seat\Eveapi\Jobs\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Models\Character\CharacterStats;
 
+/**
+ * Class Stats
+ * @package Seat\Eveapi\Jobs\Character
+ */
 class Stats extends EsiBase
 {
     /**
@@ -55,6 +60,21 @@ class Stats extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
-        dump($stats);
+        // Process each years aggregate
+        collect($stats)->each(function ($aggregate) {
+
+            // Seperate stats by categories
+            foreach (['character', 'combat', 'industry', 'inventory', 'isk', 'market',
+                         'mining', 'module', 'orbital', 'pve', 'social', 'travel'] as $category) {
+
+                CharacterStats::firstOrCreate([
+                    'character_id' => $this->getCharacterId(),
+                    'year'         => $aggregate->year,
+                    'category'     => $category,
+                    'stats'        => isset($aggregate->$category) ?
+                        json_encode($aggregate->$category) : null,
+                ]);
+            }
+        });
     }
 }
