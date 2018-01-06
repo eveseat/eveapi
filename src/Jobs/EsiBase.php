@@ -77,6 +77,13 @@ abstract class EsiBase implements ShouldQueue
     protected $page = null;
 
     /**
+     * The body to send along with the request.
+     *
+     * @var array
+     */
+    protected $request_body = [];
+
+    /**
      * @var
      */
     private $token;
@@ -139,6 +146,7 @@ abstract class EsiBase implements ShouldQueue
 
         $client = $this->eseye();
         $client->setVersion($this->version);
+        $client->setBody($this->request_body);
 
         // Configure the page to get
         if (! is_null($this->page))
@@ -245,6 +253,11 @@ abstract class EsiBase implements ShouldQueue
     {
 
         tap($this->token, function ($token) {
+
+            // If no API call was made, the client would never have
+            // been instantiated and auth information never updated.
+            if (is_null($this->client))
+                return;
 
             $last_auth = $this->client->getAuthentication();
 
