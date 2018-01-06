@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Models\Assets\CharacterAsset;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Assets
@@ -30,7 +32,6 @@ use Seat\Eveapi\Jobs\EsiBase;
  */
 class Assets extends EsiBase
 {
-
     /**
      * @var string
      */
@@ -47,6 +48,29 @@ class Assets extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var int
+     */
+    protected $page = 1;
+
+    /**
+     * @var \Illuminate\Support\Collection
+     */
+    protected $known_assets;
+
+    /**
+     * Assets constructor.
+     *
+     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     */
+    public function __construct(RefreshToken $token = null)
+    {
+
+        $this->known_assets = collect();
+
+        parent::__construct($token);
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -55,10 +79,39 @@ class Assets extends EsiBase
     public function handle(): void
     {
 
-        $data = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
-        ]);
+        while (true) {
 
-        dump($data);
+            $assets = $this->retrieve([
+                'character_id' => $this->getCharacterId(),
+            ]);
+
+            collect($assets)->each(function ($asset) {
+
+                CharacterAsset::firstOrNew([
+                    'item_id'      => $asset->item_id,
+                    'character_id' => $this->getCharacterId(),
+                ])->fill([
+                    'type_id'       => $asset->type_id,
+                    'quantity'      => $asset->quantity,
+                    'location_id'   => $asset->location_id,
+                    'location_type' => $asset->location_type,
+                    'location_flag' => $asset->location_flag,
+                    'is_singleton'  => $asset->is_singleton,
+                ])->save();
+            });
+
+            // Update the list of known item_id's which should be
+            // excluded from the databse cleanup later.
+            $this->known_assets->push(collect($assets)
+                ->pluck('item_id')->flatten()->all());
+
+            if (! $this->nextPage($assets->pages))
+                break;
+        }
+
+        // Cleanup old assets
+        CharacterAsset::where('character_id', $this->getCharacterId())
+            ->whereNotIn('item_id', $this->known_assets->flatten()->all())
+            ->delete();
     }
 }

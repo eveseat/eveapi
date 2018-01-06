@@ -51,14 +51,14 @@ trait Utils
      * of the celestial closest to the x, y, z in a given
      * solar system.
      *
-     * @param $solar_system_id
-     * @param $x
-     * @param $y
-     * @param $z
+     * @param int   $solar_system_id
+     * @param float $x
+     * @param float $y
+     * @param float $z
      *
      * @return array
      */
-    public function find_nearest_celestial($solar_system_id, $x, $y, $z)
+    public function find_nearest_celestial(int $solar_system_id, float $x, float $y, float $z): array
     {
 
         // Querying mapDenormalized with [1] we can see
@@ -89,7 +89,7 @@ trait Utils
         // The basic idea when determining the closest celestial
         // is to calculate the distance celestial to the x, y, z's
         // that we have. For that, we have to start with the max
-        // possible distance, infinity.
+        // possible distance.
         $closest_distance = INF;
 
         // As a response, we will return an array with
@@ -97,8 +97,8 @@ trait Utils
         // The default response will be the system this
         // location is in.
         $response = [
-            'mapID'   => $solar_system_id,
-            'mapName' => 'Unknown',
+            'map_id'   => $solar_system_id,
+            'map_name' => 'Unknown',
         ];
 
         $possible_celestials = DB::table('mapDenormalize')
@@ -106,6 +106,9 @@ trait Utils
             ->whereNotNull('itemName')
             ->whereIn('groupID', [6, 7, 8, 9, 10])
             ->get();
+
+        if ($possible_celestials->count() > 1)
+            dump($possible_celestials);
 
         foreach ($possible_celestials as $celestial) {
 
@@ -116,12 +119,14 @@ trait Utils
             // Are we there yet?
             if ($distance < $closest_distance) {
 
+                dump('updating distance for asset');
+
                 // Update the current closest distance
                 $closest_distance = $distance;
 
                 $response = [
-                    'mapID'   => $celestial->itemID,
-                    'mapName' => $celestial->itemName,
+                    'map_id'   => $celestial->itemID,
+                    'map_name' => $celestial->itemName,
                 ];
             }
         }
