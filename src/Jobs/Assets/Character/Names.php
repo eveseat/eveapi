@@ -78,7 +78,7 @@ class Names extends EsiBase
                 collect($names)->each(function ($name) {
 
                     // "None" seems to indidate that no name is set.
-                    if ($name->name === "None")
+                    if ($name->name === 'None')
                         return;
 
                     CharacterAsset::where('character_id', $this->getCharacterId())
