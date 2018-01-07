@@ -26,10 +26,10 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterBookmark
- * @package Seat\Eveapi\Models\Assets
+ * Class CharacterBookmarkFolder
+ * @package Seat\Eveapi\Models\Bookmarks
  */
-class CharacterBookmark extends Model
+class CharacterBookmarkFolder extends Model
 {
     use HasCompositePrimaryKey;
 
@@ -41,5 +41,5 @@ class CharacterBookmark extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['character_id', 'bookmark_id'];
+    protected $primaryKey = ['character_id', 'folder_id'];
 }
