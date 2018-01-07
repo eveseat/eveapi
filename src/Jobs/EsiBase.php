@@ -215,6 +215,9 @@ abstract class EsiBase implements ShouldQueue
         throw_if(! is_null($response->pages) && $this->page === null,
             new \Exception('Response contained pages but none was expected'));
 
+        throw_if(! is_null($this->page) && $response->pages === null,
+            new \Exception('Expected a paged response but API had none'));
+
         if (array_key_exists('Warning', $response->headers)) {
             throw new \Exception('A response contained a warning: ' . $response->headers['Warning']);
         }
