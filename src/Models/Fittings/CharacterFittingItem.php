@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterFittingItem
@@ -30,6 +31,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CharacterFittingItem extends Model
 {
+    use HasCompositePrimaryKey;
+
+    /**
+     * @var array
+     */
+    protected $primaryKey = ['fitting_id', 'type_id', 'flag'];
+
     /**
      * @var bool
      */
