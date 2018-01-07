@@ -24,6 +24,7 @@ class CreateCharacterFittingsTable extends Migration
 
             $table->primary(['character_id', 'fitting_id']);
             $table->index('ship_type_id');
+            $table->index('fitting_id');
 
             $table->timestamps();
         });
