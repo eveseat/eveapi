@@ -90,7 +90,6 @@ class Fittings extends EsiBase
         });
 
         // Cleanup fittings.
-        // TODO: Fix the migrations foreign key constraint!
         CharacterFitting::where('character_id', $this->getCharacterId())
             ->whereNotIn('fitting_id', collect($fittings)->pluck('fitting_id')->flatten()->all())
             ->delete();
