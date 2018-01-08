@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterAgentsResearch
@@ -30,6 +31,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CharacterAgentResearch extends Model
 {
+
+    use HasCompositePrimaryKey;
+
     /**
      * @var bool
      */
@@ -38,5 +42,5 @@ class CharacterAgentResearch extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'character_id';
+    protected $primaryKey = ['character_id', 'agent_id'];
 }

@@ -14,15 +14,19 @@ class CreateCharacterAgentResearchesTable extends Migration
     public function up()
     {
 
-        Schema::create('character_agents_researches', function (Blueprint $table) {
+        Schema::create('character_agent_researches', function (Blueprint $table) {
 
-            $table->bigInteger('character_id')->primary();
-
+            $table->bigInteger('character_id');
             $table->integer('agent_id');
+
             $table->integer('skill_type_id');
             $table->dateTime('started_at');
             $table->float('points_per_day');
             $table->float('remainder_points');
+
+            $table->primary(['character_id', 'agent_id']);
+            $table->index('character_id');
+            $table->index('agent_id');
 
             $table->timestamps();
         });
@@ -36,6 +40,6 @@ class CreateCharacterAgentResearchesTable extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('character_agents_researches');
+        Schema::dropIfExists('character_agent_researches');
     }
 }
