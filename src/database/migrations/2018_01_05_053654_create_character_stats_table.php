@@ -16,7 +16,7 @@ class CreateCharacterStatsTable extends Migration
 
         Schema::create('character_stats', function (Blueprint $table) {
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->integer('year');
             $table->string('category');
             $table->json('stats')->nullable();

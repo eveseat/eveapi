@@ -16,7 +16,7 @@ class CreateCharacterClonesTable extends Migration
 
         Schema::create('character_clones', function (Blueprint $table) {
 
-            $table->integer('character_id')->primary();
+            $table->bigInteger('character_id')->primary();
             $table->dateTime('last_clone_jump_date')->nullable();
             $table->bigInteger('home_location_id')->nullable();
             $table->enum('home_location_type', ['station', 'structure'])->nullable();

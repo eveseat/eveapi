@@ -16,8 +16,8 @@ class CreateCharacterFittingsTable extends Migration
 
         Schema::create('character_fittings', function (Blueprint $table) {
 
-            $table->integer('character_id');
-            $table->integer('fitting_id');
+            $table->bigInteger('character_id');
+            $table->bigInteger('fitting_id');
             $table->string('name');
             $table->text('description');
             $table->integer('ship_type_id');

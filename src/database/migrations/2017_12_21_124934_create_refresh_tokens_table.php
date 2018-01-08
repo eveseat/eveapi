@@ -16,7 +16,7 @@ class CreateRefreshTokensTable extends Migration
 
         Schema::create('refresh_tokens', function (Blueprint $table) {
 
-            $table->integer('character_id')->primary();
+            $table->bigInteger('character_id')->primary();
 
             $table->mediumText('refresh_token');
             $table->json('scopes');

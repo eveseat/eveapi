@@ -16,7 +16,7 @@ class CreateMailHeadersTable extends Migration
 
         Schema::create('mail_headers', function (Blueprint $table) {
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->bigInteger('mail_id');
             $table->string('subject');
             $table->integer('from');

@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
-
+/**/
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Traits\Utils;

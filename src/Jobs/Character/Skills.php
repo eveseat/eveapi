@@ -24,8 +24,9 @@ namespace Seat\Eveapi\Jobs\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Character\CharacterSkill;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Character\CharacterInfoSkill;
+use Seat\Eveapi\Models\Character\CharacterSkill;
 
 /**
  * Class Skills
@@ -59,8 +60,10 @@ class Skills extends EsiBase {
         $character_skills = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+        
+        CharacterInfo::firstOrNew(['character_id' => $this->getCharacterId()])->save();
 
-        CharacterInfo::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
+	    CharacterInfoSkill::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
             'total_sp' => $character_skills->total_sp,
             'unallocated_sp' =>
                 property_exists($character_skills, 'unallocated_sp') ? $character_skills->unallocated_sp : 0,

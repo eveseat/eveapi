@@ -16,17 +16,20 @@ class CreateContractBidsTable extends Migration
 
         Schema::create('contract_bids', function (Blueprint $table) {
 
-            $table->integer('bid_id')->primary();
-            $table->integer('contract_id');
-            $table->foreign('contract_id')
-                ->references('contract_id')->on('contract_details');
-            $table->integer('bidder_id');
+            $table->bigInteger('bid_id')->primary();
+            $table->bigInteger('contract_id');
+
+            $table->bigInteger('bidder_id');
             $table->dateTime('date_bid');
             $table->double('amount');
 
             $table->index('contract_id');
 
             $table->timestamps();
+
+	        $table->foreign('contract_id')
+	              ->references('contract_id')
+	              ->on('contract_details');
         });
     }
 

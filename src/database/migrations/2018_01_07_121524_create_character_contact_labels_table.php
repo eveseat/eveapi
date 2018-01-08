@@ -16,7 +16,7 @@ class CreateCharacterContactLabelsTable extends Migration
 
         Schema::create('character_contact_labels', function (Blueprint $table) {
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->bigInteger('label_id');
             $table->string('label_name');
 

@@ -18,7 +18,7 @@ class CreateCharacterStandingsTable extends Migration
 
             $table->increments('id');
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->integer('from_id');
             $table->enum('from_type', ['agent', 'npc_corp', 'faction']);
             $table->float('standing');

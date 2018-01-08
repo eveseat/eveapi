@@ -17,7 +17,7 @@ class CreateCharacterAssetsTable extends Migration
         Schema::create('character_assets', function (Blueprint $table) {
 
             $table->bigInteger('item_id')->primary();
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->integer('type_id');
             $table->integer('quantity');
             $table->bigInteger('location_id');

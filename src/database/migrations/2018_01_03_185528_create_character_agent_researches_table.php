@@ -16,7 +16,7 @@ class CreateCharacterAgentResearchesTable extends Migration
 
         Schema::create('character_agents_researches', function (Blueprint $table) {
 
-            $table->integer('character_id')->primary();
+            $table->bigInteger('character_id')->primary();
 
             $table->integer('agent_id');
             $table->integer('skill_type_id');

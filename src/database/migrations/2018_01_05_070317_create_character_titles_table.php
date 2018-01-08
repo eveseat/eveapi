@@ -16,7 +16,7 @@ class CreateCharacterTitlesTable extends Migration
 
         Schema::create('character_titles', function (Blueprint $table) {
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->integer('title_id');
             $table->string('name');
 

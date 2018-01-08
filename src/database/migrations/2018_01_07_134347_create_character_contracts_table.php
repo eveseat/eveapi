@@ -16,12 +16,16 @@ class CreateCharacterContractsTable extends Migration
 
         Schema::create('character_contracts', function (Blueprint $table) {
 
-            $table->integer('character_id');
-            $table->integer('contract_id');
-            $table->foreign('contract_id')->references('contract_id')->on('contract_details');
+            $table->bigInteger('character_id');
+            $table->bigInteger('contract_id');
 
             $table->primary(['character_id', 'contract_id']);
+            $table->index('character_id');
+            $table->index('contract_id');
 
+	        $table->foreign('contract_id')
+	              ->references('contract_id')
+	              ->on('contract_details');
 
             $table->timestamps();
         });

@@ -16,8 +16,8 @@ class CreateCharacterCalendarEventsTable extends Migration
 
         Schema::create('character_calendar_events', function (Blueprint $table) {
 
-            $table->integer('character_id');
-            $table->integer('event_id');
+            $table->bigInteger('character_id');
+            $table->bigInteger('event_id');
             $table->dateTime('event_date');
             $table->string('title');
             $table->integer('importance');

@@ -16,12 +16,12 @@ class CreateCharacterInfosTable extends Migration
 
         Schema::create('character_infos', function (Blueprint $table) {
 
-            $table->integer('character_id')->primary();
+            $table->bigInteger('character_id')->primary();
 
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('corporation_id');
-            $table->integer('alliance_id')->nullable();
+            $table->bigInteger('corporation_id');
+            $table->bigInteger('alliance_id')->nullable();
             $table->string('birthday');
             $table->string('gender');
             $table->integer('race_id');

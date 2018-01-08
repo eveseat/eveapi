@@ -16,10 +16,10 @@ class CreateCharacterCorporationHistoriesTable extends Migration
 
         Schema::create('character_corporation_histories', function (Blueprint $table) {
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
 
             $table->dateTime('start_date');
-            $table->integer('corporation_id');
+            $table->bigInteger('corporation_id');
             $table->boolean('is_deleted')->default(false);
             $table->integer('record_id');
 

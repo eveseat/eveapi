@@ -16,10 +16,10 @@ class CreateCharacterChatChannelInfosTable extends Migration
 
         Schema::create('character_chat_channel_infos', function (Blueprint $table) {
 
-            $table->integer('channel_id')->primary();
+            $table->bigInteger('channel_id')->primary();
 
             $table->string('name');
-            $table->integer('owner_id');
+            $table->bigInteger('owner_id');
             $table->string('comparison_key');
             $table->boolean('has_password');
             $table->text('motd');

@@ -16,7 +16,7 @@ class CreateCharacterRolesTable extends Migration
 
         Schema::create('character_roles', function (Blueprint $table) {
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->string('role');
             $table->enum('scope',
                 ['roles', 'roles_at_hq', 'roles_at_base', 'roles_at_other']);
