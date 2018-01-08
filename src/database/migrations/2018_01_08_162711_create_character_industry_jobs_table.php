@@ -16,10 +16,10 @@ class CreateCharacterIndustryJobsTable extends Migration
 
         Schema::create('character_industry_jobs', function (Blueprint $table) {
 
-            $table->integer('character_id');
-            $table->integer('job_id');
+            $table->bigInteger('character_id');
+            $table->bigInteger('job_id');
 
-            $table->integer('installer_id');
+            $table->bigInteger('installer_id');
             $table->bigInteger('facility_id');
             $table->bigInteger('station_id');
             $table->integer('activity_id');
