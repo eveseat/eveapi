@@ -16,7 +16,7 @@ class CreateMailLabelsTable extends Migration
 
         Schema::create('mail_labels', function (Blueprint $table) {
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->integer('label_id');
             $table->string('name')->nullable();
             $table->string('color')->nullable();

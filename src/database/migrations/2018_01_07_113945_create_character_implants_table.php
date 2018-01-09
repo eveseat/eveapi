@@ -16,7 +16,7 @@ class CreateCharacterImplantsTable extends Migration
 
         Schema::create('character_implants', function (Blueprint $table) {
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->integer('type_id');
 
             $table->primary(['character_id', 'type_id']);

@@ -18,12 +18,12 @@ class CreateCharacterMedalsTable extends Migration
 
             $table->increments('id');
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->integer('medal_id');
             $table->string('title');
             $table->text('description');
-            $table->integer('corporation_id');
-            $table->integer('issuer_id');
+            $table->bigInteger('corporation_id');
+            $table->bigInteger('issuer_id');
             $table->dateTime('date');
             $table->text('reason');
             $table->enum('status', ['public', 'private']);

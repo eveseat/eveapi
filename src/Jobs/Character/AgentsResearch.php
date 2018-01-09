@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Models\Character\CharacterAgentResearch;
 
 /**
  * Class AgentsResearch
@@ -59,6 +60,20 @@ class AgentsResearch extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
-        // TODO: Complete
+        CharacterAgentResearch::where('character_id', $this->getCharacterId())
+                              ->delete();
+
+        collect($agents_research)->each(function($agent_research){
+
+            CharacterAgentResearch::create([
+                'character_id'     => $this->getCharacterId(),
+                'agent_id'         => $agent_research->agent_id,
+                'skill_type_id'    => $agent_research->skill_type_id,
+                'started_at'       => carbon($agent_research->started_at),
+                'points_per_day'   => $agent_research->points_per_day,
+                'remainder_points' => $agent_research->remainder_points,
+            ]);
+
+        });
     }
 }

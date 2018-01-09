@@ -26,11 +26,10 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterAgentsResearch
- * @package App
+ * Class CharacterSkill
+ * @package Seat\Eveapi\Models\Character
  */
-class CharacterAgentResearch extends Model
-{
+class CharacterSkill extends Model {
 
     use HasCompositePrimaryKey;
 
@@ -40,7 +39,13 @@ class CharacterAgentResearch extends Model
     protected static $unguarded = true;
 
     /**
-     * @var string
+     * @var bool
      */
-    protected $primaryKey = ['character_id', 'agent_id'];
+    public $incrementing = false;
+
+    /**
+     * @var array
+     */
+    protected $primaryKey = ['character_id', 'skill_id'];
+
 }

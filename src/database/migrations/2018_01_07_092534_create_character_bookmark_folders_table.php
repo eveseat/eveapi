@@ -16,8 +16,8 @@ class CreateCharacterBookmarkFoldersTable extends Migration
 
         Schema::create('character_bookmark_folders', function (Blueprint $table) {
 
-            $table->integer('character_id');
-            $table->integer('folder_id');
+            $table->bigInteger('character_id');
+            $table->bigInteger('folder_id');
             $table->string('name');
 
             $table->primary(['character_id', 'folder_id']);

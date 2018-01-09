@@ -16,7 +16,7 @@ class CreateCharacterFatiguesTable extends Migration
 
         Schema::create('character_fatigues', function (Blueprint $table) {
 
-            $table->integer('character_id')->primary();
+            $table->bigInteger('character_id')->primary();
 
             $table->dateTime('last_jump_date')->nullable();
             $table->dateTime('jump_fatigue_expire_date')->nullable();

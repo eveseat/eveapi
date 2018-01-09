@@ -16,8 +16,8 @@ class CreateCharacterJumpClonesTable extends Migration
 
         Schema::create('character_jump_clones', function (Blueprint $table) {
 
-            $table->integer('character_id');
-            $table->integer('jump_clone_id');
+            $table->bigInteger('character_id');
+            $table->bigInteger('jump_clone_id');
             $table->string('name')->nullable();
             $table->bigInteger('location_id');
             $table->enum('location_type', ['station', 'structure']);

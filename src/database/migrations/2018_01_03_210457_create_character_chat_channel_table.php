@@ -16,17 +16,19 @@ class CreateCharacterChatChannelTable extends Migration
 
         Schema::create('character_chat_channels', function (Blueprint $table) {
 
-            $table->integer('character_id');
-            $table->integer('channel_id');
+            $table->bigInteger('character_id');
+            $table->bigInteger('channel_id');
 
-            $table->integer('channel_info_id');
-            $table->foreign('channel_info_id')
-                ->references('channel_id')->on('character_chat_channel_infos');
+            $table->bigInteger('channel_info_id');
 
             $table->index('character_id');
             $table->index('channel_id');
 
             $table->timestamps();
+
+	        $table->foreign('channel_info_id')
+	              ->references('channel_id')
+	              ->on('character_chat_channel_infos');
         });
     }
 

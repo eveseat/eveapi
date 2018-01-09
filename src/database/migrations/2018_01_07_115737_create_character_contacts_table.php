@@ -16,8 +16,8 @@ class CreateCharacterContactsTable extends Migration
 
         Schema::create('character_contacts', function (Blueprint $table) {
 
-            $table->integer('character_id');
-            $table->integer('contact_id');
+            $table->bigInteger('character_id');
+            $table->bigInteger('contact_id');
             $table->float('standing');
             $table->enum('contact_type',
                 ['character', 'corporation', 'alliance', 'faction']);

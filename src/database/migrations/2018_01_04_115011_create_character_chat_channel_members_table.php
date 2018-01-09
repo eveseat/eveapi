@@ -18,18 +18,22 @@ class CreateCharacterChatChannelMembersTable extends Migration
 
             $table->increments('id');
 
-            $table->integer('channel_id');
-            $table->integer('channel_info_id');
-            $table->foreign('channel_info_id')
-                ->references('channel_id')->on('character_chat_channel_infos');
-            $table->integer('accessor_id');
+            $table->bigInteger('channel_id');
+            $table->bigInteger('channel_info_id');
+
+            $table->bigInteger('accessor_id');
             $table->string('accessor_type');
             $table->enum('role', ['allowed', 'operators', 'blocked', 'muted']);
             $table->string('reason')->nullable();
             $table->dateTime('end_at')->nullable();
 
             $table->index('channel_id');
+	        $table->index('channel_info_id');
             $table->index('accessor_id');
+
+	        $table->foreign('channel_info_id')
+	              ->references('channel_id')
+	              ->on('character_chat_channel_infos');
 
             $table->timestamps();
         });

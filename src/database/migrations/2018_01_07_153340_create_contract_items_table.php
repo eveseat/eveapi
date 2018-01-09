@@ -16,7 +16,7 @@ class CreateContractItemsTable extends Migration
 
         Schema::create('contract_items', function (Blueprint $table) {
 
-            $table->integer('contract_id');
+            $table->bigInteger('contract_id');
             $table->bigInteger('record_id');
             $table->integer('type_id');
             $table->integer('quantity');

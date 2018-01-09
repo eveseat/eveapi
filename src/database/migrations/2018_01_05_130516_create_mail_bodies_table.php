@@ -16,7 +16,7 @@ class CreateMailBodiesTable extends Migration
 
         Schema::create('mail_bodies', function (Blueprint $table) {
 
-            $table->integer('mail_id')->primary();
+            $table->bigInteger('mail_id')->primary();
             $table->text('body');
 
             $table->timestamps();

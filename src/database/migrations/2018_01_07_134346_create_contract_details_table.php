@@ -16,11 +16,11 @@ class CreateContractDetailsTable extends Migration
 
         Schema::create('contract_details', function (Blueprint $table) {
 
-            $table->integer('contract_id')->primary();
-            $table->integer('issuer_id');
-            $table->integer('issuer_corporation_id');
-            $table->integer('assignee_id');
-            $table->integer('acceptor_id');
+            $table->bigInteger('contract_id')->primary();
+            $table->bigInteger('issuer_id');
+            $table->bigInteger('issuer_corporation_id');
+            $table->bigInteger('assignee_id');
+            $table->bigInteger('acceptor_id');
             $table->bigInteger('start_location_id')->nullable();
             $table->bigInteger('end_location_id')->nullalbe();
             $table->enum('type', [

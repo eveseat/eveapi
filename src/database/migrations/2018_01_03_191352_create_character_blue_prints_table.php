@@ -18,7 +18,7 @@ class CreateCharacterBluePrintsTable extends Migration
 
             $table->bigInteger('item_id')->primary();
 
-            $table->integer('character_id');
+            $table->bigInteger('character_id');
             $table->integer('type_id');
             $table->string('location_flag');
             $table->integer('quantity');

@@ -16,14 +16,14 @@ class CreateCharacterBookmarksTable extends Migration
 
         Schema::create('character_bookmarks', function (Blueprint $table) {
 
-            $table->integer('character_id');
-            $table->integer('bookmark_id');
-            $table->integer('folder_id');
+            $table->bigInteger('character_id');
+            $table->bigInteger('bookmark_id');
+            $table->bigInteger('folder_id');
             $table->dateTime('created');
             $table->string('label');
             $table->text('notes');
-            $table->integer('location_id');
-            $table->integer('creator_id');
+            $table->bigInteger('location_id');
+            $table->bigInteger('creator_id');
 
             // item
             $table->bigInteger('item_id')->nullable();
