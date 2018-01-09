@@ -17,7 +17,6 @@ class CreateMailRecipientsTable extends Migration
         Schema::create('mail_recipients', function (Blueprint $table) {
 
             $table->bigInteger('mail_id');
-
             $table->integer('recipient_id');
             $table->enum('recipient_type',
                 ['alliance', 'character', 'corporation', 'mailing_list']);
@@ -26,11 +25,9 @@ class CreateMailRecipientsTable extends Migration
             $table->index('recipient_id');
             $table->index('recipient_type');
 
-            $table->timestamps();
+            $table->foreign('mail_id')->references('mail_id')->on('mail_headers');
 
-	        $table->foreign('mail_id')
-	              ->references('mail_id')
-	              ->on('mail_headers');
+            $table->timestamps();
         });
     }
 

@@ -31,7 +31,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterAgentResearch extends Model
 {
-
     use HasCompositePrimaryKey;
 
     /**

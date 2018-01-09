@@ -60,20 +60,21 @@ class AgentsResearch extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
-        CharacterAgentResearch::where('character_id', $this->getCharacterId())
-                              ->delete();
+        collect($agents_research)->each(function ($agent_research) {
 
-        collect($agents_research)->each(function($agent_research){
-
-            CharacterAgentResearch::create([
-                'character_id'     => $this->getCharacterId(),
-                'agent_id'         => $agent_research->agent_id,
+            CharacterAgentResearch::firstOrNew([
+                'character_id' => $this->getCharacterId(),
+                'agent_id'     => $agent_research->agent_id,
+            ])->fill([
                 'skill_type_id'    => $agent_research->skill_type_id,
                 'started_at'       => carbon($agent_research->started_at),
                 'points_per_day'   => $agent_research->points_per_day,
                 'remainder_points' => $agent_research->remainder_points,
-            ]);
-
+            ])->save();
         });
+
+        CharacterAgentResearch::where('character_id', $this->getCharacterId())
+            ->whereNotIn('agent_id', collect($agents_research)->pluck('agent_id')->flatten()->all())
+            ->delete();
     }
 }

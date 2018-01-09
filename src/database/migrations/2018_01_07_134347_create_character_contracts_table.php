@@ -23,9 +23,8 @@ class CreateCharacterContractsTable extends Migration
             $table->index('character_id');
             $table->index('contract_id');
 
-	        $table->foreign('contract_id')
-	              ->references('contract_id')
-	              ->on('contract_details');
+            $table->foreign('contract_id')->references('contract_id')
+                ->on('contract_details');
 
             $table->timestamps();
         });

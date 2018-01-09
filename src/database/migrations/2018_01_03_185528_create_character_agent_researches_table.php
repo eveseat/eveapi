@@ -25,6 +25,7 @@ class CreateCharacterAgentResearchesTable extends Migration
             $table->float('remainder_points');
 
             $table->primary(['character_id', 'agent_id']);
+
             $table->index('character_id');
             $table->index('agent_id');
 

@@ -18,17 +18,15 @@ class CreateCharacterChatChannelTable extends Migration
 
             $table->bigInteger('character_id');
             $table->bigInteger('channel_id');
-
             $table->bigInteger('channel_info_id');
 
             $table->index('character_id');
             $table->index('channel_id');
 
-            $table->timestamps();
+            $table->foreign('channel_info_id')->references('channel_id')
+                ->on('character_chat_channel_infos');
 
-	        $table->foreign('channel_info_id')
-	              ->references('channel_id')
-	              ->on('character_chat_channel_infos');
+            $table->timestamps();
         });
     }
 

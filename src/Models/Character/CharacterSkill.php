@@ -29,8 +29,8 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  * Class CharacterSkill
  * @package Seat\Eveapi\Models\Character
  */
-class CharacterSkill extends Model {
-
+class CharacterSkill extends Model
+{
     use HasCompositePrimaryKey;
 
     /**
@@ -47,5 +47,4 @@ class CharacterSkill extends Model {
      * @var array
      */
     protected $primaryKey = ['character_id', 'skill_id'];
-
 }
