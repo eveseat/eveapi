@@ -17,10 +17,8 @@ class CreateCharacterChatChannelMembersTable extends Migration
         Schema::create('character_chat_channel_members', function (Blueprint $table) {
 
             $table->increments('id');
-
             $table->bigInteger('channel_id');
             $table->bigInteger('channel_info_id');
-
             $table->bigInteger('accessor_id');
             $table->string('accessor_type');
             $table->enum('role', ['allowed', 'operators', 'blocked', 'muted']);
@@ -28,12 +26,11 @@ class CreateCharacterChatChannelMembersTable extends Migration
             $table->dateTime('end_at')->nullable();
 
             $table->index('channel_id');
-	        $table->index('channel_info_id');
+            $table->index('channel_info_id');
             $table->index('accessor_id');
 
-	        $table->foreign('channel_info_id')
-	              ->references('channel_id')
-	              ->on('character_chat_channel_infos');
+            $table->foreign('channel_info_id')
+                ->references('channel_id')->on('character_chat_channel_infos');
 
             $table->timestamps();
         });

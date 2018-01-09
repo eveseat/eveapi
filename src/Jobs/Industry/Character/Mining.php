@@ -20,17 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Character;
+namespace Seat\Eveapi\Jobs\Industry\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Character\CharacterAgentResearch;
+use Seat\Eveapi\Models\Industry\CharacterMining;
 
 /**
- * Class AgentsResearch
- * @package Seat\Eveapi\Jobs\Character
+ * Class Mining
+ * @package Seat\Eveapi\Jobs\Industry\Character
  */
-class AgentsResearch extends EsiBase
+class Mining extends EsiBase
 {
     /**
      * @var string
@@ -40,12 +40,17 @@ class AgentsResearch extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/agents_research/';
+    protected $endpoint = '/characters/{character_id}/mining/';
+
+    /**
+     * @var string
+     */
+    protected $version = 'v1';
 
     /**
      * @var int
      */
-    protected $version = 'v1';
+    protected $page = 1;
 
     /**
      * Execute the job.
@@ -56,25 +61,28 @@ class AgentsResearch extends EsiBase
     public function handle()
     {
 
-        $agents_research = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
-        ]);
+        while (true) {
 
-        collect($agents_research)->each(function ($agent_research) {
-
-            CharacterAgentResearch::firstOrNew([
+            $mining = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
-                'agent_id'     => $agent_research->agent_id,
-            ])->fill([
-                'skill_type_id'    => $agent_research->skill_type_id,
-                'started_at'       => carbon($agent_research->started_at),
-                'points_per_day'   => $agent_research->points_per_day,
-                'remainder_points' => $agent_research->remainder_points,
-            ])->save();
-        });
+            ]);
 
-        CharacterAgentResearch::where('character_id', $this->getCharacterId())
-            ->whereNotIn('agent_id', collect($agents_research)->pluck('agent_id')->flatten()->all())
-            ->delete();
+            collect($mining)->each(function ($ledger_entry) {
+
+
+                CharacterMining::firstOrNew([
+                    'character_id'    => $this->getCharacterId(),
+                    'date'            => $ledger_entry->date,
+                    'solar_system_id' => $ledger_entry->solar_system_id,
+                    'type_id'         => $ledger_entry->type_id,
+                ])->fill([
+                    'quantity' => $ledger_entry->quantity,
+                ])->save();
+
+            });
+
+            if (! $this->nextPage($mining->pages))
+                break;
+        }
     }
 }

@@ -20,16 +20,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Industry;
+namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterIndustryJob
- * @package Seat\Eveapi\Models\Contacts
+ * Class CharacterKillmail
+ * @package Seat\Eveapi\Models\Killmails
  */
-class CharacterIndustryJob extends Model
+class CharacterKillmail extends Model
 {
     use HasCompositePrimaryKey;
 
@@ -41,5 +41,5 @@ class CharacterIndustryJob extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['character_id', 'job_id'];
+    protected $primaryKey = ['character_id', 'killmail_id'];
 }

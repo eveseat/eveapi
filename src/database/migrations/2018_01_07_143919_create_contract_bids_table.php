@@ -18,18 +18,15 @@ class CreateContractBidsTable extends Migration
 
             $table->bigInteger('bid_id')->primary();
             $table->bigInteger('contract_id');
-
             $table->bigInteger('bidder_id');
             $table->dateTime('date_bid');
             $table->double('amount');
 
             $table->index('contract_id');
+            $table->foreign('contract_id')->references('contract_id')
+                ->on('contract_details');
 
             $table->timestamps();
-
-	        $table->foreign('contract_id')
-	              ->references('contract_id')
-	              ->on('contract_details');
         });
     }
 

@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCharacterInfoSkillsTable extends Migration {
+class CreateCharacterInfoSkillsTable extends Migration
+{
 
     /**
      * Run the migrations.
@@ -13,22 +14,19 @@ class CreateCharacterInfoSkillsTable extends Migration {
      */
     public function up()
     {
-        Schema::create('character_info_skills', function(Blueprint $table){
 
-        	$table->bigInteger('character_id');
-            $table->integer('total_sp')
-                  ->default(0);
-            $table->integer('unallocated_sp')
-                  ->default(0);
+        Schema::create('character_info_skills', function (Blueprint $table) {
 
-	        $table->primary('character_id');
+            $table->bigInteger('character_id');
+            $table->integer('total_sp')->default(0);
+            $table->integer('unallocated_sp')->default(0);
 
-	        $table->timestamps();
+            $table->primary('character_id');
+            $table->foreign('character_id')->references('character_id')
+                ->on('character_infos')
+                ->onDelete('cascade');
 
-	        $table->foreign('character_id')
-	              ->references('character_id')
-	              ->on('character_infos')
-	              ->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -39,6 +37,7 @@ class CreateCharacterInfoSkillsTable extends Migration {
      */
     public function down()
     {
+
         Schema::dropIfExists('character_info_skills');
     }
 

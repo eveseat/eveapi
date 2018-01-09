@@ -20,17 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Character;
+namespace Seat\Eveapi\Jobs\Killmails\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Character\CharacterAgentResearch;
+use Seat\Eveapi\Models\Killmails\CharacterKillmail;
 
 /**
- * Class AgentsResearch
- * @package Seat\Eveapi\Jobs\Character
+ * Class Recent
+ * @package Seat\Eveapi\Jobs\Killmails\Character
  */
-class AgentsResearch extends EsiBase
+class Recent extends EsiBase
 {
     /**
      * @var string
@@ -40,7 +40,7 @@ class AgentsResearch extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/agents_research/';
+    protected $endpoint = '/characters/{character_id}/killmails/recent/';
 
     /**
      * @var int
@@ -56,25 +56,17 @@ class AgentsResearch extends EsiBase
     public function handle()
     {
 
-        $agents_research = $this->retrieve([
+        $killmails = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        collect($agents_research)->each(function ($agent_research) {
+        collect($killmails)->each(function ($killmail) {
 
-            CharacterAgentResearch::firstOrNew([
-                'character_id' => $this->getCharacterId(),
-                'agent_id'     => $agent_research->agent_id,
-            ])->fill([
-                'skill_type_id'    => $agent_research->skill_type_id,
-                'started_at'       => carbon($agent_research->started_at),
-                'points_per_day'   => $agent_research->points_per_day,
-                'remainder_points' => $agent_research->remainder_points,
-            ])->save();
+            CharacterKillmail::firstOrCreate([
+                'character_id'  => $this->getCharacterId(),
+                'killmail_id'   => $killmail->killmail_id,
+                'killmail_hash' => $killmail->killmail_hash,
+            ]);
         });
-
-        CharacterAgentResearch::where('character_id', $this->getCharacterId())
-            ->whereNotIn('agent_id', collect($agents_research)->pluck('agent_id')->flatten()->all())
-            ->delete();
     }
 }

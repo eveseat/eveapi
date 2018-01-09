@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCharacterContractsTable extends Migration
+class CreateCharacterKillmailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,17 +14,15 @@ class CreateCharacterContractsTable extends Migration
     public function up()
     {
 
-        Schema::create('character_contracts', function (Blueprint $table) {
+        Schema::create('character_killmails', function (Blueprint $table) {
 
             $table->bigInteger('character_id');
-            $table->bigInteger('contract_id');
+            $table->bigInteger('killmail_id');
+            $table->string('killmail_hash');
 
-            $table->primary(['character_id', 'contract_id']);
+            $table->primary(['character_id', 'killmail_id']);
             $table->index('character_id');
-            $table->index('contract_id');
-
-            $table->foreign('contract_id')->references('contract_id')
-                ->on('contract_details');
+            $table->index('killmail_id');
 
             $table->timestamps();
         });
@@ -38,6 +36,6 @@ class CreateCharacterContractsTable extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('character_contracts');
+        Schema::dropIfExists('character_killmails');
     }
 }

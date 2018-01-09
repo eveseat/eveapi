@@ -26,12 +26,11 @@ class CreateCharacterSkillsTable extends Migration
             $table->index('character_id');
             $table->index('skill_id');
 
-            $table->timestamps();
+            $table->foreign('character_id')->references('character_id')
+                ->on('character_infos')
+                ->onDelete('cascade');
 
-            $table->foreign('character_id')
-                  ->references('character_id')
-	              ->on('character_infos')
-	              ->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

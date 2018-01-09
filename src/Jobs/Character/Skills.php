@@ -32,8 +32,8 @@ use Seat\Eveapi\Models\Character\CharacterSkill;
  * Class Skills
  * @package Seat\Eveapi\Jobs\Character
  */
-class Skills extends EsiBase {
-
+class Skills extends EsiBase
+{
     /**
      * @var string
      */
@@ -55,28 +55,30 @@ class Skills extends EsiBase {
      * @return void
      * @throws \Exception
      */
-    public function handle() {
+    public function handle()
+    {
 
         $character_skills = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
-        
-        CharacterInfo::firstOrNew(['character_id' => $this->getCharacterId()])->save();
 
-	    CharacterInfoSkill::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
-            'total_sp' => $character_skills->total_sp,
-            'unallocated_sp' =>
-                property_exists($character_skills, 'unallocated_sp') ? $character_skills->unallocated_sp : 0,
+        CharacterInfo::firstOrCreate(['character_id' => $this->getCharacterId()]);
+
+        CharacterInfoSkill::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
+            'total_sp'       => $character_skills->total_sp,
+            'unallocated_sp' => property_exists($character_skills, 'unallocated_sp') ?
+                $character_skills->unallocated_sp : 0,
         ])->save();
 
-        collect($character_skills->skills)->each(function($character_skill) {
+        collect($character_skills->skills)->each(function ($character_skill) {
+
             CharacterSkill::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'skill_id' => $character_skill->skill_id
+                'skill_id'     => $character_skill->skill_id,
             ])->fill([
                 'skillpoints_in_skill' => $character_skill->skillpoints_in_skill,
-                'trained_skill_level' => $character_skill->trained_skill_level,
-                'active_skill_level' => $character_skill->active_skill_level,
+                'trained_skill_level'  => $character_skill->trained_skill_level,
+                'active_skill_level'   => $character_skill->active_skill_level,
             ])->save();
         });
     }
