@@ -20,7 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Market;
+namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
@@ -46,5 +46,5 @@ class CharacterPlanet extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['character_id', 'solar_system_id', 'planet_id'];
+    protected $primaryKey = ['character_id', 'planet_id'];
 }

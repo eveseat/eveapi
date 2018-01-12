@@ -25,8 +25,10 @@ class CreateCharacterPlanetsTable extends Migration
             $table->enum('planet_type',
                 ['temperate', 'barren', 'oceanic', 'ice', 'gas', 'lava', 'storm', 'plasma']);
 
-            $table->primary(['character_id', 'solar_system_id', 'planet_id']);
+            $table->primary(['character_id', 'planet_id']);
             $table->index('character_id');
+            $table->index('solar_system_id');
+            $table->index('planet_id');
 
             $table->timestamps();
         });
