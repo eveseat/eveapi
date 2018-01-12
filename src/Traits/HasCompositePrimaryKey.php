@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasRelationships;
+use Illuminate\Support\Str;
 use Seat\Eveapi\Exception\SurrogateKeyException;
 
 
@@ -32,6 +34,11 @@ use Seat\Eveapi\Exception\SurrogateKeyException;
  */
 trait HasCompositePrimaryKey
 {
+
+	use HasRelationships {
+		HasRelationships::belongsTo as parentBelongsTo;
+	}
+
     /**
      * @return bool
      */
@@ -54,7 +61,7 @@ trait HasCompositePrimaryKey
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      *
-     * @return \Seat\Eveapi\Traits\Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function setKeysForSaveQuery(Builder $query)
     {
@@ -82,12 +89,44 @@ trait HasCompositePrimaryKey
     	$query = $object->newQuery();
 
     	if (!is_array($object->getKeyName()))
-    		throw new SurrogateKeyException('The model is does not have a surrogate key !');
+    		throw new SurrogateKeyException('The model does not have a surrogate key !');
 
-    	foreach ($object->getKeyName() as $key => $id) {
-		    $query->where($id, $ids[$key]);
+    	foreach ($object->getKeyName() as $key => $column) {
+		    $query->where($column, $ids[$key]);
 	    }
 
 	    return $object->first($columns);
+    }
+
+	/**
+	 * @param $related
+	 * @param null $foreignKey
+	 * @param null $otherKey
+	 * @param null $relation
+	 *
+	 * @return SurrogateBelongsTo
+	 * @throws SurrogateKeyException
+	 */
+    public function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null)
+    {
+	    // If no relation name was given, we will use this debug backtrace to extract
+	    // the calling method's name and use that as the relationship name as most
+	    // of the time this will be what we desire to use for the relationships.
+	    if (is_null($relation)) {
+		    $relation = $this->guessBelongsToRelation();
+	    }
+
+	    $instance = $this->newRelatedInstance($related);
+
+	    // If no foreign key was supplied, we can use a backtrace to guess the proper
+	    // foreign key name by using the name of the relationship function, which
+	    // when combined with an "_id" should conventionally match the columns.
+	    if (is_null($foreignKey)) {
+		    $foreignKey = Str::snake($relation) . '_' . $instance->getKeyName();
+	    }
+
+	    $ownerKey = $ownerKey ?: $instance->getKeyName();
+
+	    return new SurrogateBelongsTo($instance->newQuery(), $this, $foreignKey, $ownerKey, $relation);
     }
 }
