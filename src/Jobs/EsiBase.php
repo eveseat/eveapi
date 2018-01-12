@@ -183,6 +183,8 @@ abstract class EsiBase implements ShouldQueue
 
     /**
      * Get an instance of Eseye to use for this job.
+     *
+     * @return \Seat\Eseye\Eseye
      */
     public function eseye()
     {

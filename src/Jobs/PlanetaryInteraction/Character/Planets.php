@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
+use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetPin;
 
 /**
  * Class Planet
@@ -72,6 +73,36 @@ class Planets extends EsiBase
                 'last_update'   => carbon($planet->last_update),
                 'planet_type'   => $planet->planet_type,
             ])->save();
+
+            //
+	        // Fetch planet detailed information
+	        //
+
+            $planet_detail = $this->eseye()
+                 ->setVersion('v3')
+                 ->invoke('get', '/characters/{character_id}/planets/{planet_id}', [
+                 	'character_id' => $this->getCharacterId(),
+                    'planet_id'    => $planet->planet_id,
+                 ]);
+
+            // seed database with pins
+            collect($planet_detail->pins)->each(function($pin) use ($planet) {
+
+            	CharacterPlanetPin::firstOrNew([
+            		'character_id'     => $this->getCharacterId(),
+		            'planet_id'        => $planet->planet_id,
+		            'pin_id'           => $pin->pin_id,
+	            ])->fill([
+		            'type_id'          => $pin->type_id,
+		            'schematic_id'     => property_exists($pin, 'schematic_id') ? $pin->schematic_id : null,
+		            'latitude'         => $pin->latitude,
+		            'longitude'        => $pin->longitude,
+		            'install_time'     => property_exists($pin, 'install_time') ? carbon($pin->install_time) : null,
+		            'expiry_time'      => property_exists($pin, 'expiry_time') ? carbon($pin->expiry_time) : null,
+		            'last_cycle_start' => property_exists($pin, 'last_cycle_start') ? carbon($pin->last_cycle_start) : null,
+	            ])->save();
+
+            });
         });
 
         // Cleanup solar system ids that have removed planets
