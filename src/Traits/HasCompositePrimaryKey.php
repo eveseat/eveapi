@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Seat\Eveapi\Exception\SurrogateKeyException;
 
 
 /**
@@ -67,5 +68,26 @@ trait HasCompositePrimaryKey
         }
 
         return parent::setKeysForSaveQuery($query);
+    }
+
+	/**
+	 * @param array $ids
+	 * @param array $columns
+	 *
+	 * @throws SurrogateKeyException
+	 */
+    public static function find(array $ids, $columns = ['*'])
+    {
+    	$object = (new static);
+    	$query = $object->newQuery();
+
+    	if (!is_array($object->getKeyName()))
+    		throw new SurrogateKeyException('The model is does not have a surrogate key !');
+
+    	foreach ($object->getKeyName() as $key => $id) {
+		    $query->where($id, $ids[$key]);
+	    }
+
+	    return $object->first($columns);
     }
 }
