@@ -16,7 +16,7 @@ class CreateKillmailDetailsTable extends Migration
 
         Schema::create('killmail_details', function (Blueprint $table) {
 
-            $table->bigIncrements('killmail_id');
+            $table->bigInteger('killmail_id')->primary();
             $table->dateTime('killmail_time');
             $table->integer('solar_system_id');
             $table->integer('moon_id')->nullable();

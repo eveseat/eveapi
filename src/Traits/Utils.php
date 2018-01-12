@@ -107,9 +107,6 @@ trait Utils
             ->whereIn('groupID', [6, 7, 8, 9, 10])
             ->get();
 
-        if ($possible_celestials->count() > 1)
-            dump($possible_celestials);
-
         foreach ($possible_celestials as $celestial) {
 
             // See: http://math.stackexchange.com/a/42642
@@ -118,8 +115,6 @@ trait Utils
 
             // Are we there yet?
             if ($distance < $closest_distance) {
-
-                dump('updating distance for asset');
 
                 // Update the current closest distance
                 $closest_distance = $distance;

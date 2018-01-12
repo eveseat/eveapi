@@ -193,7 +193,7 @@ abstract class EsiBase implements ShouldQueue
         $this->client = app('esi-client');
 
         if (is_null($this->token))
-            return $this->client;
+            return $this->client->get();
 
         return $this->client = $this->client->get(new EsiAuthentication([
             'refresh_token' => $this->token->refresh_token,
@@ -259,7 +259,7 @@ abstract class EsiBase implements ShouldQueue
 
             // If no API call was made, the client would never have
             // been instantiated and auth information never updated.
-            if (is_null($this->client))
+            if (is_null($this->client) || $this->public_call)
                 return;
 
             $last_auth = $this->client->getAuthentication();
