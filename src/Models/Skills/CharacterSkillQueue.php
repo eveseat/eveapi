@@ -23,14 +23,15 @@
 namespace Seat\Eveapi\Models\Skills;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Skills;
+use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterAttribute
- * @package Seat\Eveapi\Models\Market
+ * Class CharacterSkillQueue
+ * @package Seat\Eveapi\Models\Skills
  */
-class CharacterAttribute extends Model
+class CharacterSkillQueue extends Model
 {
+    use HasCompositePrimaryKey;
 
     /**
      * @var bool
@@ -43,8 +44,7 @@ class CharacterAttribute extends Model
     public $incrementing = false;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $primaryKey = 'character_id';
-
+    protected $primaryKey = ['character_id', 'skill_id'];
 }
