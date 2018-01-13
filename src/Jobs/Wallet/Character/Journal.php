@@ -140,7 +140,7 @@ class Journal extends EsiBase
 
             // Update the from_id to be the new lowest ref_id we
             // know of. The next all will use this.
-            $this->from_id = collect($journal)->min('ref_id');
+            $this->from_id = collect($journal)->min('ref_id') - 1;
         }
     }
 }
