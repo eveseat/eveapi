@@ -84,6 +84,14 @@ abstract class EsiBase implements ShouldQueue
     protected $request_body = [];
 
     /**
+     * Any query string parameters that should be sent
+     * with the request.
+     *
+     * @var array
+     */
+    protected $query_string = [];
+
+    /**
      * @var
      */
     private $token;
@@ -147,6 +155,7 @@ abstract class EsiBase implements ShouldQueue
         $client = $this->eseye();
         $client->setVersion($this->version);
         $client->setBody($this->request_body);
+        $client->setQueryString($this->query_string);
 
         // Configure the page to get
         if (! is_null($this->page))
