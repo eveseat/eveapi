@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterMedal;
+use Seat\Eveapi\Models\Character\CharacterMedalGraphic;
 
 /**
  * Class Medals
@@ -73,10 +74,19 @@ class Medals extends EsiBase
                 'date'           => carbon($medal->date),
                 'reason'         => $medal->reason,
                 'status'         => $medal->status,
-                'graphics'       => $medal->graphics,
             ])->save();
-        });
 
-        // TODO: Test, endpoint is down at the moment.
+            collect($medal->graphics)->each(function($part) use ($medal) {
+                CharacterMedalGraphic::firstOrNew([
+                    'character_id' => $this->getCharacterId(),
+                    'medal_id'     => $medal->medal_id,
+                    'part'         => $part->part,
+                    'layer'        => $part->layer,
+                ])->fill([
+                    'graphic'      => $part->graphic,
+                    'color'        => $part->color ?? null,
+                ])->save();
+            });
+        });
     }
 }
