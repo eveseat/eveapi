@@ -37,6 +37,7 @@ trait HasCompositePrimaryKey
 
 	use HasRelationships {
 		HasRelationships::belongsTo as parentBelongsTo;
+		HasRelationships::hasOne as parentHasOne;
 	}
 
     /**
@@ -128,5 +129,16 @@ trait HasCompositePrimaryKey
 	    $ownerKey = $ownerKey ?: $instance->getKeyName();
 
 	    return new SurrogateBelongsTo($instance->newQuery(), $this, $foreignKey, $ownerKey, $relation);
+    }
+
+    public function hasOne($related, $foreignKey = null, $localKey = null)
+    {
+    	$instance = $this->newRelatedInstance($related);
+
+    	$foreignKey = $foreignKey ?: $this->getForeignKey();
+
+    	$localKey = $localKey ?: $this->getKeyName();
+
+    	return new SurrogateHasOne($instance->newQuery(), $this, $foreignKey, $localKey);
     }
 }

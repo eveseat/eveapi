@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
+use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetLink;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetPin;
 
 /**
@@ -103,6 +104,20 @@ class Planets extends EsiBase
 	            ])->save();
 
             });
+
+            collect($planet_detail->links)->each(function($link) use ($planet) {
+
+            	CharacterPlanetLink::firstOrNew([
+            		'character_id' => $this->getCharacterId(),
+		            'planet_id'    => $planet->planet_id,
+		            'source_pin_id' => $link->source_pin_id,
+		            'destination_pin_id' => $link->destination_pin_id,
+	            ])->fill([
+		            'link_level' => $link->link_level,
+	            ])->save();
+
+            });
+
         });
 
         // Cleanup solar system ids that have removed planets
