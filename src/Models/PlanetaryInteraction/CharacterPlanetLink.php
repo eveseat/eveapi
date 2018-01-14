@@ -14,61 +14,61 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 class CharacterPlanetLink extends Model
 {
 
-	use HasCompositePrimaryKey;
+    use HasCompositePrimaryKey;
 
-	/**
-	 * @var bool
-	 */
-	protected static $unguarded = true;
+    /**
+     * @var bool
+     */
+    protected static $unguarded = true;
 
-	/**
-	 * @var bool
-	 */
-	public $incrementing = false;
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
-	/**
-	 * @var array
-	 */
-	protected $primaryKey = [
-		'character_id', 'planet_id', 'source_pin_id', 'destination_pin_id'];
+    /**
+     * @var array
+     */
+    protected $primaryKey = [
+        'character_id', 'planet_id', 'source_pin_id', 'destination_pin_id'];
 
-	/**
-	 * Return the planet installation to which the pin in attached
-	 *
-	 * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
-	 * @throws \Seat\Eveapi\Exception\SurrogateKeyException
-	 */
-	public function planet()
-	{
-		return $this->belongsTo(
-			CharacterPlanet::class,
-			['character_id', 'planet_id'],
-			['character_id', 'planet_id']);
-	}
+    /**
+     * Return the planet installation to which the pin in attached
+     *
+     * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
+     * @throws \Seat\Eveapi\Exception\SurrogateKeyException
+     */
+    public function planet()
+    {
+        return $this->belongsTo(
+            CharacterPlanet::class,
+            ['character_id', 'planet_id'],
+            ['character_id', 'planet_id']);
+    }
 
-	/**
-	 * Return the pin from which the link is starting
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
-	 */
-	public function source()
-	{
-		return $this->hasOne(
-			CharacterPlanetPin::class,
-			['character_id', 'planet_id', 'pin_id'],
-			['character_id', 'planet_id', 'source_pin_id']);
-	}
+    /**
+     * Return the pin from which the link is starting
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function source()
+    {
+        return $this->hasOne(
+            CharacterPlanetPin::class,
+            ['character_id', 'planet_id', 'pin_id'],
+            ['character_id', 'planet_id', 'source_pin_id']);
+    }
 
-	/**
-	 * Return the pin to which the link is going
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
-	 */
-	public function destination()
-	{
-		return $this->hasOne(
-			CharacterPlanetPin::class,
-			['character_id', 'planet_id', 'pin_id'],
-			['character_id', 'planet_id', 'destination_pin_id']);
-	}
+    /**
+     * Return the pin to which the link is going
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function destination()
+    {
+        return $this->hasOne(
+            CharacterPlanetPin::class,
+            ['character_id', 'planet_id', 'pin_id'],
+            ['character_id', 'planet_id', 'destination_pin_id']);
+    }
 }

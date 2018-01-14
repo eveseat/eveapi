@@ -17,15 +17,15 @@ class CreateCharacterPlanetPinsTable extends Migration
         Schema::create('character_planet_pins', function (Blueprint $table) {
 
             $table->bigInteger('character_id');
-	        $table->integer('planet_id');
-	        $table->bigInteger('pin_id');
-	        $table->integer('type_id');
-	        $table->integer('schematic_id')->nullable();
-	        $table->float('latitude');
+            $table->integer('planet_id');
+            $table->bigInteger('pin_id');
+            $table->integer('type_id');
+            $table->integer('schematic_id')->nullable();
+            $table->float('latitude');
             $table->float('longitude');
             $table->dateTimeTz('install_time')->nullable();
-	        $table->dateTimeTz('expiry_time')->nullable();
-	        $table->dateTimeTz('last_cycle_start')->nullable();
+            $table->dateTimeTz('expiry_time')->nullable();
+            $table->dateTimeTz('last_cycle_start')->nullable();
 
             $table->primary(['character_id', 'planet_id', 'pin_id']);
             $table->index('character_id');

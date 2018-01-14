@@ -17,14 +17,14 @@ class CreateCharacterPlanetFactoriesTable extends Migration
         Schema::create('character_planet_factories', function (Blueprint $table) {
 
             $table->bigInteger('character_id');
-	        $table->integer('planet_id');
-	        $table->bigInteger('pin_id');
-	        $table->float('schematic_id');
+            $table->integer('planet_id');
+            $table->bigInteger('pin_id');
+            $table->float('schematic_id');
 
             $table->primary(['character_id', 'planet_id', 'pin_id'], 'character_planet_factories_primary_key');
             $table->index('character_id');
             $table->index('planet_id');
-	        $table->index('pin_id');
+            $table->index('pin_id');
 
             $table->timestamps();
         });

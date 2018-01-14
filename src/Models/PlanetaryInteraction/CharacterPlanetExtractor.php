@@ -13,46 +13,48 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 class CharacterPlanetExtractor extends Model
 {
-	use HasCompositePrimaryKey;
+    use HasCompositePrimaryKey;
 
-	/**
-	 * @var bool
-	 */
-	protected static $unguarded = true;
+    /**
+     * @var bool
+     */
+    protected static $unguarded = true;
 
-	/**
-	 * @var bool
-	 */
-	public $incrementing = false;
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
-	/**
-	 * @var array
-	 */
-	protected $primaryKey = ['character_id', 'planet_id', 'pin_id'];
+    /**
+     * @var array
+     */
+    protected $primaryKey = ['character_id', 'planet_id', 'pin_id'];
 
-	/**
-	 * Return the planet installation to which the pin in attached
-	 *
-	 * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
-	 * @throws \Seat\Eveapi\Exception\SurrogateKeyException
-	 */
-	public function planet()
-	{
-		return $this->belongsTo(
-			CharacterPlanet::class,
-			['character_id', 'planet_id'],
-			['character_id', 'planet_id']);
-	}
+    /**
+     * Return the planet installation to which the extractor in attached
+     *
+     * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
+     * @throws \Seat\Eveapi\Exception\SurrogateKeyException
+     */
+    public function planet()
+    {
+        return $this->belongsTo(
+            CharacterPlanet::class,
+            ['character_id', 'planet_id'],
+            ['character_id', 'planet_id']);
+    }
 
-	/**
-	 * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
-	 * @throws \Seat\Eveapi\Exception\SurrogateKeyException
-	 */
-	public function pin()
-	{
-		return $this->belongsTo(
-			CharacterPlanetPin::class,
-			['character_id', 'planet_id', 'pin_id'],
-			['character_id', 'planet_id', 'pin_id']);
-	}
+    /**
+     * Return the pin to which the extractor is related
+     *
+     * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
+     * @throws \Seat\Eveapi\Exception\SurrogateKeyException
+     */
+    public function pin()
+    {
+        return $this->belongsTo(
+            CharacterPlanetPin::class,
+            ['character_id', 'planet_id', 'pin_id'],
+            ['character_id', 'planet_id', 'pin_id']);
+    }
 }

@@ -17,16 +17,16 @@ class CreateCharacterPlanetContentsTable extends Migration
         Schema::create('character_planet_contents', function (Blueprint $table) {
 
             $table->bigInteger('character_id');
-	        $table->integer('planet_id');
-	        $table->bigInteger('pin_id');
-	        $table->integer('type_id');
-	        $table->integer('amount');
+            $table->integer('planet_id');
+            $table->bigInteger('pin_id');
+            $table->integer('type_id');
+            $table->integer('amount');
 
             $table->primary(['character_id', 'planet_id', 'pin_id', 'type_id'], 'character_planet_contents_primary_key');
             $table->index('character_id');
             $table->index('planet_id');
-	        $table->index('pin_id');
-	        $table->index('type_id');
+            $table->index('pin_id');
+            $table->index('type_id');
 
             $table->timestamps();
         });

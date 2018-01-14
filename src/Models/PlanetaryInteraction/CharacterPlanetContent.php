@@ -33,7 +33,8 @@ class CharacterPlanetContent extends Model
 	/**
 	 * Return the planet installation to which the pin in attached
 	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
+	 * @throws \Seat\Eveapi\Exception\SurrogateKeyException
 	 */
 	public function planet()
 	{
@@ -44,16 +45,16 @@ class CharacterPlanetContent extends Model
 	}
 
 	/**
-	 * Return the pin to which the factory is related
+	 * Return the pin to which the content is related
 	 *
 	 * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
 	 * @throws \Seat\Eveapi\Exception\SurrogateKeyException
 	 */
 	public function pin()
-	{
-		return $this->belongsTo(
-			CharacterPlanetPin::class,
-			['character_id', 'planet_id', 'pin_id'],
-			['character_id', 'planet_id', 'pin_id']);
-	}
+    {
+        return $this->belongsTo(
+            CharacterPlanetPin::class,
+            ['character_id', 'planet_id', 'pin_id'],
+            ['character_id', 'planet_id', 'pin_id']);
+    }
 }

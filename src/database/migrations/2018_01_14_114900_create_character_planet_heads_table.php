@@ -17,11 +17,11 @@ class CreateCharacterPlanetHeadsTable extends Migration
         Schema::create('character_planet_heads', function (Blueprint $table) {
 
             $table->bigInteger('character_id');
-	        $table->integer('planet_id');
-	        $table->bigInteger('extractor_id');
-	        $table->integer('head_id');
-	        $table->float('latitude');
-	        $table->float('longitude');
+            $table->integer('planet_id');
+            $table->bigInteger('extractor_id');
+            $table->integer('head_id');
+            $table->float('latitude');
+            $table->float('longitude');
 
             $table->primary(['character_id', 'planet_id', 'extractor_id', 'head_id'], 'character_planet_heads_primary_key');
             $table->index('character_id');
