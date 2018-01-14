@@ -67,10 +67,10 @@ class Planets extends EsiBase
                 'solar_system_id' => $planet->solar_system_id,
                 'planet_id'       => $planet->planet_id,
             ])->fill([
-                'upgrade_level'   => $planet->upgrade_level,
-                'num_pins'        => $planet->num_pins,
-                'last_update'     => carbon($planet->last_update),
-                'planet_type'     => $planet->planet_type,
+                'upgrade_level' => $planet->upgrade_level,
+                'num_pins'      => $planet->num_pins,
+                'last_update'   => carbon($planet->last_update),
+                'planet_type'   => $planet->planet_type,
             ])->save();
 
         });

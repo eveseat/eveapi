@@ -23,8 +23,6 @@
 namespace Seat\Eveapi\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasRelationships;
-use Illuminate\Support\Str;
 use Seat\Eveapi\Exception\SurrogateKeyException;
 
 
@@ -34,11 +32,6 @@ use Seat\Eveapi\Exception\SurrogateKeyException;
  */
 trait HasCompositePrimaryKey
 {
-
-	use HasRelationships {
-		HasRelationships::belongsTo as parentBelongsTo;
-		HasRelationships::hasOne as parentHasOne;
-	}
 
     /**
      * @return bool

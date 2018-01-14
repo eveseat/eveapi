@@ -33,30 +33,47 @@ use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetPin;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetRoute;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetRouteWaypoint;
 
+/**
+ * Class PlanetDetail
+ * @package Seat\Eveapi\Jobs\PlanetaryInteraction\Character
+ */
 class PlanetDetail extends EsiBase
 {
 
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/characters/{character_id}/planets/{planet_id}/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v3';
 
+    /**
+     * @var int
+     */
     protected $planet_limit = 1000;
 
     /**
      * @throws \Exception
      */
-    public function handle() {
+    public function handle()
+    {
 
-        CharacterPlanet::where('character_id', $this->getCharacterId())
-                       ->get()
-                       ->each(function ($planet) {
+        CharacterPlanet::where('character_id', $this->getCharacterId())->get()->each(function ($planet) {
 
             $planet_detail = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
                 'planet_id'    => $planet->planet_id,
             ]);
+
+            // TODO: Add logic to cleanup any removed entities.
 
             // seed database with pins
             collect($planet_detail->pins)->each(function ($pin) use ($planet) {
@@ -70,12 +87,16 @@ class PlanetDetail extends EsiBase
                     'schematic_id'     => $pin->schematic_id ?? null,
                     'latitude'         => $pin->latitude,
                     'longitude'        => $pin->longitude,
-                    'install_time'     => property_exists($pin, 'install_time') ? carbon($pin->install_time) : null,
-                    'expiry_time'      => property_exists($pin, 'expiry_time') ? carbon($pin->expiry_time) : null,
-                    'last_cycle_start' => property_exists($pin, 'last_cycle_start') ? carbon($pin->last_cycle_start) : null,
+                    'install_time'     => property_exists($pin, 'install_time') ?
+                        carbon($pin->install_time) : null,
+                    'expiry_time'      => property_exists($pin, 'expiry_time') ?
+                        carbon($pin->expiry_time) : null,
+                    'last_cycle_start' => property_exists($pin, 'last_cycle_start') ?
+                        carbon($pin->last_cycle_start) : null,
                 ])->save();
 
                 if (property_exists($pin, 'factory_details')) {
+
                     CharacterPlanetFactory::firstOrNew([
                         'character_id' => $this->getCharacterId(),
                         'planet_id'    => $planet->planet_id,
@@ -86,6 +107,7 @@ class PlanetDetail extends EsiBase
                 }
 
                 if (property_exists($pin, 'extractor_details')) {
+
                     CharacterPlanetExtractor::firstOrNew([
                         'character_id' => $this->getCharacterId(),
                         'planet_id'    => $planet->planet_id,
@@ -98,6 +120,7 @@ class PlanetDetail extends EsiBase
                     ])->save();
 
                     collect($pin->extractor_details->heads)->each(function ($head) use ($planet, $pin) {
+
                         CharacterPlanetHead::firstOrNew([
                             'character_id' => $this->getCharacterId(),
                             'planet_id'    => $planet->planet_id,
@@ -111,6 +134,7 @@ class PlanetDetail extends EsiBase
                 }
 
                 if (property_exists($pin, 'contents')) {
+
                     collect($pin->contents)->each(function ($content) use ($planet, $pin) {
 
                         CharacterPlanetContent::firstOrNew([
@@ -124,7 +148,6 @@ class PlanetDetail extends EsiBase
 
                     });
                 }
-
             });
 
             collect($planet_detail->links)->each(function ($link) use ($planet) {
@@ -165,10 +188,7 @@ class PlanetDetail extends EsiBase
 
                     });
                 }
-
             });
         });
-
     }
-
 }

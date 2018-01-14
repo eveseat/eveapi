@@ -25,6 +25,10 @@ namespace Seat\Eveapi\Models\PlanetaryInteraction;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
+/**
+ * Class CharacterPlanetRoute
+ * @package Seat\Eveapi\Models\PlanetaryInteraction
+ */
 class CharacterPlanetRoute extends Model
 {
     use HasCompositePrimaryKey;
