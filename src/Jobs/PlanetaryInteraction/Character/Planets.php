@@ -93,7 +93,7 @@ class Planets extends EsiBase
                  ]);
 
             // seed database with pins
-            collect($planet_detail->pins)->each(function($pin) use ($planet) {
+            collect($planet_detail->pins)->each(function ($pin) use ($planet) {
 
                 CharacterPlanetPin::firstOrNew([
                     'character_id'     => $this->getCharacterId(),
@@ -123,18 +123,18 @@ class Planets extends EsiBase
                         'character_id' => $this->getCharacterId(),
                         'planet_id'    => $planet->planet_id,
                         'pin_id'       => $pin->pin_id,
-                    ])->fill( [
-                        'product_type_id' => property_exists( $pin->extractor_details, 'product_type_id' ) ?
+                    ])->fill([
+                        'product_type_id' => property_exists($pin->extractor_details, 'product_type_id') ?
                             $pin->extractor_details->product_type_id : null,
-                        'cycle_time'      => property_exists( $pin->extractor_details, 'cycle_time' ) ?
+                        'cycle_time'      => property_exists($pin->extractor_details, 'cycle_time') ?
                             $pin->extractor_details->cycle_time : null,
-                        'head_radius'     => property_exists( $pin->extractor_details, 'head_radius' ) ?
+                        'head_radius'     => property_exists($pin->extractor_details, 'head_radius') ?
                             $pin->extractor_details->head_radius : null,
-                        'qty_per_cycle'   => property_exists( $pin->extractor_details, 'qty_per_cycle' ) ?
+                        'qty_per_cycle'   => property_exists($pin->extractor_details, 'qty_per_cycle') ?
                             $pin->extractor_details->qty_per_cycle : null,
                     ])->save();
 
-                    collect($pin->extractor_details->heads)->each(function($head) use ($planet, $pin){
+                    collect($pin->extractor_details->heads)->each(function ($head) use ($planet, $pin) {
                         CharacterPlanetHead::firstOrNew([
                             'character_id' => $this->getCharacterId(),
                             'planet_id'    => $planet->planet_id,
@@ -148,13 +148,13 @@ class Planets extends EsiBase
                 }
 
                 if (property_exists($pin, 'contents'))
-                    collect($pin->contents)->each(function($content) use ($planet, $pin){
+                    collect($pin->contents)->each(function ($content) use ($planet, $pin) {
 
                         CharacterPlanetContent::firstOrNew([
                             'character_id' => $this->getCharacterId(),
                             'planet_id'    => $planet->planet_id,
                             'pin_id'       => $pin->pin_id,
-                            'type_id'      => $content->type_id
+                            'type_id'      => $content->type_id,
                         ])->fill([
                             'amount'       => $content->amount,
                         ])->save();
@@ -163,7 +163,7 @@ class Planets extends EsiBase
 
             });
 
-            collect($planet_detail->links)->each(function($link) use ($planet) {
+            collect($planet_detail->links)->each(function ($link) use ($planet) {
 
                 CharacterPlanetLink::firstOrNew([
                     'character_id'       => $this->getCharacterId(),
@@ -176,9 +176,9 @@ class Planets extends EsiBase
 
             });
 
-            collect($planet_detail->routes)->each(function($route) use ($planet) {
+            collect($planet_detail->routes)->each(function ($route) use ($planet) {
 
-                CharacterPlanetRoute::firstOrNew( [
+                CharacterPlanetRoute::firstOrNew([
                     'character_id'       => $this->getCharacterId(),
                     'planet_id'          => $planet->planet_id,
                     'route_id'           => $route->route_id,
@@ -186,7 +186,7 @@ class Planets extends EsiBase
                     'source_pin_id'      => $route->source_pin_id,
                     'destination_pin_id' => $route->destination_pin_id,
                     'content_type_id'    => $route->content_type_id,
-                    'quantity'           => $route->quantity
+                    'quantity'           => $route->quantity,
                 ])->save();
 
                 if (property_exists($route, 'waypoints')) {
@@ -196,7 +196,7 @@ class Planets extends EsiBase
                             'character_id' => $this->getCharacterId(),
                             'planet_id'    => $planet->planet_id,
                             'route_id'     => $route->route_id,
-                            'pin_id'       => $waypoint
+                            'pin_id'       => $waypoint,
                         ])->save();
 
                     });
