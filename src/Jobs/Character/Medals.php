@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterMedal;
-use Seat\Eveapi\Models\Character\CharacterMedalGraphic;
 
 /**
  * Class Medals
