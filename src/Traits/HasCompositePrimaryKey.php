@@ -53,7 +53,7 @@ trait HasCompositePrimaryKey
      * Sadly, composite primary keys in Eloquent does not seem to
      * be a *thing*. This override allowes for things like firstOrUpdate()
      * to work. However, many other eloquent static methods dont work with
-     * composite keys. ¯\_(ツ)_/¯
+     * composite keys. ¯\_(ツ)_/¯.
      *
      * Monkey patch refs:
      *  https://github.com/laravel/framework/issues/5517#issuecomment-113655441

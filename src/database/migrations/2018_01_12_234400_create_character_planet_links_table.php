@@ -37,10 +37,10 @@ class CreateCharacterPlanetLinksTable extends Migration
         Schema::create('character_planet_links', function (Blueprint $table) {
 
             $table->bigInteger('character_id');
-	        $table->integer('planet_id');
-	        $table->bigInteger('source_pin_id');
-	        $table->bigInteger('destination_pin_id');
-	        $table->integer('link_level');
+            $table->integer('planet_id');
+            $table->bigInteger('source_pin_id');
+            $table->bigInteger('destination_pin_id');
+            $table->integer('link_level');
 
             $table->primary(['character_id', 'planet_id', 'source_pin_id', 'destination_pin_id'], 'character_planet_links_primary_key');
             $table->index('character_id');

@@ -25,17 +25,9 @@ namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
-use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetContent;
-use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetExtractor;
-use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetFactory;
-use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetHead;
-use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetLink;
-use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetPin;
-use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetRoute;
-use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetRouteWaypoint;
 
 /**
- * Class Planet
+ * Class Planet.
  * @package Seat\Eveapi\Jobs\PlanetaryInteraction\Character
  */
 class Planets extends EsiBase

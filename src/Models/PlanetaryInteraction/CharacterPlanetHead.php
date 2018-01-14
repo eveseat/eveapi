@@ -43,47 +43,4 @@ class CharacterPlanetHead extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'planet_id', 'extractor_id', 'head_id'];
-
-    /**
-     * Return the planet installation to which the head is attached
-     *
-     * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
-     * @throws \Seat\Eveapi\Exception\SurrogateKeyException
-     */
-    public function planet()
-    {
-        return $this->belongsTo(
-            CharacterPlanet::class,
-            ['character_id', 'planet_id'],
-            ['character_id', 'planet_id']);
-    }
-
-    /**
-     * Return the extractor to which the head is attached
-     *
-     * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
-     * @throws \Seat\Eveapi\Exception\SurrogateKeyException
-     */
-    public function extractor()
-    {
-        return $this->belongsTo(
-            CharacterPlanetExtractor::class,
-            ['character_id', 'planet_id', 'extractor_id'],
-            ['character_id', 'planet_id', 'pin_id']
-        );
-    }
-
-    /**
-     * Return the pin to which the head is related
-     *
-     * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
-     * @throws \Seat\Eveapi\Exception\SurrogateKeyException
-     */
-    public function pin()
-    {
-        return $this->belongsTo(
-            CharacterPlanetPin::class,
-            ['character_id', 'planet_id', 'extractor_id'],
-            ['character_id', 'planet_id', 'pin_id']);
-    }
 }

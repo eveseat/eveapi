@@ -33,7 +33,8 @@ use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetPin;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetRoute;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetRouteWaypoint;
 
-class PlanetDetail extends EsiBase {
+class PlanetDetail extends EsiBase
+{
 
     protected $method = 'get';
 
@@ -50,7 +51,7 @@ class PlanetDetail extends EsiBase {
 
         CharacterPlanet::where('character_id', $this->getCharacterId())
                        ->get()
-                       ->each(function($planet){
+                       ->each(function ($planet) {
 
             $planet_detail = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
@@ -72,7 +73,7 @@ class PlanetDetail extends EsiBase {
                     'install_time'     => property_exists($pin, 'install_time') ? carbon($pin->install_time) : null,
                     'expiry_time'      => property_exists($pin, 'expiry_time') ? carbon($pin->expiry_time) : null,
                     'last_cycle_start' => property_exists($pin, 'last_cycle_start') ? carbon($pin->last_cycle_start) : null,
-                ] )->save();
+                ])->save();
 
                 if (property_exists($pin, 'factory_details')) {
                     CharacterPlanetFactory::firstOrNew([
@@ -106,7 +107,7 @@ class PlanetDetail extends EsiBase {
                             'latitude'  => $head->latitude,
                             'longitude' => $head->longitude,
                         ])->save();
-                    } );
+                    });
                 }
 
                 if (property_exists($pin, 'contents')) {
@@ -137,7 +138,7 @@ class PlanetDetail extends EsiBase {
                     'link_level' => $link->link_level,
                 ])->save();
 
-            } );
+            });
 
             collect($planet_detail->routes)->each(function ($route) use ($planet) {
 
