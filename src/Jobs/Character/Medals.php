@@ -74,19 +74,8 @@ class Medals extends EsiBase
                 'date'           => carbon($medal->date),
                 'reason'         => $medal->reason,
                 'status'         => $medal->status,
+                'graphics'       => json_encode($medal->graphics),
             ])->save();
-
-            collect($medal->graphics)->each(function($part) use ($medal) {
-                CharacterMedalGraphic::firstOrNew([
-                    'character_id' => $this->getCharacterId(),
-                    'medal_id'     => $medal->medal_id,
-                    'part'         => $part->part,
-                    'layer'        => $part->layer,
-                ])->fill([
-                    'graphic'      => $part->graphic,
-                    'color'        => $part->color ?? null,
-                ])->save();
-            });
         });
     }
 }
