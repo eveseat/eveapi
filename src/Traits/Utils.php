@@ -90,7 +90,7 @@ trait Utils
         // is to calculate the distance celestial to the x, y, z's
         // that we have. For that, we have to start with the max
         // possible distance.
-        $closest_distance = INF;
+        $closest_distance = PHP_INT_MAX;
 
         // As a response, we will return an array with
         // the closest ID and name from mapDenormallized.
@@ -104,14 +104,20 @@ trait Utils
         $possible_celestials = DB::table('mapDenormalize')
             ->where('solarSystemID', $solar_system_id)
             ->whereNotNull('itemName')
+            ->where('x', '<>', '0.0')
             ->whereIn('groupID', [6, 7, 8, 9, 10])
             ->get();
 
         foreach ($possible_celestials as $celestial) {
 
+            dump($celestial);
+
             // See: http://math.stackexchange.com/a/42642
             $distance = sqrt(
                 pow(($x - $celestial->x), 2) + pow(($y - $celestial->y), 2) + pow(($z - $celestial->z), 2));
+
+            dump($distance, $closest_distance);
+            exit(1);
 
             // Are we there yet?
             if ($distance < $closest_distance) {
