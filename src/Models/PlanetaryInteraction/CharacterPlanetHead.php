@@ -25,11 +25,7 @@ namespace Seat\Eveapi\Models\PlanetaryInteraction;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
-/**
- * Class CharacterPlanet.
- * @package Seat\Eveapi\Models\PlanetaryInteraction
- */
-class CharacterPlanet extends Model
+class CharacterPlanetHead extends Model
 {
     use HasCompositePrimaryKey;
 
@@ -46,5 +42,5 @@ class CharacterPlanet extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['character_id', 'planet_id'];
+    protected $primaryKey = ['character_id', 'planet_id', 'extractor_id', 'head_id'];
 }

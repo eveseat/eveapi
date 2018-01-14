@@ -24,10 +24,10 @@ namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Market\CharacterPlanet;
+use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 
 /**
- * Class Planet
+ * Class Planet.
  * @package Seat\Eveapi\Jobs\PlanetaryInteraction\Character
  */
 class Planets extends EsiBase
@@ -67,11 +67,12 @@ class Planets extends EsiBase
                 'solar_system_id' => $planet->solar_system_id,
                 'planet_id'       => $planet->planet_id,
             ])->fill([
-                'upgrade_level' => $planet->upgrade_level,
-                'num_pins'      => $planet->num_pins,
-                'last_update'   => carbon($planet->last_update),
-                'planet_type'   => $planet->planet_type,
+                'upgrade_level'   => $planet->upgrade_level,
+                'num_pins'        => $planet->num_pins,
+                'last_update'     => carbon($planet->last_update),
+                'planet_type'     => $planet->planet_type,
             ])->save();
+
         });
 
         // Cleanup solar system ids that have removed planets

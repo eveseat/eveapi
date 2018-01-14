@@ -23,6 +23,9 @@
 namespace Seat\Eveapi\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasRelationships;
+use Illuminate\Support\Str;
+use Seat\Eveapi\Exception\SurrogateKeyException;
 
 
 /**
@@ -31,6 +34,12 @@ use Illuminate\Database\Eloquent\Builder;
  */
 trait HasCompositePrimaryKey
 {
+
+	use HasRelationships {
+		HasRelationships::belongsTo as parentBelongsTo;
+		HasRelationships::hasOne as parentHasOne;
+	}
+
     /**
      * @return bool
      */
@@ -44,7 +53,7 @@ trait HasCompositePrimaryKey
      * Sadly, composite primary keys in Eloquent does not seem to
      * be a *thing*. This override allowes for things like firstOrUpdate()
      * to work. However, many other eloquent static methods dont work with
-     * composite keys. ¯\_(ツ)_/¯
+     * composite keys. ¯\_(ツ)_/¯.
      *
      * Monkey patch refs:
      *  https://github.com/laravel/framework/issues/5517#issuecomment-113655441
@@ -53,7 +62,7 @@ trait HasCompositePrimaryKey
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      *
-     * @return \Seat\Eveapi\Traits\Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function setKeysForSaveQuery(Builder $query)
     {
