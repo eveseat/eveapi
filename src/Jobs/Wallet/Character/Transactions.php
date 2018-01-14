@@ -74,8 +74,6 @@ class Transactions extends EsiBase
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            dump($transactions);
-
             // If we have no more entries, break the loop.
             if (collect($transactions)->count() === 0)
                 break;
