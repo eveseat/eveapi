@@ -2,7 +2,7 @@
 /**
  * User: Warlof Tutsimo <loic.leuilliot@gmail.com>
  * Date: 12/01/2018
- * Time: 21:26
+ * Time: 21:34
  */
 
 namespace Seat\Eveapi\Models\PlanetaryInteraction;
@@ -11,9 +11,8 @@ namespace Seat\Eveapi\Models\PlanetaryInteraction;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
-class CharacterPlanetPin extends Model
+class CharacterPlanetContent extends Model
 {
-
 	use HasCompositePrimaryKey;
 
 	/**
@@ -29,13 +28,12 @@ class CharacterPlanetPin extends Model
 	/**
 	 * @var array
 	 */
-	protected $primaryKey = ['character_id', 'planet_id', 'pin_id'];
+	protected $primaryKey = ['character_id', 'planet_id', 'pin_id', 'type_id'];
 
 	/**
 	 * Return the planet installation to which the pin in attached
 	 *
-	 * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
-	 * @throws \Seat\Eveapi\Exception\SurrogateKeyException
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function planet()
 	{
@@ -45,13 +43,17 @@ class CharacterPlanetPin extends Model
 			['character_id', 'planet_id']);
 	}
 
-	public function factory()
+	/**
+	 * Return the pin to which the factory is related
+	 *
+	 * @return \Seat\Eveapi\Traits\SurrogateBelongsTo
+	 * @throws \Seat\Eveapi\Exception\SurrogateKeyException
+	 */
+	public function pin()
 	{
-		return $this->hasOne(
-			CharacterPlanetFactory::class,
+		return $this->belongsTo(
+			CharacterPlanetPin::class,
 			['character_id', 'planet_id', 'pin_id'],
-			['character_id', 'planet_id', 'pin_id']
-		);
+			['character_id', 'planet_id', 'pin_id']);
 	}
-
 }
