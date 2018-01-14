@@ -40,20 +40,4 @@ return [
         'api_error_count'        => 'eve_api_error_count',
         'connection_error_count' => 'eve_api_conn_error_count',
     ],
-
-    // These limits define how many times either
-    // the eveapi should respond with an error status
-    // or we fail to connect before we consider the
-    // eveapi to be 'down'.
-    // See the Rate Limits section here:
-    //  https://eveonline-third-party-documentation.
-    //      readthedocs.org/en/latest/xmlapi/intro/
-    'limits'        => [
-        'eveapi_errors'     => 150,
-        'connection_errors' => 15,
-    ],
-
-    // Number of errors that may occur before an api
-    // key will really be disabled.
-    'error_grace'   => 3,
 ];

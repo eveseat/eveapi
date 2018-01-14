@@ -40,6 +40,13 @@ abstract class EsiBase implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
+
+    /**
      * The HTTP method used for the API Call.
      *
      * Eg: GET, POST, PUT, DELETE
@@ -94,17 +101,17 @@ abstract class EsiBase implements ShouldQueue
     /**
      * @var
      */
-    private $token;
+    protected $token;
 
     /**
      * @var mixed
      */
-    private $client;
+    protected $client;
 
     /**
      * @var bool
      */
-    private $public_call;
+    protected $public_call;
 
     /**
      * Create a new job instance.
@@ -122,23 +129,6 @@ abstract class EsiBase implements ShouldQueue
 
         else
             $this->token = $token;
-    }
-
-    /**
-     * Get the character_id we have for the token in this job.
-     *
-     * An exception will be thrown if an empty token is set.
-     *
-     * @return int
-     * @throws \Exception
-     */
-    public function getCharacterId(): int
-    {
-
-        if (is_null($this->token))
-            throw new \Exception('No token specified');
-
-        return $this->token->character_id;
     }
 
     /**
@@ -165,6 +155,9 @@ abstract class EsiBase implements ShouldQueue
 
         // Perform error checking
         $this->logWarnings($result);
+
+        // Update the refresh token we have stored in the database.
+        $this->updateRefreshToken();
 
         return $result;
     }
@@ -238,6 +231,29 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
+     * Update the access_token last used in the job,
+     * along with the expiry time.
+     */
+    public function updateRefreshToken(): void
+    {
+
+        tap($this->token, function ($token) {
+
+            // If no API call was made, the client would never have
+            // been instantiated and auth information never updated.
+            if (is_null($this->client) || $this->public_call)
+                return;
+
+            $last_auth = $this->client->getAuthentication();
+
+            $token->token = $last_auth->access_token ?? '-';
+            $token->expires_on = $last_auth->token_expires;
+
+            $token->save();
+        });
+    }
+
+    /**
      * Check if there are any pages left in a response
      * based on the number of pages available and the
      * current page.
@@ -258,26 +274,39 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
-     * Before we finish the job, update the access_token
-     * last used in the job, along with the expiry time.
+     * Assign this job a tag so that Horizon can categorize and allow
+     * for specific tags to be monitored.
+     *
+     * If a job specifies the tags property, that is added to the
+     * character_id tag that automatically gets appended.
+     *
+     * @return array
+     * @throws \Exception
      */
-    public function __destruct()
+    public function tags(): array
     {
 
-        tap($this->token, function ($token) {
+        if (property_exists($this, 'tags'))
+            return array_merge($this->tags, ['character_id:' . $this->getCharacterId()]);
 
-            // If no API call was made, the client would never have
-            // been instantiated and auth information never updated.
-            if (is_null($this->client) || $this->public_call)
-                return;
+        return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
+    }
 
-            $last_auth = $this->client->getAuthentication();
+    /**
+     * Get the character_id we have for the token in this job.
+     *
+     * An exception will be thrown if an empty token is set.
+     *
+     * @return int
+     * @throws \Exception
+     */
+    public function getCharacterId(): int
+    {
 
-            $token->token = $last_auth->access_token ?? '-';
-            $token->expires_on = $last_auth->token_expires;
+        if (is_null($this->token))
+            throw new \Exception('No token specified');
 
-            $token->save();
-        });
+        return $this->token->character_id;
     }
 
     /**
@@ -286,5 +315,4 @@ abstract class EsiBase implements ShouldQueue
      * @return void
      */
     abstract public function handle();
-
 }

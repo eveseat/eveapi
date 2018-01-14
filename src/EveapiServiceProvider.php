@@ -57,8 +57,6 @@ class EveapiServiceProvider extends ServiceProvider
     {
 
         $this->mergeConfigFrom(
-            __DIR__ . '/Config/eveapi.access_bits.php', 'eveapi.access_bits');
-        $this->mergeConfigFrom(
             __DIR__ . '/Config/eveapi.config.php', 'eveapi.config');
         $this->mergeConfigFrom(
             __DIR__ . '/Config/eveapi.worker_groups.php', 'eveapi.worker_groups');
