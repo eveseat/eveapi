@@ -29,6 +29,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Containers\EsiResponse;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -307,6 +308,22 @@ abstract class EsiBase implements ShouldQueue
             throw new \Exception('No token specified');
 
         return $this->token->character_id;
+    }
+
+    /**
+     * Get the corporation a refresh_token is associated with.
+     *
+     * This is based on the character's token we have corporation
+     * membership.
+     *
+     * @return int
+     * @throws \Exception
+     */
+    public function getCorporationId(): int
+    {
+
+        return CharacterInfo::where('character_id', $this->getCharacterId())
+            ->first()->corporation_id;
     }
 
     /**
