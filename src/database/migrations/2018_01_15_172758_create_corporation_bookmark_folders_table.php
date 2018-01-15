@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCharacterBookmarkFoldersTable extends Migration
+class CreateCorporationBookmarkFoldersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,14 +14,15 @@ class CreateCharacterBookmarkFoldersTable extends Migration
     public function up()
     {
 
-        Schema::create('character_bookmark_folders', function (Blueprint $table) {
+        Schema::create('corporation_bookmark_folders', function (Blueprint $table) {
 
-            $table->bigInteger('character_id');
+            $table->bigInteger('corporation_id');
             $table->bigInteger('folder_id');
             $table->string('name');
+            $table->bigInteger('creator_id')->nullable();
 
-            $table->primary(['character_id', 'folder_id']);
-            $table->index('character_id');
+            $table->primary(['corporation_id', 'folder_id']);
+            $table->index('corporation_id');
             $table->index('folder_id');
 
             $table->timestamps();
@@ -36,6 +37,6 @@ class CreateCharacterBookmarkFoldersTable extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('character_bookmark_folders');
+        Schema::dropIfExists('corporation_bookmark_folders');
     }
 }
