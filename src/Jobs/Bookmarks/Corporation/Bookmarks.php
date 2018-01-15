@@ -83,34 +83,49 @@ class Bookmarks extends EsiBase
     public function handle()
     {
 
-        $bookmarks = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+        while (true) {
 
-        collect($bookmarks)->each(function ($bookmark) {
-
-            $normalized_location = $this->find_nearest_celestial(
-                $bookmark->location_id,
-                $bookmark->position->x ?? 0, $bookmark->position->y ?? 0, $bookmark->position->z ?? 0);
-
-            CorporationBookmark::firstOrNew([
+            $bookmarks = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
-                'bookmark_id'    => $bookmark->bookmark_id,
-            ])->fill([
-                'creator_id'  => $bookmark->creator_id,
-                'folder_id'   => $bookmark->folder_id ?? null,
-                'created'     => carbon($bookmark->created),
-                'label'       => $bookmark->label,
-                'notes'       => $bookmark->notes,
-                'location_id' => $bookmark->location_id,
-                'item_id'     => $bookmark->item->item_id ?? null,
-                'type_id'     => $bookmark->item->type_id ?? null,
-                'x'           => $bookmark->coordinates->x ?? null,
-                'y'           => $bookmark->coordinates->y ?? null,
-                'z'           => $bookmark->coordinates->z ?? null,
-                'map_id'      => $normalized_location['map_id'],
-                'map_name'    => $normalized_location['map_name'],
-            ])->save();
-        });
+            ]);
+
+            collect($bookmarks)->each(function ($bookmark) {
+
+                $normalized_location = $this->find_nearest_celestial(
+                    $bookmark->location_id,
+                    $bookmark->position->x ?? 0.0,
+                    $bookmark->position->y ?? 0.0,
+                    $bookmark->position->z ?? 0.0);
+
+                CorporationBookmark::firstOrNew([
+                    'corporation_id' => $this->getCorporationId(),
+                    'bookmark_id'    => $bookmark->bookmark_id,
+                ])->fill([
+                    'creator_id'  => $bookmark->creator_id,
+                    'folder_id'   => $bookmark->folder_id ?? null,
+                    'created'     => carbon($bookmark->created),
+                    'label'       => $bookmark->label,
+                    'notes'       => $bookmark->notes,
+                    'location_id' => $bookmark->location_id,
+                    'item_id'     => $bookmark->item->item_id ?? null,
+                    'type_id'     => $bookmark->item->type_id ?? null,
+                    'x'           => $bookmark->coordinates->x ?? null,
+                    'y'           => $bookmark->coordinates->y ?? null,
+                    'z'           => $bookmark->coordinates->z ?? null,
+                    'map_id'      => $normalized_location['map_id'],
+                    'map_name'    => $normalized_location['map_name'],
+                ])->save();
+            });
+
+            $this->known_bookmarks->push(collect($bookmarks)
+                ->pluck('bookmark_id')->flatten()->all());
+
+            if (! $this->nextPage($bookmarks->pages))
+                break;
+        }
+
+        CorporationBookmark::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('bookmark_id', $this->known_bookmarks->flatten()->all())
+            ->delete();
     }
 }
