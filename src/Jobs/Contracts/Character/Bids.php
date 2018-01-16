@@ -60,6 +60,7 @@ class Bids extends EsiBase
         $unfinished_auctions = CharacterContract::join('contract_details',
             'character_contracts.contract_id', '=',
             'contract_details.contract_id')
+            ->where('character_id', $this->getCharacterId())
             ->where('type', 'auction')
             ->where('status', '<>', 'finished')
             ->pluck('character_contracts.contract_id');

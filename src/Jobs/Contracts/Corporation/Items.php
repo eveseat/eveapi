@@ -20,16 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Contracts\Character;
+namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Contacts\CharacterContract;
 use Seat\Eveapi\Models\Contacts\ContractItem;
+use Seat\Eveapi\Models\Contacts\CorporationContract;
+
 
 /**
  * Class Items
- * @package Seat\Eveapi\Jobs\Contracts\Character
+ * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
 class Items extends EsiBase
 {
@@ -41,7 +42,7 @@ class Items extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/contracts/{contract_id}/items/';
+    protected $endpoint = '/corporations/{corporation_id}/contracts/{contract_id}/items/';
 
     /**
      * @var string
@@ -57,24 +58,24 @@ class Items extends EsiBase
     public function handle()
     {
 
-        $empty_contracts = CharacterContract::join('contract_details',
-            'character_contracts.contract_id', '=',
+        $empty_contracts = CorporationContract::join('contract_details',
+            'corporation_contracts.contract_id', '=',
             'contract_details.contract_id')
-            ->where('character_id', $this->getCharacterId())
+            ->where('corporation_id', $this->getCorporationId())
             ->where('type', '<>', 'courier')
             ->where('status', '<>', 'deleted')
-            ->whereNotIn('character_contracts.contract_id', function ($query) {
+            ->whereNotIn('corporation_contracts.contract_id', function ($query) {
 
                 $query->select('contract_id')
                     ->from('contract_items');
             })
-            ->pluck('character_contracts.contract_id');
+            ->pluck('corporation_contracts.contract_id');
 
         $empty_contracts->each(function ($contract_id) {
 
             $items = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
-                'contract_id'  => $contract_id,
+                'corporation_id' => $this->getCorporationId(),
+                'contract_id'    => $contract_id,
             ]);
 
             collect($items)->each(function ($item) use ($contract_id) {
@@ -84,7 +85,7 @@ class Items extends EsiBase
                     'record_id'    => $item->record_id,
                     'type_id'      => $item->type_id,
                     'quantity'     => $item->quantity,
-                    'raw_quantity' => isset($item->raw_quantity) ? $item->raw_quantity : null,
+                    'raw_quantity' => $item->raw_quantity ?? null,
                     'is_singleton' => $item->is_singleton,
                     'is_included'  => $item->is_included,
                 ]);

@@ -20,16 +20,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Contracts\Character;
+namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Contacts\CharacterContract;
 use Seat\Eveapi\Models\Contacts\ContractDetail;
+use Seat\Eveapi\Models\Contacts\CorporationContract;
 
 /**
  * Class Contracts
- * @package Seat\Eveapi\Jobs\Contracts\Character
+ * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
 class Contracts extends EsiBase
 {
@@ -41,7 +41,7 @@ class Contracts extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/contracts/';
+    protected $endpoint = '/corporations/{corporation_id}/contracts/';
 
     /**
      * @var string
@@ -65,7 +65,7 @@ class Contracts extends EsiBase
         while (true) {
 
             $contracts = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
+                'corporation_id' => $this->getCorporationId(),
             ]);
 
             collect($contracts)->each(function ($contract) {
@@ -78,31 +78,31 @@ class Contracts extends EsiBase
                     'issuer_corporation_id' => $contract->issuer_corporation_id,
                     'assignee_id'           => $contract->assignee_id,
                     'acceptor_id'           => $contract->acceptor_id,
-                    'start_location_id'     => isset($contract->start_location_id) ? $contract->start_location_id : null,
-                    'end_location_id'       => isset($contract->end_location_id) ? $contract->end_location_id : null,
+                    'start_location_id'     => $contract->start_location_id ?? null,
+                    'end_location_id'       => $contract->end_location_id ?? null,
                     'type'                  => $contract->type,
                     'status'                => $contract->status,
-                    'title'                 => isset($contract->title) ? $contract->title : null,
+                    'title'                 => $contract->title ?? null,
                     'for_corporation'       => $contract->for_corporation,
                     'availability'          => $contract->availability,
                     'date_issued'           => carbon($contract->date_issued),
                     'date_expired'          => carbon($contract->date_expired),
                     'date_accepted'         => isset($contract->date_accepted) ?
                         carbon($contract->date_accepted) : null,
-                    'days_to_complete'      => isset($contract->days_to_complete) ? $contract->days_to_complete : null,
+                    'days_to_complete'      => $contract->days_to_complete ?? null,
                     'date_completed'        => isset($contract->date_completed) ?
                         carbon($contract->date_completed) : null,
-                    'price'                 => isset($contract->price) ? $contract->price : null,
-                    'reward'                => isset($contract->reward) ? $contract->reward : null,
-                    'collateral'            => isset($contract->collateral) ? $contract->collateral : null,
-                    'buyout'                => isset($contract->buyout) ? $contract->buyout : null,
-                    'volume'                => isset($contract->volume) ? $contract->volume : null,
+                    'price'                 => $contract->price ?? null,
+                    'reward'                => $contract->reward ?? null,
+                    'collateral'            => $contract->collateral ?? null,
+                    'buyout'                => $contract->buyout ?? null,
+                    'volume'                => $contract->volume ?? null,
                 ])->save();
 
                 // Ensure the character is associated to this contract
-                CharacterContract::firstOrCreate([
-                    'character_id' => $this->getCharacterId(),
-                    'contract_id'  => $contract->contract_id,
+                CorporationContract::firstOrCreate([
+                    'corporation_id' => $this->getCorporationId(),
+                    'contract_id'    => $contract->contract_id,
                 ]);
             });
 

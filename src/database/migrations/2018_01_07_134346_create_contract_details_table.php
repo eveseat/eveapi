@@ -42,7 +42,7 @@ class CreateContractDetailsTable extends Migration
             $table->double('reward')->nullable();
             $table->double('collateral')->nullable();
             $table->double('buyout')->nullable();
-            $table->float('volume')->nullable();
+            $table->double('volume')->nullable();
 
             $table->index('issuer_id');
             $table->index('issuer_corporation_id');
