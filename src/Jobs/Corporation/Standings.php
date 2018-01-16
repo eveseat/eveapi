@@ -20,11 +20,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Character;
-
+namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Character\CharacterStanding;
+use Seat\Eveapi\Models\Corporation\CorporationStanding;
 
 /**
  * Class Standings
@@ -40,12 +39,17 @@ class Standings extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/standings/';
+    protected $endpoint = '/corporations/{corporation_id}/standings/';
 
     /**
      * @var int
      */
     protected $version = 'v1';
+
+    /**
+     * @var int
+     */
+    protected $page = 1;
 
     /**
      * Execute the job.
@@ -56,19 +60,26 @@ class Standings extends EsiBase
     public function handle()
     {
 
-        $standings = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
-        ]);
+        while (true) {
 
-        collect($standings)->each(function ($standing) {
+            $standings = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            CharacterStanding::firstOrNew([
-                'character_id' => $this->getCharacterId(),
-                'from_type'    => $standing->from_type,
-                'from_id'      => $standing->from_id,
-            ])->fill([
-                'standing'     => $standing->standing,
-            ])->save();
-        });
+            collect($standings)->each(function ($standing) {
+
+                CorporationStanding::firstOrNew([
+                    'corporation_id' => $this->getCharacterId(),
+                    'from_type'      => $standing->from_type,
+                    'from_id'        => $standing->from_id,
+                ])->fill([
+                    'standing' => $standing->standing,
+                ])->save();
+            });
+
+            if (! $this->nextPage($standings->pages))
+                break;
+
+        }
     }
 }
