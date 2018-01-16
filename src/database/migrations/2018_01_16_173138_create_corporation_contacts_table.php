@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCharacterContactsTable extends Migration
+class CreateCorporationContactsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,19 +14,18 @@ class CreateCharacterContactsTable extends Migration
     public function up()
     {
 
-        Schema::create('character_contacts', function (Blueprint $table) {
+        Schema::create('corporation_contacts', function (Blueprint $table) {
 
-            $table->bigInteger('character_id');
+            $table->bigInteger('corporation_id');
             $table->bigInteger('contact_id');
             $table->float('standing');
             $table->enum('contact_type',
                 ['character', 'corporation', 'alliance', 'faction']);
             $table->boolean('is_watched')->nullable();
-            $table->boolean('is_blocked')->nullable();
             $table->bigInteger('label_id')->nullable();
 
-            $table->primary(['character_id', 'contact_id']);
-            $table->index('character_id');
+            $table->primary(['corporation_id', 'contact_id']);
+            $table->index('corporation_id');
 
             $table->timestamps();
         });
@@ -40,6 +39,6 @@ class CreateCharacterContactsTable extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('character_contacts');
+        Schema::dropIfExists('corporation_contacts');
     }
 }

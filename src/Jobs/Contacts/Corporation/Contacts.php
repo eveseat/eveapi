@@ -20,19 +20,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Bookmarks\Corporation;
+namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
+use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\RefreshToken;
 
 
 /**
- * Class Folders
- * @package Seat\Eveapi\Jobs\Bookmarks\Corporation
+ * Class Contacts
+ * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
-class Folders extends EsiBase
+class Contacts extends EsiBase
 {
     /**
      * @var string
@@ -42,7 +42,7 @@ class Folders extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/corporations/{corporation_id}/bookmarks/folders/';
+    protected $endpoint = '/corporations/{corporation_id}/contacts/';
 
     /**
      * @var string
@@ -57,17 +57,17 @@ class Folders extends EsiBase
     /**
      * @var \Illuminate\Support\Collection
      */
-    protected $known_folder_ids;
+    protected $known_contact_ids;
 
     /**
-     * Folders constructor.
+     * Contacts constructor.
      *
      * @param \Seat\Eveapi\Models\RefreshToken|null $token
      */
     public function __construct(RefreshToken $token = null)
     {
 
-        $this->known_folder_ids = collect();
+        $this->known_contact_ids = collect();
 
         parent::__construct($token);
     }
@@ -83,31 +83,33 @@ class Folders extends EsiBase
 
         while (true) {
 
-            $folders = $this->retrieve([
+            $contacts = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($folders)->each(function ($folder) {
+            collect($contacts)->each(function ($contact) {
 
-                CorporationBookmarkFolder::firstOrNew([
+                CorporationContact::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'folder_id'      => $folder->folder_id,
+                    'contact_id'     => $contact->contact_id,
                 ])->fill([
-                    'name'       => $folder->name,
-                    'creator_id' => $folder->creator_id ?? null,
+                    'standing'     => $contact->standing,
+                    'contact_type' => $contact->contact_type,
+                    'is_watched'   => $contact->is_watched ?? false,
+                    'label_id'     => $contact->label_id ?? null,
                 ])->save();
             });
 
-            $this->known_folder_ids->push(collect($folders)
-                ->pluck('folder_id')->flatten()->all());
+            $this->known_contact_ids->push(collect($contacts)
+                ->pluck('contact_id')->flatten()->all());
 
-            if (! $this->nextPage($folders->pages))
+            if (! $this->nextPage($contacts->pages))
                 break;
         }
 
-        // Cleanup removed folders
-        CorporationBookmarkFolder::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('folder_id', $this->known_folder_ids->flatten()->all())
+        // Cleanup old contacts
+        CorporationContact::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('contact_id', $this->known_contact_ids->flatten()->all())
             ->delete();
     }
 }
