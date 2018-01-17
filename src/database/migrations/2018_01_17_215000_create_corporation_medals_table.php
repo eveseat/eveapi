@@ -24,6 +24,7 @@ class CreateCorporationMedalsTable extends Migration
 
             $table->primary(['corporation_id', 'medal_id'], 'corporation_medals_primary_key');
             $table->index('corporation_id');
+            $table->index('medal_id');
             $table->index('creator_id');
 
             $table->timestamps();
