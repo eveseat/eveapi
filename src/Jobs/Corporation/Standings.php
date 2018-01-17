@@ -25,9 +25,10 @@ namespace Seat\Eveapi\Jobs\Corporation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationStanding;
 
+
 /**
  * Class Standings
- * @package Seat\Eveapi\Jobs\Character
+ * @package Seat\Eveapi\Jobs\Corporation
  */
 class Standings extends EsiBase
 {
@@ -69,7 +70,7 @@ class Standings extends EsiBase
             collect($standings)->each(function ($standing) {
 
                 CorporationStanding::firstOrNew([
-                    'corporation_id' => $this->getCharacterId(),
+                    'corporation_id' => $this->getCorporationId(),
                     'from_type'      => $standing->from_type,
                     'from_id'        => $standing->from_id,
                 ])->fill([
@@ -79,7 +80,6 @@ class Standings extends EsiBase
 
             if (! $this->nextPage($standings->pages))
                 break;
-
         }
     }
 }

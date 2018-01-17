@@ -67,7 +67,7 @@ class Standings extends EsiBase
                 'from_type'    => $standing->from_type,
                 'from_id'      => $standing->from_id,
             ])->fill([
-                'standing'     => $standing->standing,
+                'standing' => $standing->standing,
             ])->save();
         });
     }

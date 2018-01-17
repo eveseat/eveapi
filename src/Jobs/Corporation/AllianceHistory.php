@@ -25,14 +25,30 @@ namespace Seat\Eveapi\Jobs\Corporation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationAllianceHistory;
 
-class AllianceHistory extends EsiBase {
-
+/**
+ * Class AllianceHistory
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class AllianceHistory extends EsiBase
+{
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/alliancehistory/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v2';
 
+    /**
+     * @throws \Exception
+     */
     public function handle()
     {
 
@@ -40,19 +56,17 @@ class AllianceHistory extends EsiBase {
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        collect($history)->each(function($alliance){
+        collect($history)->each(function ($alliance) {
 
             CorporationAllianceHistory::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'record_id' => $alliance->record_id,
+                'record_id'      => $alliance->record_id,
             ])->fill([
-                'start_date' => carbon($alliance->start_date),
+                'start_date'  => carbon($alliance->start_date),
                 'alliance_id' => $alliance->alliance_id ?? null,
-                'is_deleted' => $alliance->is_deleted ?? false,
+                'is_deleted'  => $alliance->is_deleted ?? false,
             ])->save();
 
         });
-
     }
-
 }

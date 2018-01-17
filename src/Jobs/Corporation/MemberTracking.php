@@ -25,14 +25,30 @@ namespace Seat\Eveapi\Jobs\Corporation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 
-class MemberTracking extends EsiBase {
-
+/**
+ * Class MemberTracking
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class MemberTracking extends EsiBase
+{
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/membertracking/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v1';
 
+    /**
+     * @throws \Exception
+     */
     public function handle()
     {
 
@@ -40,22 +56,26 @@ class MemberTracking extends EsiBase {
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        collect($members)->each(function($member){
+        collect($members)->each(function ($member) {
 
             CorporationMemberTracking::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
                 'character_id'   => $member->character_id,
             ])->fill([
-                'start_date'     => property_exists($member, 'start_date') ? carbon($member->start_date) : null,
-                'base_id'        => $member->base_id ?? null,
-                'logon_date'     => property_exists($member, 'logon_date') ? carbon($member->logon_date) : null,
-                'logoff_date'    => property_exists($member, 'logoff_date') ? carbon($member->logoff_date) : null,
-                'location_id'    => $member->location_id ?? null,
-                'ship_type_id'   => $member->ship_type_id ?? null,
+                'start_date'   => property_exists($member, 'start_date') ?
+                    carbon($member->start_date) : null,
+                'base_id'      => $member->base_id ?? null,
+                'logon_date'   => property_exists($member, 'logon_date') ?
+                    carbon($member->logon_date) : null,
+                'logoff_date'  => property_exists($member, 'logoff_date') ?
+                    carbon($member->logoff_date) : null,
+                'location_id'  => $member->location_id ?? null,
+                'ship_type_id' => $member->ship_type_id ?? null,
             ])->save();
-
         });
 
+        CorporationMemberTracking::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('character_id', collect($members)->pluck('character_id')->all())
+            ->delete();
     }
-
 }

@@ -21,7 +21,8 @@ class CreateCorporationShareholdersTable extends Migration
             $table->bigInteger('shareholder_id');
             $table->bigInteger('share_count');
 
-            $table->primary(['corporation_id', 'shareholder_type', 'shareholder_id'], 'corporation_shareholders_primary_key');
+            $table->primary(['corporation_id', 'shareholder_type', 'shareholder_id'],
+                'corporation_shareholders_primary_key');
             $table->index('corporation_id');
             $table->index(['shareholder_type', 'shareholder_id']);
 

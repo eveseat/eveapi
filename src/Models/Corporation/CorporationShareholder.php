@@ -29,11 +29,8 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  * Class CorporationShareholder.
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationShareholder extends Model {
-
-    /**
-     *
-     */
+class CorporationShareholder extends Model
+{
     use HasCompositePrimaryKey;
 
     /**

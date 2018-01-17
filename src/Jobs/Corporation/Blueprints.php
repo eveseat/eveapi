@@ -24,42 +24,70 @@ namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationBlueprint;
-use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\RefreshToken;
 
-class Blueprints extends EsiBase {
+/**
+ * Class Blueprints
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class Blueprints extends EsiBase
+{
 
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/blueprints/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v1';
 
+    /**
+     * @var int
+     */
     protected $page = 1;
 
+    /**
+     * @var \Illuminate\Support\Collection
+     */
     protected $known_blueprints;
 
-    public function __construct(RefreshToken $token = null) {
+    /**
+     * Blueprints constructor.
+     *
+     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     */
+    public function __construct(RefreshToken $token = null)
+    {
+
         $this->known_blueprints = collect();
 
         parent::__construct($token);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function handle()
     {
 
-        while (true)
-        {
+        while (true) {
 
             $blueprints = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($blueprints)->each(function($blueprint){
+            collect($blueprints)->each(function ($blueprint) {
 
                 CorporationBlueprint::firstOrNew([
-                    'corporation_id'      => $this->getCorporationId(),
-                    'item_id'             => $blueprint->item_id,
+                    'corporation_id' => $this->getCorporationId(),
+                    'item_id'        => $blueprint->item_id,
                 ])->fill([
                     'type_id'             => $blueprint->type_id,
                     'location_id'         => $blueprint->location_id,
@@ -84,7 +112,5 @@ class Blueprints extends EsiBase {
         CorporationBlueprint::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('item_id', $this->known_blueprints->flatten()->all())
             ->delete();
-
     }
-
 }

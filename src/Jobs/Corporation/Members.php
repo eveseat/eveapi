@@ -25,14 +25,30 @@ namespace Seat\Eveapi\Jobs\Corporation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMember;
 
-class Members extends EsiBase {
-
+/**
+ * Class Members
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class Members extends EsiBase
+{
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/members/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v3';
 
+    /**
+     * @throws \Exception
+     */
     public function handle()
     {
 
@@ -40,11 +56,11 @@ class Members extends EsiBase {
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        collect($members)->each(function($member_id){
+        collect($members)->each(function ($member_id) {
 
             CorporationMember::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'character_id' => $member_id,
+                'character_id'   => $member_id,
             ])->save();
 
         });
@@ -53,7 +69,5 @@ class Members extends EsiBase {
         CorporationMember::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('character_id', collect($members))
             ->delete();
-
     }
-
 }

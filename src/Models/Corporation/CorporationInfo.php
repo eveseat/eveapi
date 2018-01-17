@@ -23,18 +23,22 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationInfo.
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationInfo extends Model {
-
+class CorporationInfo extends Model
+{
     /**
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @var string

@@ -25,12 +25,22 @@ namespace Seat\Eveapi\Models\Corporation;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
-class CorporationBlueprint extends Model {
-
+/**
+ * Class CorporationBlueprint
+ * @package Seat\Eveapi\Models\Corporation
+ */
+class CorporationBlueprint extends Model
+{
     use HasCompositePrimaryKey;
 
+    /**
+     * @var bool
+     */
     protected static $unguarded = true;
 
+    /**
+     * @var array
+     */
     protected $primaryKey = ['corporation_id', 'item_id'];
 
 }
