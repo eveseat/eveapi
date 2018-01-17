@@ -26,8 +26,8 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationFacility;
 
 /**
- * Class Standings
- * @package Seat\Eveapi\Jobs\Character
+ * Class Facilities
+ * @package Seat\Eveapi\Jobs\Corporation
  */
 class Facilities extends EsiBase
 {
@@ -62,13 +62,16 @@ class Facilities extends EsiBase
         collect($facilities)->each(function ($facility) {
 
             CorporationFacility::firstOrNew([
-                'corporation_id' => $this->getCharacterId(),
+                'corporation_id' => $this->getCorporationId(),
                 'facility_id'    => $facility->facility_id,
             ])->fill([
-                'type_id'        => $facility->type_id,
-                'system_id'      => $facility->system_id,
+                'type_id'   => $facility->type_id,
+                'system_id' => $facility->system_id,
             ])->save();
         });
 
+        CorporationFacility::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('facility_id', collect($facilities)->pluck('facility_id')->all())
+            ->delete();
     }
 }

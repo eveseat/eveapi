@@ -16,7 +16,7 @@ class CreateCorporationInfosTable extends Migration
 
         Schema::create('corporation_infos', function (Blueprint $table) {
 
-            $table->bigInteger('corporation_id');
+            $table->bigInteger('corporation_id')->primary();
             $table->string('name');
             $table->string('ticker');
             $table->integer('member_count');
@@ -31,7 +31,6 @@ class CreateCorporationInfosTable extends Migration
             $table->integer('home_station_id')->nullable();
             $table->bigInteger('shares')->nullable();
 
-            $table->primary('corporation_id');
             $table->index('ticker');
             $table->index('ceo_id');
             $table->index('alliance_id');

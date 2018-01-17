@@ -29,8 +29,8 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  * Class CorporationStanding.
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationStanding extends Model {
-
+class CorporationStanding extends Model
+{
     use HasCompositePrimaryKey;
 
     /**

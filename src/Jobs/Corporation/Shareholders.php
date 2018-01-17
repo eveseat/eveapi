@@ -26,25 +26,53 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationShareholder;
 use Seat\Eveapi\Models\RefreshToken;
 
-class Shareholders extends EsiBase {
-
+/**
+ * Class Shareholders
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class Shareholders extends EsiBase
+{
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/shareholders/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v1';
 
+    /**
+     * @var int
+     */
     protected $page = 1;
 
+    /**
+     * @var \Illuminate\Support\Collection
+     */
     protected $known_shareholders;
 
+    /**
+     * Shareholders constructor.
+     *
+     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     */
     public function __construct(RefreshToken $token = null)
     {
+
         $this->known_shareholders = collect();
 
         parent::__construct($token);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function handle()
     {
 
@@ -54,29 +82,27 @@ class Shareholders extends EsiBase {
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($shareholders)->each(function($shareholder){
+            collect($shareholders)->each(function ($shareholder) {
 
                 CorporationShareholder::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
+                    'corporation_id'   => $this->getCorporationId(),
                     'shareholder_type' => $shareholder->shareholder_type,
-                    'shareholder_id' => $shareholder->shareholder_id,
+                    'shareholder_id'   => $shareholder->shareholder_id,
                 ])->fill([
                     'share_count' => $shareholder->share_count,
                 ])->save();
 
             });
 
-            $this->known_shareholders
-                ->push(collect($shareholders)
-                ->pluck(['shareholder_type', 'shareholder_id'])
-                ->flatten()
-                ->all());
+            $this->known_shareholders->push(collect($shareholders)
+                ->pluck(['shareholder_type', 'shareholder_id'])->flatten()->all());
 
             if (! $this->nextPage($shareholders->pages))
                 break;
-
         }
 
+        CorporationShareholder::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('shareholder_id', $this->known_shareholders->flatten()->all())
+            ->delete();
     }
-
 }
