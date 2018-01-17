@@ -20,55 +20,39 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Character;
-
+namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Character\CharacterStanding;
+use Seat\Eveapi\Models\Corporation\CorporationAllianceHistory;
 
-/**
- * Class Standings
- * @package Seat\Eveapi\Jobs\Character
- */
-class Standings extends EsiBase
-{
-    /**
-     * @var string
-     */
+class AllianceHistory extends EsiBase {
+
     protected $method = 'get';
 
-    /**
-     * @var string
-     */
-    protected $endpoint = '/characters/{character_id}/standings/';
+    protected $endpoint = '/corporations/{corporation_id}/alliancehistory/';
 
-    /**
-     * @var int
-     */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     * @throws \Exception
-     */
     public function handle()
     {
 
-        $standings = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
+        $history = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
         ]);
 
-        collect($standings)->each(function ($standing) {
+        collect($history)->each(function($alliance){
 
-            CharacterStanding::firstOrNew([
-                'character_id' => $this->getCharacterId(),
-                'from_type'    => $standing->from_type,
-                'from_id'      => $standing->from_id,
+            CorporationAllianceHistory::firstOrNew([
+                'corporation_id' => $this->getCorporationId(),
+                'record_id' => $alliance->record_id,
             ])->fill([
-                'standing'     => $standing->standing,
+                'start_date' => carbon($alliance->start_date),
+                'alliance_id' => $alliance->alliance_id ?? null,
+                'is_deleted' => $alliance->is_deleted ?? false,
             ])->save();
+
         });
+
     }
+
 }
