@@ -29,17 +29,33 @@ use Seat\Eveapi\Models\Corporation\CorporationMedal;
  * Class Medals
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Medals extends EsiBase {
-
+class Medals extends EsiBase
+{
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/medals/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v1';
 
+    /**
+     * @var int
+     */
     protected $page = 1;
 
-    public function handle() {
+    /**
+     * @throws \Exception
+     */
+    public function handle()
+    {
 
         while (true) {
 
@@ -48,25 +64,22 @@ class Medals extends EsiBase {
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($medals)->each(function($medal){
+            collect($medals)->each(function ($medal) {
 
                 CorporationMedal::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
                     'medal_id'       => $medal->medal_id,
                 ])->fill([
-                    'title'          => $medal->title,
-                    'description'    => $medal->description,
-                    'creator_id'     => $medal->creator_id,
-                    'created_at'     => carbon($medal->created_at),
+                    'title'       => $medal->title,
+                    'description' => $medal->description,
+                    'creator_id'  => $medal->creator_id,
+                    'created_at'  => carbon($medal->created_at),
                 ])->save();
 
             });
 
             if (! $this->nextPage($medals->pages))
                 break;
-
         }
-
     }
-
 }

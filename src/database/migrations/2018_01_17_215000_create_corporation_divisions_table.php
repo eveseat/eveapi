@@ -21,7 +21,8 @@ class CreateCorporationDivisionsTable extends Migration
             $table->integer('division');
             $table->string('name')->nullable();
 
-            $table->primary(['corporation_id', 'type', 'division'], 'corporation_divisions_primary_key');
+            $table->primary(['corporation_id', 'type', 'division'],
+                'corporation_divisions_primary_key');
             $table->index('corporation_id');
             $table->index(['type', 'division']);
 

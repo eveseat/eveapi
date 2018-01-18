@@ -25,12 +25,21 @@ namespace Seat\Eveapi\Models\Corporation;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
-class CorporationContainerLog extends Model {
-
+/**
+ * Class CorporationContainerLog
+ * @package Seat\Eveapi\Models\Corporation
+ */
+class CorporationContainerLog extends Model
+{
     use HasCompositePrimaryKey;
 
+    /**
+     * @var bool
+     */
     protected static $unguarded = true;
 
+    /**
+     * @var array
+     */
     protected $primaryKey = ['corporation_id', 'container_id', 'logged_at'];
-
 }

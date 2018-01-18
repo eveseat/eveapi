@@ -24,7 +24,8 @@ class CreateCorporationIssuedMedalsTable extends Migration
             $table->bigInteger('issuer_id');
             $table->dateTime('issued_at');
 
-            $table->primary(['corporation_id', 'medal_id', 'character_id'], 'corporation_issued_medals_primary_key');
+            $table->primary(['corporation_id', 'medal_id', 'character_id'],
+                'corporation_issued_medals_primary_key');
             $table->index('corporation_id');
             $table->index('medal_id');
             $table->index('character_id');

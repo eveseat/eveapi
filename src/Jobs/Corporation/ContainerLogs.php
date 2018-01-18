@@ -25,17 +25,37 @@ namespace Seat\Eveapi\Jobs\Corporation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationContainerLog;
 
-class ContainerLogs extends EsiBase {
-
+/**
+ * Class ContainerLogs
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class ContainerLogs extends EsiBase
+{
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/containers/logs/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v1';
 
+    /**
+     * @var int
+     */
     protected $page = 1;
 
-    public function handle() {
+    /**
+     * @throws \Exception
+     */
+    public function handle()
+    {
 
         while (true) {
 
@@ -43,28 +63,29 @@ class ContainerLogs extends EsiBase {
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($logs)->each(function($log){
+            collect($logs)->each(function ($log) {
 
                 CorporationContainerLog::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'container_id' => $log->container_id,
-                    'logged_at' => carbon($log->logged_at),
+                    'container_id'   => $log->container_id,
+                    'logged_at'      => carbon($log->logged_at),
                 ])->fill([
-                    'container_type_id' => $log->container_type_id,
-                    'character_id' => $log->character_id,
-                    'location_id' => $log->location_id,
-                    'action' => $log->action,
-                    'location_flag' => $log->location_flag,
-                    'password_type' => $log->password_type,
+                    'container_type_id'  => $log->container_type_id,
+                    'character_id'       => $log->character_id,
+                    'location_id'        => $log->location_id,
+                    'action'             => $log->action,
+                    'location_flag'      => $log->location_flag,
+                    'password_type'      => $log->password_type ?? null,
+                    'type_id'            => $log->type_id ?? null,
+                    'quantity'           => $log->quantity ?? null,
+                    'old_config_bitmask' => $log->old_config_bitmask ?? null,
+                    'new_config_bitmask' => $log->new_config_bitmask ?? null,
                 ])->save();
 
             });
 
             if (! $this->nextPage($logs->pages))
                 break;
-
         }
-
     }
-
 }
