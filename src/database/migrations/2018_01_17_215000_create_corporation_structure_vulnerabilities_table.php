@@ -18,11 +18,14 @@ class CreateCorporationStructureVulnerabilitiesTable extends Migration
 
             $table->bigInteger('corporation_id');
             $table->bigInteger('structure_id');
+            $table->foreign('structure_id')->references('structure_id')
+                ->on('corporation_structures')->onDelete('cascade');
             $table->enum('type', ['current', 'next']);
             $table->integer('day');
             $table->integer('hour');
 
-            $table->primary(['corporation_id', 'structure_id', 'type', 'day', 'hour'], 'corporation_structure_vulnerabilities_primary_key');
+            $table->primary(['corporation_id', 'structure_id', 'type', 'day', 'hour'],
+                'corporation_structure_vulnerabilities_primary_key');
             $table->index('corporation_id');
             $table->index('structure_id');
 

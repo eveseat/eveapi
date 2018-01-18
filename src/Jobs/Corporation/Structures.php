@@ -28,26 +28,55 @@ use Seat\Eveapi\Models\Corporation\CorporationStructureService;
 use Seat\Eveapi\Models\Corporation\CorporationStructureVulnerability;
 use Seat\Eveapi\Models\RefreshToken;
 
-class Structures extends EsiBase {
-
+/**
+ * Class Structures
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class Structures extends EsiBase
+{
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/structures/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v1';
 
+    /**
+     * @var int
+     */
     protected $page = 1;
 
+    /**
+     * @var \Illuminate\Support\Collection
+     */
     protected $known_structures;
 
-    public function __construct(RefreshToken $token = null) {
+    /**
+     * Structures constructor.
+     *
+     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     */
+    public function __construct(RefreshToken $token = null)
+    {
 
         $this->known_structures = collect();
 
-        parent::__construct( $token );
+        parent::__construct($token);
     }
 
-    public function handle() {
+    /**
+     * @throws \Exception
+     */
+    public function handle()
+    {
 
         while (true) {
 
@@ -55,26 +84,26 @@ class Structures extends EsiBase {
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($structures)->each(function($structure){
+            collect($structures)->each(function ($structure) {
 
                 CorporationStructure::firstOrNew([
                     'corporation_id' => $structure->corporation_id,
                     'structure_id'   => $structure->structure_id,
                 ])->fill([
-                    'type_id'        => $structure->type_id,
-                    'system_id'      => $structure->system_id,
-                    'profile_id'     => $structure->profile_id,
-                    'fuel_expires'   => property_exists($structure, 'fuel_expires') ?
+                    'type_id'           => $structure->type_id,
+                    'system_id'         => $structure->system_id,
+                    'profile_id'        => $structure->profile_id,
+                    'fuel_expires'      => property_exists($structure, 'fuel_expires') ?
                         carbon($structure->fuel_expires) : null,
                     'state_timer_start' => property_exists($structure, 'state_timer_start') ?
                         carbon($structure->state_timer_start) : null,
-                    'state_timer_end' => property_exists($structure, 'state_timer_end') ?
+                    'state_timer_end'   => property_exists($structure, 'state_timer_end') ?
                         carbon($structure->state_timer_end) : null,
-                    'unanchors_at' => property_exists($structure, 'unanchors_at') ?
+                    'unanchors_at'      => property_exists($structure, 'unanchors_at') ?
                         carbon($structure->unanchors_at) : null,
                 ])->save();
 
-                collect($structure->current_vul)->each(function($vulnerability) use ($structure) {
+                collect($structure->current_vul)->each(function ($vulnerability) use ($structure) {
 
                     CorporationStructureVulnerability::firstOrNew([
                         'corporation_id' => $structure->corporation_id,
@@ -83,7 +112,6 @@ class Structures extends EsiBase {
                         'day'            => $vulnerability->day,
                         'hour'           => $vulnerability->hour,
                     ])->save();
-
                 });
 
                 collect($structure->next_vul)->each(function ($vulnerability) use ($structure) {
@@ -95,7 +123,6 @@ class Structures extends EsiBase {
                         'day'            => $vulnerability->day,
                         'hour'           => $vulnerability->hour,
                     ])->save();
-
                 });
 
                 if (property_exists($structure, 'services')) {
@@ -107,44 +134,35 @@ class Structures extends EsiBase {
                             'structure_id'   => $structure->structure_id,
                             'name'           => $service->name,
                         ])->fill([
-                            'state'          => $service->state,
+                            'state' => $service->state,
                         ])->save();
-
                     });
 
                     CorporationStructureService::where('corporation_id', $structure->corporation_id)
-                                               ->where('structure_id', $structure->structure_id)
-                                               ->whereNotIn('name', collect($structure->services)
-                                                   ->pluck('name')
-                                                   ->flatten()
-                                                   ->all())
-                                               ->delete();
+                        ->where('structure_id', $structure->structure_id)
+                        ->whereNotIn('name', collect($structure->services)->pluck('name')->flatten()->all())
+                        ->delete();
 
                 } else {
 
                     CorporationStructureService::where('corporation_id', $structure->corporation_id)
-                                               ->where('structure_id', $structure->structure_id)
-                                               ->delete();
-
+                        ->where('structure_id', $structure->structure_id)
+                        ->delete();
                 }
 
                 $this->known_structures->push($structure->structure_id);
-
             });
 
             if (! $this->nextPage($structures->pages))
                 break;
-
         }
 
         CorporationStructureService::where('corporation_id', $this->getCorporationId())
-                            ->whereNotIn('structure_id', $this->known_structures->flatten()->all())
-                            ->delete();
+            ->whereNotIn('structure_id', $this->known_structures->flatten()->all())
+            ->delete();
 
         CorporationStructure::where('corporation_id', $this->getCorporationId())
-                            ->whereNotIn('structure_id', $this->known_structures->flatten()->all())
-                            ->delete();
-
+            ->whereNotIn('structure_id', $this->known_structures->flatten()->all())
+            ->delete();
     }
-
 }

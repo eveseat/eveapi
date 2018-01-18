@@ -25,42 +25,61 @@ namespace Seat\Eveapi\Jobs\Corporation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 
-class Divisions extends EsiBase {
-
+/**
+ * Class Divisions
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class Divisions extends EsiBase
+{
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/divisions/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v1';
 
-    public function handle() {
+    /**
+     * @throws \Exception
+     */
+    public function handle()
+    {
 
         $divisions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
         if (property_exists($divisions, 'hangar'))
-            collect($divisions->hangar)->each(function($hangar){
+
+            collect($divisions->hangar)->each(function ($hangar) {
+
                 CorporationDivision::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
                     'type'           => 'hangar',
                     'division'       => $hangar->division,
                 ])->fill([
-                    'name'           => $hangar->name ?? null,
+                    'name' => $hangar->name ?? null,
                 ])->save();
             });
 
         if (property_exists($divisions, 'wallet'))
-            collect($divisions->wallet)->each(function($wallet){
+
+            collect($divisions->wallet)->each(function ($wallet) {
+
                 CorporationDivision::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
                     'type'           => 'wallet',
                     'division'       => $wallet->division,
                 ])->fill([
-                    'name'           => $wallet->name ?? null,
+                    'name' => $wallet->name ?? null,
                 ])->save();
             });
-
     }
-
 }

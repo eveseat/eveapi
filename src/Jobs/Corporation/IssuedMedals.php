@@ -25,44 +25,61 @@ namespace Seat\Eveapi\Jobs\Corporation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationIssuedMedal;
 
-class IssuedMedals extends EsiBase {
-
+/**
+ * Class IssuedMedals
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class IssuedMedals extends EsiBase
+{
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/corporations/{corporation_id}/medals/issued/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v1';
 
+    /**
+     * @var int
+     */
     protected $page = 1;
 
-    public function handle() {
+    /**
+     * @throws \Exception
+     */
+    public function handle()
+    {
 
-        while(true) {
+        while (true) {
 
             $medals = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($medals)->each(function($medal){
+            collect($medals)->each(function ($medal) {
 
                 CorporationIssuedMedal::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
                     'medal_id'       => $medal->medal_id,
                     'character_id'   => $medal->character_id,
                 ])->fill([
-                    'reason'         => $medal->reason,
-                    'status'         => $medal->status,
-                    'issuer_id'      => $medal->issuer_id,
-                    'issued_at'      => carbon($medal->issued_at),
+                    'reason'    => $medal->reason,
+                    'status'    => $medal->status,
+                    'issuer_id' => $medal->issuer_id,
+                    'issued_at' => carbon($medal->issued_at),
                 ])->save();
 
             });
 
             if (! $this->nextPage($medals->pages))
                 break;
-
         }
-
     }
-
 }

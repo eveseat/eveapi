@@ -30,7 +30,8 @@ class CreateCorporationContainerLogsTable extends Migration
             $table->integer('old_config_bitmask')->nullable();
             $table->integer('new_config_bitmask')->nullable();
 
-            $table->primary(['corporation_id', 'container_id', 'logged_at'], 'corporation_container_logs_primary_key');
+            $table->primary(['corporation_id', 'container_id', 'logged_at'],
+                'corporation_container_logs_primary_key');
             $table->index('corporation_id');
             $table->index('container_id');
             $table->index('character_id');
