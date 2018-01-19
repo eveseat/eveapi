@@ -24,15 +24,14 @@ namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationOutpost;
-use Seat\Eveapi\Models\Corporation\CorporationOutpostService;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Outposts
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Outposts extends EsiBase {
-
+class Outposts extends EsiBase
+{
     /**
      * @var string
      */
@@ -41,7 +40,7 @@ class Outposts extends EsiBase {
     /**
      * @var string
      */
-    protected $endpoint = '/corporations/{corporation_id}/outposts';
+    protected $endpoint = '/corporations/{corporation_id}/outposts/';
 
     /**
      * @var string
@@ -65,6 +64,7 @@ class Outposts extends EsiBase {
      */
     public function __construct(RefreshToken $token = null)
     {
+
         $this->known_outposts = collect();
 
         parent::__construct($token);
@@ -73,7 +73,8 @@ class Outposts extends EsiBase {
     /**
      * @throws \Exception
      */
-    public function handle() {
+    public function handle()
+    {
 
         while (true) {
 
@@ -81,11 +82,11 @@ class Outposts extends EsiBase {
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($outposts)->each(function($outpost_id){
+            collect($outposts)->each(function ($outpost_id) {
 
                 CorporationOutpost::firstOrNew([
-                    'corporation_id'               => $this->getCorporationId(),
-                    'outpost_id'                   => $outpost_id,
+                    'corporation_id' => $this->getCorporationId(),
+                    'outpost_id'     => $outpost_id,
                 ])->save();
 
                 $this->known_outposts->push($outpost_id);
@@ -94,13 +95,10 @@ class Outposts extends EsiBase {
 
             if (! $this->nextPage($outposts->pages))
                 break;
-
         }
 
         CorporationOutpost::where('corporation_id', $this->getCorporationId())
-                          ->whereNotIn('outpost_id', $this->known_outposts->flatten()->all())
-                          ->delete();
-
+            ->whereNotIn('outpost_id', $this->known_outposts->flatten()->all())
+            ->delete();
     }
-
 }

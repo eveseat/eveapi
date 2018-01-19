@@ -30,7 +30,8 @@ class CreateCorporationTitleRolesTable extends Migration
             ]);
             $table->string('role');
 
-            $table->primary(['corporation_id', 'title_id', 'type', 'role'], 'corporation_title_roles_primary_key');
+            $table->primary(['corporation_id', 'title_id', 'type', 'role'],
+                'corporation_title_roles_primary_key');
             $table->index('corporation_id');
             $table->index('title_id');
             $table->index('role');

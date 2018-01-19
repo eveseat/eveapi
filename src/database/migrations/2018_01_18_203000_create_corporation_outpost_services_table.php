@@ -23,7 +23,8 @@ class CreateCorporationOutpostServicesTable extends Migration
             $table->double('surcharge_per_bad_standing');
             $table->double('discount_per_good_standing');
 
-            $table->primary(['corporation_id', 'outpost_id', 'service_name'], 'corporation_outposts_primary_key');
+            $table->primary(['corporation_id', 'outpost_id', 'service_name'],
+                'corporation_outposts_primary_key');
             $table->index('corporation_id');
             $table->index('outpost_id');
 

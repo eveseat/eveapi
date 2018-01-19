@@ -29,8 +29,8 @@ use Seat\Eveapi\Models\Corporation\CorporationTitleMember;
  * Class TitleMembers
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class TitleMembers extends EsiBase {
-
+class TitleMembers extends EsiBase
+{
     /**
      * @var string
      */
@@ -49,31 +49,28 @@ class TitleMembers extends EsiBase {
     /**
      * @throws \Exception
      */
-    public function handle() {
+    public function handle()
+    {
 
         $members = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        collect($members)->each(function($member){
+        collect($members)->each(function ($member) {
 
-            collect($member->titles)->each(function($title) use ($member) {
+            collect($member->titles)->each(function ($title) use ($member) {
 
-                CorporationTitleMember::firstOrNew([
+                CorporationTitleMember::firstOrCreate([
                     'corporation_id' => $this->getCorporationId(),
                     'character_id'   => $member->character_id,
                     'title_id'       => $title,
-                ])->save();
-
+                ]);
             });
 
             CorporationTitleMember::where('corporation_id', $this->getCorporationId())
-                                  ->where('character_id', $member->character_id)
-                                  ->whereNotIn('title_id', collect($member->titles)->flatten()->all())
-                                  ->delete();
-
+                ->where('character_id', $member->character_id)
+                ->whereNotIn('title_id', collect($member->titles)->flatten()->all())
+                ->delete();
         });
-
     }
-
 }

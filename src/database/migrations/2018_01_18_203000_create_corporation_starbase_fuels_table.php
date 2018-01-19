@@ -21,7 +21,8 @@ class CreateCorporationStarbaseFuelsTable extends Migration
             $table->integer('type_id');
             $table->integer('quantity');
 
-            $table->primary(['corporation_id', 'starbase_id', 'type_id'], 'corporation_starbase_fuels_primary_key');
+            $table->primary(['corporation_id', 'starbase_id', 'type_id'],
+                'corporation_starbase_fuels_primary_key');
             $table->index('corporation_id');
             $table->index('starbase_id');
 

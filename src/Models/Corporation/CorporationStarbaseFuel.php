@@ -29,7 +29,8 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  * Class CorporationStarbaseFuel
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationStarbaseFuel extends Model {
+class CorporationStarbaseFuel extends Model
+{
 
     use HasCompositePrimaryKey;
 

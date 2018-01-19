@@ -30,8 +30,8 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Starbases
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Starbases extends EsiBase {
-
+class Starbases extends EsiBase
+{
     /**
      * @var string
      */
@@ -64,6 +64,7 @@ class Starbases extends EsiBase {
      */
     public function __construct(RefreshToken $token = null)
     {
+
         $this->known_starbases = collect();
 
         parent::__construct($token);
@@ -81,11 +82,11 @@ class Starbases extends EsiBase {
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($starbases)->each(function($starbase){
+            collect($starbases)->each(function ($starbase) {
 
                 CorporationStarbase::firstOrNew([
-                    'corporation_id'   => $this->getCorporationId(),
-                    'starbase_id'      => $starbase->starbase_id,
+                    'corporation_id' => $this->getCorporationId(),
+                    'starbase_id'    => $starbase->starbase_id,
                 ])->fill([
                     'moon_id'          => $starbase->moon_id ?? null,
                     'onlined_since'    => property_exists($starbase, 'onlined_since') ?
@@ -105,13 +106,10 @@ class Starbases extends EsiBase {
 
             if (! $this->nextPage($starbases->pages))
                 break;
-
         }
 
         CorporationStarbase::where('corporation_id', $this->getCorporationId())
-                           ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
-                           ->delete();
-
+            ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
+            ->delete();
     }
-
 }

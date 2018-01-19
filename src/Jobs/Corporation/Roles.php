@@ -26,8 +26,12 @@ namespace Seat\Eveapi\Jobs\Corporation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationRole;
 
-class Roles extends EsiBase {
-
+/**
+ * Class Roles
+ * @package Seat\Eveapi\Jobs\Corporation
+ */
+class Roles extends EsiBase
+{
     /**
      * @var string
      */
@@ -44,54 +48,53 @@ class Roles extends EsiBase {
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $types = [
+        'roles',
+        'grantable_roles',
+        'roles_at_hq',
+        'grantable_roles_at_hq',
+        'roles_at_base',
+        'grantable_roles_at_base',
+        'roles_at_other',
+        'grantable_roles_at_other',
+    ];
+
+    /**
      * @throws \Exception
      */
-    public function handle() {
-
-        $types = [
-            'roles',
-            'grantable_roles',
-            'roles_at_hq',
-            'grantable_roles_at_hq',
-            'roles_at_base',
-            'grantable_roles_at_base',
-            'roles_at_other',
-            'grantable_roles_at_other',
-        ];
+    public function handle()
+    {
 
         $roles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        collect($roles)->each(function($role) use ($types) {
+        collect($roles)->each(function ($role) {
 
-            collect($types)->each(function($type) use ($role) {
+            collect($this->types)->each(function ($type) use ($role) {
 
-                if (property_exists($role, $type)) {
+                if (! property_exists($role, $type))
+                    return;
 
-                    collect($role->{$type})->each(function($name) use ($role, $type) {
+                collect($role->{$type})->each(function ($name) use ($role, $type) {
 
-                        CorporationRole::firstOrNew([
-                            'corporation_id' => $this->getCorporationId(),
-                            'character_id'   => $role->character_id,
-                            'type'           => $type,
-                            'role'           => $name,
-                        ])->save();
+                    CorporationRole::firstOrCreate([
+                        'corporation_id' => $this->getCorporationId(),
+                        'character_id'   => $role->character_id,
+                        'type'           => $type,
+                        'role'           => $name,
+                    ]);
 
-                    });
+                });
 
-                    CorporationRole::where('corporation_id', $this->getCorporationId())
-                                   ->where('character_id', $role->character_id )
-                                   ->where('type', $type)
-                                   ->whereNotIn('role', collect($role->{$type})->flatten()->all() )
-                                   ->delete();
-
-                }
-
+                CorporationRole::where('corporation_id', $this->getCorporationId())
+                    ->where('character_id', $role->character_id)
+                    ->where('type', $type)
+                    ->whereNotIn('role', collect($role->{$type})->flatten()->all())
+                    ->delete();
             });
-
         });
-
     }
-
 }

@@ -32,8 +32,8 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Starbase
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Starbase extends EsiBase {
-
+class StarbaseDetails extends EsiBase
+{
     /**
      * @var string
      */
@@ -42,7 +42,7 @@ class Starbase extends EsiBase {
     /**
      * @var string
      */
-    protected $endpoint = '/corporations/{corporation_id}/starbases/{starbase_id}';
+    protected $endpoint = '/corporations/{corporation_id}/starbases/{starbase_id}/';
 
     /**
      * @var string
@@ -52,7 +52,7 @@ class Starbase extends EsiBase {
     /**
      * @var
      */
-    protected $know_starbases;
+    protected $known_starbases;
 
     /**
      * Starbase constructor.
@@ -61,6 +61,7 @@ class Starbase extends EsiBase {
      */
     public function __construct(RefreshToken $token = null)
     {
+
         $this->known_starbases = collect();
 
         parent::__construct($token);
@@ -69,11 +70,10 @@ class Starbase extends EsiBase {
     /**
      * @throws \Exception
      */
-    public function handle() {
+    public function handle()
+    {
 
-        CorporationStarbase::where('corporation_id', $this->getCorporationId())
-                           ->get()
-                           ->each(function($starbase) {
+        CorporationStarbase::where('corporation_id', $this->getCorporationId())->get()->each(function ($starbase) {
 
             $this->query_string = [
                 'system_id' => $starbase->system_id,
@@ -104,14 +104,15 @@ class Starbase extends EsiBase {
             ])->save();
 
             if (property_exists($detail, 'fuels'))
-                collect($detail->fuels)->each(function($fuel) use ($starbase) {
+
+                collect($detail->fuels)->each(function ($fuel) use ($starbase) {
 
                     CorporationStarbaseFuel::firstOrNew([
                         'corporation_id' => $this->getCorporationId(),
                         'starbase_id'    => $starbase->starbase_id,
                         'type_id'        => $fuel->type_id,
                     ])->fill([
-                        'quantity'       => $fuel->quantity,
+                        'quantity' => $fuel->quantity,
                     ])->save();
 
                 });
@@ -121,13 +122,11 @@ class Starbase extends EsiBase {
         });
 
         CorporationStarbaseDetail::where('corporation_id', $this->getCorporationId())
-                                 ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
-                                 ->delete();
+            ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
+            ->delete();
 
         CorporationStarbaseFuel::where('corporation_id', $this->getCorporationId())
-                               ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
-                               ->delete();
-
+            ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
+            ->delete();
     }
-
 }

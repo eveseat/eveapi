@@ -20,7 +20,8 @@ class CreateCorporationTitleMembersTable extends Migration
             $table->bigInteger('character_id');
             $table->integer('title_id');
 
-            $table->primary(['corporation_id', 'character_id', 'title_id'], 'corporation_title_members_primary_key');
+            $table->primary(['corporation_id', 'character_id', 'title_id'],
+                'corporation_title_members_primary_key');
             $table->index('corporation_id');
             $table->index('character_id');
             $table->index('title_id');

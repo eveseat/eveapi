@@ -24,15 +24,14 @@ namespace Seat\Eveapi\Jobs\Corporation;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Corporation\CorporationRole;
 use Seat\Eveapi\Models\Corporation\CorporationRoleHistory;
 
 /**
  * Class RoleHistories
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class RoleHistories extends EsiBase {
-
+class RoleHistories extends EsiBase
+{
     /**
      * @var string
      */
@@ -56,7 +55,8 @@ class RoleHistories extends EsiBase {
     /**
      * @throws \Exception
      */
-    public function handle() {
+    public function handle()
+    {
 
         while (true) {
 
@@ -64,9 +64,9 @@ class RoleHistories extends EsiBase {
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($roles)->each(function($role){
+            collect($roles)->each(function ($role) {
 
-                collect($role->old_roles)->each(function($role_id) use ($role) {
+                collect($role->old_roles)->each(function ($role_id) use ($role) {
 
                     CorporationRoleHistory::firstOrNew([
                         'corporation_id' => $this->getCorporationId(),
@@ -74,14 +74,14 @@ class RoleHistories extends EsiBase {
                         'changed_at'     => carbon($role->changed_at),
                         'role_type'      => $role->role_type,
                         'state'          => 'old',
-                        'role'           => $role_id
+                        'role'           => $role_id,
                     ])->fill([
-                        'issuer_id'      => $role->issuer_id,
+                        'issuer_id' => $role->issuer_id,
                     ])->save();
 
                 });
 
-                collect($role->new_roles)->each(function($role_id) use ($role) {
+                collect($role->new_roles)->each(function ($role_id) use ($role) {
 
                     CorporationRoleHistory::firstOrNew([
                         'corporation_id' => $this->getCorporationId(),
@@ -89,9 +89,9 @@ class RoleHistories extends EsiBase {
                         'changed_at'     => carbon($role->changed_at),
                         'role_type'      => $role->role_type,
                         'state'          => 'new',
-                        'role'           => $role_id
+                        'role'           => $role_id,
                     ])->fill([
-                        'issuer_id'      => $role->issuer_id,
+                        'issuer_id' => $role->issuer_id,
                     ])->save();
 
                 });
@@ -100,9 +100,6 @@ class RoleHistories extends EsiBase {
 
             if (! $this->nextPage($roles->pages))
                 break;
-
         }
-
     }
-
 }

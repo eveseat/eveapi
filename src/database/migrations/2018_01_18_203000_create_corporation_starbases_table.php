@@ -21,7 +21,8 @@ class CreateCorporationStarbasesTable extends Migration
             $table->integer('moon_id')->nullable();
             $table->dateTime('onlined_since')->nullable();
             $table->dateTime('reinforced_until')->nullable();
-            $table->enum('state', ['offline', 'online', 'onlining', 'reinforced', 'unanchoring'])->nullable();
+            $table->enum('state', ['offline', 'online', 'onlining', 'reinforced', 'unanchoring'])
+                ->nullable();
             $table->integer('type_id');
             $table->integer('system_id');
             $table->dateTime('unanchor_at')->nullable();

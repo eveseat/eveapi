@@ -33,7 +33,8 @@ class CreateCorporationRoleHistoriesTable extends Migration
             $table->bigInteger('issuer_id');
             $table->string('role');
 
-            $table->primary(['corporation_id', 'character_id', 'changed_at', 'role_type', 'state', 'role'], 'corporation_role_histories_primary_key');
+            $table->primary(['corporation_id', 'character_id', 'changed_at', 'role_type', 'state', 'role'],
+                'corporation_role_histories_primary_key');
             $table->index('corporation_id');
             $table->index('character_id');
 
