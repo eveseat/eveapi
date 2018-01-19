@@ -50,11 +50,6 @@ class OutpostDetails extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var int
-     */
-    protected $page = 1;
-
-    /**
      * @var \Illuminate\Support\Collection
      */
     protected $known_outposts;
@@ -79,37 +74,37 @@ class OutpostDetails extends EsiBase
     {
 
         CorporationOutpost::where('corporation_id', $this->getCorporationId())->get()
-            ->each(function ($outpost_id) {
+            ->each(function ($outpost) {
 
-                $outpost = $this->retrieve([
+                $detail = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'outpost_id'     => $outpost_id,
+                    'outpost_id'     => $outpost->outpost_id,
                 ]);
 
                 // TODO: Add find_nearest_celestial() data
 
                 CorporationOutpostDetail::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'outpost_id'     => $outpost_id,
+                    'outpost_id'     => $outpost->outpost_id,
                 ])->fill([
-                    'owner_id'                     => $outpost->owner_id,
-                    'system_id'                    => $outpost->system_id,
-                    'docking_cost_per_ship_volume' => $outpost->docking_cost_per_ship_volume,
-                    'office_rental_cost'           => $outpost->office_rental_cost,
-                    'type_id'                      => $outpost->type_id,
-                    'reprocessing_efficiency'      => $outpost->reprocessing_efficiency,
-                    'reprocessing_station_take'    => $outpost->reprocessing_station_take,
-                    'standing_owner_id'            => $outpost->standing_owner_id,
-                    'x'                            => $outpost->coordinates->x,
-                    'y'                            => $outpost->coordinates->y,
-                    'z'                            => $outpost->coordinates->z,
+                    'owner_id'                     => $detail->owner_id,
+                    'system_id'                    => $detail->system_id,
+                    'docking_cost_per_ship_volume' => $detail->docking_cost_per_ship_volume,
+                    'office_rental_cost'           => $detail->office_rental_cost,
+                    'type_id'                      => $detail->type_id,
+                    'reprocessing_efficiency'      => $detail->reprocessing_efficiency,
+                    'reprocessing_station_take'    => $detail->reprocessing_station_take,
+                    'standing_owner_id'            => $detail->standing_owner_id,
+                    'x'                            => $detail->coordinates->x,
+                    'y'                            => $detail->coordinates->y,
+                    'z'                            => $detail->coordinates->z,
                 ])->save();
 
-                collect($outpost->services)->each(function ($service) use ($outpost_id, $outpost) {
+                collect($detail->services)->each(function ($service) use ($outpost, $detail) {
 
                     CorporationOutpostService::firstOrNew([
                         'corporation_id' => $this->getCorporationId(),
-                        'outpost_id'     => $outpost_id,
+                        'outpost_id'     => $outpost->outpost_id,
                         'service_name'   => $service->service_name,
                     ])->fill([
                         'minimum_standing'           => $service->minimum_standing,
@@ -120,13 +115,13 @@ class OutpostDetails extends EsiBase
                 });
 
                 CorporationOutpostService::where('corporation_id', $this->getCorporationId())
-                    ->where('outpost_id', $outpost_id)
-                    ->whereNotIn('service_name', collect($outpost->services)
+                    ->where('outpost_id', $outpost->outpost_id)
+                    ->whereNotIn('service_name', collect($detail->services)
                         ->pluck('service_name')
                         ->flatten()->all())
                     ->delete();
 
-                $this->known_outposts->push($outpost_id);
+                $this->known_outposts->push($outpost->outpost_id);
 
             });
 
