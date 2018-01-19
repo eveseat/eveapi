@@ -83,48 +83,10 @@ class Outposts extends EsiBase {
 
             collect($outposts)->each(function($outpost_id){
 
-                $outpost = $this->eseye()->setVersion('v1')->invoke('get', '/corporations/{corporation_id}/outposts/{outpost_id}', [
-                    'corporation_id' => $this->getCorporationId(),
-                    'outpost_id'     => $outpost_id,
-                ]);
-
                 CorporationOutpost::firstOrNew([
                     'corporation_id'               => $this->getCorporationId(),
                     'outpost_id'                   => $outpost_id,
-                ])->fill([
-                    'owner_id'                     => $outpost->owner_id,
-                    'system_id'                    => $outpost->system_id,
-                    'docking_cost_per_ship_volume' => $outpost->docking_cost_per_ship_volume,
-                    'office_rental_cost'           => $outpost->office_rental_cost,
-                    'type_id'                      => $outpost->type_id,
-                    'reprocessing_efficiency'      => $outpost->reprocessing_efficiency,
-                    'reprocessing_station_take'    => $outpost->reprocessing_station_take,
-                    'standing_owner_id'            => $outpost->standing_owner_id,
-                    'x'                            => $outpost->coordinates->x,
-                    'y'                            => $outpost->coordinates->y,
-                    'z'                            => $outpost->coordinates->z,
                 ])->save();
-
-                collect($outpost->services)->each(function($service) use ($outpost_id, $outpost) {
-
-                    CorporationOutpostService::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'outpost_id'     => $outpost_id,
-                        'service_name'   => $service->service_name,
-                    ])->fill([
-                        'minimum_standing'           => $service->minimum_standing,
-                        'surcharge_per_bad_standing' => $service->surcharge_per_bad_standing,
-                        'discount_per_good_standing' => $service->discount_per_good_standing,
-                    ])->save();
-
-                });
-
-                CorporationOutpostService::where('corporation_id', $this->getCorporationId())
-                                         ->where('outpost_id', $outpost_id)
-                                         ->whereNotIn('service_name', collect($outpost->services)
-                                             ->pluck('service_name')
-                                             ->flatten()->all())
-                                         ->delete();
 
                 $this->known_outposts->push($outpost_id);
 
