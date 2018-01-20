@@ -69,23 +69,23 @@ class Orders extends EsiBase
             collect($orders)->each(function ($order) {
 
                 CorporationOrder::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'order_id' => $order->order_id,
+                    'corporation_id'  => $this->getCorporationId(),
+                    'order_id'        => $order->order_id,
                 ])->fill([
-                    'type_id' => $order->type_id,
-                    'region_id' => $order->region_id,
-                    'location_id' => $order->location_id,
-                    'range' => $order->range,
-                    'is_buy_order' => $order->is_buy_order,
-                    'price' => $order->price,
-                    'volume_total' => $order->volume_total,
-                    'volume_remain' => $order->volume_remain,
-                    'issued' => carbon($order->issued),
-                    'state' => $order->state,
-                    'min_volume' => $order->min_volume,
+                    'type_id'         => $order->type_id,
+                    'region_id'       => $order->region_id,
+                    'location_id'     => $order->location_id,
+                    'range'           => $order->range,
+                    'is_buy_order'    => $order->is_buy_order,
+                    'price'           => $order->price,
+                    'volume_total'    => $order->volume_total,
+                    'volume_remain'   => $order->volume_remain,
+                    'issued'          => carbon($order->issued),
+                    'state'           => $order->state,
+                    'min_volume'      => $order->min_volume,
                     'wallet_division' => $order->wallet_division,
-                    'duration' => $order->duration,
-                    'escrow' => $order->escrow,
+                    'duration'        => $order->duration,
+                    'escrow'          => $order->escrow,
                 ])->save();
             });
 
