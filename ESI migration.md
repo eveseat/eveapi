@@ -4,7 +4,7 @@
 - */alliances/{alliance_id}/*
 - */alliances/{alliance_id}/corporations/*
 - */alliances/{alliance_id}/icons/*
-# Assets
+# ~~Assets~~
 - ~~/characters/{character_id}/assets/~~
 - ~~/corporations{corporation_id}/assets/~~
 # Bookmarks
@@ -31,7 +31,7 @@
 - */characters/{character_id}/notifications/contacts/*
 - ~~/characters/{character_id}/roles/~~
 - ~~/characters/{character_id}/titles/~~
-# Clones
+# ~~Clones~~
 - ~~/characters/{character_id}/clones/~~
 - ~~/characters/{character_id}/implants/~~
 # Contacts
@@ -39,7 +39,7 @@
 - ~~/corporations/{corporation_id}/contacts/~~
 - */alliances/{alliance_id}/contacts/*
 - ~~/characters/{character_id}/contacts/labels/~~
-# Contracts
+# ~~Contracts~~
 - ~~/characters/{character_id}/contracts/~~
 - ~~/characters/{character_id}/contracts/{contract_id}/items/~~
 - ~~/characters/{character_id}/contracts/{contract_id}/bids/~~
@@ -86,7 +86,7 @@
 - */fw/leaderboards/corporations/*
 - */characters/{character_id}/fw/stats/*
 - */corporations/{corporation_id}/fw/stats/*
-# Fittings
+# ~~Fittings~~
 - ~~/characters/{character_id}/fittings/~~
 # Fleets
 - */fleets/{fleet_id}/*
@@ -110,14 +110,14 @@
 - */killmails/{killmail_id}/{killmail_hash}/*
 - ~~/characters/{character_id}/killmails/recent/~~
 - ~~/corporations/{corporation_id}/killmails/recent/~~
-# Location
+# ~~Location~~
 - ~~/characters/{character_id}/location/~~
 - ~~/characters/{character_id}/ships/~~
 - ~~/characters/{character_id}/online/~~
 # Loyalty
 - */loyalty/stores/{corporation_id}/offers/*
 - */characters/{character_id}/loyalty/points/*
-# Mail
+# ~~Mail~~
 - ~~/characters/{character_id}/mail/~~
 - ~~/characters/{character_id}/mail/labels/~~
 - ~~/characters/{character_id}/mail/lists/~~
@@ -156,7 +156,7 @@
 - */sovereignty/structures/*
 - */sovereignty/campaigns/*
 - */sovereignty/map/*
-# Status
+# ~~Status~~
 - ~~/status/~~
 # Universe
 - */universe/planets/{planet_id}/*
@@ -185,7 +185,7 @@
 - */universe/system_jumps/*
 - */universe/system_kills/*
 - */universe/starts/{star_id}/*
-# Wallet
+# ~~Wallet~~
 - ~~/characters/{character_id}/wallet/~~
 - ~~/characters/{character_id}/wallet/journal/~~
 - ~~/characters/{character_id}/wallet/transactions/~~
