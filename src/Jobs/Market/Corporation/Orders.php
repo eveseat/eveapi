@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Market\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 
@@ -47,6 +46,9 @@ class Orders extends EsiBase
      */
     protected $version = 'v1';
 
+    /**
+     * @var int
+     */
     protected $page = 1;
 
     /**
@@ -67,8 +69,8 @@ class Orders extends EsiBase
             collect($orders)->each(function ($order) {
 
                 CorporationOrder::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'order_id'       => $order->order_id,
+                    'corporation_id'  => $this->getCorporationId(),
+                    'order_id'        => $order->order_id,
                 ])->fill([
                     'type_id'         => $order->type_id,
                     'region_id'       => $order->region_id,

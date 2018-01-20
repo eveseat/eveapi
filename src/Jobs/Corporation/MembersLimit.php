@@ -62,7 +62,7 @@ class MembersLimit extends EsiBase
         CorporationMembersLimit::firstOrNew([
             'corporation_id' => $this->getCorporationId(),
         ])->fill([
-            'limit' => $limit->scalar,
+            'limit'          => $limit->scalar,
         ])->save();
 
     }

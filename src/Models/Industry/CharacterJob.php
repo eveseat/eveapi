@@ -26,10 +26,10 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationIndustryJob
- * @package Seat\Eveapi\Models\Industry
+ * Class CharacterIndustryJob
+ * @package Seat\Eveapi\Models\Contacts
  */
-class CorporationIndustryJob extends Model
+class CharacterJob extends Model
 {
     use HasCompositePrimaryKey;
 
@@ -41,5 +41,5 @@ class CorporationIndustryJob extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['corporation_id', 'job_id'];
+    protected $primaryKey = ['character_id', 'job_id'];
 }

@@ -36,6 +36,11 @@ class CorporationMembersLimit extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string
+     */
+    protected $table = 'corporation_members_limit';
+
+    /**
      * @var bool
      */
     public $incrementing = false;
@@ -44,4 +49,5 @@ class CorporationMembersLimit extends Model
      * @var string
      */
     protected $primaryKey = 'corporation_id';
+
 }

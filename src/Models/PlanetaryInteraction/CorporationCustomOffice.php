@@ -20,26 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Industry;
+namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
-/**
- * Class CharacterIndustryJob
- * @package Seat\Eveapi\Models\Contacts
- */
-class CharacterIndustryJob extends Model
+class CorporationCustomOffice extends Model
 {
+
     use HasCompositePrimaryKey;
 
-    /**
-     * @var bool
-     */
     protected static $unguarded = true;
 
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'job_id'];
+    protected $primaryKey = ['corporation_id', 'office_id'];
+
 }
