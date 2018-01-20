@@ -30,9 +30,10 @@ use Seat\Eveapi\Models\Killmails\KillmailDetail;
 use Seat\Eveapi\Models\Killmails\KillmailVictim;
 use Seat\Eveapi\Models\Killmails\KillmailVictimItem;
 
+
 /**
  * Class Detail
- * @package Seat\Eveapi\Jobs\Killmails\Character
+ * @package Seat\Eveapi\Jobs\Killmails\Corporation
  */
 class Detail extends EsiBase
 {
