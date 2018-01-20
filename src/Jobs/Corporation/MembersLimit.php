@@ -56,13 +56,13 @@ class MembersLimit extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if (!property_exists($limit, 'scalar'))
+        if (! property_exists($limit, 'scalar'))
             return;
 
         CorporationMembersLimit::firstOrNew([
             'corporation_id' => $this->getCorporationId(),
         ])->fill([
-            'limit'          => $limit->scalar,
+            'limit' => $limit->scalar,
         ])->save();
 
     }

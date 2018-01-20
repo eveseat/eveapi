@@ -28,7 +28,8 @@ class CreateCorporationWalletTransactionsTable extends Migration
             $table->boolean('is_buy');
             $table->bigInteger('journal_ref_id');
 
-            $table->primary(['corporation_id', 'division', 'transaction_id'], 'corporation_wallet_transactions_primary_key');
+            $table->primary(['corporation_id', 'division', 'transaction_id'],
+                'corporation_wallet_transactions_primary_key');
             $table->index('corporation_id');
             $table->index(['corporation_id', 'division']);
             $table->index('transaction_id');

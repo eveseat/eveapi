@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCorporationMembersLimitTable extends Migration
+class CreateCorporationMemberLimitsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateCorporationMembersLimitTable extends Migration
     public function up()
     {
 
-        Schema::create('corporation_members_limit', function (Blueprint $table) {
+        Schema::create('corporation_member_limits', function (Blueprint $table) {
 
             $table->bigInteger('corporation_id');
             $table->integer('limit');
@@ -33,6 +33,6 @@ class CreateCorporationMembersLimitTable extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('corporation_members_limit');
+        Schema::dropIfExists('corporation_member_limits');
     }
 }

@@ -33,7 +33,8 @@ class CreateCorporationWalletJournalsTable extends Migration
             $table->bigInteger('tax_receiver_id')->nullable();
             $table->double('tax')->nullable();
 
-            $table->primary(['corporation_id', 'division', 'ref_id'], 'corporation_wallet_journals_primary_key');
+            $table->primary(['corporation_id', 'division', 'ref_id'],
+                'corporation_wallet_journals_primary_key');
             $table->index('corporation_id');
             $table->index(['corporation_id', 'division']);
             $table->index('ref_id');

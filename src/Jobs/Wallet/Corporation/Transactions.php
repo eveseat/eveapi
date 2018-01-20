@@ -64,60 +64,57 @@ class Transactions extends EsiBase
     public function handle()
     {
 
-        CorporationDivision::where('corporation_id', $this->getCorporationId())
-                           ->get()
-                           ->each(function($division) {
+        CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
+            ->each(function ($division) {
 
-           // Perform a journal walk backwards to get all of the
-           // entries as far back as possible. When the response from
-           // ESI is empty, we can assume we have everything.
-           while (true) {
+                // Perform a journal walk backwards to get all of the
+                // entries as far back as possible. When the response from
+                // ESI is empty, we can assume we have everything.
+                while (true) {
 
-               $this->query_string = ['from_id' => $this->from_id];
+                    $this->query_string = ['from_id' => $this->from_id];
 
-               $transactions = $this->retrieve([
-                   'corporation_id' => $this->getCorporationId(),
-                   'division'       => $division->division,
-               ]);
+                    $transactions = $this->retrieve([
+                        'corporation_id' => $this->getCorporationId(),
+                        'division'       => $division->division,
+                    ]);
 
-               // If we have no more entries, break the loop.
-               if (collect($transactions)->count() === 0) {
-                   break;
-               }
+                    // If we have no more entries, break the loop.
+                    if (collect($transactions)->count() === 0)
+                        break;
 
-               collect($transactions)->each(function($transaction) use ($division) {
+                    collect($transactions)->each(function ($transaction) use ($division) {
 
-                   $transaction_entry = CorporationWalletTransaction::firstOrNew([
-                       'corporation_id' => $this->getCorporationId(),
-                       'division'       => $division->division,
-                       'transaction_id' => $transaction->transaction_id,
-                   ]);
+                        $transaction_entry = CorporationWalletTransaction::firstOrNew([
+                            'corporation_id' => $this->getCorporationId(),
+                            'division'       => $division->division,
+                            'transaction_id' => $transaction->transaction_id,
+                        ]);
 
-                   // If this transaction entry has already been recorded,
-                   // move on to the next.
-                   if ($transaction_entry->exists) {
-                       return;
-                   }
+                        // If this transaction entry has already been recorded,
+                        // move on to the next.
+                        if ($transaction_entry->exists)
+                            return;
 
-                   $transaction_entry->fill([
-                       'date'           => carbon( $transaction->date ),
-                       'type_id'        => $transaction->type_id,
-                       'location_id'    => $transaction->location_id,
-                       'unit_price'     => $transaction->unit_price,
-                       'quantity'       => $transaction->quantity,
-                       'client_id'      => $transaction->client_id,
-                       'is_buy'         => $transaction->is_buy,
-                       'journal_ref_id' => $transaction->journal_ref_id,
-                   ])->save();
-               });
+                        $transaction_entry->fill([
+                            'date'           => carbon($transaction->date),
+                            'type_id'        => $transaction->type_id,
+                            'location_id'    => $transaction->location_id,
+                            'unit_price'     => $transaction->unit_price,
+                            'quantity'       => $transaction->quantity,
+                            'client_id'      => $transaction->client_id,
+                            'is_buy'         => $transaction->is_buy,
+                            'journal_ref_id' => $transaction->journal_ref_id,
+                        ])->save();
+                    });
 
-               // Update the from_id to be the new lowest (ref_id - 1) that we
-               // know of. The next all will use this.
-               $this->from_id = collect($transactions)->min('transaction_id') - 1;
-           }
+                    // Update the from_id to be the new lowest (ref_id - 1) that we
+                    // know of. The next all will use this.
+                    $this->from_id = collect($transactions)->min('transaction_id') - 1;
+                }
 
-           $this->from_id = PHP_INT_MAX;
-
-       });
+                // Reset the from_id for the next wallet division
+                $this->from_id = PHP_INT_MAX;
+            });
     }
 }

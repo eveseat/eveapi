@@ -31,18 +31,12 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationWalletBalance extends Model
 {
-
     use HasCompositePrimaryKey;
 
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
 
     /**
      * @var array

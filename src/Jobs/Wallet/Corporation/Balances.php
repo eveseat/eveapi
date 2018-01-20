@@ -53,7 +53,8 @@ class Balances extends EsiBase
      * @return void
      * @throws \Exception
      */
-    public function handle() {
+    public function handle()
+    {
 
         $balances = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
@@ -65,7 +66,7 @@ class Balances extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
                 'division'       => $balance->division,
             ])->fill([
-                'balance'        => $balance->balance,
+                'balance' => $balance->balance,
             ])->save();
 
         });
