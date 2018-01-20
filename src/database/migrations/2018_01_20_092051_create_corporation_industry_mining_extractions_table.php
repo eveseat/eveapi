@@ -18,13 +18,15 @@ class CreateCorporationIndustryMiningExtractionsTable extends Migration
 
             $table->bigInteger('corporation_id');
             $table->bigInteger('structure_id');
-            $table->integer('moon_id');
             $table->dateTime('extraction_start_time');
+            $table->integer('moon_id');
             $table->dateTime('chunk_arrival_time');
             $table->dateTime('natural_decay_time');
 
-            $table->primary(['corporation_id', 'structure_id'], 'extrations_primary');
+            $table->primary(['corporation_id', 'structure_id', 'extraction_start_time'], 'extrations_primary');
             $table->index('corporation_id');
+            $table->index('structure_id');
+            $table->index('moon_id');
 
             $table->timestamps();
         });
