@@ -12,10 +12,10 @@
 - ~~/characters/{character_id}/bookmarks/folders/~~
 - ~~/corporations/{corporation_id}/bookmarks/~~
 - ~~/corporations/{corporation_id}/bookmarks/folders/~~
-# Calendar
+# ~~Calendar~~
 - ~~/characters/{character_id}/calendar/~~
 - ~~/characters/{character_id}/calendar/{event_id}/~~
-- */characters/{character_id}/calendar/{event_id}/attendees/*
+- ~~/characters/{character_id}/calendar/{event_id}/attendees/~~
 # Character
 - ~~/characters/{character_id}/stats/~~
 - ~~/characters/{character_id}/~~
