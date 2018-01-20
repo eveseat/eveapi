@@ -20,16 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Killmails\Corporation;
+namespace Seat\Eveapi\Jobs\Industry\Corporation;
+
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Killmails\CorporationKillmail;
+use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
 /**
- * Class Recent
- * @package Seat\Eveapi\Jobs\Killmails\Corporation
+ * Class MiningExtractions
+ * @package Seat\Eveapi\Jobs\Industry\Corporation
  */
-class Recent extends EsiBase
+class MiningExtractions extends EsiBase
 {
     /**
      * @var string
@@ -39,10 +40,10 @@ class Recent extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/corporations/{corporation_id}/killmails/recent/';
+    protected $endpoint = '/corporation/{corporation_id}/mining/extractions/';
 
     /**
-     * @var int
+     * @var string
      */
     protected $version = 'v1';
 
@@ -55,17 +56,26 @@ class Recent extends EsiBase
     public function handle()
     {
 
-        $killmails = $this->retrieve([
+        $mining_extractions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        collect($killmails)->each(function ($killmail) {
+        collect($mining_extractions)->each(function ($extraction) {
 
-            CorporationKillmail::firstOrCreate([
+            CorporationIndustryMiningExtraction::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'killmail_id'    => $killmail->killmail_id,
-                'killmail_hash'  => $killmail->killmail_hash,
-            ]);
+                'structure_id'   => $extraction->structure_id,
+            ])->fill([
+                'moon_id'               => $extraction->moon_id,
+                'extraction_start_time' => carbon($extraction->extraction_start_time),
+                'chunk_arrival_time'    => carbon($extraction->chunk_arrival_time),
+                'natural_decay_time'    => carbon($extraction->natural_decay_time),
+            ])->save();
         });
+
+        CorporationIndustryMiningExtraction::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('structure_id', collect($mining_extractions)
+                ->pluck('structure_id')->flatten()->all())
+            ->delete();
     }
 }

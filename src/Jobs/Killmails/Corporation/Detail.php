@@ -30,14 +30,13 @@ use Seat\Eveapi\Models\Killmails\KillmailDetail;
 use Seat\Eveapi\Models\Killmails\KillmailVictim;
 use Seat\Eveapi\Models\Killmails\KillmailVictimItem;
 
+
 /**
  * Class Detail
- * @package Seat\Eveapi\Jobs\Killmails\Character
+ * @package Seat\Eveapi\Jobs\Killmails\Corporation
  */
 class Detail extends EsiBase
 {
-    // TODO : has to be test
-
     /**
      * @var string
      */
@@ -81,49 +80,36 @@ class Detail extends EsiBase
                 'killmail_id'     => $killmail_id,
                 'killmail_time'   => carbon($detail->killmail_time),
                 'solar_system_id' => $detail->solar_system_id,
-                'moon_id'         => property_exists($detail, 'moon_id') ? $detail->moon_id : null,
-                'war_id'          => property_exists($detail, 'war_id') ? $detail->war_id : null,
+                'moon_id'         => $detail->moon_id ?? null,
+                'war_id'          => $detail->war_id ?? null,
             ]);
 
             KillmailVictim::firstOrCreate([
                 'killmail_id'    => $killmail_id,
-                'character_id'   => property_exists($detail->victim, 'character_id') ?
-                    $detail->victim->character_id : null,
-                'corporation_id' => property_exists($detail->victim, 'corporation_id') ?
-                    $detail->victim->corporation_id : null,
-                'alliance_id'    => property_exists($detail->victim, 'alliance_id') ?
-                    $detail->victim->alliance_id : null,
-                'faction_id'     => property_exists($detail->victim, 'faction_id') ?
-                    $detail->victim->faction_id : null,
+                'character_id'   => $detail->victim->character_id ?? null,
+                'corporation_id' => $detail->victim->corporation_id ?? null,
+                'alliance_id'    => $detail->victim->alliance_id ?? null,
+                'faction_id'     => $detail->victim->faction_id ?? null,
                 'damage_taken'   => $detail->victim->damage_taken,
                 'ship_type_id'   => $detail->victim->ship_type_id,
-                'x'              => property_exists($detail->victim, 'position') ?
-                    $detail->victim->position->x : null,
-                'y'              => property_exists($detail->victim, 'position') ?
-                    $detail->victim->position->y : null,
-                'z'              => property_exists($detail->victim, 'position') ?
-                    $detail->victim->position->z : null,
+                'x'              => $detail->victim->position->x ?? null,
+                'y'              => $detail->victim->position->y ?? null,
+                'z'              => $detail->victim->position->z ?? null,
             ]);
 
             collect($detail->attackers)->each(function ($attacker) use ($killmail_id) {
 
                 KillmailAttacker::firstOrCreate([
                     'killmail_id'     => $killmail_id,
-                    'character_id'    => property_exists($attacker, 'character_id') ?
-                        $attacker->character_id : null,
-                    'corporation_id'  => property_exists($attacker, 'corporation_id') ?
-                        $attacker->corporation_id : null,
-                    'alliance_id'     => property_exists($attacker, 'alliance_id') ?
-                        $attacker->alliance_id : null,
-                    'faction_id'      => property_exists($attacker, 'faction_id') ?
-                        $attacker->faction_id : null,
+                    'character_id'    => $attacker->character_id ?? null,
+                    'corporation_id'  => $attacker->corporation_id ?? null,
+                    'alliance_id'     => $attacker->alliance_id ?? null,
+                    'faction_id'      => $attacker->faction_id ?? null,
                     'security_status' => $attacker->security_status,
                     'final_blow'      => $attacker->final_blow,
                     'damage_done'     => $attacker->damage_done,
-                    'ship_type_id'    => property_exists($attacker, 'ship_type_id') ?
-                        $attacker->ship_type_id : null,
-                    'weapon_type_id'  => property_exists($attacker, 'weapon_type_id') ?
-                        $attacker->weapon_type_id : null,
+                    'ship_type_id'    => $attacker->ship_type_id ?? null,
+                    'weapon_type_id'  => $attacker->weapon_type_id ?? null,
                 ]);
             });
 
@@ -135,10 +121,8 @@ class Detail extends EsiBase
                         'killmail_id'  => $killmail_id,
                         'item_type_id' => $item->item_type_id,
                     ])->fill([
-                        'quantity_destroyed' => property_exists($item, 'quantity_destroyed') ?
-                            $item->quantity_destroyed : null,
-                        'quantity_dropped'   => property_exists($item, 'quantity_dropped') ?
-                            $item->quantity_dropped : null,
+                        'quantity_destroyed' => $item->quantity_destroyed ?? null,
+                        'quantity_dropped'   => $item->quantity_dropped ?? null,
                         'singleton'          => $item->singleton,
                         'flag'               => $item->flag,
                     ])->save();

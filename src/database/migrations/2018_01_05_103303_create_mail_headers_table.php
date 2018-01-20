@@ -19,7 +19,7 @@ class CreateMailHeadersTable extends Migration
             $table->bigInteger('character_id');
             $table->bigInteger('mail_id');
             $table->string('subject');
-            $table->integer('from');
+            $table->bigInteger('from');
             $table->dateTime('timestamp');
             $table->json('labels');
             $table->boolean('is_read')->default(false);

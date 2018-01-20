@@ -28,8 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class CorporationMembersLimit
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationMembersLimit extends Model {
-
+class CorporationMembersLimit extends Model
+{
     /**
      * @var bool
      */
@@ -39,6 +39,11 @@ class CorporationMembersLimit extends Model {
      * @var string
      */
     protected $table = 'corporation_members_limit';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @var string

@@ -20,18 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Wallet;
+namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationWalletBalance
- * @package Seat\Eveapi\Models\Wallet
+ * Class CorporationIndustryMiningObserver
+ * @package Seat\Eveapi\Models\Industry
  */
-class CorporationWalletBalance extends Model
+class CorporationIndustryMiningObserver extends Model
 {
-
     use HasCompositePrimaryKey;
 
     /**
@@ -42,5 +41,5 @@ class CorporationWalletBalance extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['corporation_id', 'division'];
+    protected $primaryKey = ['corporation_id', 'observer_id'];
 }

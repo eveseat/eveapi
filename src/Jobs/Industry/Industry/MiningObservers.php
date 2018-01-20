@@ -20,16 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Killmails\Corporation;
+namespace Seat\Eveapi\Jobs\Industry\Corporation;
+
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Killmails\CorporationKillmail;
+use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 
 /**
- * Class Recent
- * @package Seat\Eveapi\Jobs\Killmails\Corporation
+ * Class MiningObservers
+ * @package Seat\Eveapi\Jobs\Industry\Corporation
  */
-class Recent extends EsiBase
+class MiningObservers extends EsiBase
 {
     /**
      * @var string
@@ -39,12 +40,17 @@ class Recent extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/corporations/{corporation_id}/killmails/recent/';
+    protected $endpoint = '/corporation/{corporation_id}/mining/observers/';
+
+    /**
+     * @var string
+     */
+    protected $version = 'v1';
 
     /**
      * @var int
      */
-    protected $version = 'v1';
+    protected $page = 1;
 
     /**
      * Execute the job.
@@ -55,17 +61,26 @@ class Recent extends EsiBase
     public function handle()
     {
 
-        $killmails = $this->retrieve([
+        $mining_observers = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        collect($killmails)->each(function ($killmail) {
+        collect($mining_observers)->each(function ($observer) {
 
-            CorporationKillmail::firstOrCreate([
+            CorporationIndustryMiningObserver::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'killmail_id'    => $killmail->killmail_id,
-                'killmail_hash'  => $killmail->killmail_hash,
-            ]);
+                'observer_id'    => $observer->observer_id,
+            ])->fill([
+                'last_updated'  => carbon($observer->last_updated),
+                'observer_type' => $observer->observer_type,
+            ])->save();
         });
+
+        CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('observer_id', collect($mining_observers)
+                ->pluck('observer_id')->flatten()->all())
+            ->delete();
+
+        // TODO: Process mining observer details.
     }
 }

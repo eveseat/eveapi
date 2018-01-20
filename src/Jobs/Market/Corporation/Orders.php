@@ -27,12 +27,10 @@ use Seat\Eveapi\Models\Market\CorporationOrder;
 
 /**
  * Class Orders
- * @package Seat\Eveapi\Jobs\Market\Character
+ * @package Seat\Eveapi\Jobs\Market\Corporation
  */
 class Orders extends EsiBase
 {
-    // TODO : has to be test
-
     /**
      * @var string
      */
@@ -92,8 +90,7 @@ class Orders extends EsiBase
             });
 
             if (! $this->nextPage($orders->pages))
-                break;
-
+                return;
         }
     }
 }

@@ -39,11 +39,6 @@ class CorporationOrder extends Model
     protected static $unguarded = true;
 
     /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'order_id'];
