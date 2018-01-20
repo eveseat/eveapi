@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCharacterIndustryJobsTable extends Migration
+class CreateCorporationIndustryJobsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,14 +14,14 @@ class CreateCharacterIndustryJobsTable extends Migration
     public function up()
     {
 
-        Schema::create('character_industry_jobs', function (Blueprint $table) {
+        Schema::create('corporation_industry_jobs', function (Blueprint $table) {
 
-            $table->bigInteger('character_id');
+            $table->bigInteger('corporation_id');
             $table->bigInteger('job_id');
 
             $table->bigInteger('installer_id');
             $table->bigInteger('facility_id');
-            $table->bigInteger('station_id');
+            $table->bigInteger('location_id');
             $table->integer('activity_id');
             $table->bigInteger('blueprint_id');
             $table->integer('blueprint_type_id');
@@ -41,10 +41,10 @@ class CreateCharacterIndustryJobsTable extends Migration
             $table->integer('completed_character_id')->nullable();
             $table->integer('successful_runs')->nullable();
 
-            $table->primary(['character_id', 'job_id']);
-            $table->integer('character_id');
+            $table->primary(['corporation_id', 'job_id']);
+            $table->index('corporation_id');
             $table->index('installer_id');
-            $table->index('station_id');
+            $table->index('location_id');
             $table->index('blueprint_id');
             $table->index('status');
 
@@ -60,6 +60,6 @@ class CreateCharacterIndustryJobsTable extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('character_industry_jobs');
+        Schema::dropIfExists('corporation_industry_jobs');
     }
 }
