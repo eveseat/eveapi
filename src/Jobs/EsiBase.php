@@ -289,8 +289,15 @@ abstract class EsiBase implements ShouldQueue
     public function tags(): array
     {
 
-        if (property_exists($this, 'tags'))
+        if (property_exists($this, 'tags')) {
+            if (is_null($this->token))
+                return array_merge($this->tags, ['public']);
+
             return array_merge($this->tags, ['character_id:' . $this->getCharacterId()]);
+        }
+
+        if (is_null($this->token))
+            return ['unknown_tag', 'public'];
 
         return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
     }
