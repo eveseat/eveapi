@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
+use Seat\Eveapi\Models\Industry\Mining\CorporationExtraction;
 
 /**
  * Class MiningExtractions
@@ -62,7 +62,7 @@ class Extractions extends EsiBase
 
         collect($mining_extractions)->each(function ($extraction) {
 
-            CorporationIndustryMiningExtraction::firstOrNew([
+            CorporationExtraction::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
                 'structure_id'   => $extraction->structure_id,
             ])->fill([
@@ -73,7 +73,7 @@ class Extractions extends EsiBase
             ])->save();
         });
 
-        CorporationIndustryMiningExtraction::where('corporation_id', $this->getCorporationId())
+        CorporationExtraction::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('structure_id', collect($mining_extractions)
                 ->pluck('structure_id')->flatten()->all())
             ->delete();

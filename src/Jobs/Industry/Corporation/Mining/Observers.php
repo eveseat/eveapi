@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Jobs\Industry\Corporation;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
+use Seat\Eveapi\Models\Industry\Mining\CorporationObserver;
 
 /**
  * Class MiningObservers
@@ -67,7 +67,7 @@ class Observers extends EsiBase
 
         collect($mining_observers)->each(function ($observer) {
 
-            CorporationIndustryMiningObserver::firstOrNew([
+            CorporationObserver::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
                 'observer_id'    => $observer->observer_id,
             ])->fill([
@@ -76,7 +76,7 @@ class Observers extends EsiBase
             ])->save();
         });
 
-        CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
+        CorporationObserver::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('observer_id', collect($mining_observers)
                 ->pluck('observer_id')->flatten()->all())
             ->delete();

@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Jobs\Industry\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
+use Seat\Eveapi\Models\Industry\CharacterJob;
 
 /**
  * Class Jobs
@@ -62,7 +62,7 @@ class Jobs extends EsiBase
 
         collect($industry_jobs)->each(function ($job) {
 
-            CharacterIndustryJob::firstOrNew([
+            CharacterJob::firstOrNew([
                 'character_id' => $this->getCharacterId(),
                 'job_id'       => $job->job_id,
             ])->fill([

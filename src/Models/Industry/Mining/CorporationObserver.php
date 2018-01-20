@@ -20,16 +20,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Industry;
+namespace Seat\Eveapi\Models\Industry\Mining;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationIndustryJob
- * @package Seat\Eveapi\Models\Industry
+ * Class CorporationIndustryMiningObserver
+ * @package Seat\Eveapi\Models\Industry\Mining
  */
-class CorporationIndustryJob extends Model
+class CorporationObserver extends Model
 {
     use HasCompositePrimaryKey;
 
@@ -41,5 +41,5 @@ class CorporationIndustryJob extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['corporation_id', 'job_id'];
+    protected $primaryKey = ['corporation_id', 'observer_id'];
 }
