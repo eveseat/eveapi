@@ -50,6 +50,11 @@ class Items extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'contracts'];
+
+    /**
      * Execute the job.
      *
      * @return void

@@ -48,6 +48,11 @@ class Queue extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'skills'];
+
+    /**
      * Execute the job.
      *
      * @return void

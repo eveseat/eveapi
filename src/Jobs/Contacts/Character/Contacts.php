@@ -49,6 +49,11 @@ class Contacts extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'contacts'];
+
+    /**
      * @var int
      */
     protected $page = 1;

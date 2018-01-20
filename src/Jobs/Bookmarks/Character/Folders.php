@@ -49,6 +49,11 @@ class Folders extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'folders'];
+
+    /**
      * @var int
      */
     protected $page = 1;

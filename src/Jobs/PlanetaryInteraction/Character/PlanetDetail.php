@@ -56,6 +56,11 @@ class PlanetDetail extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'pi'];
+
+    /**
      * @var int
      */
     protected $planet_limit = 1000;

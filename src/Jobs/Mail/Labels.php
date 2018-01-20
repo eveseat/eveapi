@@ -44,6 +44,11 @@ class Labels extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'mails'];
+
+    /**
      * Execute the job.
      *
      * @return void

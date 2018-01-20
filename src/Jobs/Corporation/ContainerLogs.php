@@ -47,6 +47,11 @@ class ContainerLogs extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'assets'];
+
+    /**
      * @var int
      */
     protected $page = 1;

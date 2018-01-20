@@ -48,6 +48,11 @@ class Assets extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'assets'];
+
+    /**
      * @var int
      */
     protected $page = 1;

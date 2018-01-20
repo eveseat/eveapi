@@ -47,6 +47,11 @@ class TitleMembers extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array 
+     */
+    protected $tags = ['corporation', 'members'];
+
+    /**
      * @throws \Exception
      */
     public function handle()

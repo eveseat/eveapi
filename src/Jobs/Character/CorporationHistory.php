@@ -44,6 +44,11 @@ class CorporationHistory extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'history'];
+
+    /**
      * Execute the job.
      *
      * @return void

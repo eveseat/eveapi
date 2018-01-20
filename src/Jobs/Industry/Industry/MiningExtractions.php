@@ -48,6 +48,11 @@ class MiningExtractions extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array 
+     */
+    protected $tags = ['corporation', 'mining'];
+
+    /**
      * Execute the job.
      *
      * @return void
