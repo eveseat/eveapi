@@ -27,41 +27,58 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarAttendee;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
 
-class Attendees extends EsiBase {
+/**
+ * Class Attendees
+ * @package Seat\Eveapi\Jobs\Calendar
+ */
+class Attendees extends EsiBase
+{
 
+    /**
+     * @var string
+     */
     protected $method = 'get';
 
+    /**
+     * @var string
+     */
     protected $endpoint = '/characters/{character_id}/calendar/{event_id}/attendees/';
 
+    /**
+     * @var string
+     */
     protected $version = 'v1';
 
+    /**
+     * @throws \Exception
+     */
     public function handle()
     {
 
-        CharacterCalendarEventDetail::where('owner_id', $this->getCharacterId())->get()->each(function($event){
+        CharacterCalendarEventDetail::where('owner_id', $this->getCharacterId())
+            ->get()->each(function ($event) {
 
-            $attendees = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
-                'event_id'     => $event->event_id,
-            ]);
+                $attendees = $this->retrieve([
+                    'character_id' => $this->getCharacterId(),
+                    'event_id'     => $event->event_id,
+                    'event_id'     => $event->event_id,
+                ]);
 
-            collect($attendees)->each(function($attendee) use ($event) {
+                collect($attendees)->each(function ($attendee) use ($event) {
 
-                CharacterCalendarAttendee::firstOrNew([
-                    'character_id'   => $this->getCharacterId(),
-                    'event_id'       => $event->event_id,
-                ])->fill([
-                    'event_response' => $attendee->event_response,
-                ])->save();
+                    CharacterCalendarAttendee::firstOrNew([
+                        'character_id' => $this->getCharacterId(),
+                        'event_id'     => $event->event_id,
+                    ])->fill([
+                        'event_response' => $attendee->event_response,
+                    ])->save();
 
+                });
+
+                CharacterCalendarAttendee::where('event_id', $event->event_id)
+                    ->whereNotIn('character_id', collect($attendees)
+                        ->pluck('character_id')->flatten()->all())
+                    ->delete();
             });
-
-            CharacterCalendarAttendee::where('event_id', $event->event_id)
-                ->whereNotIn('character_id', collect($attendees)->pluck('character_id')->flatten()->all())
-                ->delete();
-
-        });
-
     }
-
 }

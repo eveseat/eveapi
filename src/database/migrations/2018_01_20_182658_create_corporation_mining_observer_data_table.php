@@ -25,7 +25,8 @@ class CreateCorporationMiningObserverDataTable extends Migration
             $table->dateTime('last_updated');
             $table->bigInteger('quantity');
 
-            $table->primary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id']);
+            $table->primary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id'],
+                'obeserver_data_primary');
             $table->index('corporation_id');
             $table->index('observer_id');
             $table->index('recorded_corporation_id');
