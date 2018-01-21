@@ -20,17 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Industry\Corporation;
+namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
+use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
 /**
- * Class MiningObservers
+ * Class MiningExtractions
  * @package Seat\Eveapi\Jobs\Industry\Corporation
  */
-class MiningObservers extends EsiBase
+class Extractions extends EsiBase
 {
     /**
      * @var string
@@ -40,17 +40,12 @@ class MiningObservers extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/corporation/{corporation_id}/mining/observers/';
+    protected $endpoint = '/corporation/{corporation_id}/mining/extractions/';
 
     /**
      * @var string
      */
     protected $version = 'v1';
-
-    /**
-     * @var int
-     */
-    protected $page = 1;
 
     /**
      * Execute the job.
@@ -61,26 +56,22 @@ class MiningObservers extends EsiBase
     public function handle()
     {
 
-        $mining_observers = $this->retrieve([
+        $mining_extractions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        collect($mining_observers)->each(function ($observer) {
+        collect($mining_extractions)->each(function ($extraction) {
 
-            CorporationIndustryMiningObserver::firstOrNew([
+            CorporationIndustryMiningExtraction::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'observer_id'    => $observer->observer_id,
+                'structure_id'   => $extraction->structure_id,
+                'extraction_start_time' => carbon($extraction->extraction_start_time),
             ])->fill([
-                'last_updated'  => carbon($observer->last_updated),
-                'observer_type' => $observer->observer_type,
+                'moon_id'               => $extraction->moon_id,
+                'chunk_arrival_time'    => carbon($extraction->chunk_arrival_time),
+                'natural_decay_time'    => carbon($extraction->natural_decay_time),
             ])->save();
         });
 
-        CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('observer_id', collect($mining_observers)
-                ->pluck('observer_id')->flatten()->all())
-            ->delete();
-
-        // TODO: Process mining observer details.
     }
 }

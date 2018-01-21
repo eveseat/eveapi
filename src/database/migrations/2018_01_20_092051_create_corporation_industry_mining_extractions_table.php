@@ -25,6 +25,8 @@ class CreateCorporationIndustryMiningExtractionsTable extends Migration
 
             $table->primary(['corporation_id', 'structure_id'], 'extrations_primary');
             $table->index('corporation_id');
+            $table->index('structure_id');
+            $table->index('moon_id');
 
             $table->timestamps();
         });
