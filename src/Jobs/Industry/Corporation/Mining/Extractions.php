@@ -20,17 +20,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Industry\Corporation;
+namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
+
 /**
- * Class MiningExtractions
- * @package Seat\Eveapi\Jobs\Industry\Corporation
+ * Class Extractions
+ * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
-class MiningExtractions extends EsiBase
+class Extractions extends EsiBase
 {
     /**
      * @var string
@@ -63,19 +64,15 @@ class MiningExtractions extends EsiBase
         collect($mining_extractions)->each(function ($extraction) {
 
             CorporationIndustryMiningExtraction::firstOrNew([
-                'corporation_id' => $this->getCorporationId(),
-                'structure_id'   => $extraction->structure_id,
-            ])->fill([
-                'moon_id'               => $extraction->moon_id,
+                'corporation_id'        => $this->getCorporationId(),
+                'structure_id'          => $extraction->structure_id,
                 'extraction_start_time' => carbon($extraction->extraction_start_time),
-                'chunk_arrival_time'    => carbon($extraction->chunk_arrival_time),
-                'natural_decay_time'    => carbon($extraction->natural_decay_time),
+            ])->fill([
+                'moon_id'            => $extraction->moon_id,
+                'chunk_arrival_time' => carbon($extraction->chunk_arrival_time),
+                'natural_decay_time' => carbon($extraction->natural_decay_time),
             ])->save();
         });
 
-        CorporationIndustryMiningExtraction::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('structure_id', collect($mining_extractions)
-                ->pluck('structure_id')->flatten()->all())
-            ->delete();
     }
 }
