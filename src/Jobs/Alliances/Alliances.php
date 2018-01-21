@@ -49,6 +49,11 @@ class Alliances extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['public', 'alliances'];
+
+    /**
      * @throws \Exception
      */
     public function handle()

@@ -49,6 +49,11 @@ class Info extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var array
+     */
+    protected $tags = ['public', 'alliances'];
+
+    /**
      *
      */
     public function handle()
