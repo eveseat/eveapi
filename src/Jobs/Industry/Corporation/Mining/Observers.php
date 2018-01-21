@@ -26,9 +26,10 @@ namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 
+
 /**
- * Class MiningObservers
- * @package Seat\Eveapi\Jobs\Industry\Corporation
+ * Class Observers
+ * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
 class Observers extends EsiBase
 {
@@ -80,7 +81,5 @@ class Observers extends EsiBase
             ->whereNotIn('observer_id', collect($mining_observers)
                 ->pluck('observer_id')->flatten()->all())
             ->delete();
-
-        // TODO: Process mining observer details.
     }
 }

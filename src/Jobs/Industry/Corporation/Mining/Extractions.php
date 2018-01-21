@@ -26,9 +26,10 @@ namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
+
 /**
- * Class MiningExtractions
- * @package Seat\Eveapi\Jobs\Industry\Corporation
+ * Class Extractions
+ * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
 class Extractions extends EsiBase
 {
@@ -63,13 +64,13 @@ class Extractions extends EsiBase
         collect($mining_extractions)->each(function ($extraction) {
 
             CorporationIndustryMiningExtraction::firstOrNew([
-                'corporation_id' => $this->getCorporationId(),
-                'structure_id'   => $extraction->structure_id,
+                'corporation_id'        => $this->getCorporationId(),
+                'structure_id'          => $extraction->structure_id,
                 'extraction_start_time' => carbon($extraction->extraction_start_time),
             ])->fill([
-                'moon_id'               => $extraction->moon_id,
-                'chunk_arrival_time'    => carbon($extraction->chunk_arrival_time),
-                'natural_decay_time'    => carbon($extraction->natural_decay_time),
+                'moon_id'            => $extraction->moon_id,
+                'chunk_arrival_time' => carbon($extraction->chunk_arrival_time),
+                'natural_decay_time' => carbon($extraction->natural_decay_time),
             ])->save();
         });
 
