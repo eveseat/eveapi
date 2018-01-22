@@ -48,6 +48,11 @@ class Stats extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'stats'];
+
+    /**
      * Execute the job.
      *
      * @return void

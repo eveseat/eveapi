@@ -48,6 +48,11 @@ class Online extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'info'];
+
+    /**
      * Execute the job.
      *
      * @return void

@@ -49,6 +49,11 @@ class Observers extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'mining'];
+
+    /**
      * @var int
      */
     protected $page = 1;

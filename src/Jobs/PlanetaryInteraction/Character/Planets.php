@@ -48,6 +48,11 @@ class Planets extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'pi'];
+
+    /**
      * Execute the job.
      *
      * @return void

@@ -48,6 +48,11 @@ class Status extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['ccp'];
+
+    /**
      * Execute the job.
      *
      * @return void

@@ -52,6 +52,11 @@ class Detail extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array 
+     */
+    protected $tags = ['character', 'killmails'];
+
+    /**
      * Execute the job.
      *
      * @return void

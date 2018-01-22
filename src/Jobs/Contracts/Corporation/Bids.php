@@ -49,6 +49,11 @@ class Bids extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'tags'];
+
+    /**
      * @var int
      */
     protected $page = 1;

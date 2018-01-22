@@ -49,6 +49,11 @@ class Contracts extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'contracts'];
+
+    /**
      * @var int
      */
     protected $page = 1;

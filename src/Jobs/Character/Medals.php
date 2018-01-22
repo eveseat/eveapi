@@ -48,6 +48,11 @@ class Medals extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'medals'];
+
+    /**
      * Execute the job.
      *
      * @return void

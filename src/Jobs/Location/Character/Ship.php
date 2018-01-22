@@ -48,6 +48,11 @@ class Ship extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'info'];
+
+    /**
      * Execute the job.
      *
      * @return void

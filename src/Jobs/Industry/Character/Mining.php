@@ -48,6 +48,11 @@ class Mining extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array 
+     */
+    protected $tags = ['character', 'mining'];
+
+    /**
      * @var int
      */
     protected $page = 1;

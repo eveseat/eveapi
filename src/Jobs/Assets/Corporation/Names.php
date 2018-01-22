@@ -49,6 +49,11 @@ class Names extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'assets'];
+
+    /**
      * The maximum number of itemids we can request name
      * information for.
      *

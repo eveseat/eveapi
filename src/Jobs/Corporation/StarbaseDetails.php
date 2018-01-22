@@ -50,6 +50,11 @@ class StarbaseDetails extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'starbases'];
+
+    /**
      * @var
      */
     protected $known_starbases;

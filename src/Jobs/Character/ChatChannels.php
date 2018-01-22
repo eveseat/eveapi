@@ -50,6 +50,11 @@ class ChatChannels extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'channels'];
+
+    /**
      * Execute the job.
      *
      * @return void

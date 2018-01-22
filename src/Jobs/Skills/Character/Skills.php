@@ -50,6 +50,11 @@ class Skills extends EsiBase
     protected $version = 'v4';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'skills'];
+
+    /**
      * Execute the job.
      *
      * @return void

@@ -47,6 +47,11 @@ class Orders extends EsiBase
      */
     protected $version = 'v1';
 
+    /**
+     * @var array
+     */
+    protected $tags = ['corporations', 'markets'];
+
     protected $page = 1;
 
     /**
