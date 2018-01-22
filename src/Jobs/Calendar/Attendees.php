@@ -55,19 +55,24 @@ class Attendees extends EsiBase
     public function handle()
     {
 
-        CharacterCalendarEventDetail::where('owner_id', $this->getCharacterId())
+        $this->updateAttendees('character', $this->getCharacterId());
+    }
+
+    private function updateAttendees(string $owner_type, int $owner_id)
+    {
+        CharacterCalendarEventDetail::where('owner_id', $owner_id)
+            ->where('owner_type', $owner_type)
             ->get()->each(function ($event) {
 
                 $attendees = $this->retrieve([
                     'character_id' => $this->getCharacterId(),
-                    'event_id'     => $event->event_id,
                     'event_id'     => $event->event_id,
                 ]);
 
                 collect($attendees)->each(function ($attendee) use ($event) {
 
                     CharacterCalendarAttendee::firstOrNew([
-                        'character_id' => $this->getCharacterId(),
+                        'character_id' => $attendee->character_id,
                         'event_id'     => $event->event_id,
                     ])->fill([
                         'event_response' => $attendee->event_response,
