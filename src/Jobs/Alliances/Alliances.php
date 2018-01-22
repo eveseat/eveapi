@@ -32,7 +32,6 @@ use Seat\Eveapi\Models\Alliances\Alliance;
  */
 class Alliances extends EsiBase
 {
-
     /**
      * @var string
      */
@@ -58,15 +57,18 @@ class Alliances extends EsiBase
      */
     public function handle()
     {
+
         $alliances = $this->retrieve();
 
-        collect($alliances)->each(function($alliance_id){
+        collect($alliances)->each(function ($alliance_id) {
 
             Alliance::firstOrCreate([
                 'alliance_id' => $alliance_id,
             ]);
-
         });
-    }
 
+        // Remove alliances that are closed / no longer listen in the API.
+        Alliance::whereNotIn('alliance_id', collect($alliances)->flatten()->all())
+            ->delete();
+    }
 }

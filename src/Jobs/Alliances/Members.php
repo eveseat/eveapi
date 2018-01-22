@@ -33,7 +33,6 @@ use Seat\Eveapi\Models\Alliances\AllianceMember;
  */
 class Members extends EsiBase
 {
-
     /**
      * @var string
      */
@@ -60,26 +59,24 @@ class Members extends EsiBase
     public function handle()
     {
 
-        Alliance::all()->each(function($alliance){
+        Alliance::all()->each(function ($alliance) {
 
             $corporations = $this->retrieve([
                 'alliance_id' => $alliance->alliance_id,
             ]);
 
-            collect($corporations)->each(function($corporation_id) use ($alliance) {
+            collect($corporations)->each(function ($corporation_id) use ($alliance) {
 
                 AllianceMember::firstOrCreate([
                     'alliance_id'    => $alliance->alliance_id,
                     'corporation_id' => $corporation_id,
                 ]);
-
             });
 
             AllianceMember::where('alliance_id', $alliance->alliance_id)
-                          ->whereNotIn('corporation_id', collect($corporations)->flatten()->all())
-                          ->delete();
+                ->whereNotIn('corporation_id', collect($corporations)->flatten()->all())
+                ->delete();
 
         });
     }
-
 }

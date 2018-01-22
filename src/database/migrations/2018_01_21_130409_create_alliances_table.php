@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateAlliancesTable extends Migration
@@ -18,12 +17,12 @@ class CreateAlliancesTable extends Migration
         Schema::create('alliances', function (Blueprint $table) {
 
             $table->integer('alliance_id');
-            $table->string('name')->default('N/C');
-            $table->bigInteger('creator_id')->default(0);
-            $table->bigInteger('creator_corporation_id')->default(0);
-            $table->string('ticker')->default('N/C');
+            $table->string('name')->nullable();
+            $table->bigInteger('creator_id')->nullable();
+            $table->bigInteger('creator_corporation_id')->nullable();
+            $table->string('ticker')->nullable();
             $table->bigInteger('executor_corporation_id')->nullable();
-            $table->dateTime('date_founded')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('date_founded')->useCurrent();
             $table->integer('faction_id')->nullable();
 
             $table->primary('alliance_id');

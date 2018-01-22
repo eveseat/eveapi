@@ -32,7 +32,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class AllianceMember extends Model
 {
-
     use HasCompositePrimaryKey;
 
     /**
@@ -44,5 +43,4 @@ class AllianceMember extends Model
      * @var array
      */
     protected $primaryKey = ['alliance_id', 'corporation_id'];
-
 }

@@ -31,6 +31,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Alliance extends Model
 {
+    /**
+     * @var bool
+     */
+    protected static $unguarded = true;
 
     /**
      * @var bool
@@ -38,13 +42,7 @@ class Alliance extends Model
     public $incrementing = false;
 
     /**
-     * @var bool
-     */
-    protected static $unguarded = true;
-
-    /**
      * @var string
      */
     protected $primaryKey = 'alliance_id';
-
 }

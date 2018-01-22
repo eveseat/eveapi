@@ -32,7 +32,6 @@ use Seat\Eveapi\Models\Alliances\Alliance;
  */
 class Info extends EsiBase
 {
-
     /**
      * @var string
      */
@@ -54,12 +53,12 @@ class Info extends EsiBase
     protected $tags = ['public', 'alliances'];
 
     /**
-     *
+     * Handle the job.
      */
     public function handle()
     {
 
-        Alliance::all()->each(function($alliance){
+        Alliance::all()->each(function ($alliance) {
 
             $info = $this->retrieve([
                 'alliance_id' => $alliance->alliance_id,
@@ -74,9 +73,6 @@ class Info extends EsiBase
                 'date_founded'            => carbon($info->date_founded),
                 'faction_id'              => $info->faction_id ?? null,
             ])->save();
-
         });
-
     }
-
 }
