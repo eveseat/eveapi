@@ -20,4 +20,3 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 */
 
 include(__DIR__ . '/../vendor/autoload.php');
-include(__DIR__ . '/Support/Helpers.php');

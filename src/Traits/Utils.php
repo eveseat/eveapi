@@ -31,22 +31,6 @@ use Illuminate\Support\Facades\DB;
 trait Utils
 {
     /**
-     * Return a MD5 hash to be used for transactionID's.
-     *
-     * @param $owner_id
-     * @param $date
-     * @param $seed1
-     * @param $seed2
-     *
-     * @return string
-     */
-    public function hash_transaction($owner_id, $date, $seed1, $seed2)
-    {
-
-        return md5(implode(',', [$owner_id, $date, $seed1, $seed2]));
-    }
-
-    /**
      * Finds the itemID (as mapID) and itemName (as mapName)
      * of the celestial closest to the x, y, z in a given
      * solar system.

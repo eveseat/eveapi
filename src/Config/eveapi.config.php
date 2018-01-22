@@ -26,18 +26,4 @@ return [
 
     // API Joblog logging
     'enable_joblog' => false,
-
-    // PhealNG Specific Configuration
-    'pheal'         => [
-        'cache_path' => storage_path() . '/app/pheal/',
-        'log_file'   => storage_path('logs/pheal.log'),
-    ],
-
-    // Define the keys used in the cache
-    'cache_keys'    => [
-        'down'                   => 'eve_api_down',
-        'down_until'             => 'eve_api_down_until',
-        'api_error_count'        => 'eve_api_error_count',
-        'connection_error_count' => 'eve_api_conn_error_count',
-    ],
 ];
