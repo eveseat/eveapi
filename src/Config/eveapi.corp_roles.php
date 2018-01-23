@@ -66,19 +66,14 @@ return [
         ],
     ],
 
-    'Factory_Manager'   => [
+    'Factory_Manager' => [
         'fascilities' => [
             \Seat\Eveapi\Jobs\Corporation\Facilities::class,
         ],
     ],
 
-    // ESI UI shows the role needed here is 'StationManager' :|
-    'Station_Manager'   => [
+    'Station_Manager' => [
         \Seat\Eveapi\Jobs\Corporation\Structures::class,
-    ],
-
-    // TODO: Test this role. Probably another typo :|
-    'Structure_manager' => [
         \Seat\Eveapi\Jobs\Industry\Corporation\Mining\Extractions::class,
     ],
 
