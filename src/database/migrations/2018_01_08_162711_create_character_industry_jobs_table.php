@@ -42,7 +42,7 @@ class CreateCharacterIndustryJobsTable extends Migration
             $table->integer('successful_runs')->nullable();
 
             $table->primary(['character_id', 'job_id']);
-            $table->integer('character_id');
+            $table->index('character_id');
             $table->index('installer_id');
             $table->index('station_id');
             $table->index('blueprint_id');
