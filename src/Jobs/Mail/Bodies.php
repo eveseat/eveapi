@@ -49,6 +49,11 @@ class Bodies extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'mails'];
+
+    /**
      * Execute the job.
      *
      * @return void

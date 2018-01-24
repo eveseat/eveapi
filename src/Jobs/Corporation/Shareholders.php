@@ -48,6 +48,11 @@ class Shareholders extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'shareholders'];
+
+    /**
      * @var int
      */
     protected $page = 1;

@@ -23,10 +23,8 @@
 namespace Seat\Eveapi;
 
 use Illuminate\Support\ServiceProvider;
-use Pheal\Fetcher\Guzzle;
 use Seat\Eveapi\Console\EsiJobMakeCommand;
 use Seat\Eveapi\Helpers\EseyeSetup;
-use Seat\Eveapi\Helpers\PhealSetup;
 
 /**
  * Class EveapiServiceProvider.
@@ -63,31 +61,14 @@ class EveapiServiceProvider extends ServiceProvider
     public function register()
     {
 
-        $this->mergeConfigFrom(
-            __DIR__ . '/Config/eveapi.config.php', 'eveapi.config');
-        $this->mergeConfigFrom(
-            __DIR__ . '/Config/eveapi.worker_groups.php', 'eveapi.worker_groups');
-
-        $this->mergeConfigFrom(
-            __DIR__ . '/Config/eveapi.scopes.php', 'eveapi.scopes');
-
-        // Register the Pheal Configuration Singleton
-        $this->app->singleton('Seat\Eveapi\Helpers\PhealSetup', function () {
-
-            return new PhealSetup();
-        });
-
-        // Singleton the PhealGuzzle Fetcher too
-        $this->app->singleton('Pheal\Fetcher\Guzzle', function () {
-
-            return new Guzzle();
-        });
+        $this->mergeConfigFrom(__DIR__ . '/Config/eveapi.config.php', 'eveapi.config');
+        $this->mergeConfigFrom(__DIR__ . '/Config/eveapi.corp_roles.php', 'eveapi.corp_roles');
+        $this->mergeConfigFrom(__DIR__ . '/Config/eveapi.scopes.php', 'eveapi.scopes');
 
         // Eseye Singleton
         $this->app->singleton('esi-client', function () {
 
             return new EseyeSetup;
         });
-
     }
 }

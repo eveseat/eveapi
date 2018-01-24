@@ -48,6 +48,11 @@ class Implants extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'implants'];
+
+    /**
      * Execute the job.
      *
      * @return void

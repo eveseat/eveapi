@@ -49,6 +49,11 @@ class Clones extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'clones'];
+
+    /**
      * Execute the job.
      *
      * @return void

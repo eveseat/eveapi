@@ -48,6 +48,11 @@ class Assets extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-assets.read_corporation_assets.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'assets'];
@@ -83,6 +88,8 @@ class Assets extends EsiBase
      */
     public function handle(): void
     {
+
+        if (! $this->authenticated()) return;
 
         while (true) {
 

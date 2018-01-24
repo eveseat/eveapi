@@ -48,6 +48,11 @@ class RoleHistories extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'roles'];
+
+    /**
      * @var int
      */
     protected $page = 1;

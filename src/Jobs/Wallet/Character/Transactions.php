@@ -48,6 +48,11 @@ class Transactions extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'wallets'];
+
+    /**
      * A counter used to walk the transactions backwards.
      *
      * @var int

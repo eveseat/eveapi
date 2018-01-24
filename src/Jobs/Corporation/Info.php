@@ -47,6 +47,11 @@ class Info extends EsiBase
     protected $version = 'v4';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'info'];
+
+    /**
      * @throws \Exception
      */
     public function handle()

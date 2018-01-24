@@ -49,6 +49,11 @@ class Journals extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'wallets'];
+
+    /**
      * A counter used to walk the journal backwards.
      *
      * @var int

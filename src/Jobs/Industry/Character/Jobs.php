@@ -48,6 +48,11 @@ class Jobs extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'industries'];
+
+    /**
      * Execute the job.
      *
      * @return void

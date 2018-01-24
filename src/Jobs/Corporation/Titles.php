@@ -49,6 +49,11 @@ class Titles extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'roles'];
+
+    /**
      * @var \Illuminate\Support\Collection
      */
     protected $known_titles;

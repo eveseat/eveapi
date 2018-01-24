@@ -49,6 +49,11 @@ class Fittings extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'fittings'];
+
+    /**
      * Execute the job.
      *
      * @return void

@@ -47,6 +47,11 @@ class Bookmarks extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'bookmarks'];
+
+    /**
      * @var int
      */
     protected $page = 1;

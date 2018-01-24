@@ -48,6 +48,11 @@ class Roles extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'roles'];
+
+    /**
      * Execute the job.
      *
      * @return void

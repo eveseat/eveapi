@@ -47,6 +47,11 @@ class MembersLimit extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'tags'];
+
+    /**
      * @throws \Exception
      */
     public function handle()

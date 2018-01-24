@@ -47,6 +47,11 @@ class AllianceHistory extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'history'];
+
+    /**
      * @throws \Exception
      */
     public function handle()

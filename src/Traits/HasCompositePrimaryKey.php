@@ -32,7 +32,6 @@ use Seat\Eveapi\Exception\SurrogateKeyException;
  */
 trait HasCompositePrimaryKey
 {
-
     /**
      * @return bool
      */

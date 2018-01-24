@@ -48,6 +48,11 @@ class Notifications extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'notifications'];
+
+    /**
      * Execute the job.
      *
      * @return void

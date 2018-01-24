@@ -50,6 +50,11 @@ class Structures extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'structures'];
+
+    /**
      * @var int
      */
     protected $page = 1;

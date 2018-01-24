@@ -48,6 +48,11 @@ class Outposts extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'outposts'];
+
+    /**
      * @var int
      */
     protected $page = 1;

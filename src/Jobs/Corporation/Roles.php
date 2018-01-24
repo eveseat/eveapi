@@ -50,6 +50,11 @@ class Roles extends EsiBase
     /**
      * @var array
      */
+    protected $tags = ['corporation', 'roles'];
+
+    /**
+     * @var array
+     */
     protected $types = [
         'roles',
         'grantable_roles',

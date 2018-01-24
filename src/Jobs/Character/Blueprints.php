@@ -49,6 +49,11 @@ class Blueprints extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['character', 'blueprints'];
+
+    /**
      * @var int
      */
     protected $page = 1;

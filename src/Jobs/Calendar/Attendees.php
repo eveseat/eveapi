@@ -33,7 +33,6 @@ use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
  */
 class Attendees extends EsiBase
 {
-
     /**
      * @var string
      */
@@ -58,8 +57,13 @@ class Attendees extends EsiBase
         $this->updateAttendees('character', $this->getCharacterId());
     }
 
+    /**
+     * @param string $owner_type
+     * @param int    $owner_id
+     */
     private function updateAttendees(string $owner_type, int $owner_id)
     {
+
         CharacterCalendarEventDetail::where('owner_id', $owner_id)
             ->where('owner_type', $owner_type)
             ->get()->each(function ($event) {

@@ -51,6 +51,11 @@ class Locations extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'assets'];
+
+    /**
      * The maximum number of itemids we can request location
      * information for.
      *
