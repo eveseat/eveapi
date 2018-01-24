@@ -30,6 +30,7 @@ use Illuminate\Queue\SerializesModels;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Character\CharacterRole;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -73,6 +74,20 @@ abstract class EsiBase implements ShouldQueue
      * @var int
      */
     protected $version = '';
+
+    /**
+     * The SSO scope required to make the call.
+     *
+     * @var string
+     */
+    protected $scope = 'public';
+
+    /**
+     * The corporation role needed to make the call.
+     *
+     * @var string
+     */
+    protected $corp_role = '';
 
     /**
      * The page to retreive.
@@ -133,10 +148,58 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
+     * Check that the current token has the required scope as well
+     * as corporation role if needed.
+     *
+     * @return bool
+     */
+    public function authenticated(): bool
+    {
+
+        // Public calls need no checking.
+        if ($this->public_call || is_null($this->token) || $this->scope === 'public')
+            return true;
+
+        // If a corporation role is required, check that and the scope.
+        if ($this->corp_role !== '') {
+
+            if (in_array($this->scope, $this->token->scopes) &&
+                in_array($this->corp_role, $this->getCharacterRoles()))
+                return true;
+
+        } elseif ($this->corp_role === '') {
+
+            // If a corporation role is *not* required, check that
+            // we have the required scope at least.
+            if (in_array($this->scope, $this->token->scopes))
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the current characters roles.
+     *
+     * @return array
+     */
+    public function getCharacterRoles(): array
+    {
+
+        return CharacterRole::where('character_id', 1477919642)
+            // https://eve-seat.slack.com/archives/C0H3VGH4H/p1515081536000720
+            // > @ccp_snowden: most things will require `roles`, most things are
+            // > not contextually aware enough to make hq/base decisions
+            ->where('scope', 'roles')
+            ->pluck('role')->all();
+    }
+
+    /**
      * @param array $path_values
      *
      * @return \Seat\Eseye\Containers\EsiResponse
      * @throws \Exception
+     * @throws \Throwable
      */
     public function retrieve(array $path_values = []): EsiResponse
     {
@@ -181,13 +244,14 @@ abstract class EsiBase implements ShouldQueue
 
         if (trim($this->version) === '')
             throw new \Exception('Version is empty');
-
     }
 
     /**
      * Get an instance of Eseye to use for this job.
      *
      * @return \Seat\Eseye\Eseye
+     * @throws \Illuminate\Container\EntryNotFoundException
+     * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function eseye()
     {
@@ -209,6 +273,8 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
+     * Logs warnings to the Eseye logger.
+     *
      * @param \Seat\Eseye\Containers\EsiResponse $response
      *
      * @throws \Throwable
@@ -217,20 +283,15 @@ abstract class EsiBase implements ShouldQueue
     {
 
         // While development heavy, throw exceptions to help.
-        throw_if(! is_null($response->pages) && $this->page === null,
-            new \Exception('Response contained pages but none was expected'));
+        if (! is_null($response->pages) && $this->page === null)
+            $this->eseye()->getLogger()->warning('Response contained pages but none was expected');
 
-        throw_if(! is_null($this->page) && $response->pages === null,
-            new \Exception('Expected a paged response but API had none'));
+        if (! is_null($this->page) && $response->pages === null)
+            $this->eseye()->getLogger()->warning('Expected a paged response but had none');
 
-        if (array_key_exists('Warning', $response->headers)) {
-            throw new \Exception('A response contained a warning: ' . $response->headers['Warning']);
-        }
-
-        // TODO: Log warnings such as:
-        //
-        //  An X-Pages header was received but no page was set.
-        //  An endpoint was deprecated and is returning a Warning header.
+        if (array_key_exists('Warning', $response->headers))
+            $this->eseye()->getLogger()->warning('A response contained a warning: ' .
+                $response->headers['Warning']);
     }
 
     /**
