@@ -50,11 +50,6 @@ class Assets extends EsiBase
     /**
      * @var string
      */
-    protected $corp_role = 'Director';
-
-    /**
-     * @var string
-     */
     protected $scope = 'esi-assets.read_corporation_assets.v1';
 
     /**

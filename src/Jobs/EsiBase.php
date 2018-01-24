@@ -83,13 +83,6 @@ abstract class EsiBase implements ShouldQueue
     protected $scope = 'public';
 
     /**
-     * The corporation role needed to make the call.
-     *
-     * @var string
-     */
-    protected $corp_role = '';
-
-    /**
      * The page to retreive.
      *
      * Jobs that expect paged responses should have
@@ -160,22 +153,50 @@ abstract class EsiBase implements ShouldQueue
         if ($this->public_call || is_null($this->token) || $this->scope === 'public')
             return true;
 
-        // If a corporation role is required, check that and the scope.
-        if ($this->corp_role !== '') {
+        // Check if the current scope also needs a corp role. If it does,
+        // ensure that the current character also has the required role.
+        if (! empty($this->getScopeRoles($this->scope))) {
 
-            if (in_array($this->scope, $this->token->scopes) &&
-                in_array($this->corp_role, $this->getCharacterRoles()))
+            if (in_array($this->scope, $this->token->scopes) && ! empty(
+                array_intersect($this->getScopeRoles($this->scope), $this->getCharacterRoles()))) {
+
                 return true;
+            }
 
-        } elseif ($this->corp_role === '') {
+        } else {
 
-            // If a corporation role is *not* required, check that
-            // we have the required scope at least.
+            // If a corporation role is *not* required, check that we have the required
+            // scope at least.
             if (in_array($this->scope, $this->token->scopes))
                 return true;
         }
 
         return false;
+    }
+
+    /**
+     * Return an array of roles for a given scope.
+     *
+     * Only applies to corporation endpoints that also require
+     * the character to have the appropriate in game role.
+     *
+     * Unfortunately, this method is required as the config()
+     * helper works with 'dot notation', and CCP's ESI roles
+     * contain dots. :sad_pepe:
+     *
+     * @param string $scope
+     *
+     * @return array
+     */
+    public function getScopeRoles(string $scope): array
+    {
+
+        $roles = config('eveapi.corp_roles');
+
+        if (array_key_exists($scope, $roles))
+            return $roles[$scope];
+
+        return [];
     }
 
     /**
