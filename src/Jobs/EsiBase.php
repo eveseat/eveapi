@@ -162,14 +162,12 @@ abstract class EsiBase implements ShouldQueue
 
                 return true;
             }
-
-        } else {
-
-            // If a corporation role is *not* required, check that we have the required
-            // scope at least.
-            if (in_array($this->scope, $this->token->scopes))
-                return true;
         }
+
+        // If a corporation role is *not* required, check that we have the required
+        // scope at least.
+        if (in_array($this->scope, $this->token->scopes))
+            return true;
 
         return false;
     }
