@@ -48,6 +48,11 @@ class MembersTitles extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_titles.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'member_titles'];
@@ -55,8 +60,7 @@ class MembersTitles extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

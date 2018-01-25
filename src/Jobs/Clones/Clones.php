@@ -49,6 +49,11 @@ class Clones extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-clones.read_clones.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'clones'];
@@ -58,6 +63,7 @@ class Clones extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

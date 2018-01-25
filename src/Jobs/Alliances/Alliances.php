@@ -54,6 +54,7 @@ class Alliances extends EsiBase
 
     /**
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

@@ -49,10 +49,12 @@ class AllianceHistory extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'history'];
+    protected $tags = ['corporation', 'alliance_history'];
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

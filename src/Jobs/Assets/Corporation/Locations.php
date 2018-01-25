@@ -51,9 +51,14 @@ class Locations extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-assets.read_corporation_assets.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'assets'];
+    protected $tags = ['corporation', 'assets', 'locations'];
 
     /**
      * The maximum number of itemids we can request location

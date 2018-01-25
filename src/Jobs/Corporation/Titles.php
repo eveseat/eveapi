@@ -49,9 +49,14 @@ class Titles extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_titles.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'roles'];
+    protected $tags = ['corporation', 'titles'];
 
     /**
      * @var \Illuminate\Support\Collection
@@ -86,7 +91,9 @@ class Titles extends EsiBase
     }
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

@@ -50,9 +50,14 @@ class Items extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-contracts.read_corporation_contracts.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'contracts'];
+    protected $tags = ['corporation', 'contracts', 'items'];
 
     /**
      * Execute the job.
@@ -73,6 +78,7 @@ class Items extends EsiBase
 
                 $query->select('contract_id')
                     ->from('contract_items');
+
             })
             ->pluck('corporation_contracts.contract_id');
 

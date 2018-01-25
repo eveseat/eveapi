@@ -26,6 +26,10 @@ namespace Seat\Eveapi\Jobs\Character;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterFatigue;
 
+/**
+ * Class Fatigue
+ * @package Seat\Eveapi\Jobs\Character
+ */
 class Fatigue extends EsiBase
 {
     /**
@@ -44,6 +48,11 @@ class Fatigue extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_fatigue.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'fatigue'];
@@ -53,6 +62,7 @@ class Fatigue extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

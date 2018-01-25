@@ -47,9 +47,14 @@ class IssuedMedals extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_medals.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'medals'];
+    protected $tags = ['corporation', 'issued_medals'];
 
     /**
      * @var int
@@ -57,7 +62,10 @@ class IssuedMedals extends EsiBase
     protected $page = 1;
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @return void
+     * @throws \Throwable
      */
     public function handle()
     {

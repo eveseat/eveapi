@@ -47,12 +47,20 @@ class MembersLimit extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var array
+     * @var string
      */
-    protected $tags = ['corporation', 'tags'];
+    protected $scope = 'esi-corporations.track_members.v1';
 
     /**
-     * @throws \Exception
+     * @var array
+     */
+    protected $tags = ['corporation', 'members', 'limit'];
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     * @throws \Throwable
      */
     public function handle()
     {

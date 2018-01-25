@@ -50,6 +50,11 @@ class Structures extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_structures.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'structures'];
@@ -78,7 +83,9 @@ class Structures extends EsiBase
     }
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {
@@ -145,7 +152,8 @@ class Structures extends EsiBase
 
                     CorporationStructureService::where('corporation_id', $structure->corporation_id)
                         ->where('structure_id', $structure->structure_id)
-                        ->whereNotIn('name', collect($structure->services)->pluck('name')->flatten()->all())
+                        ->whereNotIn('name', collect($structure->services)
+                            ->pluck('name')->flatten()->all())
                         ->delete();
 
                 } else {

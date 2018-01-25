@@ -47,12 +47,20 @@ class Members extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_corporation_membership.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'members'];
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @return void
+     * @throws \Throwable
      */
     public function handle()
     {

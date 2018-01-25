@@ -50,7 +50,7 @@ class Info extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['public', 'alliances'];
+    protected $tags = ['public', 'alliances', 'info'];
 
     /**
      * Handle the job.

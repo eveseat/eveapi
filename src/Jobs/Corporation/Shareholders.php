@@ -48,6 +48,11 @@ class Shareholders extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-wallet.read_corporation_wallets.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'shareholders'];
@@ -76,7 +81,9 @@ class Shareholders extends EsiBase
     }
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

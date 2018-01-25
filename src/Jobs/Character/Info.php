@@ -56,6 +56,7 @@ class Info extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

@@ -52,7 +52,10 @@ class Info extends EsiBase
     protected $tags = ['corporation', 'info'];
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @return void
+     * @throws \Throwable
      */
     public function handle()
     {

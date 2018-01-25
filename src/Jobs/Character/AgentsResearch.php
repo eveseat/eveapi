@@ -48,15 +48,21 @@ class AgentsResearch extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_agents_research.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'industry'];
+    protected $tags = ['character', 'agents_research'];
 
     /**
      * Execute the job.
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {
@@ -79,7 +85,8 @@ class AgentsResearch extends EsiBase
         });
 
         CharacterAgentResearch::where('character_id', $this->getCharacterId())
-            ->whereNotIn('agent_id', collect($agents_research)->pluck('agent_id')->flatten()->all())
+            ->whereNotIn('agent_id', collect($agents_research)
+                ->pluck('agent_id')->flatten()->all())
             ->delete();
     }
 }

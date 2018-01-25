@@ -50,9 +50,14 @@ class OutpostDetails extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_outposts.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'outposts'];
+    protected $tags = ['corporation', 'outposts', 'details'];
 
     /**
      * @var \Illuminate\Support\Collection
@@ -73,7 +78,9 @@ class OutpostDetails extends EsiBase
     }
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

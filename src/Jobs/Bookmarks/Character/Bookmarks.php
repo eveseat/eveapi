@@ -47,6 +47,11 @@ class Bookmarks extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-bookmarks.read_character_bookmarks.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'bookmarks'];
@@ -77,8 +82,8 @@ class Bookmarks extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

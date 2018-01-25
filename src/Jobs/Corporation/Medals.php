@@ -47,6 +47,14 @@ class Medals extends EsiBase
     protected $version = 'v1';
 
     /**
+     * TODO: Add a local override property as this scope
+     * does not need an ingame role.
+     *
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_medals.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'medals'];
@@ -57,7 +65,10 @@ class Medals extends EsiBase
     protected $page = 1;
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @return void
+     * @throws \Throwable
      */
     public function handle()
     {

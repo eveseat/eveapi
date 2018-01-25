@@ -48,15 +48,21 @@ class Titles extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_titles.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'roles'];
+    protected $tags = ['character', 'titles'];
 
     /**
      * Execute the job.
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

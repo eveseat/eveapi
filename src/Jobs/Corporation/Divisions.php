@@ -47,12 +47,20 @@ class Divisions extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var array
+     * @var string
      */
-    protected $tags = ['corporation', 'info'];
+    protected $scope = 'esi-corporations.read_divisions.v1';
 
     /**
-     * @throws \Exception
+     * @var array
+     */
+    protected $tags = ['corporation', 'divisions'];
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     * @throws \Throwable
      */
     public function handle()
     {

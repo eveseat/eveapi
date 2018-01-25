@@ -22,5 +22,19 @@
 
 return [
 
-    'esi-assets.read_corporation_assets.v1' => ['Director'],
+    // A mapping of SSO scope and in game role pairs.
+    'esi-assets.read_corporation_assets.v1'           => ['Director'],
+    'esi-corporations.read_blueprints.v1'             => ['Director'],
+    'esi-corporations.read_container_logs.v1'         => ['Director'],
+    'esi-corporations.read_divisions.v1'              => ['Director'],
+    'esi-corporations.read_facilities.v1'             => ['Factory_Manager'],
+    'esi-corporations.read_medals.v1'                 => ['Director'],
+    'esi-corporations.track_members.v1'               => ['Director'],
+    'esi-corporations.read_titles.v1'                 => ['Director'],
+    'esi-corporations.read_outposts.v1'               => ['Director'],
+    'esi-corporations.read_corporation_membership.v1' => ['Director'],
+    'esi-characters.read_corporation_roles.v1'        => ['Personnel_Manager'],
+    'esi-wallet.read_corporation_wallets.v1'          => ['Director'],
+    'esi-corporations.read_starbases.v1'              => ['Director'],
+    'esi-corporations.read_structures.v1'             => ['Station_Manager'],
 ];

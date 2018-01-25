@@ -50,9 +50,14 @@ class Folders extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-bookmarks.read_corporation_bookmarks.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'bookmarks'];
+    protected $tags = ['corporation', 'bookmarks', 'folders'];
 
     /**
      * @var int
@@ -80,8 +85,8 @@ class Folders extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

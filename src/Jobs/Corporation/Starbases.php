@@ -48,6 +48,11 @@ class Starbases extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_starbases.v1';
+
+    /**
      * @var array 
      */
     protected $tags = ['corporation', 'starbases'];

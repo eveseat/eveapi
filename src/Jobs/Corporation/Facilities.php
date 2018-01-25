@@ -47,6 +47,11 @@ class Facilities extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_facilities.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'facilities'];
@@ -55,7 +60,7 @@ class Facilities extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

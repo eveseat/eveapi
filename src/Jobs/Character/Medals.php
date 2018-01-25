@@ -48,6 +48,11 @@ class Medals extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_medals.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'medals'];
@@ -57,6 +62,7 @@ class Medals extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

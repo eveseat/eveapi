@@ -49,6 +49,18 @@ class Attendees extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-calendar.read_calendar_events.v1';
+
+    /**
+     * @var array
+     */
+    protected $tags = ['character', 'calendar', 'attendees'];
+
+    /**
+     * Execute the job.
+     *
      * @throws \Exception
      */
     public function handle()

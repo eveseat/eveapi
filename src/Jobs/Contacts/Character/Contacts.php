@@ -49,6 +49,11 @@ class Contacts extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_contacts.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'contacts'];
@@ -81,6 +86,7 @@ class Contacts extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

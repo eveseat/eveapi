@@ -47,12 +47,19 @@ class MemberTracking extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var array 
+     * @var string
      */
-    protected $tags = ['corporation', 'members'];
+    protected $scope = 'esi-corporations.track_members.v1';
 
     /**
-     * @throws \Exception
+     * @var array
+     */
+    protected $tags = ['corporation', 'member_tracking'];
+
+    /**
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

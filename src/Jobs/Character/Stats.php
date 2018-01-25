@@ -48,6 +48,11 @@ class Stats extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characterstats.read.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'stats'];
@@ -57,6 +62,7 @@ class Stats extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

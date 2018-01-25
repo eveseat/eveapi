@@ -48,6 +48,11 @@ class Standings extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_standings.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'standings'];
@@ -57,6 +62,7 @@ class Standings extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

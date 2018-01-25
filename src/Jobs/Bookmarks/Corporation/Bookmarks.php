@@ -52,6 +52,11 @@ class Bookmarks extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-bookmarks.read_corporation_bookmarks.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'bookmarks'];

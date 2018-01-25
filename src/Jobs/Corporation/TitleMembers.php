@@ -47,12 +47,19 @@ class TitleMembers extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var array 
+     * @var string
      */
-    protected $tags = ['corporation', 'members'];
+    protected $scope = 'esi-corporations.read_titles.v1';
 
     /**
-     * @throws \Exception
+     * @var array
+     */
+    protected $tags = ['corporation', 'title', 'members'];
+
+    /**
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

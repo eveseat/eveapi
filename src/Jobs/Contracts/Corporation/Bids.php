@@ -49,9 +49,14 @@ class Bids extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-contracts.read_corporation_contracts.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'tags'];
+    protected $tags = ['corporation', 'contracts', 'bids'];
 
     /**
      * @var int

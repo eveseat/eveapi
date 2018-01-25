@@ -48,6 +48,11 @@ class Assets extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-assets.read_assets.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'assets'];

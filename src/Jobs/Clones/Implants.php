@@ -48,6 +48,11 @@ class Implants extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-clones.read_implants.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'implants'];
@@ -57,6 +62,7 @@ class Implants extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

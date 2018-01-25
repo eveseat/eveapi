@@ -48,9 +48,14 @@ class RoleHistories extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_corporation_membership.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'roles'];
+    protected $tags = ['corporation', 'roles', 'history'];
 
     /**
      * @var int
@@ -58,7 +63,9 @@ class RoleHistories extends EsiBase
     protected $page = 1;
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

@@ -50,15 +50,21 @@ class ChatChannels extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_chat_channels.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'channels'];
+    protected $tags = ['character', 'chat_channels'];
 
     /**
      * Execute the job.
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

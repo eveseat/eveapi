@@ -48,6 +48,11 @@ class Roles extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_corporation_roles.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'roles'];
@@ -57,6 +62,7 @@ class Roles extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

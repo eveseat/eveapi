@@ -47,15 +47,21 @@ class Events extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-calendar.read_calendar_events.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'events'];
+    protected $tags = ['character', 'calendar', 'events'];
 
     /**
      * Execute the job.
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

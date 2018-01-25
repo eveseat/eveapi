@@ -46,13 +46,14 @@ class CorporationHistory extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'history'];
+    protected $tags = ['character', 'corporation_history'];
 
     /**
      * Execute the job.
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

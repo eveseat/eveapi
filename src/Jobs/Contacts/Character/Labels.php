@@ -48,15 +48,21 @@ class Labels extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_contacts.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'contacts'];
+    protected $tags = ['character', 'contacts', 'labels'];
 
     /**
      * Execute the job.
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

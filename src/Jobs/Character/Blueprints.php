@@ -49,6 +49,11 @@ class Blueprints extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-characters.read_blueprints.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'blueprints'];
@@ -84,6 +89,7 @@ class Blueprints extends EsiBase
      *
      * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

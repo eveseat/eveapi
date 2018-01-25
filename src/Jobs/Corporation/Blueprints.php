@@ -49,6 +49,11 @@ class Blueprints extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-corporations.read_blueprints.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'blueprints'];
@@ -77,7 +82,10 @@ class Blueprints extends EsiBase
     }
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @return void
+     * @throws \Throwable
      */
     public function handle()
     {

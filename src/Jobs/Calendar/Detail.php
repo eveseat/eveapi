@@ -49,9 +49,14 @@ class Detail extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-calendar.read_calendar_events.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'events'];
+    protected $tags = ['character', 'calendar', 'detail'];
 
     /**
      * Execute the job.
