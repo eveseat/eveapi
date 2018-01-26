@@ -65,6 +65,8 @@ class Orders extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $orders = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

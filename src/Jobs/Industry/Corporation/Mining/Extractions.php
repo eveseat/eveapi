@@ -66,6 +66,8 @@ class Extractions extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $mining_extractions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

@@ -65,6 +65,8 @@ class Balance extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $balance = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

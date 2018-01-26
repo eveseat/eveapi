@@ -91,6 +91,8 @@ class Contacts extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $contacts = $this->retrieve([

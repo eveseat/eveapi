@@ -88,6 +88,8 @@ class Bookmarks extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $bookmarks = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

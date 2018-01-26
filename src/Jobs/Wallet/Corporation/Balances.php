@@ -65,6 +65,8 @@ class Balances extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $balances = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

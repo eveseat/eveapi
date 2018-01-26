@@ -67,6 +67,8 @@ class Notifications extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $notifications = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

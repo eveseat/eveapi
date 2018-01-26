@@ -91,6 +91,8 @@ class Folders extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $folders = $this->retrieve([

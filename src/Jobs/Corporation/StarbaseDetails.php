@@ -85,6 +85,8 @@ class StarbaseDetails extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         CorporationStarbase::where('corporation_id', $this->getCorporationId())
             ->get()->each(function ($starbase) {
 

@@ -27,6 +27,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Models\Character\CharacterInfo;
@@ -168,6 +169,9 @@ abstract class EsiBase implements ShouldQueue
         // scope at least.
         if (in_array($this->scope, $this->token->scopes))
             return true;
+
+        // Log the deny
+        Log::debug('Denied call to ' . $this->endpoint . ' as scope ' . $this->scope . ' was missing.');
 
         return false;
     }

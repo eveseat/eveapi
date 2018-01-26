@@ -67,6 +67,8 @@ class Labels extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $labels = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

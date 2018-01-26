@@ -67,6 +67,8 @@ class Items extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $empty_contracts = CharacterContract::join('contract_details',
             'character_contracts.contract_id', '=',
             'contract_details.contract_id')

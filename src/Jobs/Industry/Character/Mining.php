@@ -70,6 +70,8 @@ class Mining extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $mining = $this->retrieve([

@@ -73,6 +73,8 @@ class Contracts extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $contracts = $this->retrieve([

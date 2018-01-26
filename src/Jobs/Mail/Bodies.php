@@ -66,6 +66,8 @@ class Bodies extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         // Determine which mail headers do not have bodies yet
         $mail_ids = MailHeader::where('character_id', $this->getCharacterId())
             ->whereNotIn('mail_id', function ($query) {

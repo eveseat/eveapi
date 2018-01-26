@@ -76,6 +76,8 @@ class Attendees extends EsiBase
     private function updateAttendees(string $owner_type, int $owner_id)
     {
 
+        if (! $this->authenticated()) return;
+
         CharacterCalendarEventDetail::where('owner_id', $owner_id)
             ->where('owner_type', $owner_type)
             ->get()->each(function ($event) {

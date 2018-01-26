@@ -78,6 +78,8 @@ class PlanetDetail extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         CharacterPlanet::where('character_id', $this->getCharacterId())->get()->each(function ($planet) {
 
             $planet_detail = $this->retrieve([

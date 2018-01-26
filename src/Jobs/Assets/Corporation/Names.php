@@ -75,6 +75,8 @@ class Names extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.
         CorporationAsset::where('corporation_id', $this->getCorporationId())

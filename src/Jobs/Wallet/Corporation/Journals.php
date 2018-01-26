@@ -73,6 +73,8 @@ class Journals extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($division) {
 

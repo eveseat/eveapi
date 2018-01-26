@@ -65,6 +65,8 @@ class Location extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $location = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

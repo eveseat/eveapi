@@ -70,6 +70,8 @@ class Orders extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $orders = $this->retrieve([

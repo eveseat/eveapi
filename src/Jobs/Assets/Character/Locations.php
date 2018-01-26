@@ -76,6 +76,8 @@ class Locations extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.
         CharacterAsset::where('character_id', $this->getCharacterId())

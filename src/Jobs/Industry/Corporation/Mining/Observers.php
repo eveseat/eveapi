@@ -73,6 +73,8 @@ class Observers extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $mining_observers = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

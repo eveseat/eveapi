@@ -85,6 +85,8 @@ class OutpostDetails extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         CorporationOutpost::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($outpost) {
 

@@ -90,6 +90,8 @@ class Structures extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $structures = $this->retrieve([

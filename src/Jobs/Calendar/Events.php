@@ -66,6 +66,8 @@ class Events extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $events = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

@@ -70,6 +70,8 @@ class ContainerLogs extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $logs = $this->retrieve([

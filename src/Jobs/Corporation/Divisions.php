@@ -65,6 +65,8 @@ class Divisions extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $divisions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

@@ -65,6 +65,8 @@ class Jobs extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $industry_jobs = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

@@ -70,6 +70,8 @@ class Standings extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $standings = $this->retrieve([

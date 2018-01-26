@@ -67,6 +67,8 @@ class Medals extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $medals = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

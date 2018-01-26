@@ -67,6 +67,8 @@ class Detail extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $event_ids = CharacterCalendarEvent::where('character_id', $this->getCharacterId())
             ->whereNotIn('event_id', function ($query) {
 

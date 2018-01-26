@@ -66,6 +66,8 @@ class Headers extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $mail = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

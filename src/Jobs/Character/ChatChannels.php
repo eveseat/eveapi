@@ -69,6 +69,8 @@ class ChatChannels extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $chat_channels = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

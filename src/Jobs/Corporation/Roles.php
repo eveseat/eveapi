@@ -79,6 +79,8 @@ class Roles extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $roles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

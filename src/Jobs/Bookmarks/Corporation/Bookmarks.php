@@ -93,6 +93,8 @@ class Bookmarks extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $bookmarks = $this->retrieve([

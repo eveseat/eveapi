@@ -65,6 +65,8 @@ class Online extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $online = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

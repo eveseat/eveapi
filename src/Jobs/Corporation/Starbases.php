@@ -81,10 +81,14 @@ class Starbases extends EsiBase
     }
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {
+
+        if (! $this->authenticated()) return;
 
         while (true) {
 

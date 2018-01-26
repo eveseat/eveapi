@@ -65,6 +65,8 @@ class MailingLists extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $mailing_lists = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

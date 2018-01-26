@@ -65,6 +65,8 @@ class Queue extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $skill_queue = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

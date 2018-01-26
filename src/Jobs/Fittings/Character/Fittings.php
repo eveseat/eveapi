@@ -66,6 +66,8 @@ class Fittings extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $fittings = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

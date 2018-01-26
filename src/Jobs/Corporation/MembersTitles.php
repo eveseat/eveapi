@@ -65,6 +65,8 @@ class MembersTitles extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $member_titles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

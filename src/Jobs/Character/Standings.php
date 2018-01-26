@@ -67,6 +67,8 @@ class Standings extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $standings = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

@@ -88,6 +88,8 @@ class Outposts extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         while (true) {
 
             $outposts = $this->retrieve([

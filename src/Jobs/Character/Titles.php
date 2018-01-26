@@ -67,6 +67,8 @@ class Titles extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $titles = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

@@ -72,6 +72,8 @@ class Bids extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $unfinished_auctions = CorporationContract::join('contract_details',
             'corporation_contracts.contract_id', '=',
             'contract_details.contract_id')

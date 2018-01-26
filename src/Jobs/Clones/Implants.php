@@ -67,6 +67,8 @@ class Implants extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $implants = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

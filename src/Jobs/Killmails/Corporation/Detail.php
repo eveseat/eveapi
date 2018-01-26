@@ -71,6 +71,8 @@ class Detail extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $killmails = CorporationKillmail::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('killmail_id', function ($query) {
 

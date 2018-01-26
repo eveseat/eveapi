@@ -67,6 +67,8 @@ class Fatigue extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $fatgiue = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
