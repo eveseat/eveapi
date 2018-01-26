@@ -48,9 +48,14 @@ class Mining extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var array 
+     * @var string
      */
-    protected $tags = ['character', 'mining'];
+    protected $scope = 'esi-industry.read_character_mining.v1';
+
+    /**
+     * @var array
+     */
+    protected $tags = ['character', 'industry', 'mining'];
 
     /**
      * @var int
@@ -60,8 +65,7 @@ class Mining extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

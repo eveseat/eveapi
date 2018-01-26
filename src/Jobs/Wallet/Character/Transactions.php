@@ -48,9 +48,14 @@ class Transactions extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-wallet.read_character_wallet.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'wallets'];
+    protected $tags = ['character', 'wallet', 'transactions'];
 
     /**
      * A counter used to walk the transactions backwards.
@@ -62,8 +67,7 @@ class Transactions extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

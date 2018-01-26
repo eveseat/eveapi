@@ -53,6 +53,11 @@ class Detail extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-killmails.read_corporation_killmails.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'killmails'];

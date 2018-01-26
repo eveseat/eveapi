@@ -48,6 +48,11 @@ class MailingLists extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-mail.read_mail.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'mails'];
@@ -55,8 +60,7 @@ class MailingLists extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

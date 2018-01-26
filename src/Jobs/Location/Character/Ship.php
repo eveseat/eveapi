@@ -48,15 +48,19 @@ class Ship extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-location.read_ship_type.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'info'];
+    protected $tags = ['character', 'ship'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

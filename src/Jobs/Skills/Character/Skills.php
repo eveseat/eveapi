@@ -50,6 +50,11 @@ class Skills extends EsiBase
     protected $version = 'v4';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-skills.read_skills.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'skills'];
@@ -57,8 +62,7 @@ class Skills extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

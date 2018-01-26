@@ -48,15 +48,19 @@ class Online extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-location.read_online.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'info'];
+    protected $tags = ['character', 'online'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

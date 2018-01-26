@@ -48,15 +48,19 @@ class Jobs extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-industry.read_character_jobs.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'industries'];
+    protected $tags = ['character', 'industry', 'jobs'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

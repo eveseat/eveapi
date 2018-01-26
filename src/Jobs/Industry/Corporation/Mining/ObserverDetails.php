@@ -50,12 +50,26 @@ class ObserverDetails extends EsiBase
     protected $version = 'v1';
 
     /**
+     * TODO: Add a local scope override as this is diff.
+     *
+     * @var string
+     */
+    protected $scope = 'esi-industry.read_corporation_mining.v1';
+
+    /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'mining', 'observers', 'details'];
+
+    /**
      * @var int
      */
     protected $page = 1;
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

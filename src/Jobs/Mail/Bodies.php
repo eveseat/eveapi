@@ -49,15 +49,19 @@ class Bodies extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-mail.read_mail.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'mails'];
+    protected $tags = ['character', 'mail', 'bodies'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {
@@ -68,7 +72,7 @@ class Bodies extends EsiBase
 
                 $query->select('mail_id')
                     ->from('mail_bodies');
-               
+
             })->pluck('mail_id');
 
         // Process the mailid's that are missing their bodies.

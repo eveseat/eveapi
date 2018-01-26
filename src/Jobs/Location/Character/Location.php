@@ -48,15 +48,19 @@ class Location extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-location.read_location.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'info'];
+    protected $tags = ['corporation', 'location'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

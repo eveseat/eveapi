@@ -48,15 +48,19 @@ class Attributes extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-skills.read_skills.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'skills'];
+    protected $tags = ['character', 'skills', 'attributes'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

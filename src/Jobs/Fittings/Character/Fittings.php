@@ -49,6 +49,11 @@ class Fittings extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-fittings.read_fittings.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['character', 'fittings'];
@@ -56,8 +61,7 @@ class Fittings extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

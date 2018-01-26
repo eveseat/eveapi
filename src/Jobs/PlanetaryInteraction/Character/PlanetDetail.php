@@ -56,9 +56,14 @@ class PlanetDetail extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-planets.manage_planets.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'pi'];
+    protected $tags = ['character', 'pi', 'planets', 'detail'];
 
     /**
      * @var int
@@ -66,7 +71,9 @@ class PlanetDetail extends EsiBase
     protected $planet_limit = 1000;
 
     /**
-     * @throws \Exception
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
     public function handle()
     {

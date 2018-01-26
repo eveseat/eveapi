@@ -48,15 +48,19 @@ class Orders extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-markets.read_character_orders.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'markets'];
+    protected $tags = ['character', 'market', 'orders'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

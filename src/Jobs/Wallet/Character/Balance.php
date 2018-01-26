@@ -48,15 +48,19 @@ class Balance extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-wallet.read_character_wallet.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'wallets'];
+    protected $tags = ['character', 'wallet', 'balance'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

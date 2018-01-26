@@ -49,6 +49,11 @@ class Transactions extends EsiBase
     protected $version = 'v1';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-wallet.read_corporation_wallets.v1';
+
+    /**
      * @var array
      */
     protected $tags = ['corporation', 'wallets'];
@@ -63,7 +68,6 @@ class Transactions extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
      * @throws \Exception
      */
     public function handle()

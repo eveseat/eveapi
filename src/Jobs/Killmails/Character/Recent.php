@@ -48,15 +48,19 @@ class Recent extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var array 
+     * @var string
+     */
+    protected $scope = 'esi-killmails.read_killmails.v1';
+
+    /**
+     * @var array
      */
     protected $tags = ['character', 'killmails'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

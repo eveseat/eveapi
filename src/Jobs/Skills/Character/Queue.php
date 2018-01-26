@@ -48,15 +48,19 @@ class Queue extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-skills.read_skillqueue.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'skills'];
+    protected $tags = ['character', 'skills', 'queue'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

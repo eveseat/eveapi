@@ -49,9 +49,14 @@ class Journals extends EsiBase
     protected $version = 'v2';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-wallet.read_corporation_wallets.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['corporation', 'wallets'];
+    protected $tags = ['corporation', 'wallet', 'journals'];
 
     /**
      * A counter used to walk the journal backwards.
@@ -63,7 +68,6 @@ class Journals extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
      * @throws \Throwable
      */
     public function handle()

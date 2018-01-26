@@ -26,6 +26,10 @@ namespace Seat\Eveapi\Jobs\Mail;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Mail\MailLabel;
 
+/**
+ * Class Labels
+ * @package Seat\Eveapi\Jobs\Mail
+ */
 class Labels extends EsiBase
 {
     /**
@@ -44,15 +48,19 @@ class Labels extends EsiBase
     protected $version = 'v3';
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-mail.read_mail.v1';
+
+    /**
      * @var array
      */
-    protected $tags = ['character', 'mails'];
+    protected $tags = ['character', 'mail', 'labels'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {
