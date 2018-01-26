@@ -23,8 +23,8 @@
 namespace Seat\Eveapi;
 
 use Illuminate\Support\ServiceProvider;
+use Seat\Eveapi\Console\EsiJobMakeCommand;
 use Seat\Eveapi\Helpers\EseyeSetup;
-use Seat\Eveapi\Helpers\PhealSetup;
 
 /**
  * Class EveapiServiceProvider.
@@ -39,6 +39,12 @@ class EveapiServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        // Add builder commands
+        if ($this->app->runningInConsole())
+            $this->commands([
+                EsiJobMakeCommand::class,
+            ]);
 
         // Publish migrations
         $this->publishes([
