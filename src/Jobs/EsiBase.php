@@ -205,11 +205,12 @@ abstract class EsiBase implements ShouldQueue
      * Get the current characters roles.
      *
      * @return array
+     * @throws \Exception
      */
     public function getCharacterRoles(): array
     {
 
-        return CharacterRole::where('character_id', 1477919642)
+        return CharacterRole::where('character_id', $this->getCharacterId())
             // https://eve-seat.slack.com/archives/C0H3VGH4H/p1515081536000720
             // > @ccp_snowden: most things will require `roles`, most things are
             // > not contextually aware enough to make hq/base decisions
