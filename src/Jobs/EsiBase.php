@@ -146,6 +146,7 @@ abstract class EsiBase implements ShouldQueue
      * as corporation role if needed.
      *
      * @return bool
+     * @throws \Exception
      */
     public function authenticated(): bool
     {
@@ -163,6 +164,11 @@ abstract class EsiBase implements ShouldQueue
 
                 return true;
             }
+
+            // Considering a corporation role was required with the scope,
+            // fail the authentication check. If we dont fail here, simply
+            // granting the SSO scope would pass the next truth test.
+            return false;
         }
 
         // If a corporation role is *not* required, check that we have the required
