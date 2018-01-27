@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Helpers;
 
-use Seat\Eseye\Cache\NullCache;
 use Seat\Eseye\Configuration;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Eseye;

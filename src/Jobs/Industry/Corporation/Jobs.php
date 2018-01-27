@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Jobs\Industry\Corporation;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Contacts\CharacterIndustryJob;
 use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
 
 /**

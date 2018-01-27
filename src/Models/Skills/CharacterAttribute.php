@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Skills;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Skills;
 
 /**
  * Class CharacterAttribute

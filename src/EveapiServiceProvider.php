@@ -24,7 +24,6 @@ namespace Seat\Eveapi;
 
 use Illuminate\Support\ServiceProvider;
 use Seat\Eveapi\Helpers\EseyeSetup;
-use Seat\Eveapi\Helpers\PhealSetup;
 
 /**
  * Class EveapiServiceProvider.

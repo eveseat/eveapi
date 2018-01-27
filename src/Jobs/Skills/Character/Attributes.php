@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Jobs\Skills\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Market\CharacterAttribute;
+use Seat\Eveapi\Models\Skills\CharacterAttribute;
 
 /**
  * Class Attributes

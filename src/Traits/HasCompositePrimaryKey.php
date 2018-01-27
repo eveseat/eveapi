@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
-use Seat\Eveapi\Exception\SurrogateKeyException;
 
 
 /**
