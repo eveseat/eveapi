@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 
 /**
  * Class CharacterInfo
@@ -39,4 +40,35 @@ class CharacterInfo extends Model
      * @var string
      */
     protected $primaryKey = 'character_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function balance()
+    {
+        return $this->belongsTo(CharacterWalletBalance::class, 'character_id', 'character_id');
+    }
+
+    public function corporation()
+    {
+        return CharacterCorporationHistory::where('character_id', $this->character_id)
+                                          ->orderBy('start_date', 'desc')
+                                          ->first();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function histories()
+    {
+        return $this->hasMany(CharacterCorporationHistory::class, 'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function skills()
+    {
+        return $this->hasMany(CharacterSkill::class, 'character_id', 'character_id');
+    }
 }
