@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Skills;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -47,4 +48,9 @@ class CharacterSkillQueue extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'skill_id'];
+
+    public function type()
+    {
+        return $this->belongsTo(InvType::class, 'skill_id', 'typeID');
+    }
 }

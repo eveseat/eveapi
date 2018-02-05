@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Clones;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -42,4 +43,12 @@ class CharacterJumpClone extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'jump_clone_id'];
+
+    public function location()
+    {
+        if ($this->location_type == 'station')
+            return $this->belongsTo(StaStation::class, 'location_id', 'stationID');
+
+        return $this->belongsTo(StaStation::class, 'location_id', 'stationID');
+    }
 }

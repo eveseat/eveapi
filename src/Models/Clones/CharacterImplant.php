@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Clones;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -42,4 +43,9 @@ class CharacterImplant extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'type_id'];
+
+    public function type()
+    {
+        return $this->belongsTo(InvType::class, 'type_id', 'typeID');
+    }
 }
