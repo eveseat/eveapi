@@ -20,36 +20,31 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Clones;
+namespace Seat\Eveapi\Exception;
 
-use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+
+use Exception;
+use Throwable;
 
 /**
- * Class CharacterImplant
- * @package Seat\Eveapi\Models\Clones
+ * Class ReadOnlyModelException
+ * @package Seat\Eveapi\Exception
  */
-class CharacterImplant extends Model
+class ReadOnlyModelException extends Exception
 {
-    use HasCompositePrimaryKey;
 
     /**
-     * @var bool
+     * ReadOnlyModelException constructor.
+     *
+     * @param string          $message
+     * @param int             $code
+     * @param \Throwable|null $previous
      */
-    protected static $unguarded = true;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'type_id'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function type()
+    public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
     {
 
-        return $this->belongsTo(InvType::class, 'type_id', 'typeID');
+        $message = 'Model is read only. ' . $message;
+
+        parent::__construct($message, $code, $previous);
     }
 }

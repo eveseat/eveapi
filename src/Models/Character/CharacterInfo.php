@@ -46,22 +46,29 @@ class CharacterInfo extends Model
      */
     public function balance()
     {
-        return $this->belongsTo(CharacterWalletBalance::class, 'character_id', 'character_id');
+
+        return $this->belongsTo(CharacterWalletBalance::class,
+            'character_id', 'character_id');
     }
 
+    /**
+     * @return mixed
+     */
     public function corporation()
     {
+
         return CharacterCorporationHistory::where('character_id', $this->character_id)
-                                          ->orderBy('start_date', 'desc')
-                                          ->first();
+            ->latest()->first();
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function histories()
+    public function corporation_history()
     {
-        return $this->hasMany(CharacterCorporationHistory::class, 'character_id', 'character_id');
+
+        return $this->hasMany(CharacterCorporationHistory::class,
+            'character_id', 'character_id');
     }
 
     /**
@@ -69,6 +76,8 @@ class CharacterInfo extends Model
      */
     public function skills()
     {
-        return $this->hasMany(CharacterSkill::class, 'character_id', 'character_id');
+
+        return $this->hasMany(CharacterSkill::class,
+            'character_id', 'character_id');
     }
 }

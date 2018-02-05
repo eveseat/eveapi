@@ -49,8 +49,12 @@ class CharacterSkillQueue extends Model
      */
     protected $primaryKey = ['character_id', 'skill_id'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function type()
     {
+
         return $this->belongsTo(InvType::class, 'skill_id', 'typeID');
     }
 }

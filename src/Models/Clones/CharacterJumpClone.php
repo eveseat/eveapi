@@ -44,8 +44,12 @@ class CharacterJumpClone extends Model
      */
     protected $primaryKey = ['character_id', 'jump_clone_id'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function location()
     {
+
         if ($this->location_type == 'station')
             return $this->belongsTo(StaStation::class, 'location_id', 'stationID');
 
