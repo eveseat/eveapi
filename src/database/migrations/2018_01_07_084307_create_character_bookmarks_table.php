@@ -18,7 +18,7 @@ class CreateCharacterBookmarksTable extends Migration
 
             $table->bigInteger('character_id');
             $table->bigInteger('bookmark_id');
-            $table->bigInteger('folder_id');
+            $table->bigInteger('folder_id')->nullable();
             $table->dateTime('created');
             $table->string('label');
             $table->text('notes');
