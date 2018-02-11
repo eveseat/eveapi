@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class CharacterAsset
@@ -44,4 +45,25 @@ class CharacterAsset extends Model
      * @var
      */
     protected $primaryKey = 'item_id';
+
+    public function type()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function container()
+    {
+        return $this->belongsTo(CharacterAsset::class, 'item_id', 'location_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function content()
+    {
+        return $this->hasMany(CharacterAsset::class, 'location_id', 'item_id');
+    }
 }

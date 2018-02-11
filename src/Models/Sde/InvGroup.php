@@ -20,21 +20,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Assets;
+namespace Seat\Eveapi\Models\Sde;
+
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class CorporationAsset
- * @package Seat\Eveapi\Models\Assets
+ * Class InvGroup
+ * @package Seat\Eveapi\Models\Sde
  */
-class CorporationAsset extends Model
+class InvGroup extends Model
 {
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
+    use IsReadOnly;
 
     /**
      * @var bool
@@ -44,26 +42,10 @@ class CorporationAsset extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'item_id';
-
-    public function type()
-    {
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
-    }
+    protected $table = 'invGroups';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @var string
      */
-    public function container()
-    {
-        return $this->belongsTo(CorporationAsset::class, 'item_id', 'location_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function content()
-    {
-        return $this->hasMany(CorporationAsset::class, 'location_id', 'item_id');
-    }
+    protected $primaryKey = 'groupID';
 }

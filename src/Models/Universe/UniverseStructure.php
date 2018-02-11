@@ -20,40 +20,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Sde;
-
+namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class InvType
- * @package Seat\Eveapi\Models\Sde
+ * Class Structure
+ * @package Seat\Eveapi\Models\Universe
  */
-class InvType extends Model
+class UniverseStructure extends Model
 {
-    use IsReadOnly;
 
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
+    protected static $unguarded = true;
 
-    /**
-     * @var string
-     */
-    protected $table = 'invTypes';
+    protected $primaryKey = 'structure_id';
 
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'typeID';
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function group()
-    {
-        return $this->belongsTo(InvGroup::class, 'groupID', 'groupID');
-    }
 }
