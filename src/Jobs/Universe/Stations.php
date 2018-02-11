@@ -65,7 +65,7 @@ class Stations extends EsiBase
         // 21645 is gallente outpost
         // 21646 is minmatar outpost
 
-        $structures = SovereigntyStructure::whereIn('structure_type_id', [12242, 12294, 12295, 21642, 21644, 21465, 21646])
+        $structures = SovereigntyStructure::whereIn('structure_type_id', [12242, 12294, 12295, 21642, 21644, 21645, 21646])
                                 ->get();
 
         $structures->each(function($structure){
