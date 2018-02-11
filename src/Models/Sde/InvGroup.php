@@ -27,10 +27,10 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class InvType
+ * Class InvGroup
  * @package Seat\Eveapi\Models\Sde
  */
-class InvType extends Model
+class InvGroup extends Model
 {
     use IsReadOnly;
 
@@ -42,18 +42,10 @@ class InvType extends Model
     /**
      * @var string
      */
-    protected $table = 'invTypes';
+    protected $table = 'invGroups';
 
     /**
      * @var string
      */
-    protected $primaryKey = 'typeID';
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function group()
-    {
-        return $this->belongsTo(InvGroup::class, 'groupID', 'groupID');
-    }
+    protected $primaryKey = 'groupID';
 }
