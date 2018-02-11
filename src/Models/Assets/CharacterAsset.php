@@ -52,6 +52,14 @@ class CharacterAsset extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function container()
+    {
+        return $this->belongsTo(CharacterAsset::class, 'item_id', 'location_id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function content()
