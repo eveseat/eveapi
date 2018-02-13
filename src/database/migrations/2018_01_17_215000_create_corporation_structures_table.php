@@ -25,6 +25,16 @@ class CreateCorporationStructuresTable extends Migration
             $table->dateTime('state_timer_start')->nullable();
             $table->dateTime('state_timer_end')->nullable();
             $table->dateTime('unanchors_at')->nullable();
+            $table->enum('state', [
+                'anchor_vulnerable', 'anchoring', 'armor_reinforce', 'armor_vulnerable',
+                'fitting_invulnerable', 'hull_reinforce', 'hull_vulnerable', 'online_deprecated',
+                'onlining_vulnerable', 'shield_vulnerable', 'unanchored', 'unknown',
+            ]);
+            $table->integer('reinforce_weekday');
+            $table->integer('reinforce_hour');
+            $table->integer('next_reinforce_weekday')->nullable();
+            $table->integer('next_reinforce_hour')->nullable();
+            $table->dateTime('next_reinforce_apply')->nullable();
 
             $table->primary(['corporation_id', 'structure_id'], 'corporation_structures_primary_key');
             $table->index('corporation_id');
