@@ -76,6 +76,7 @@ class Items extends EsiBase
             ->where('corporation_id', $this->getCorporationId())
             ->where('type', '<>', 'courier')
             ->where('status', '<>', 'deleted')
+            ->where('volume', '>', 0)
             ->whereNotIn('corporation_contracts.contract_id', function ($query) {
 
                 $query->select('contract_id')
