@@ -70,6 +70,10 @@ class Items extends EsiBase
 
         if (! $this->authenticated()) return;
 
+        // add throttling feature
+        // https://github.com/ccpgames/esi-issues/issues/636
+        $throttler = 20;
+
         $empty_contracts = CorporationContract::join('contract_details',
             'corporation_contracts.contract_id', '=',
             'contract_details.contract_id')
@@ -85,7 +89,9 @@ class Items extends EsiBase
             })
             ->pluck('corporation_contracts.contract_id');
 
-        $empty_contracts->each(function ($contract_id) {
+        $empty_contracts->each(function ($contract_id) use ($throttler) {
+
+            $throttler--;
 
             $items = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
@@ -104,6 +110,13 @@ class Items extends EsiBase
                     'is_included'  => $item->is_included,
                 ]);
             });
+
+            if ($throttler < 1) {
+                // break process for 10 seconds
+                sleep(10);
+                // reset throttler count
+                $throttler = 20;
+            }
         });
     }
 }
