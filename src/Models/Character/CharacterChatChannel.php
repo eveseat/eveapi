@@ -45,4 +45,20 @@ class CharacterChatChannel extends Model
      * @var string
      */
     protected $primaryKey = null;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function info()
+    {
+        return $this->hasOne(CharacterChatChannelInfo::class, 'channel_id', 'channel_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function members()
+    {
+        return $this->hasMany(CharacterChatChannelMember::class, 'channel_id', 'channel_id');
+    }
 }
