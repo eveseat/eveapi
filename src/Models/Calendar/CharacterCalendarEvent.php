@@ -42,4 +42,20 @@ class CharacterCalendarEvent extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'event_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function detail()
+    {
+        return $this->hasOne(CharacterCalendarEventDetail::class, 'event_id', 'event_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attendees()
+    {
+        return $this->hasMany(CharacterCalendarAttendee::class, 'event_id', 'event_id');
+    }
 }
