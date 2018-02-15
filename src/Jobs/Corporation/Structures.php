@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Corporation\CorporationStructureService;
 use Seat\Eveapi\Models\Corporation\CorporationStructureVulnerability;
 use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class Structures
@@ -99,6 +100,20 @@ class Structures extends EsiBase
             ]);
 
             collect($structures)->each(function ($structure) {
+
+                // seed the common structure table with an unknown name
+                // only if we don't know it yet
+                if (is_null(UniverseStructure::find($structure->structure_id)))
+                    UniverseStructure::firstOrNew([
+                        'structure_id'    => $structure->structure_id,
+                    ])->fill([
+                        'type_id'         => $structure->type_id,
+                        'solar_system_id' => $structure->system_id,
+                        'name'            => 'Unknown structure',
+                        'x'               => 0.0,
+                        'y'               => 0.0,
+                        'z'               => 0.0,
+                    ])->save();
 
                 CorporationStructure::firstOrNew([
                     'corporation_id' => $structure->corporation_id,
