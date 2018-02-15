@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Bookmarks;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -42,4 +43,25 @@ class CharacterBookmark extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'bookmark_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function folder()
+    {
+        return $this->belongsTo(CharacterBookmarkFolder::class, 'folder_id', 'folder_id')
+            ->withDefault([
+                'character_id' => $this->character_id,
+                'folder_id'    => 0,
+                'name'         => 'None',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function system()
+    {
+        return $this->hasOne(MapDenormalize::class, 'itemID', 'location_id');
+    }
 }
