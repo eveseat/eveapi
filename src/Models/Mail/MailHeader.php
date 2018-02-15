@@ -45,4 +45,17 @@ class MailHeader extends Model
      * @var null
      */
     protected $primaryKey = null;
+
+    public function body()
+    {
+        return $this->hasOne(MailBody::class, 'mail_id', 'mail_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function recipients()
+    {
+        return $this->hasMany(MailRecipient::class, 'mail_id', 'mail_id');
+    }
 }
