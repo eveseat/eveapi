@@ -24,13 +24,25 @@ namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class UniverseStation
+ * @package Seat\Eveapi\Models\Universe
+ */
 class UniverseStation extends Model
 {
+    /**
+     * @var bool
+     */
+    protected static $unguarded = true;
 
+    /**
+     * @var bool
+     */
     public $incrementing = false;
 
+    /**
+     * @var string
+     */
     protected $primaryKey = 'station_id';
-
-    protected static $unguarded = true;
 
 }

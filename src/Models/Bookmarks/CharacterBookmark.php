@@ -49,6 +49,7 @@ class CharacterBookmark extends Model
      */
     public function folder()
     {
+
         return $this->belongsTo(CharacterBookmarkFolder::class, 'folder_id', 'folder_id')
             ->withDefault([
                 'character_id' => $this->character_id,
@@ -62,6 +63,7 @@ class CharacterBookmark extends Model
      */
     public function system()
     {
+
         return $this->hasOne(MapDenormalize::class, 'itemID', 'location_id');
     }
 }

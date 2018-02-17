@@ -26,6 +26,10 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
+/**
+ * Class CorporationBookmark
+ * @package Seat\Eveapi\Models\Bookmarks
+ */
 class CorporationBookmark extends Model
 {
     use HasCompositePrimaryKey;
@@ -45,6 +49,7 @@ class CorporationBookmark extends Model
      */
     public function folder()
     {
+
         return $this->belongsTo(CorporationBookmarkFolder::class, 'folder_id', 'folder_id')
             ->withDefault([
                 'corporation_id' => $this->corporation_id,
@@ -58,6 +63,7 @@ class CorporationBookmark extends Model
      */
     public function system()
     {
+
         return $this->hasOne(MapDenormalize::class, 'itemID', 'location_id');
     }
 }

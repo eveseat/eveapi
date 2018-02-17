@@ -25,11 +25,21 @@ namespace Seat\Eveapi\Models\Universe;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
+/**
+ * Class UniverseStationService
+ * @package Seat\Eveapi\Models\Universe
+ */
 class UniverseStationService extends Model
 {
     use HasCompositePrimaryKey;
 
+    /**
+     * @var bool
+     */
     protected static $unguarded = true;
 
+    /**
+     * @var array
+     */
     protected $primaryKey = ['station_id', 'service_name'];
 }

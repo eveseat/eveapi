@@ -46,8 +46,12 @@ class CharacterAsset extends Model
      */
     protected $primaryKey = 'item_id';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function type()
     {
+
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
     }
 
@@ -56,6 +60,7 @@ class CharacterAsset extends Model
      */
     public function container()
     {
+
         return $this->belongsTo(CharacterAsset::class, 'item_id', 'location_id');
     }
 
@@ -64,6 +69,7 @@ class CharacterAsset extends Model
      */
     public function content()
     {
+
         return $this->hasMany(CharacterAsset::class, 'location_id', 'item_id');
     }
 }

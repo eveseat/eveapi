@@ -24,13 +24,25 @@ namespace Seat\Eveapi\Models\Sovereignty;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class SovereigntyStructure
+ * @package Seat\Eveapi\Models\Sovereignty
+ */
 class SovereigntyStructure extends Model
 {
+    /**
+     * @var bool
+     */
+    protected static $unguarded = true;
 
+    /**
+     * @var bool
+     */
     public $incrementing = false;
 
+    /**
+     * @var string
+     */
     protected $primaryKey = 'structure_id';
-
-    protected static $unguarded = true;
 
 }

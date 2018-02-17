@@ -25,6 +25,10 @@ namespace Seat\Eveapi\Jobs\Sovereignty;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyStructure;
 
+/**
+ * Class Structures
+ * @package Seat\Eveapi\Jobs\Sovereignty
+ */
 class Structures extends EsiBase
 {
     /**
@@ -57,28 +61,25 @@ class Structures extends EsiBase
 
         $structures = $this->retrieve();
 
-        collect($structures)->each(function($structure){
+        collect($structures)->each(function ($structure) {
 
             SovereigntyStructure::firstOrNew([
                 'structure_id' => $structure->structure_id,
             ])->fill([
-                'structure_type_id' => $structure->structure_type_id,
-                'alliance_id' => $structure->alliance_id,
-                'solar_system_id' => $structure->solar_system_id,
+                'structure_type_id'             => $structure->structure_type_id,
+                'alliance_id'                   => $structure->alliance_id,
+                'solar_system_id'               => $structure->solar_system_id,
                 'vulnerability_occupancy_level' => $structure->vulnerability_occupancy_level ?? null,
-                'vulnerable_start_time' => property_exists($structure, 'vulnerable_start_time') ?
+                'vulnerable_start_time'         => property_exists($structure, 'vulnerable_start_time') ?
                     carbon($structure->vulnerable_start_time) : null,
-                'vulnerable_end_time' => property_exists($structure, 'vulnerable_end_time') ?
+                'vulnerable_end_time'           => property_exists($structure, 'vulnerable_end_time') ?
                     carbon($structure->vulnerable_end_time) : null,
             ])->save();
 
         });
 
         SovereigntyStructure::whereNotIn('structure_id', collect($structures)
-                ->pluck('structure_id')
-                ->flatten()
-                ->all())
+            ->pluck('structure_id')->flatten()->all())
             ->delete();
-
     }
 }

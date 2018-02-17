@@ -27,6 +27,10 @@ use Seat\Eveapi\Models\Sovereignty\SovereigntyStructure;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStationService;
 
+/**
+ * Class Stations
+ * @package Seat\Eveapi\Jobs\Universe
+ */
 class Stations extends EsiBase
 {
 
@@ -59,51 +63,50 @@ class Stations extends EsiBase
     {
 
         // filtering public structures on outpost typeID
-        // 12242, 12294, 12295 are conquerable outpost
-        // 21642 is caldari outpost
-        // 21644 is amarr outpost
-        // 21645 is gallente outpost
-        // 21646 is minmatar outpost
+        $structure_filter = [
+            12242, 12294, 12295, // conquerable outpost
+            21642,  // caldari outpost
+            21644,  // amarr outpost
+            21645,  // gallente outpost
+            21646,  // minmatar outpost
+        ];
 
-        $structures = SovereigntyStructure::whereIn('structure_type_id', [12242, 12294, 12295, 21642, 21644, 21645, 21646])
-                                ->get();
+        SovereigntyStructure::whereIn('structure_type_id', $structure_filter)->get()
+            ->each(function ($structure) {
 
-        $structures->each(function($structure){
+                $outpost = $this->retrieve(['station_id' => $structure->structure_id]);
 
-            $outpost = $this->retrieve(['station_id' => $structure->structure_id]);
-
-            UniverseStation::firstOrNew([
-                'station_id' => $outpost->station_id,
-            ])->fill([
-                'type_id'    => $outpost->type_id,
-                'name'       => $outpost->name,
-                'owner'      => $outpost->owner ?? null,
-                'race_id'    => $outpost->race_id ?? null,
-                'x'          => $outpost->position->x,
-                'y'          => $outpost->position->y,
-                'z'          => $outpost->position->z,
-                'system_id'  => $outpost->system_id,
-                'reprocessing_efficiency' => $outpost->reprocessing_efficiency,
-                'reprocessing_stations_take' => $outpost->reprocessing_stations_take,
-                'max_dockable_ship_volume' => $outpost->max_dockable_ship_volume,
-                'office_rental_cost' => $outpost->office_rental_cost,
-            ])->save();
-
-            collect($outpost->services)->each(function($service) use ($outpost) {
-
-                UniverseStationService::firstOrNew([
+                UniverseStation::firstOrNew([
                     'station_id' => $outpost->station_id,
-                    'service_name' => $service,
+                ])->fill([
+                    'type_id'                    => $outpost->type_id,
+                    'name'                       => $outpost->name,
+                    'owner'                      => $outpost->owner ?? null,
+                    'race_id'                    => $outpost->race_id ?? null,
+                    'x'                          => $outpost->position->x,
+                    'y'                          => $outpost->position->y,
+                    'z'                          => $outpost->position->z,
+                    'system_id'                  => $outpost->system_id,
+                    'reprocessing_efficiency'    => $outpost->reprocessing_efficiency,
+                    'reprocessing_stations_take' => $outpost->reprocessing_stations_take,
+                    'max_dockable_ship_volume'   => $outpost->max_dockable_ship_volume,
+                    'office_rental_cost'         => $outpost->office_rental_cost,
                 ])->save();
 
+                collect($outpost->services)->each(function ($service) use ($outpost) {
+
+                    UniverseStationService::firstOrNew([
+                        'station_id'   => $outpost->station_id,
+                        'service_name' => $service,
+                    ])->save();
+
+                });
+
+                UniverseStationService::where('station_id', $outpost->station_id)
+                    ->whereNotIn('service_name', collect($outpost->services)
+                        ->pluck('name')->flatten()->all())
+                    ->delete();
+
             });
-
-            UniverseStationService::where('station_id', $outpost->station_id)
-                ->whereNotIn('service_name', collect($outpost->services)->pluck('name')->flatten()->all())
-                ->delete();
-
-        });
-
     }
-
 }

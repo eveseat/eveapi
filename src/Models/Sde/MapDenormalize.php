@@ -26,8 +26,9 @@ namespace Seat\Eveapi\Models\Sde;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\IsReadOnly;
 
+
 /**
- * Class InvType
+ * Class MapDenormalize
  * @package Seat\Eveapi\Models\Sde
  */
 class MapDenormalize extends Model

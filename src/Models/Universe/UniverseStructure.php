@@ -25,14 +25,25 @@ namespace Seat\Eveapi\Models\Universe;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Structure
+ * Class UniverseStructure
  * @package Seat\Eveapi\Models\Universe
  */
 class UniverseStructure extends Model
 {
 
+    /**
+     * @var bool
+     */
     protected static $unguarded = true;
 
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * @var string
+     */
     protected $primaryKey = 'structure_id';
 
 }

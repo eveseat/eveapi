@@ -101,23 +101,23 @@ class Structures extends EsiBase
 
             collect($structures)->each(function ($structure) {
 
-                // seed the common structure table with an unknown name
-                // only if we don't know it yet
-                if (is_null(UniverseStructure::find($structure->structure_id)))
-                    UniverseStructure::firstOrNew([
-                        'structure_id'    => $structure->structure_id,
-                    ])->fill([
-                        'type_id'         => $structure->type_id,
-                        'solar_system_id' => $structure->system_id,
-                        'name'            => 'Unknown structure',
-                        'x'               => 0.0,
-                        'y'               => 0.0,
-                        'z'               => 0.0,
-                    ])->save();
+                // Ensure that we have an entry for this structure_id in the
+                // UniverseStructures model. We set the name to unknown for now
+                // but this will update when that models updater runs.
+                UniverseStructure::firstOrCreate([
+                    'structure_id' => $structure->structure_id,
+                ])->fill([
+                    'type_id'         => $structure->type_id,
+                    'solar_system_id' => $structure->system_id,
+                    'name'            => 'Unknown',
+                    'x'               => 0.0,
+                    'y'               => 0.0,
+                    'z'               => 0.0,
+                ])->save();
 
                 CorporationStructure::firstOrNew([
-                    'corporation_id'         => $structure->corporation_id,
-                    'structure_id'           => $structure->structure_id,
+                    'corporation_id' => $structure->corporation_id,
+                    'structure_id'   => $structure->structure_id,
                 ])->fill([
                     'type_id'                => $structure->type_id,
                     'system_id'              => $structure->system_id,
@@ -152,6 +152,7 @@ class Structures extends EsiBase
                         ])->save();
                     });
 
+                    // Cleanup Services that may no longer be applicable to this structure.
                     CorporationStructureService::where('corporation_id', $structure->corporation_id)
                         ->where('structure_id', $structure->structure_id)
                         ->whereNotIn('name', collect($structure->services)
@@ -160,6 +161,8 @@ class Structures extends EsiBase
 
                 } else {
 
+                    // If no services are defined on this structure, remove all of the
+                    // ones we might have in the databse.
                     CorporationStructureService::where('corporation_id', $structure->corporation_id)
                         ->where('structure_id', $structure->structure_id)
                         ->delete();
@@ -172,6 +175,7 @@ class Structures extends EsiBase
                 break;
         }
 
+        // Cleanup services and structures that were not in the response.
         CorporationStructureService::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('structure_id', $this->known_structures->flatten()->all())
             ->delete();

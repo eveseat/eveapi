@@ -46,8 +46,12 @@ class CorporationAsset extends Model
      */
     protected $primaryKey = 'item_id';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function type()
     {
+
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
     }
 
@@ -56,6 +60,7 @@ class CorporationAsset extends Model
      */
     public function container()
     {
+
         return $this->belongsTo(CorporationAsset::class, 'item_id', 'location_id');
     }
 
@@ -64,6 +69,7 @@ class CorporationAsset extends Model
      */
     public function content()
     {
+
         return $this->hasMany(CorporationAsset::class, 'location_id', 'item_id');
     }
 }

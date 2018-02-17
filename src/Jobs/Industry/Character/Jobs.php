@@ -94,14 +94,10 @@ class Jobs extends EsiBase
                 'blueprint_location_id'  => $job->blueprint_location_id,
                 'output_location_id'     => $job->output_location_id,
                 'runs'                   => $job->runs,
-                'cost'                   => property_exists($job, 'cost') ?
-                    $job->cost : null,
-                'licensed_runs'          => property_exists($job, 'licensed_runs') ?
-                    $job->licensed_runs : null,
-                'probability'            => property_exists($job, 'probability') ?
-                    $job->probability : null,
-                'product_type_id'        => property_exists($job, 'product_type_id') ?
-                    $job->product_type_id : null,
+                'cost'                   => $job->cost ?? null,
+                'licensed_runs'          => $job->licensed_runs ?? null,
+                'probability'            => $job->probability ?? null,
+                'product_type_id'        => $job->product_type_id ?? null,
                 'status'                 => $job->status,
                 'duration'               => $job->duration,
                 'start_date'             => carbon($job->start_date),
@@ -110,12 +106,9 @@ class Jobs extends EsiBase
                     carbon($job->pause_date) : null,
                 'completed_date'         => property_exists($job, 'completed_date') ?
                     carbon($job->completed_date) : null,
-                'completed_character_id' => property_exists($job, 'completed_character_id') ?
-                    $job->completed_character_id : null,
-                'successful_runs'        => property_exists($job, 'successful_runs') ?
-                    $job->successful_runs : null,
+                'completed_character_id' => $job->completed_character_id ?? null,
+                'successful_runs'        => $job->successful_runs ?? null,
             ])->save();
         });
-
     }
 }

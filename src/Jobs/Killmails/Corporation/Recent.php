@@ -53,7 +53,7 @@ class Recent extends EsiBase
     protected $scope = 'esi-killmails.read_corporation_killmails.v1';
 
     /**
-     * @var array 
+     * @var array
      */
     protected $tags = ['corporation', 'killmails'];
 
@@ -61,7 +61,7 @@ class Recent extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {

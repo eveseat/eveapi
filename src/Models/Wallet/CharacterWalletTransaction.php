@@ -54,6 +54,7 @@ class CharacterWalletTransaction extends Model
      */
     public function type()
     {
+
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
     }
 }

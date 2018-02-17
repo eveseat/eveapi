@@ -23,12 +23,16 @@
 namespace Seat\Eveapi\Jobs\Universe;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Eveapi\Models\Sde\StaStation;
-use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
+use Seat\Eveapi\Models\Sde\StaStation;
+use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
+/**
+ * Class Structures
+ * @package Seat\Eveapi\Jobs\Universe
+ */
 class Structures extends EsiBase
 {
 
@@ -60,13 +64,16 @@ class Structures extends EsiBase
      */
     public function handle()
     {
+
         $character_assets = CharacterAsset::where('character_id', $this->getCharacterId())
-                                          ->where('location_flag', 'Hangar')
-                                          ->whereNotIn('location_id', UniverseStation::all()->pluck('station_id')->flatten())
-                                          ->whereNotIn('location_id', StaStation::all()->pluck('stationID')->flatten())
-                                          ->select('location_id')
-                                          ->distinct()
-                                          ->get();
+            ->where('location_flag', 'Hangar')
+            ->whereNotIn('location_id', UniverseStation::all()
+                ->pluck('station_id')->flatten())
+            ->whereNotIn('location_id', StaStation::all()
+                ->pluck('stationID')->flatten())
+            ->select('location_id')
+            ->distinct()
+            ->get();
 
         foreach ($character_assets as $character_asset) {
 
@@ -90,12 +97,12 @@ class Structures extends EsiBase
                 // it will avoid to drop data collected from any other granted character in the database
                 if (is_null(UniverseStructure::find($character_asset->location_id))) {
                     UniverseStructure::firstOrNew([
-                        'structure_id' => $character_asset->location_id,
-                        'name' => 'Unknown structure',
+                        'structure_id'    => $character_asset->location_id,
+                        'name'            => 'Unknown structure',
                         'solar_system_id' => 0,
-                        'x' => 0.0,
-                        'y' => 0.0,
-                        'z' => 0.0,
+                        'x'               => 0.0,
+                        'y'               => 0.0,
+                        'z'               => 0.0,
                     ])->save();
                 }
             }

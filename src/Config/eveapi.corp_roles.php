@@ -23,6 +23,11 @@
 return [
 
     // A mapping of SSO scope and in game role pairs.
+    // This mapping is used within the job workers to check if
+    // the current refresh_token has the required in game role
+    // to make the requested call. The check itself lives in:
+    // \Seat\Eveapi\Jobs\EsiBase::authenticated
+
     'esi-assets.read_corporation_assets.v1'           => ['Director'],
     'esi-corporations.read_blueprints.v1'             => ['Director'],
     'esi-corporations.read_container_logs.v1'         => ['Director'],
