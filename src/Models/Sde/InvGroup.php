@@ -20,21 +20,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Mail;
+namespace Seat\Eveapi\Models\Sde;
+
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class MailHeader
- * @package Seat\Eveapi\Models\Character
+ * Class InvGroup
+ * @package Seat\Eveapi\Models\Sde
  */
-class MailHeader extends Model
+class InvGroup extends Model
 {
-
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
+    use IsReadOnly;
 
     /**
      * @var bool
@@ -42,20 +40,12 @@ class MailHeader extends Model
     public $incrementing = false;
 
     /**
-     * @var null
+     * @var string
      */
-    protected $primaryKey = null;
-
-    public function body()
-    {
-        return $this->hasOne(MailBody::class, 'mail_id', 'mail_id');
-    }
+    protected $table = 'invGroups';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @var string
      */
-    public function recipients()
-    {
-        return $this->hasMany(MailRecipient::class, 'mail_id', 'mail_id');
-    }
+    protected $primaryKey = 'groupID';
 }

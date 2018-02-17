@@ -48,4 +48,12 @@ class InvType extends Model
      * @var string
      */
     protected $primaryKey = 'typeID';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function group()
+    {
+        return $this->belongsTo(InvGroup::class, 'groupID', 'groupID');
+    }
 }

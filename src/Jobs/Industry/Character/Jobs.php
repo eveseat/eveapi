@@ -44,6 +44,13 @@ class Jobs extends EsiBase
     protected $endpoint = '/characters/{character_id}/industry/jobs/';
 
     /**
+     * @var array
+     */
+    protected $query_string = [
+        'include_completed' => true,
+    ];
+
+    /**
      * @var string
      */
     protected $version = 'v1';

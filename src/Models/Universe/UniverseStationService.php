@@ -20,26 +20,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Corporation;
+namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
-/**
- * Class CorporationStructureVulnerability
- * @package Seat\Eveapi\Models\Corporation
- */
-class CorporationStructureVulnerability extends Model
+class UniverseStationService extends Model
 {
     use HasCompositePrimaryKey;
 
-    /**
-     * @var bool
-     */
     protected static $unguarded = true;
 
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['corporation_id', 'structure_id', 'type', 'day', 'hour'];
+    protected $primaryKey = ['station_id', 'service_name'];
 }

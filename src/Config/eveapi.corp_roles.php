@@ -34,11 +34,10 @@ return [
     'esi-corporations.read_outposts.v1'               => ['Director'],
     'esi-corporations.read_corporation_membership.v1' => ['Director'],
     'esi-characters.read_corporation_roles.v1'        => ['Personnel_Manager'],
-    'esi-wallet.read_corporation_wallets.v1'          => ['Director'],
     'esi-corporations.read_starbases.v1'              => ['Director'],
     'esi-corporations.read_structures.v1'             => ['Station_Manager'],
     'esi-industry.read_corporation_mining.v1'         => ['Station_Manager'],
     'esi-killmails.read_corporation_killmails.v1'     => ['Director'],
     'esi-markets.read_corporation_orders.v1'          => ['Accountant', 'Trader'],
-    'esi-wallet.read_corporation_wallets.v1'          => ['Accountant', 'Junior_Accountant'],
+    'esi-wallet.read_corporation_wallets.v1'          => ['Director', 'Accountant', 'Junior_Accountant'],
 ];

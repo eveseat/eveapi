@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Corporation\CorporationStructureService;
 use Seat\Eveapi\Models\Corporation\CorporationStructureVulnerability;
 use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class Structures
@@ -47,7 +48,7 @@ class Structures extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var string
@@ -100,44 +101,43 @@ class Structures extends EsiBase
 
             collect($structures)->each(function ($structure) {
 
+                // seed the common structure table with an unknown name
+                // only if we don't know it yet
+                if (is_null(UniverseStructure::find($structure->structure_id)))
+                    UniverseStructure::firstOrNew([
+                        'structure_id'    => $structure->structure_id,
+                    ])->fill([
+                        'type_id'         => $structure->type_id,
+                        'solar_system_id' => $structure->system_id,
+                        'name'            => 'Unknown structure',
+                        'x'               => 0.0,
+                        'y'               => 0.0,
+                        'z'               => 0.0,
+                    ])->save();
+
                 CorporationStructure::firstOrNew([
-                    'corporation_id' => $structure->corporation_id,
-                    'structure_id'   => $structure->structure_id,
+                    'corporation_id'         => $structure->corporation_id,
+                    'structure_id'           => $structure->structure_id,
                 ])->fill([
-                    'type_id'           => $structure->type_id,
-                    'system_id'         => $structure->system_id,
-                    'profile_id'        => $structure->profile_id,
-                    'fuel_expires'      => property_exists($structure, 'fuel_expires') ?
+                    'type_id'                => $structure->type_id,
+                    'system_id'              => $structure->system_id,
+                    'profile_id'             => $structure->profile_id,
+                    'fuel_expires'           => property_exists($structure, 'fuel_expires') ?
                         carbon($structure->fuel_expires) : null,
-                    'state_timer_start' => property_exists($structure, 'state_timer_start') ?
+                    'state_timer_start'      => property_exists($structure, 'state_timer_start') ?
                         carbon($structure->state_timer_start) : null,
-                    'state_timer_end'   => property_exists($structure, 'state_timer_end') ?
+                    'state_timer_end'        => property_exists($structure, 'state_timer_end') ?
                         carbon($structure->state_timer_end) : null,
-                    'unanchors_at'      => property_exists($structure, 'unanchors_at') ?
+                    'unanchors_at'           => property_exists($structure, 'unanchors_at') ?
                         carbon($structure->unanchors_at) : null,
+                    'state'                  => $structure->state,
+                    'reinforce_weekday'      => $structure->reinforce_weekday,
+                    'reinforce_hour'         => $structure->reinforce_hour,
+                    'next_reinforce_weekday' => $structure->next_reinforce_weekday ?? null,
+                    'next_reinforce_hour'    => $structure->next_reinforce_hour ?? null,
+                    'next_reinforce_apply'   => property_exists($structure, 'next_reinforce_apply') ?
+                        carbon($structure->next_reinforce_apply) : null,
                 ])->save();
-
-                collect($structure->current_vul)->each(function ($vulnerability) use ($structure) {
-
-                    CorporationStructureVulnerability::firstOrNew([
-                        'corporation_id' => $structure->corporation_id,
-                        'structure_id'   => $structure->structure_id,
-                        'type'           => 'current',
-                        'day'            => $vulnerability->day,
-                        'hour'           => $vulnerability->hour,
-                    ])->save();
-                });
-
-                collect($structure->next_vul)->each(function ($vulnerability) use ($structure) {
-
-                    CorporationStructureVulnerability::firstOrNew([
-                        'corporation_id' => $structure->corporation_id,
-                        'structure_id'   => $structure->structure_id,
-                        'type'           => 'next',
-                        'day'            => $vulnerability->day,
-                        'hour'           => $vulnerability->hour,
-                    ])->save();
-                });
 
                 if (property_exists($structure, 'services')) {
 

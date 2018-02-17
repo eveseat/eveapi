@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class CorporationAsset
@@ -44,4 +45,25 @@ class CorporationAsset extends Model
      * @var string
      */
     protected $primaryKey = 'item_id';
+
+    public function type()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function container()
+    {
+        return $this->belongsTo(CorporationAsset::class, 'item_id', 'location_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function content()
+    {
+        return $this->hasMany(CorporationAsset::class, 'location_id', 'item_id');
+    }
 }
