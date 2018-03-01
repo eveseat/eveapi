@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class CorporationMembersLimit
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationMembersLimit extends Model
+class CorporationMemberLimits extends Model
 {
     /**
      * @var bool

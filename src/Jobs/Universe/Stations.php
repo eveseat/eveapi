@@ -22,7 +22,9 @@
 
 namespace Seat\Eveapi\Jobs\Universe;
 
+use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyStructure;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStationService;
@@ -65,48 +67,66 @@ class Stations extends EsiBase
         // filtering public structures on outpost typeID
         $structure_filter = [
             12242, 12294, 12295, // conquerable outpost
-            21642,  // caldari outpost
-            21644,  // amarr outpost
-            21645,  // gallente outpost
-            21646,  // minmatar outpost
+            21642,               // caldari outpost
+            21644,               // amarr outpost
+            21645,               // gallente outpost
+            21646,               // minmatar outpost
         ];
 
+        // NPC stations
+        CorporationInfo::all()->each(function ($corporation) {
+
+            $station = $this->retrieve(['station_id' => $corporation->home_station_id]);
+
+            $this->updateStructure($station);
+
+        });
+
+        // conquerable outposts
         SovereigntyStructure::whereIn('structure_type_id', $structure_filter)->get()
             ->each(function ($structure) {
 
                 $outpost = $this->retrieve(['station_id' => $structure->structure_id]);
 
-                UniverseStation::firstOrNew([
-                    'station_id' => $outpost->station_id,
-                ])->fill([
-                    'type_id'                    => $outpost->type_id,
-                    'name'                       => $outpost->name,
-                    'owner'                      => $outpost->owner ?? null,
-                    'race_id'                    => $outpost->race_id ?? null,
-                    'x'                          => $outpost->position->x,
-                    'y'                          => $outpost->position->y,
-                    'z'                          => $outpost->position->z,
-                    'system_id'                  => $outpost->system_id,
-                    'reprocessing_efficiency'    => $outpost->reprocessing_efficiency,
-                    'reprocessing_stations_take' => $outpost->reprocessing_stations_take,
-                    'max_dockable_ship_volume'   => $outpost->max_dockable_ship_volume,
-                    'office_rental_cost'         => $outpost->office_rental_cost,
-                ])->save();
-
-                collect($outpost->services)->each(function ($service) use ($outpost) {
-
-                    UniverseStationService::firstOrNew([
-                        'station_id'   => $outpost->station_id,
-                        'service_name' => $service,
-                    ])->save();
-
-                });
-
-                UniverseStationService::where('station_id', $outpost->station_id)
-                    ->whereNotIn('service_name', collect($outpost->services)
-                        ->pluck('name')->flatten()->all())
-                    ->delete();
+                $this->updateStructure($outpost);
 
             });
     }
+
+    private function updateStructure(EsiResponse $structure)
+    {
+
+        UniverseStation::firstOrNew([
+            'station_id' => $structure->station_id,
+        ])->fill([
+            'type_id'                    => $structure->type_id,
+            'name'                       => $structure->name,
+            'owner'                      => $structure->owner ?? null,
+            'race_id'                    => $structure->race_id ?? null,
+            'x'                          => $structure->position->x,
+            'y'                          => $structure->position->y,
+            'z'                          => $structure->position->z,
+            'system_id'                  => $structure->system_id,
+            'reprocessing_efficiency'    => $structure->reprocessing_efficiency,
+            'reprocessing_stations_take' => $structure->reprocessing_stations_take,
+            'max_dockable_ship_volume'   => $structure->max_dockable_ship_volume,
+            'office_rental_cost'         => $structure->office_rental_cost,
+        ])->save();
+
+        collect($structure->services)->each(function ($service) use ($structure) {
+
+            UniverseStationService::firstOrNew([
+                'station_id'   => $structure->station_id,
+                'service_name' => $service,
+            ])->save();
+
+        });
+
+        UniverseStationService::where('station_id', $structure->station_id)
+            ->whereNotIn('service_name', collect($structure->services)
+            ->pluck('name')->flatten()->all())
+            ->delete();
+
+    }
+
 }

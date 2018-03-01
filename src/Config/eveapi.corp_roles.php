@@ -38,7 +38,7 @@ return [
     'esi-corporations.read_titles.v1'                 => ['Director'],
     'esi-corporations.read_outposts.v1'               => ['Director'],
     'esi-corporations.read_corporation_membership.v1' => ['Director'],
-    'esi-characters.read_corporation_roles.v1'        => ['Personnel_Manager'],
+    //'esi-characters.read_corporation_roles.v1'        => ['Personnel_Manager'], -> idiot scope, required in order to call /character/{character_id}/roles
     'esi-corporations.read_starbases.v1'              => ['Director'],
     'esi-corporations.read_structures.v1'             => ['Station_Manager'],
     'esi-industry.read_corporation_mining.v1'         => ['Station_Manager'],
