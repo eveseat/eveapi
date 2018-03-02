@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Corporation\CorporationMembersLimit;
+use Seat\Eveapi\Models\Corporation\CorporationMemberLimits;
 
 /**
  * Class MembersLimit
@@ -74,7 +74,7 @@ class MembersLimit extends EsiBase
         if (! property_exists($limit, 'scalar'))
             return;
 
-        CorporationMembersLimit::firstOrNew([
+        CorporationMemberLimits::firstOrNew([
             'corporation_id' => $this->getCorporationId(),
         ])->fill([
             'limit' => $limit->scalar,

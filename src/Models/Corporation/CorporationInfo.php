@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseStation;
 
 /**
  * Class CorporationInfo.
@@ -44,5 +45,21 @@ class CorporationInfo extends Model
      * @var string
      */
     protected $primaryKey = 'corporation_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function homeStation()
+    {
+        return $this->belongsTo(UniverseStation::class, 'home_station_id', 'station_id');
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAttributeMemberLimit()
+    {
+        return optional(CorporationMemberLimits::find($this->corporation_id))->limit;
+    }
 
 }
