@@ -20,7 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Contacts;
+namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 
