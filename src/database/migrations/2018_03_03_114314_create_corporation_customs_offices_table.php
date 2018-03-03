@@ -31,6 +31,10 @@ class CreateCorporationCustomsOfficesTable extends Migration
             $table->float('neutral_standing_tax_rate')->nullable();
             $table->float('bad_standing_tax_rate')->nullable();
             $table->float('terrible_standing_tax_rate')->nullable();
+            $table->bigInteger('location_id')->nullable();
+            $table->double('x')->nullable();
+            $table->double('y')->nullable();
+            $table->double('z')->nullable();
 
             $table->primary(['corporation_id', 'office_id']);
             $table->index('corporation_id');

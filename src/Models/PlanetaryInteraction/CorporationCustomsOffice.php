@@ -47,6 +47,14 @@ class CorporationCustomsOffice extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    public function planet()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'location_id', 'itemID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function system()
     {
         return $this->belongsTo(MapDenormalize::class, 'system_id', 'itemID');
