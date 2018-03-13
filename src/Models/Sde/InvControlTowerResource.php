@@ -24,17 +24,18 @@ namespace Seat\Eveapi\Models\Sde;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
+use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 
 /**
- * Class MapDenormalize
+ * Class InvControlTowerResources
  * @package Seat\Eveapi\Models\Sde
  */
-class MapDenormalize extends Model
+class InvControlTowerResource extends Model
 {
     use IsReadOnly;
+    use HasCompositePrimaryKey;
 
     /**
      * @var bool
@@ -44,23 +45,10 @@ class MapDenormalize extends Model
     /**
      * @var string
      */
-    protected $table = 'mapDenormalize';
+    protected $table = 'invControlTowerResources';
 
     /**
      * @var string
      */
-    protected $primaryKey = 'itemID';
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function type()
-    {
-        return $this->belongsTo(InvType::class, 'typeID', 'typeID');
-    }
-
-    public function sovereignty()
-    {
-        return $this->hasOne(SovereigntyMap::class, 'system_id', 'itemID');
-    }
+    protected $primaryKey = ['controlTowerTypeID', 'resourceTypeID'];
 }

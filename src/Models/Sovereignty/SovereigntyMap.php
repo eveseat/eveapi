@@ -20,21 +20,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Sde;
-
+namespace Seat\Eveapi\Models\Sovereignty;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
-use Seat\Eveapi\Traits\IsReadOnly;
-
 
 /**
- * Class MapDenormalize
- * @package Seat\Eveapi\Models\Sde
+ * Class SovereigntyMap
+ * @package Seat\Eveapi\Models\Sovereignty
  */
-class MapDenormalize extends Model
+class SovereigntyMap extends Model
 {
-    use IsReadOnly;
+    /**
+     * @var bool
+     */
+    protected static $unguarded = true;
 
     /**
      * @var bool
@@ -44,23 +43,6 @@ class MapDenormalize extends Model
     /**
      * @var string
      */
-    protected $table = 'mapDenormalize';
+    protected $primaryKey = 'system_id';
 
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'itemID';
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function type()
-    {
-        return $this->belongsTo(InvType::class, 'typeID', 'typeID');
-    }
-
-    public function sovereignty()
-    {
-        return $this->hasOne(SovereigntyMap::class, 'system_id', 'itemID');
-    }
 }
