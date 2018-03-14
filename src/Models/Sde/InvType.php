@@ -50,11 +50,18 @@ class InvType extends Model
     protected $primaryKey = 'typeID';
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function dogmaAttributes()
+    {
+        return $this->hasMany(DgmTypeAttribute::class, 'typeID', 'typeID');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function group()
     {
-
         return $this->belongsTo(InvGroup::class, 'groupID', 'groupID');
     }
 }
