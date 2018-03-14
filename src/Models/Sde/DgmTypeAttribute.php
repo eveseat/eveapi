@@ -20,36 +20,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Wallet;
+namespace Seat\Eveapi\Models\Sde;
+
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Eveapi\Traits\IsReadOnly;
+
 
 /**
- * Class CharacterWalletTransaction
- * @package Seat\Eveapi\Models\Wallet
+ * Class DgmTypeAttribute
+ * @package Seat\Eveapi\Models\Sde
  */
-class CorporationWalletTransaction extends Model
+class DgmTypeAttribute extends Model
 {
+    use IsReadOnly;
     use HasCompositePrimaryKey;
 
     /**
      * @var bool
      */
-    protected static $unguarded = true;
+    public $incrementing = false;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $primaryKey = ['corporation_id', 'division', 'transaction_id'];
+    protected $table = 'dgmTypeAttributes';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @var string
      */
-    public function type()
-    {
-
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
-    }
+    protected $primaryKey = ['typeID', 'attributeID'];
 }

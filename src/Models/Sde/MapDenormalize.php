@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Sde;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 
@@ -49,4 +50,17 @@ class MapDenormalize extends Model
      * @var string
      */
     protected $primaryKey = 'itemID';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type()
+    {
+        return $this->belongsTo(InvType::class, 'typeID', 'typeID');
+    }
+
+    public function sovereignty()
+    {
+        return $this->hasOne(SovereigntyMap::class, 'system_id', 'itemID');
+    }
 }

@@ -24,8 +24,8 @@ namespace Seat\Eveapi\Jobs\Contracts\Character;
 
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Contacts\CharacterContract;
-use Seat\Eveapi\Models\Contacts\ContractDetail;
+use Seat\Eveapi\Models\Contracts\CharacterContract;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 
 /**
  * Class Contracts

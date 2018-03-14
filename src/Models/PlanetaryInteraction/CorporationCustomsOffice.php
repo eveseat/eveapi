@@ -20,17 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Wallet;
+namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterWalletTransaction
- * @package Seat\Eveapi\Models\Wallet
+ * Class CorporationCustomsOffice
+ * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
-class CorporationWalletTransaction extends Model
+class CorporationCustomsOffice extends Model
 {
     use HasCompositePrimaryKey;
 
@@ -42,14 +42,21 @@ class CorporationWalletTransaction extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['corporation_id', 'division', 'transaction_id'];
+    protected $primaryKey = ['corporation_id', 'office_id'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function type()
+    public function planet()
     {
+        return $this->belongsTo(MapDenormalize::class, 'location_id', 'itemID');
+    }
 
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function system()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'system_id', 'itemID');
     }
 }

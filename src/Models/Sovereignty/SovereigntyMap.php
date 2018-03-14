@@ -20,36 +20,29 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Wallet;
+namespace Seat\Eveapi\Models\Sovereignty;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterWalletTransaction
- * @package Seat\Eveapi\Models\Wallet
+ * Class SovereigntyMap
+ * @package Seat\Eveapi\Models\Sovereignty
  */
-class CorporationWalletTransaction extends Model
+class SovereigntyMap extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var bool
      */
-    protected $primaryKey = ['corporation_id', 'division', 'transaction_id'];
+    public $incrementing = false;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @var string
      */
-    public function type()
-    {
+    protected $primaryKey = 'system_id';
 
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
-    }
 }

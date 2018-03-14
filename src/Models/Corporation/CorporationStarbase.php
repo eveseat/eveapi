@@ -23,6 +23,11 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Assets\CorporationAsset;
+use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
+use Seat\Eveapi\Models\Sde\InvControlTowerResource;
+use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -43,5 +48,100 @@ class CorporationStarbase extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'starbase_id'];
+
+    /**
+     * @return float
+     */
+    public function getBaseFuelUsageAttribute()
+    {
+        $resources = InvControlTowerResource::where('controlTowerTypeID', $this->type_id)
+                                            ->whereBetween('resourceTypeID', [4000, 5000]) // base fuel usage are between 4000 and 5000
+                                            ->where('purpose', 1)
+                                            ->first();
+
+        if (!is_null($resources))
+            return $resources->quantity;
+
+        return 0.0;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBaseStrontiumUsageAttribute()
+    {
+        $resources = InvControlTowerResource::where('controlTowerTypeID', $this->type_id)
+            ->where('resourceTypeID', 16275) // base strontium usage is 16275
+            ->where('purpose', 4)
+            ->first();
+
+        if (!is_null($resources))
+            return $resources->quantity;
+
+        return 0.0;
+    }
+
+    /**
+     * @return float
+     */
+    public function getStrontiumBaySizeAttribute()
+    {
+        $attributes = DgmTypeAttribute::where('typeID', $this->type_id)
+                                      ->where('attributeID', 1233) // strontium bay attribute
+                                      ->first();
+
+        if (!is_null($attributes))
+            return $attributes->valueFloat;
+
+        return 0.0;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function detail()
+    {
+        return $this->hasOne(CorporationStarbaseDetail::class, 'starbase_id', 'starbase_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function fuelBays()
+    {
+        return $this->hasMany(CorporationStarbaseFuel::class, 'starbase_id', 'starbase_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function item()
+    {
+        return $this->belongsTo(CorporationAsset::class, 'starbase_id', 'item_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function moon()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'moon_id', 'itemID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function system()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'system_id', 'itemID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type()
+    {
+        return $this->belongsTo(InvType::class, 'type_id', 'typeID');
+    }
 
 }

@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Corporation;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -43,4 +44,31 @@ class CorporationDivision extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'type', 'division'];
+
+    /**
+     * @return string
+     */
+    public function getNameAttribute($value)
+    {
+        if (is_null($value))
+            return 'Master Wallet';
+
+        return $value;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBalanceAttribute()
+    {
+        $balance = null;
+
+        if ($this->type == 'wallet')
+            $balance = CorporationWalletBalance::where('corporation_id', $this->corporation_id)
+                ->where('division', $this->division)
+                ->select('balance')
+                ->first();
+
+        return (is_null($balance) ? 0.0 : $balance->balance);
+    }
 }

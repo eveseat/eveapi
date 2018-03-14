@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Traits;
 
-use Illuminate\Support\Facades\DB;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 
 /**
  * Class Utils.
@@ -85,8 +85,7 @@ trait Utils
             'map_name' => 'Unknown',
         ];
 
-        $possible_celestials = DB::table('mapDenormalize')
-            ->where('solarSystemID', $solar_system_id)
+        $possible_celestials = MapDenormalize::where('solarSystemID', $solar_system_id)
             ->whereNotNull('itemName')
             ->where('x', '<>', '0.0') // Exclude the systems star.
             ->whereIn('groupID', [6, 7, 8, 9, 10])
