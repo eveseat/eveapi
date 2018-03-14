@@ -47,6 +47,18 @@ class CorporationAsset extends Model
     protected $primaryKey = 'item_id';
 
     /**
+     * @param $value
+     * @return string
+     */
+    public function getNameAttribute($value)
+    {
+        if (is_null($value) || $value == '')
+            return $this->type->typeName;
+
+        return $value;
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()

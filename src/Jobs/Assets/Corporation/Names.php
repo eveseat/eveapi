@@ -79,7 +79,12 @@ class Names extends EsiBase
 
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.
-        CorporationAsset::where('corporation_id', $this->getCorporationId())
+        CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
+            ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
+            ->where('corporation_id', $this->getCorporationId())
+            ->where('is_singleton', true)               // only singleton items may be named
+            ->whereIn('categoryID', [2, 6, 22, 23, 46, 65]) // it seems only items from that categories can be named
+            ->select('item_id')
             ->chunk($this->item_id_limit, function ($item_ids) {
 
                 $this->request_body = $item_ids->pluck('item_id')->all();

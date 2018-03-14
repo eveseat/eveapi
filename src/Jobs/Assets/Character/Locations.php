@@ -80,7 +80,56 @@ class Locations extends EsiBase
 
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.
-        CharacterAsset::where('character_id', $this->getCharacterId())
+        CharacterAsset::join('invTypes', 'type_id', '=', 'typeID')
+            ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
+            ->where('character_id', $this->getCharacterId())
+            ->where('is_singleton', true)               // only singleton items may be named
+            ->whereIn('categoryID', [2, 6, 22, 23, 65]) // it seems only items from that categories can be named
+            ->select('item_id')
+            ->chunk($this->item_id_limit, function ($item_ids) {
+
+                $this->request_body = $item_ids->pluck('item_id')->all();
+
+                $locations = $this->retrieve([
+                    'character_id' => $this->getCharacterId(),
+                ]);
+
+                collect($locations)->each(function ($location) {
+
+                    // If we have a zero value for any of the coordinates,
+                    // continue to the next location as we can't calculate
+                    // anything
+                    if ($location->position->x === 0.0)
+                        return;
+
+                    $asset_data = CharacterAsset::where('character_id', $this->getCharacterId())
+                        ->where('item_id', $location->item_id)
+                        ->first();
+
+                    $normalized_location = $this->find_nearest_celestial(
+                        $asset_data->location_id,
+                        $location->position->x, $location->position->y, $location->position->z);
+
+                    // Update the assets location information
+                    $asset_data->fill([
+                        'x'        => $location->position->x,
+                        'y'        => $location->position->y,
+                        'z'        => $location->position->z,
+                        'map_id'   => $normalized_location['map_id'],
+                        'map_name' => $normalized_location['map_name'],
+                    ])->save();
+                });
+            });
+
+        // items which may not be singleton
+
+        // Get the assets for this character, chunked in a number of blocks
+        // that the endpoint will accept.
+        CharacterAsset::join('invTypes', 'type_id', '=', 'typeID')
+            ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
+            ->where('character_id', $this->getCharacterId())
+            ->whereIn('categoryID', [46]) // it seems only items from that categories can be named
+            ->select('item_id')
             ->chunk($this->item_id_limit, function ($item_ids) {
 
                 $this->request_body = $item_ids->pluck('item_id')->all();

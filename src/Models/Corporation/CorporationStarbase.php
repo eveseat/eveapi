@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
 use Seat\Eveapi\Models\Sde\InvControlTowerResource;
 use Seat\Eveapi\Models\Sde\InvType;
@@ -109,6 +110,14 @@ class CorporationStarbase extends Model
     public function fuelBays()
     {
         return $this->hasMany(CorporationStarbaseFuel::class, 'starbase_id', 'starbase_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function item()
+    {
+        return $this->belongsTo(CorporationAsset::class, 'starbase_id', 'item_id');
     }
 
     /**
