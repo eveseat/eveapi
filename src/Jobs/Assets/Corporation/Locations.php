@@ -84,8 +84,14 @@ class Locations extends EsiBase
         CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
             ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
             ->where('corporation_id', $this->getCorporationId())
-            ->where('is_singleton', true)               // only singleton items may be named
-            ->whereIn('categoryID', [2, 6, 22, 23, 65]) // it seems only items from that categories can be named
+            ->where('is_singleton', true)               // only singleton items may have a specific location
+            // it seems only items from that categories can have a specific location
+            // 2  : Celestial
+            // 6  : Ship
+            // 22 : Deployable
+            // 23 : Starbase
+            // 65 : Structure
+            ->whereIn('categoryID', [2, 6, 22, 23, 65])
             ->select('item_id')
             ->chunk($this->item_id_limit, function ($item_ids) {
 
@@ -129,7 +135,9 @@ class Locations extends EsiBase
         CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
             ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
             ->where('corporation_id', $this->getCorporationId())
-            ->whereIn('categoryID', [46]) // it seems only items from that categories can be named
+            // it seems only items from that categories can have a specific location
+            // 46 : Orbitals
+            ->whereIn('categoryID', [46])
             ->select('item_id')
             ->chunk($this->item_id_limit, function ($item_ids) {
 

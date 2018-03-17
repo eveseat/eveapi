@@ -23,6 +23,7 @@ class CreateCharacterCorporationHistoriesTable extends Migration
             $table->boolean('is_deleted')->default(false);
             $table->integer('record_id');
 
+            $table->primary(['character_id', 'record_id']);
             $table->index('character_id');
 
             $table->timestamps();
