@@ -45,4 +45,6 @@ return [
     'esi-killmails.read_corporation_killmails.v1'     => ['Director'],
     'esi-markets.read_corporation_orders.v1'          => ['Accountant', 'Trader'],
     'esi-wallet.read_corporation_wallets.v1'          => ['Director', 'Accountant', 'Junior_Accountant'],
+    'esi-planets.read_customs_offices.v1'             => ['Director'],
+    'esi-assets.read_assets.v1'                       => ['Director'],
 ];

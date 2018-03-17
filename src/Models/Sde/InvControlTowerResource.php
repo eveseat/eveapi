@@ -20,26 +20,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Corporation;
+namespace Seat\Eveapi\Models\Sde;
+
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Eveapi\Traits\IsReadOnly;
+
 
 /**
- * Class CorporationTitleMember
- * @package Seat\Eveapi\Models\Corporation
+ * Class InvControlTowerResources
+ * @package Seat\Eveapi\Models\Sde
  */
-class CorporationTitleMember extends Model
+class InvControlTowerResource extends Model
 {
+    use IsReadOnly;
     use HasCompositePrimaryKey;
 
     /**
      * @var bool
      */
-    protected static $unguarded = true;
+    public $incrementing = false;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $primaryKey = ['corporation_id', 'character_id', 'title_id'];
+    protected $table = 'invControlTowerResources';
+
+    /**
+     * @var string
+     */
+    protected $primaryKey = ['controlTowerTypeID', 'resourceTypeID'];
 }
