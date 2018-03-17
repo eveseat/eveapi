@@ -93,22 +93,20 @@ class Structures extends EsiBase
                 ])->save();
 
             } catch (RequestFailedException $e) {
-                // create the structure only if it does not already exists
-                // it will avoid to drop data collected from any other granted character in the database
-                if (is_null(UniverseStructure::find($character_asset->location_id))) {
-                    UniverseStructure::firstOrNew([
-                        'structure_id'    => $character_asset->location_id,
-                        'name'            => 'Unknown structure',
-                        'solar_system_id' => 0,
-                        'x'               => 0.0,
-                        'y'               => 0.0,
-                        'z'               => 0.0,
-                    ])->save();
-                }
+
+                // Failure to grab the structure should result in us creating an
+                // empty entry in the database for this structure.
+
+                UniverseStructure::firstOrNew([
+                    'structure_id' => $character_asset->location_id,
+                ])->fill([
+                    'name'            => 'Unknown structure',
+                    'solar_system_id' => 0,
+                    'x'               => 0.0,
+                    'y'               => 0.0,
+                    'z'               => 0.0,
+                ])->save();
             }
-
         }
-
     }
-
 }

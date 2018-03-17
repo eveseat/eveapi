@@ -66,17 +66,22 @@ class Attendees extends EsiBase
     public function handle()
     {
 
+        if (! $this->authenticated()) return;
+
         $this->updateAttendees('character', $this->getCharacterId());
     }
 
     /**
+     * TODO: Why do we have this as a seperate call?
+     * We should add this to handle()
+     *
      * @param string $owner_type
      * @param int    $owner_id
+     *
+     * @throws \Exception
      */
     private function updateAttendees(string $owner_type, int $owner_id)
     {
-
-        if (! $this->authenticated()) return;
 
         CharacterCalendarEventDetail::where('owner_id', $owner_id)
             ->where('owner_type', $owner_type)

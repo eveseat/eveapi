@@ -84,7 +84,7 @@ abstract class EsiBase implements ShouldQueue
     protected $scope = 'public';
 
     /**
-     * The page to retreive.
+     * The page to retrieve.
      *
      * Jobs that expect paged responses should have
      * this value set.
@@ -257,7 +257,7 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
-     * Validates a call to ensure that a method and endoint is set
+     * Validates a call to ensure that a method and endpoint is set
      * in the job that is using this base class.
      *
      * @return void
@@ -267,7 +267,7 @@ abstract class EsiBase implements ShouldQueue
     {
 
         if (! in_array($this->method, ['get', 'post', 'put', 'patch', 'delete']))
-            throw new \Exception('Brokit method used');
+            throw new \Exception('Invalid HTTP method used');
 
         if (trim($this->endpoint) === '')
             throw new \Exception('Empty endpoint used');
