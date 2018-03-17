@@ -47,15 +47,34 @@ class CharacterAsset extends Model
     protected $primaryKey = 'item_id';
 
     /**
+     * Allow us to call CharacterAsset->name
+     *
      * @param $value
+     *
      * @return string
      */
     public function getNameAttribute($value)
     {
+
         if (is_null($value) || $value == '')
             return $this->type->typeName;
 
         return $value;
+    }
+
+    /**
+     * Provide a rate of the used space based on item capacity and stored item volume.
+     * Lets us use this as CharacterAsset->used_volume_rate
+     *
+     * @return float
+     */
+    public function getUsedVolumeRateAttribute()
+    {
+
+        if ($this->type->capacity == 0)
+            return 0.0;
+
+        return $this->getUsedVolumeAttribute() / $this->type->capacity * 100;
     }
 
     /**
@@ -65,25 +84,16 @@ class CharacterAsset extends Model
      */
     public function getUsedVolumeAttribute()
     {
+
         $content = $this->content;
 
-        if (!is_null($content))
-            return $content->sum(function($item){ return $item->type->volume; });
+        if (! is_null($content))
+            return $content->sum(function ($item) {
+
+                return $item->type->volume;
+            });
 
         return 0.0;
-    }
-
-    /**
-     * Provide a rate of the used space based on item capacity and stored item volume
-     *
-     * @return float
-     */
-    public function getUsedVolumeRateAttribute()
-    {
-        if ($this->type->capacity == 0)
-            return 0.0;
-
-        return $this->getUsedVolumeAttribute() / $this->type->capacity * 100;
     }
 
     /**

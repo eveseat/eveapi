@@ -48,29 +48,16 @@ class CorporationAsset extends Model
 
     /**
      * @param $value
+     *
      * @return string
      */
     public function getNameAttribute($value)
     {
+
         if (is_null($value) || $value == '')
             return $this->type->typeName;
 
         return $value;
-    }
-
-    /**
-     * Provide the used space based on stored item volume
-     *
-     * @return float
-     */
-    public function getUsedVolumeAttribute()
-    {
-        $content = $this->content;
-
-        if (!is_null($content))
-            return $content->sum(function($item){ return $item->type->volume; });
-
-        return 0.0;
     }
 
     /**
@@ -80,10 +67,30 @@ class CorporationAsset extends Model
      */
     public function getUsedVolumeRateAttribute()
     {
+
         if ($this->type->capacity == 0)
             return 0.0;
 
         return $this->getUsedVolumeAttribute() / $this->type->capacity * 100;
+    }
+
+    /**
+     * Provide the used space based on stored item volume
+     *
+     * @return float
+     */
+    public function getUsedVolumeAttribute()
+    {
+
+        $content = $this->content;
+
+        if (! is_null($content))
+            return $content->sum(function ($item) {
+
+                return $item->type->volume;
+            });
+
+        return 0.0;
     }
 
     /**

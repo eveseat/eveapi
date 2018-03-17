@@ -50,6 +50,7 @@ class CorporationDivision extends Model
      */
     public function getNameAttribute($value)
     {
+
         if (is_null($value))
             return 'Master Wallet';
 
@@ -61,6 +62,7 @@ class CorporationDivision extends Model
      */
     public function getBalanceAttribute()
     {
+
         $balance = null;
 
         if ($this->type == 'wallet')

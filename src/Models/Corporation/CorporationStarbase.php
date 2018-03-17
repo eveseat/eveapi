@@ -54,12 +54,13 @@ class CorporationStarbase extends Model
      */
     public function getBaseFuelUsageAttribute()
     {
-        $resources = InvControlTowerResource::where('controlTowerTypeID', $this->type_id)
-                                            ->whereBetween('resourceTypeID', [4000, 5000]) // base fuel usage are between 4000 and 5000
-                                            ->where('purpose', 1)
-                                            ->first();
 
-        if (!is_null($resources))
+        $resources = InvControlTowerResource::where('controlTowerTypeID', $this->type_id)
+            ->whereBetween('resourceTypeID', [4000, 5000])// base fuel usage are between 4000 and 5000
+            ->where('purpose', 1)
+            ->first();
+
+        if (! is_null($resources))
             return $resources->quantity;
 
         return 0.0;
@@ -70,12 +71,13 @@ class CorporationStarbase extends Model
      */
     public function getBaseStrontiumUsageAttribute()
     {
+
         $resources = InvControlTowerResource::where('controlTowerTypeID', $this->type_id)
-            ->where('resourceTypeID', 16275) // base strontium usage is 16275
+            ->where('resourceTypeID', 16275)// base strontium usage is 16275
             ->where('purpose', 4)
             ->first();
 
-        if (!is_null($resources))
+        if (! is_null($resources))
             return $resources->quantity;
 
         return 0.0;
@@ -86,11 +88,12 @@ class CorporationStarbase extends Model
      */
     public function getStrontiumBaySizeAttribute()
     {
-        $attributes = DgmTypeAttribute::where('typeID', $this->type_id)
-                                      ->where('attributeID', 1233) // strontium bay attribute
-                                      ->first();
 
-        if (!is_null($attributes))
+        $attributes = DgmTypeAttribute::where('typeID', $this->type_id)
+            ->where('attributeID', 1233)// strontium bay attribute
+            ->first();
+
+        if (! is_null($attributes))
             return $attributes->valueFloat;
 
         return 0.0;
@@ -101,6 +104,7 @@ class CorporationStarbase extends Model
      */
     public function detail()
     {
+
         return $this->hasOne(CorporationStarbaseDetail::class, 'starbase_id', 'starbase_id');
     }
 
@@ -109,6 +113,7 @@ class CorporationStarbase extends Model
      */
     public function fuelBays()
     {
+
         return $this->hasMany(CorporationStarbaseFuel::class, 'starbase_id', 'starbase_id');
     }
 
@@ -117,6 +122,7 @@ class CorporationStarbase extends Model
      */
     public function item()
     {
+
         return $this->belongsTo(CorporationAsset::class, 'starbase_id', 'item_id');
     }
 
@@ -125,6 +131,7 @@ class CorporationStarbase extends Model
      */
     public function moon()
     {
+
         return $this->belongsTo(MapDenormalize::class, 'moon_id', 'itemID');
     }
 
@@ -133,6 +140,7 @@ class CorporationStarbase extends Model
      */
     public function system()
     {
+
         return $this->belongsTo(MapDenormalize::class, 'system_id', 'itemID');
     }
 
@@ -141,6 +149,7 @@ class CorporationStarbase extends Model
      */
     public function type()
     {
+
         return $this->belongsTo(InvType::class, 'type_id', 'typeID');
     }
 

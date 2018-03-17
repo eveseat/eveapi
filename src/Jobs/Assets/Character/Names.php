@@ -81,8 +81,8 @@ class Names extends EsiBase
         CharacterAsset::join('invTypes', 'type_id', '=', 'typeID')
             ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
             ->where('character_id', $this->getCharacterId())
-            ->where('is_singleton', true)               // only singleton items may be named
-            ->whereIn('categoryID', [2, 6, 22, 23, 46, 65]) // it seems only items from that categories can be named
+            ->where('is_singleton', true)// only singleton items may be named
+            ->whereIn('categoryID', [2, 6, 22, 23, 46, 65])// it seems only items from that categories can be named
             ->select('item_id')
             ->chunk($this->item_id_limit, function ($item_ids) {
 
