@@ -71,15 +71,18 @@ class CustomsOfficeLocations extends EsiBase
 
         $customs_offices = CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->get();
 
-        collect($customs_offices)->chunk(1000)->each(function($chunk) {
+        collect($customs_offices)->chunk(1000)->each(function ($chunk) {
 
-            $this->request_body = $chunk->map(function($office){ return $office->office_id; })->flatten()->toArray();
+            $this->request_body = $chunk->map(function ($office) {
+
+                return $office->office_id;
+            })->flatten()->toArray();
 
             $locations = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            collect($locations)->each(function($location) use ($chunk) {
+            collect($locations)->each(function ($location) use ($chunk) {
 
                 $nearest_celestial = $this->find_nearest_celestial(
                     $chunk->firstWhere('office_id', $location->item_id)->system_id,
@@ -92,10 +95,10 @@ class CustomsOfficeLocations extends EsiBase
                     'corporation_id' => $this->getCorporationId(),
                     'office_id'      => $location->item_id,
                 ])->fill([
-                    'x'              => $location->position->x,
-                    'y'              => $location->position->y,
-                    'z'              => $location->position->z,
-                    'location_id'    => $nearest_celestial['map_id'],
+                    'x'           => $location->position->x,
+                    'y'           => $location->position->y,
+                    'z'           => $location->position->z,
+                    'location_id' => $nearest_celestial['map_id'],
                 ])->save();
 
             });

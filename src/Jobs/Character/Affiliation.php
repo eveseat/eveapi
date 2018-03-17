@@ -29,7 +29,6 @@ use Seat\Eveapi\Models\Character\CharacterChatChannelInfo;
 use Seat\Eveapi\Models\Character\CharacterChatChannelMember;
 use Seat\Eveapi\Models\Character\CharacterNotification;
 use Seat\Eveapi\Models\Contacts\CharacterContact;
-use Seat\Eveapi\Models\Contacts\ContractDetail;
 use Seat\Eveapi\Models\Mail\MailHeader;
 use Seat\Eveapi\Models\Mail\MailRecipient;
 use Seat\Eveapi\Models\RefreshToken;

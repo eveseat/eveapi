@@ -82,7 +82,7 @@ class Names extends EsiBase
         CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
             ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
             ->where('corporation_id', $this->getCorporationId())
-            ->where('is_singleton', true)               // only singleton items may be named
+            ->where('is_singleton', true) // only singleton items may be named
             // it seems only items from that categories can be named
             // 2  : Celestial
             // 6  : Ship

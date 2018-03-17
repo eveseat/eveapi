@@ -48,7 +48,7 @@ class EseyeSetup
      * Gets an instance of Eseye.
      *
      * We automatically add the CLIENT_ID and SHARED_SECRET configured
-     * for this SeAT instance to the EsiAuthentication contianer.
+     * for this SeAT instance to the EsiAuthentication container.
      *
      * @param \Seat\Eseye\Containers\EsiAuthentication|null $authentication
      *

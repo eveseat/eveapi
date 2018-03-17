@@ -99,8 +99,8 @@ class CustomsOffices extends EsiBase
             collect($customs_offices)->each(function ($customs_office) {
 
                 CorporationCustomsOffice::firstOrNew([
-                    'corporation_id'              => $this->getCorporationId(),
-                    'office_id'                   => $customs_office->office_id,
+                    'corporation_id' => $this->getCorporationId(),
+                    'office_id'      => $customs_office->office_id,
                 ])->fill([
                     'system_id'                   => $customs_office->system_id,
                     'reinforce_exit_start'        => $customs_office->reinforce_exit_start,
