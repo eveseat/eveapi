@@ -17,24 +17,26 @@ class CreateCharacterWalletJournalsTable extends Migration
         Schema::create('character_wallet_journals', function (Blueprint $table) {
 
             $table->bigInteger('character_id');
-            $table->bigInteger('ref_id');
+            $table->bigInteger('id');
             $table->dateTime('date');
             $table->string('ref_type');
             $table->bigInteger('first_party_id')->nullable();
-            $table->enum('first_party_type',
-                ['character', 'corporation', 'alliance', 'faction', 'system'])->nullable();
             $table->bigInteger('second_party_id')->nullable();
-            $table->enum('second_party_type',
-                ['character', 'corporation', 'alliance', 'faction', 'system'])->nullable();
             $table->double('amount')->nullable();
             $table->double('balance')->nullable();
             $table->text('reason')->nullable();
             $table->bigInteger('tax_receiver_id')->nullable();
             $table->double('tax')->nullable();
+            // introduced with version 4
+            $table->bigInteger('context_id')->nullable();
+            $table->enum('context_id_type',
+                ['structure_id', 'station_id', 'market_transaction_id', 'character_id', 'corporation_id', 'alliance_id',
+                 'eve_system', 'industry_job_id', 'contract_id', 'planet_id', 'system_id', 'type_id'])->nullable();
+            $table->string('description');
 
-            $table->primary(['character_id', 'ref_id']);
+            $table->primary(['character_id', 'id']);
             $table->index('character_id');
-            $table->index('ref_id');
+            $table->index('id');
             $table->index('date');
 
             $table->timestamps();

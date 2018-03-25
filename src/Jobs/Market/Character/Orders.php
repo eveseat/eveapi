@@ -45,7 +45,7 @@ class Orders extends EsiBase
     /**
      * @var int
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var string
@@ -77,21 +77,19 @@ class Orders extends EsiBase
                 'character_id' => $this->getCharacterId(),
                 'order_id'     => $order->order_id,
             ])->fill([
-                'type_id'       => $order->type_id,
-                'region_id'     => $order->region_id,
-                'location_id'   => $order->location_id,
-                'range'         => $order->range,
-                'is_buy_order'  => $order->is_buy_order,
-                'price'         => $order->price,
-                'volume_total'  => $order->volume_total,
-                'volume_remain' => $order->volume_remain,
-                'issued'        => carbon($order->issued),
-                'state'         => $order->state,
-                'min_volume'    => $order->min_volume,
-                'account_id'    => $order->account_id,
-                'duration'      => $order->duration,
-                'is_corp'       => $order->is_corp,
-                'escrow'        => $order->escrow,
+                'type_id'        => $order->type_id,
+                'region_id'      => $order->region_id,
+                'location_id'    => $order->location_id,
+                'range'          => $order->range,
+                'is_buy_order'   => $order->is_buy_order ?? null,
+                'price'          => $order->price,
+                'volume_total'   => $order->volume_total,
+                'volume_remain'  => $order->volume_remain,
+                'issued'         => carbon($order->issued),
+                'min_volume'     => $order->min_volume ?? null,
+                'duration'       => $order->duration,
+                'is_corporation' => $order->is_corporation,
+                'escrow'         => $order->escrow ?? null,
             ])->save();
         });
     }

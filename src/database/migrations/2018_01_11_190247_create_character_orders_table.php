@@ -22,18 +22,15 @@ class CreateCharacterOrdersTable extends Migration
             $table->integer('region_id');
             $table->bigInteger('location_id');
             $table->string('range');
-            $table->boolean('is_buy_order');
+            $table->boolean('is_buy_order')->nullable();
             $table->double('price');
             $table->integer('volume_total');
             $table->integer('volume_remain');
             $table->dateTime('issued');
-            $table->enum('state',
-                ['cancelled', 'character_deleted', 'closed', 'expired', 'open', 'pending']);
-            $table->integer('min_volume');
-            $table->integer('account_id');
+            $table->integer('min_volume')->nullable();
             $table->integer('duration');
-            $table->boolean('is_corp');
-            $table->double('escrow');
+            $table->boolean('is_corporation');
+            $table->double('escrow')->nullable();
 
             $table->primary(['character_id', 'order_id']);
             $table->index('character_id');

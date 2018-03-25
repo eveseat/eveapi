@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Jobs\Wallet\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
-use Seat\Eveapi\Models\Wallet\CharacterWalletJournalExtraInfo;
 
 /**
  * Class Journal
@@ -45,7 +44,7 @@ class Journal extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v3';
+    protected $version = 'v4';
 
     /**
      * @var string
@@ -93,7 +92,7 @@ class Journal extends EsiBase
 
                 $journal_entry = CharacterWalletJournal::firstOrNew([
                     'character_id' => $this->getCharacterId(),
-                    'ref_id'       => $entry->ref_id,
+                    'id'           => $entry->id,
                 ]);
 
                 // If this journal entry has already been recorded,
@@ -103,55 +102,27 @@ class Journal extends EsiBase
 
                 $journal_entry->fill([
                     'character_id'      => $this->getCharacterId(),
-                    'ref_id'            => $entry->ref_id,
+                    'id'                => $entry->id,                         // changed from ref_id to id into v4
                     'date'              => carbon($entry->date),
                     'ref_type'          => $entry->ref_type,
                     'first_party_id'    => $entry->first_party_id ?? null,
-                    'first_party_type'  => $entry->first_party_type ?? null,
                     'second_party_id'   => $entry->second_party_id ?? null,
-                    'second_party_type' => $entry->second_party_type ?? null,
                     'amount'            => $entry->amount ?? null,
                     'balance'           => $entry->balance ?? null,
                     'reason'            => $entry->reason ?? null,
                     'tax_receiver_id'   => $entry->tax_receiver_id ?? null,
                     'tax'               => $entry->tax ?? null,
-                ])->save();
-
-                // Process the 'extra' information for this journal entry.
-                // If no 'extra' information exists then we can bail here
-                // and move on to the next entry.
-                if (is_null($entry->extra_info ?? null) || collect($entry->extra_info)->count() === 0)
-                    return;
-
-                $extra_info = CharacterWalletJournalExtraInfo::firstOrNew([
-                    'ref_id' => $entry->ref_id,
-                ]);
-
-                // If we have already recorded the extra info for this journal
-                // reference id then bail.
-                if ($extra_info->exists)
-                    return;
-
-                $extra_info->fill([
-                    'location_id'            => $entry->extra_info->location_id ?? null,
-                    'transaction_id'         => $entry->extra_info->transaction_id ?? null,
-                    'npc_name'               => $entry->extra_info->npc_name ?? null,
-                    'npc_id'                 => $entry->extra_info->npc_id ?? null,
-                    'destroyed_ship_type_id' => $entry->extra_info->destroyed_ship_type_id ?? null,
-                    'character_id'           => $entry->extra_info->character_id ?? null,
-                    'corporation_id'         => $entry->extra_info->corporation_id ?? null,
-                    'alliance_id'            => $entry->extra_info->alliance_id ?? null,
-                    'job_id'                 => $entry->extra_info->job_id ?? null,
-                    'contract_id'            => $entry->extra_info->contract_id ?? null,
-                    'system_id'              => $entry->extra_info->system_id ?? null,
-                    'planet_id'              => $entry->extra_info->planet_id ?? null,
+                    // appears in version 4
+                    'description'       => $entry->description,
+                    'context_id'        => $entry->context_id ?? null,
+                    'context_id_type'   => $entry->context_id_type ?? null,
                 ])->save();
 
             });
 
             // Update the from_id to be the new lowest ref_id we
             // know of. The next all will use this.
-            $this->from_id = collect($journal)->min('ref_id') - 1;
+            $this->from_id = collect($journal)->min('id') - 1;
         }
     }
 }
