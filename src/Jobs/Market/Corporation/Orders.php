@@ -45,7 +45,7 @@ class Orders extends EsiBase
     /**
      * @var int
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var string
@@ -88,16 +88,15 @@ class Orders extends EsiBase
                     'region_id'       => $order->region_id,
                     'location_id'     => $order->location_id,
                     'range'           => $order->range,
-                    'is_buy_order'    => $order->is_buy_order,
+                    'is_buy_order'    => $order->is_buy_order ?? null,
                     'price'           => $order->price,
                     'volume_total'    => $order->volume_total,
                     'volume_remain'   => $order->volume_remain,
                     'issued'          => carbon($order->issued),
-                    'state'           => $order->state,
-                    'min_volume'      => $order->min_volume,
-                    'wallet_division' => $order->wallet_division,
-                    'duration'        => $order->duration,
-                    'escrow'          => $order->escrow,
+                    'min_volume'      => $order->min_volume ?? null,
+                    'wallet_division' => $order->wallet_division ?? null,
+                    'duration'        => $order->duration ?? null,
+                    'escrow'          => $order->escrow ?? null,
                 ])->save();
             });
 

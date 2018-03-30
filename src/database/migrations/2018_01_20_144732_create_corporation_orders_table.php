@@ -22,17 +22,15 @@ class CreateCorporationOrdersTable extends Migration
             $table->integer('region_id');
             $table->bigInteger('location_id');
             $table->string('range');
-            $table->boolean('is_buy_order');
+            $table->boolean('is_buy_order')->nullable();
             $table->double('price');
             $table->integer('volume_total');
             $table->integer('volume_remain');
             $table->dateTime('issued');
-            $table->enum('state',
-                ['cancelled', 'character_deleted', 'closed', 'expired', 'open', 'pending']);
-            $table->integer('min_volume');
-            $table->integer('wallet_division');
-            $table->integer('duration');
-            $table->double('escrow');
+            $table->integer('min_volume')->nullable();
+            $table->integer('wallet_division')->nullable();
+            $table->integer('duration')->nullable();
+            $table->double('escrow')->nullable();
 
             $table->primary(['corporation_id', 'order_id']);
             $table->index('corporation_id');
