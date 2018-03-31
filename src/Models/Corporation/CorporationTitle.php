@@ -42,4 +42,5 @@ class CorporationTitle extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'title_id'];
+
 }

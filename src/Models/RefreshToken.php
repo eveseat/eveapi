@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Seat\Web\Models\User;
 
 /**
  * Class RefreshToken
@@ -69,5 +70,14 @@ class RefreshToken extends Model
             return $value;
 
         return null;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+
+        return $this->belongsTo(User::class, 'id', 'character_id');
     }
 }
