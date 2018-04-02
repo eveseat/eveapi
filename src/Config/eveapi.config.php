@@ -26,4 +26,7 @@ return [
 
     // API Joblog logging
     'enable_joblog' => false,
+
+    'eseye_logfile' => storage_path('logs/eseye.log'),
+    'eseye_cache' => storage_path('eseye'),
 ];

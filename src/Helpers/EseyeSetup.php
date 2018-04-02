@@ -40,8 +40,8 @@ class EseyeSetup
 
         $config = Configuration::getInstance();
         $config->http_user_agent = 'SeAT v' . config('eveapi.config.version');
-        $config->logfile_location = storage_path('logs/eseye.log');
-        $config->file_cache_location = storage_path('eseye');
+        $config->logfile_location = config('eveapi.config.eseye_logfile');
+        $config->file_cache_location = config('eveapi.config.eseye_cache');
     }
 
     /**
