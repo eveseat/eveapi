@@ -82,7 +82,7 @@ return [
     'esi-markets.read_character_orders.v1',
     'esi-markets.read_corporation_orders.v1',
     'esi-markets.structure_markets.v1',
-//    'esi-planets.manage_planets.v1',
+    'esi-planets.manage_planets.v1',
     'esi-planets.read_customs_offices.v1',
     'esi-search.search_structures.v1',
     'esi-skills.read_skillqueue.v1',
