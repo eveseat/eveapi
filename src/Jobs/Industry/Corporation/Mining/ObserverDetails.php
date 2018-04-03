@@ -59,6 +59,11 @@ class ObserverDetails extends EsiBase
     /**
      * @var array
      */
+    protected $roles = ['Accountant'];
+
+    /**
+     * @var array
+     */
     protected $tags = ['corporation', 'mining', 'observers', 'details'];
 
     /**

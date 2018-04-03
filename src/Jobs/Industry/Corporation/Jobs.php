@@ -62,6 +62,11 @@ class Jobs extends EsiBase
     /**
      * @var array
      */
+    protected $roles = ['Factory_Manager'];
+
+    /**
+     * @var array
+     */
     protected $tags = ['corporation', 'industry', 'jobs'];
 
     /**

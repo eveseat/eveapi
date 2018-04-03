@@ -56,6 +56,11 @@ class Extractions extends EsiBase
     /**
      * @var array
      */
+    protected $roles = ['Structure_Manager'];
+
+    /**
+     * @var array
+     */
     protected $tags = ['corporation', 'mining', 'extractions'];
 
     /**

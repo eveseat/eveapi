@@ -54,6 +54,11 @@ class MemberTracking extends EsiBase
     /**
      * @var array
      */
+    protected $roles = ['Director'];
+
+    /**
+     * @var array
+     */
     protected $tags = ['corporation', 'member_tracking'];
 
     /**
