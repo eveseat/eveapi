@@ -57,6 +57,11 @@ class Structures extends EsiBase
     /**
      * @var array
      */
+    protected $roles = ['Station_Manager'];
+
+    /**
+     * @var array
+     */
     protected $tags = ['corporation', 'structures'];
 
     /**

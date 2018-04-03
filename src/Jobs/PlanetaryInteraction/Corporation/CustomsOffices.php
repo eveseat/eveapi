@@ -55,6 +55,11 @@ class CustomsOffices extends EsiBase
     /**
      * @var array
      */
+    protected $roles = ['Director'];
+
+    /**
+     * @var array
+     */
     protected $tags = ['corporation', 'customs_offices'];
 
     /**

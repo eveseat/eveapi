@@ -56,6 +56,11 @@ class Transactions extends EsiBase
     /**
      * @var array
      */
+    protected $roles = ['Accountant', 'Junior_Accountant'];
+
+    /**
+     * @var array
+     */
     protected $tags = ['corporation', 'wallets'];
 
     /**

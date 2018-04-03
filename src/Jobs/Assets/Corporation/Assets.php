@@ -55,6 +55,11 @@ class Assets extends EsiBase
     /**
      * @var array
      */
+    protected $roles = ['Director'];
+
+    /**
+     * @var array
+     */
     protected $tags = ['corporation', 'assets'];
 
     /**

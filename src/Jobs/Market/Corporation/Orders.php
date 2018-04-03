@@ -55,6 +55,11 @@ class Orders extends EsiBase
     /**
      * @var array
      */
+    protected $roles = ['Accountant', 'Trader'];
+
+    /**
+     * @var array
+     */
     protected $tags = ['corporations', 'market', 'orders'];
 
     /**

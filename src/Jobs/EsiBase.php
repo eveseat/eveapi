@@ -84,6 +84,13 @@ abstract class EsiBase implements ShouldQueue
     protected $scope = 'public';
 
     /**
+     * The roles which are required in order to get access to an endpoint; in addition of a scope
+     *
+     * @var array
+     */
+    protected $roles = [];
+
+    /**
      * The page to retrieve.
      *
      * Jobs that expect paged responses should have
@@ -157,10 +164,9 @@ abstract class EsiBase implements ShouldQueue
 
         // Check if the current scope also needs a corp role. If it does,
         // ensure that the current character also has the required role.
-        if (! empty($this->getScopeRoles($this->scope))) {
-
+        if (count($this->roles) > 0) {
             if (in_array($this->scope, $this->token->scopes) && ! empty(
-                array_intersect($this->getScopeRoles($this->scope), $this->getCharacterRoles()))) {
+                array_intersect($this->roles, $this->getCharacterRoles()))) {
 
                 return true;
             }
@@ -180,31 +186,6 @@ abstract class EsiBase implements ShouldQueue
         Log::debug('Denied call to ' . $this->endpoint . ' as scope ' . $this->scope . ' was missing.');
 
         return false;
-    }
-
-    /**
-     * Return an array of roles for a given scope.
-     *
-     * Only applies to corporation endpoints that also require
-     * the character to have the appropriate in game role.
-     *
-     * Unfortunately, this method is required as the config()
-     * helper works with 'dot notation', and CCP's ESI roles
-     * contain dots. :sad_pepe:
-     *
-     * @param string $scope
-     *
-     * @return array
-     */
-    public function getScopeRoles(string $scope): array
-    {
-
-        $roles = config('eveapi.corp_roles');
-
-        if (array_key_exists($scope, $roles))
-            return $roles[$scope];
-
-        return [];
     }
 
     /**
