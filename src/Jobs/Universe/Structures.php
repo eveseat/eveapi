@@ -67,6 +67,7 @@ class Structures extends EsiBase
 
         $character_assets = CharacterAsset::where('character_id', $this->getCharacterId())
             ->where('location_flag', 'Hangar')
+            ->where('location_type', 'other')
             ->whereNotIn('location_id', UniverseStation::all()
                 ->pluck('station_id')->flatten())
             ->whereNotIn('location_id', StaStation::all()
@@ -97,7 +98,7 @@ class Structures extends EsiBase
                 // Failure to grab the structure should result in us creating an
                 // empty entry in the database for this structure.
 
-                UniverseStructure::firstOrNew([
+                $model = UniverseStructure::firstOrNew([
                     'structure_id' => $character_asset->location_id,
                 ])->fill([
                     'name'            => 'Unknown structure',
@@ -105,7 +106,11 @@ class Structures extends EsiBase
                     'x'               => 0.0,
                     'y'               => 0.0,
                     'z'               => 0.0,
-                ])->save();
+                ]);
+
+                // persist the structure only if it doesn't already exists
+                if (! $model->exists)
+                    $model->save();
             }
         }
     }
