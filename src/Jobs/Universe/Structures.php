@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
- * Class Structures
+ * Class Structures.
  * @package Seat\Eveapi\Jobs\Universe
  */
 class Structures extends EsiBase
