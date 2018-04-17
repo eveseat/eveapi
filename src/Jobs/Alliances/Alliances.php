@@ -60,6 +60,9 @@ class Alliances extends EsiBase
 
         $alliances = $this->retrieve();
 
+        if ($alliances->isCachedLoad())
+            return;
+
         collect($alliances)->each(function ($alliance_id) {
 
             Alliance::firstOrCreate([

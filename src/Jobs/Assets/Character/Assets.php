@@ -97,6 +97,9 @@ class Assets extends EsiBase
                 'character_id' => $this->getCharacterId(),
             ]);
 
+            if ($assets->isCachedLoad())
+                return;
+
             collect($assets)->each(function ($asset) {
 
                 CharacterAsset::firstOrNew([
