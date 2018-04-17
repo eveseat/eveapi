@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationWalletJournal
+ * Class CorporationWalletJournal.
  * @package Seat\Eveapi\Models\Wallet
  */
 class CorporationWalletJournal extends Model

@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 
 /**
- * Class MemberTracking
+ * Class MemberTracking.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class MemberTracking extends EsiBase

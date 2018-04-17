@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Skills\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Skills\CharacterSkillQueue;
 
 /**
- * Class Queue
+ * Class Queue.
  * @package Seat\Eveapi\Jobs\Skills\Character
  */
 class Queue extends EsiBase

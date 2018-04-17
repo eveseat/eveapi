@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterPlanetRouteWaypoint
+ * Class CharacterPlanetRouteWaypoint.
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
 class CharacterPlanetRouteWaypoint extends Model

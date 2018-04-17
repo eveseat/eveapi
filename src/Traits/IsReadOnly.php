@@ -24,9 +24,8 @@ namespace Seat\Eveapi\Traits;
 
 use Seat\Eveapi\Exception\ReadOnlyModelException;
 
-
 /**
- * Trait IsReadOnly
+ * Trait IsReadOnly.
  * @package Seat\Eveapi\Traits
  */
 trait IsReadOnly

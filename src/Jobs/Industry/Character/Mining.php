@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CharacterMining;
 
 /**
- * Class Mining
+ * Class Mining.
  * @package Seat\Eveapi\Jobs\Industry\Character
  */
 class Mining extends EsiBase
@@ -79,7 +78,6 @@ class Mining extends EsiBase
             ]);
 
             collect($mining)->each(function ($ledger_entry) {
-
 
                 CharacterMining::firstOrNew([
                     'character_id'    => $this->getCharacterId(),

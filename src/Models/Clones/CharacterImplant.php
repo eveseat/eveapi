@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterImplant
+ * Class CharacterImplant.
  * @package Seat\Eveapi\Models\Clones
  */
 class CharacterImplant extends Model

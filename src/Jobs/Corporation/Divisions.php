@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 
 /**
- * Class Divisions
+ * Class Divisions.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Divisions extends EsiBase

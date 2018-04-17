@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterBookmarkFolder
+ * Class CharacterBookmarkFolder.
  * @package Seat\Eveapi\Models\Bookmarks
  */
 class CharacterBookmarkFolder extends Model

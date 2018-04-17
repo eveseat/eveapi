@@ -31,7 +31,7 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationStarbase
+ * Class CorporationStarbase.
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationStarbase extends Model
@@ -152,5 +152,4 @@ class CorporationStarbase extends Model
 
         return $this->belongsTo(InvType::class, 'type_id', 'typeID');
     }
-
 }

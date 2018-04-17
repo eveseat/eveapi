@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Killmails\CorporationKillmail;
 use Seat\Eveapi\Models\Killmails\KillmailAttacker;
@@ -30,9 +29,8 @@ use Seat\Eveapi\Models\Killmails\KillmailDetail;
 use Seat\Eveapi\Models\Killmails\KillmailVictim;
 use Seat\Eveapi\Models\Killmails\KillmailVictimItem;
 
-
 /**
- * Class Detail
+ * Class Detail.
  * @package Seat\Eveapi\Jobs\Killmails\Corporation
  */
 class Detail extends EsiBase

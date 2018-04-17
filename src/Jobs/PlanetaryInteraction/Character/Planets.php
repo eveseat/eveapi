@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 

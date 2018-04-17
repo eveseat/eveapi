@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationMemberTracking
+ * Class CorporationMemberTracking.
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationMemberTracking extends Model

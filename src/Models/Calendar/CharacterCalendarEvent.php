@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterCalendarEvent
+ * Class CharacterCalendarEvent.
  * @package Seat\Eveapi\Models\Calendar
  */
 class CharacterCalendarEvent extends Model

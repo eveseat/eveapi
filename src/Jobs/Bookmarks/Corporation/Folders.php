@@ -22,14 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Bookmarks\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
 use Seat\Eveapi\Models\RefreshToken;
 
-
 /**
- * Class Folders
+ * Class Folders.
  * @package Seat\Eveapi\Jobs\Bookmarks\Corporation
  */
 class Folders extends EsiBase

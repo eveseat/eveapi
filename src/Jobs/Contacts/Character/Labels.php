@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contacts\CharacterContactLabel;
 
 /**
- * Class Labels
+ * Class Labels.
  * @package Seat\Eveapi\Jobs\Contacts\Character
  */
 class Labels extends EsiBase

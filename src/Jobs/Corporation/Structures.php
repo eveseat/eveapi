@@ -29,7 +29,7 @@ use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
- * Class Structures
+ * Class Structures.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Structures extends EsiBase

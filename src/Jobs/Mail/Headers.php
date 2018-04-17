@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Mail;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Mail\MailHeader;
 use Seat\Eveapi\Models\Mail\MailRecipient;
 
 /**
- * Class Headers
+ * Class Headers.
  * @package Seat\Eveapi\Jobs\Mail
  */
 class Headers extends EsiBase

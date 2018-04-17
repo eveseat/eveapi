@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ use Seat\Eveapi\Models\Character\CharacterRole;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class EsiBase
+ * Class EsiBase.
  * @package Seat\Eveapi\Jobs
  */
 abstract class EsiBase implements ShouldQueue
@@ -84,7 +84,7 @@ abstract class EsiBase implements ShouldQueue
     protected $scope = 'public';
 
     /**
-     * The roles which are required in order to get access to an endpoint; in addition of a scope
+     * The roles which are required in order to get access to an endpoint; in addition of a scope.
      *
      * @var array
      */

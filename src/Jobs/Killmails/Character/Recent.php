@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Killmails\CharacterKillmail;
 
 /**
- * Class Recent
+ * Class Recent.
  * @package Seat\Eveapi\Jobs\Killmails\Character
  */
 class Recent extends EsiBase
