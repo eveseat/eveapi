@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterPlanetLink
+ * Class CharacterPlanetLink.
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
 class CharacterPlanetLink extends Model
@@ -48,5 +48,5 @@ class CharacterPlanetLink extends Model
      * @var array
      */
     protected $primaryKey = [
-        'character_id', 'planet_id', 'source_pin_id', 'destination_pin_id'];
+        'character_id', 'planet_id', 'source_pin_id', 'destination_pin_id', ];
 }

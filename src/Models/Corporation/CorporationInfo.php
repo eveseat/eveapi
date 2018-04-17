@@ -61,5 +61,4 @@ class CorporationInfo extends Model
     {
         return optional(CorporationMemberLimits::find($this->corporation_id))->limit;
     }
-
 }

@@ -22,14 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\RefreshToken;
 
-
 /**
- * Class Contacts
+ * Class Contacts.
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
 class Contacts extends EsiBase

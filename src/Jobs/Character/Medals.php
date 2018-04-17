@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterMedal;
 
 /**
- * Class Medals
+ * Class Medals.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Medals extends EsiBase

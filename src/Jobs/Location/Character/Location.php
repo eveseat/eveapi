@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Location\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Location\CharacterLocation;
 
 /**
- * Class Location
+ * Class Location.
  * @package Seat\Eveapi\Jobs\Location\Character
  */
 class Location extends EsiBase

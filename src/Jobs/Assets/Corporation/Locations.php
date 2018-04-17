@@ -26,9 +26,8 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Traits\Utils;
 
-
 /**
- * Class Locations
+ * Class Locations.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
 class Locations extends EsiBase

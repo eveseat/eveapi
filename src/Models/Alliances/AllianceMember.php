@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Models\Alliances;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class AllianceMember
+ * Class AllianceMember.
  * @package Seat\Eveapi\Models\Alliances
  */
 class AllianceMember extends Model

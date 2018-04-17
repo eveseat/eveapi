@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Location;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterShip
+ * Class CharacterShip.
  * @package Seat\Eveapi\Models\Location
  */
 class CharacterShip extends Model

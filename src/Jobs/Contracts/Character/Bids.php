@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
 use Seat\Eveapi\Models\Contracts\ContractBid;
 
 /**
- * Class Bids
+ * Class Bids.
  * @package Seat\Eveapi\Jobs\Contracts\Character
  */
 class Bids extends EsiBase

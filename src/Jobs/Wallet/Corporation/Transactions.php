@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 
 /**
- * Class Transactions
+ * Class Transactions.
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
 class Transactions extends EsiBase

@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterWalletTransaction
+ * Class CharacterWalletTransaction.
  * @package Seat\Eveapi\Models\Wallet
  */
 class CorporationWalletTransaction extends Model

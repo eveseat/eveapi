@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Clones;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Clones\CharacterClone;
 use Seat\Eveapi\Models\Clones\CharacterJumpClone;
 
 /**
- * Class Clones
+ * Class Clones.
  * @package Seat\Eveapi\Jobs\Clones
  */
 class Clones extends EsiBase

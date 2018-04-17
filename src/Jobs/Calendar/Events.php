@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 
 /**
- * Class Events
+ * Class Events.
  * @package Seat\Eveapi\Jobs\Calendar
  */
 class Events extends EsiBase

@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationAllianceHistory;
 
 /**
- * Class AllianceHistory
+ * Class AllianceHistory.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class AllianceHistory extends EsiBase

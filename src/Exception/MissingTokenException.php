@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,8 @@
 
 namespace Seat\Eveapi\Exception;
 
-
 /**
- * Class MissingTokenException
+ * Class MissingTokenException.
  * @package Seat\Eveapi\Exception
  */
 class MissingTokenException extends \Exception

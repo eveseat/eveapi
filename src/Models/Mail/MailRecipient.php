@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Mail;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class MailRecipient
+ * Class MailRecipient.
  * @package Seat\Eveapi\Models\Mail
  */
 class MailRecipient extends Model

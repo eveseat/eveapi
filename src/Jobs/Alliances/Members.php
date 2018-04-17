@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Alliances;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Alliances\AllianceMember;
 
 /**
- * Class Members
+ * Class Members.
  * @package Seat\Eveapi\Jobs\Alliances
  */
 class Members extends EsiBase

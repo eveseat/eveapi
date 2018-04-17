@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationBookmark
+ * Class CorporationBookmark.
  * @package Seat\Eveapi\Models\Bookmarks
  */
 class CorporationBookmark extends Model

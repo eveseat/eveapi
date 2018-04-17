@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Contracts;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class ContractDetail
+ * Class ContractDetail.
  * @package Seat\Eveapi\Models\Contacts
  */
 class ContractDetail extends Model

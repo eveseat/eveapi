@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMember;
 
 /**
- * Class Members
+ * Class Members.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Members extends EsiBase

@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterTitle
+ * Class CharacterTitle.
  * @package Seat\Eveapi\Models\Character
  */
 class CharacterTitle extends Model
