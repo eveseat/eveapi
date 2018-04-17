@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class ChrFaction
+ * Class ChrFaction.
  * @package Seat\Eveapi\Models\Sde
  */
 class ChrFaction extends Model

@@ -24,9 +24,8 @@ namespace Seat\Eveapi\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 
-
 /**
- * Trait HasCompositePrimaryKey
+ * Trait HasCompositePrimaryKey.
  * @package Seat\Eveapi\Traits
  */
 trait HasCompositePrimaryKey

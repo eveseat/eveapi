@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationOutpost
+ * Class CorporationOutpost.
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationOutpost extends Model

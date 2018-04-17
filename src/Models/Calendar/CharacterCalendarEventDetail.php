@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Calendar;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterCalendarEventDetail
+ * Class CharacterCalendarEventDetail.
  * @package Seat\Eveapi\Models\Calendar
  */
 class CharacterCalendarEventDetail extends Model

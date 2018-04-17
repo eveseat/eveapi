@@ -22,14 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\ContractItem;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 
-
 /**
- * Class Items
+ * Class Items.
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
 class Items extends EsiBase

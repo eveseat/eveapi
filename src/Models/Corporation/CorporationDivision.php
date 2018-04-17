@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationDivision
+ * Class CorporationDivision.
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationDivision extends Model
@@ -71,6 +70,6 @@ class CorporationDivision extends Model
                 ->select('balance')
                 ->first();
 
-        return (is_null($balance) ? 0.0 : $balance->balance);
+        return is_null($balance) ? 0.0 : $balance->balance;
     }
 }

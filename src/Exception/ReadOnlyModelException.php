@@ -22,17 +22,15 @@
 
 namespace Seat\Eveapi\Exception;
 
-
 use Exception;
 use Throwable;
 
 /**
- * Class ReadOnlyModelException
+ * Class ReadOnlyModelException.
  * @package Seat\Eveapi\Exception
  */
 class ReadOnlyModelException extends Exception
 {
-
     /**
      * ReadOnlyModelException constructor.
      *
@@ -40,7 +38,7 @@ class ReadOnlyModelException extends Exception
      * @param int             $code
      * @param \Throwable|null $previous
      */
-    public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
+    public function __construct(string $message = '', int $code = 0, Throwable $previous = null)
     {
 
         $message = 'Model is read only. ' . $message;

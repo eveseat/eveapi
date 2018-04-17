@@ -28,7 +28,7 @@ use Seat\Eveapi\Models\Corporation\CorporationTitleRole;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Titles
+ * Class Titles.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Titles extends EsiBase

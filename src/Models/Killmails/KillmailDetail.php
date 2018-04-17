@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Killmails;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class KillmailDetail
+ * Class KillmailDetail.
  * @package Seat\Eveapi\Models\Killmails
  */
 class KillmailDetail extends Model

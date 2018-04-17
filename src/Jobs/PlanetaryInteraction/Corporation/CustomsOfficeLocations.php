@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
 use Seat\Eveapi\Traits\Utils;
 
 /**
- * Class CustomsOffices
+ * Class CustomsOffices.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class CustomsOfficeLocations extends EsiBase

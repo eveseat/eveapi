@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Status;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class ServerStatus
+ * Class ServerStatus.
  * @package Seat\Eveapi\Models\Status
  */
 class ServerStatus extends Model

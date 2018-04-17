@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 
 /**
- * Class Balance
+ * Class Balance.
  * @package Seat\Eveapi\Jobs\Wallet\Character
  */
 class Balance extends EsiBase

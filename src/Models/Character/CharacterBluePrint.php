@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterBluePrints
+ * Class CharacterBluePrints.
  * @package App
  */
 class CharacterBluePrint extends Model

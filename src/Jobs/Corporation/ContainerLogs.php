@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationContainerLog;
 
 /**
- * Class ContainerLogs
+ * Class ContainerLogs.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class ContainerLogs extends EsiBase

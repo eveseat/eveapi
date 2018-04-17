@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterInfo
+ * Class CharacterInfo.
  * @package Seat\Eveapi\Models\Character
  */
 class CharacterInfoSkill extends Model

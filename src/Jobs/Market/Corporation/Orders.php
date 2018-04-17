@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Market\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 
 /**
- * Class Orders
+ * Class Orders.
  * @package Seat\Eveapi\Jobs\Market\Corporation
  */
 class Orders extends EsiBase

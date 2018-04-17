@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Killmails\CharacterKillmail;
 use Seat\Eveapi\Models\Killmails\KillmailAttacker;
@@ -31,7 +30,7 @@ use Seat\Eveapi\Models\Killmails\KillmailVictim;
 use Seat\Eveapi\Models\Killmails\KillmailVictimItem;
 
 /**
- * Class Detail
+ * Class Detail.
  * @package Seat\Eveapi\Jobs\Killmails\Character
  */
 class Detail extends EsiBase
@@ -52,7 +51,7 @@ class Detail extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var array 
+     * @var array
      */
     protected $tags = ['character', 'killmails'];
 

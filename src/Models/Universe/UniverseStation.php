@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Universe;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class UniverseStation
+ * Class UniverseStation.
  * @package Seat\Eveapi\Models\Universe
  */
 class UniverseStation extends Model

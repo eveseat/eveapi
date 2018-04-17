@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Calendar;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
 
 /**
- * Class Detail
+ * Class Detail.
  * @package Seat\Eveapi\Jobs\Calendar
  */
 class Detail extends EsiBase

@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Status;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Status\ServerStatus;
 
 /**
- * Class Status
+ * Class Status.
  * @package Seat\Eveapi\Jobs\Status
  */
 class Status extends EsiBase

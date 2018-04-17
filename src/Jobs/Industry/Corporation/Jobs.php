@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
 
 /**
- * Class Jobs
+ * Class Jobs.
  * @package Seat\Eveapi\Jobs\Industry\Corporation
  */
 class Jobs extends EsiBase

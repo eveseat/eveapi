@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMemberLimits;
 
 /**
- * Class MembersLimit
+ * Class MembersLimit.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class MembersLimit extends EsiBase

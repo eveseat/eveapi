@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationShareholder;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Shareholders
+ * Class Shareholders.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Shareholders extends EsiBase

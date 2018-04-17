@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterChatChannelInfo
+ * Class CharacterChatChannelInfo.
  * @package Seat\Eveapi\Models\Character
  */
 class CharacterChatChannelInfo extends Model

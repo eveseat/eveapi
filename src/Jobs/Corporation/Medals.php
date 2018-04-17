@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMedal;
 
 /**
- * Class Medals
+ * Class Medals.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Medals extends EsiBase
@@ -76,7 +76,6 @@ class Medals extends EsiBase
         if (! $this->authenticated()) return;
 
         while (true) {
-
 
             $medals = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
