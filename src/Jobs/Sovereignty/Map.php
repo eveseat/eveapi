@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
 
 /**
- * Class Map
+ * Class Map.
  * @package Seat\Eveapi\Jobs\Sovereignty
  */
 class Map extends EsiBase
@@ -52,7 +52,7 @@ class Map extends EsiBase
     protected $tags = ['public', 'sovereignty', 'map'];
 
     /**
-     * Execute the job
+     * Execute the job.
      *
      * @throws \Throwable
      */

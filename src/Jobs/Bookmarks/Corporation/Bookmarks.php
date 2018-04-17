@@ -27,9 +27,8 @@ use Seat\Eveapi\Models\Bookmarks\CorporationBookmark;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Traits\Utils;
 
-
 /**
- * Class Bookmarks
+ * Class Bookmarks.
  * @package Seat\Eveapi\Jobs\Bookmarks\Corporation
  */
 class Bookmarks extends EsiBase

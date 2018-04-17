@@ -22,14 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserverData;
 
-
 /**
- * Class ObserverDetails
+ * Class ObserverDetails.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
 class ObserverDetails extends EsiBase

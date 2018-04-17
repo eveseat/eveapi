@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterMining
+ * Class CharacterMining.
  * @package Seat\Eveapi\Models\Industry
  */
 class CharacterMining extends Model

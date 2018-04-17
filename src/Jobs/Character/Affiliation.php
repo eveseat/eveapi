@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterChatChannelInfo;
@@ -36,7 +35,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
 /**
- * Class Affiliation
+ * Class Affiliation.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Affiliation extends EsiBase

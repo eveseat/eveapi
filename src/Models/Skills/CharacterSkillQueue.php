@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterSkillQueue
+ * Class CharacterSkillQueue.
  * @package Seat\Eveapi\Models\Skills
  */
 class CharacterSkillQueue extends Model

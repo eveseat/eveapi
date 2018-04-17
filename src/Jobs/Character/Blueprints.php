@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterBluePrint;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Blueprints
+ * Class Blueprints.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Blueprints extends EsiBase

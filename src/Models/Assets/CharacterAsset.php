@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 
 /**
- * Class CharacterAsset
+ * Class CharacterAsset.
  * @package Seat\Eveapi\Models\Assets
  */
 class CharacterAsset extends Model
@@ -47,7 +47,7 @@ class CharacterAsset extends Model
     protected $primaryKey = 'item_id';
 
     /**
-     * Allow us to call CharacterAsset->name
+     * Allow us to call CharacterAsset->name.
      *
      * @param $value
      *
@@ -64,7 +64,7 @@ class CharacterAsset extends Model
 
     /**
      * Provide a rate of the used space based on item capacity and stored item volume.
-     * Lets us use this as CharacterAsset->used_volume_rate
+     * Lets us use this as CharacterAsset->used_volume_rate.
      *
      * @return float
      */
@@ -78,7 +78,7 @@ class CharacterAsset extends Model
     }
 
     /**
-     * Provide the used space based on stored item volume
+     * Provide the used space based on stored item volume.
      *
      * @return float
      */

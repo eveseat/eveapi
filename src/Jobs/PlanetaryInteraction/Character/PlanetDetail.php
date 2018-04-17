@@ -34,7 +34,7 @@ use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetRoute;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetRouteWaypoint;
 
 /**
- * Class PlanetDetail
+ * Class PlanetDetail.
  * @package Seat\Eveapi\Jobs\PlanetaryInteraction\Character
  */
 class PlanetDetail extends EsiBase

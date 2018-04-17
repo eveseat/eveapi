@@ -22,11 +22,10 @@
 
 namespace Seat\Eveapi\Models\Alliances;
 
-
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Alliance
+ * Class Alliance.
  * @package Seat\Eveapi\Models\Alliances
  */
 class Alliance extends Model

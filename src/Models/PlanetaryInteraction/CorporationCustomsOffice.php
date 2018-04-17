@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationCustomsOffice
+ * Class CorporationCustomsOffice.
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
 class CorporationCustomsOffice extends Model

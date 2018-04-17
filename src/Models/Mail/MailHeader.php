@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Mail;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class MailHeader
+ * Class MailHeader.
  * @package Seat\Eveapi\Models\Character
  */
 class MailHeader extends Model

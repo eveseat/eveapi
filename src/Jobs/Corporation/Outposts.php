@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationOutpost;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Outposts
+ * Class Outposts.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Outposts extends EsiBase

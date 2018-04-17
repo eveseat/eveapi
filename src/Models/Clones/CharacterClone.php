@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Clones;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterClone
+ * Class CharacterClone.
  * @package Seat\Eveapi\Models\Clones
  */
 class CharacterClone extends Model

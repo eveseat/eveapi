@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Mail;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Mail\MailLabel;
 
 /**
- * Class Labels
+ * Class Labels.
  * @package Seat\Eveapi\Jobs\Mail
  */
 class Labels extends EsiBase

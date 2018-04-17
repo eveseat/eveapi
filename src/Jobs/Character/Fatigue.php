@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterFatigue;
 
 /**
- * Class Fatigue
+ * Class Fatigue.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Fatigue extends EsiBase

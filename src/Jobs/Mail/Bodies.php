@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Mail;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Mail\MailBody;
 use Seat\Eveapi\Models\Mail\MailHeader;
 
 /**
- * Class Bodies
+ * Class Bodies.
  * @package Seat\Eveapi\Jobs\Mail
  */
 class Bodies extends EsiBase

@@ -25,9 +25,8 @@ namespace Seat\Eveapi\Jobs\Corporation;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationStanding;
 
-
 /**
- * Class Standings
+ * Class Standings.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Standings extends EsiBase
@@ -53,7 +52,7 @@ class Standings extends EsiBase
     protected $scope = 'esi-corporations.read_standings.v1';
 
     /**
-     * @var array 
+     * @var array
      */
     protected $tags = ['corporation', 'standings'];
 

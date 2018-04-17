@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\FIttings\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contacts\CharacterFitting;
 use Seat\Eveapi\Models\Contacts\CharacterFittingItem;
 
 /**
- * Class Fittings
+ * Class Fittings.
  * @package Seat\Eveapi\Jobs\FIttings\Character
  */
 class Fittings extends EsiBase

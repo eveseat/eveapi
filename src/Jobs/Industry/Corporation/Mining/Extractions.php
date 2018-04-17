@@ -22,13 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
-
 /**
- * Class Extractions
+ * Class Extractions.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
 class Extractions extends EsiBase

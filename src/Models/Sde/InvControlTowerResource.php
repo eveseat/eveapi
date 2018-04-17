@@ -22,14 +22,12 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Eveapi\Traits\IsReadOnly;
 
-
 /**
- * Class InvControlTowerResources
+ * Class InvControlTowerResources.
  * @package Seat\Eveapi\Models\Sde
  */
 class InvControlTowerResource extends Model

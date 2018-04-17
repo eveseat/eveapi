@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Skills\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Skills\CharacterAttribute;
 
 /**
- * Class Attributes
+ * Class Attributes.
  * @package Seat\Eveapi\Jobs\Skills\Character
  */
 class Attributes extends EsiBase

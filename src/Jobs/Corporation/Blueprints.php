@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Blueprints
+ * Class Blueprints.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Blueprints extends EsiBase

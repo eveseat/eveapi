@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterPlanetContent
+ * Class CharacterPlanetContent.
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
 class CharacterPlanetContent extends Model
