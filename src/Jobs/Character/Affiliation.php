@@ -111,6 +111,10 @@ class Affiliation extends EsiBase
             'contact_id'      => CharacterContact::where('contact_type', 'character'),
             'issuer_id'       => (new ContractDetail),
             'character_id'    => (new MailHeader),
+            'from'            => MailHeader::whereBetween('from', [3000000, 4000000])
+                                           ->orWhereBetween('from', [90000000, 98000000])
+                                           ->orWhereBetween('from', [200000000, 2100000000])
+                                           ->select('from'),
             'recipient_id'    => MailRecipient::where('recipient_type', 'character'),
             'owner_id'        => (new CharacterChatChannelInfo),
             'accessor_id'     => CharacterChatChannelMember::where('accessor_type', 'character'),

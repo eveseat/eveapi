@@ -51,11 +51,11 @@ class CharacterWalletJournal extends Model
 
     public function first_party()
     {
-        return $this->hasOne(UniverseName::class, 'first_party_id', 'entity_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id');
     }
 
     public function second_party()
     {
-        return $this->hasOne(UniverseName::class, 'second_party_id', 'entity_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id');
     }
 }
