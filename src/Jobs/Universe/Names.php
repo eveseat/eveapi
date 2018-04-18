@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Universe;
 
-use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
@@ -88,7 +87,7 @@ class Names extends EsiBase
                 ->pluck('second_party_id')
                 ->toArray());
 
-        $this->entity_ids->flatten()->chunk(self::ITEMS_ID_LIMIT)->each(function($chunk){
+        $this->entity_ids->flatten()->chunk(self::ITEMS_ID_LIMIT)->each(function ($chunk) {
 
             $this->request_body = collect($chunk->values()->all())->unique()->values()->all();
 
