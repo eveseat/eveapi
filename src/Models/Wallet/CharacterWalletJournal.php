@@ -49,13 +49,21 @@ class CharacterWalletJournal extends Model
      */
     protected $primaryKey = ['character_id', 'ref_id'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function first_party()
     {
+
         return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function second_party()
     {
+
         return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id');
     }
 }

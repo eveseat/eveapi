@@ -34,6 +34,11 @@ class Names extends EsiBase
 {
 
     /**
+     * The maximum number of entity ids we can request resolution for.
+     */
+    protected $items_id_limit = 1000;
+
+    /**
      * @var string
      */
     protected $method = 'post';
@@ -54,11 +59,6 @@ class Names extends EsiBase
     protected $tags = ['public', 'universe', 'names'];
 
     /**
-     * The maximum number of entity ids we can request resolution for.
-     */
-    const ITEMS_ID_LIMIT = 1000;
-
-    /**
      * @var \Illuminate\Support\Collection
      */
     protected $entity_ids;
@@ -74,20 +74,20 @@ class Names extends EsiBase
         $this->entity_ids = collect();
 
         $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')
-                ->whereNotIn('first_party_id', UniverseName::select('entity_id')->distinct()->get())
-                ->distinct()
-                ->get()
-                ->pluck('first_party_id')
-                ->toArray());
+            ->whereNotIn('first_party_id', UniverseName::select('entity_id')->distinct()->get())
+            ->distinct()
+            ->get()
+            ->pluck('first_party_id')
+            ->toArray());
 
         $this->entity_ids->push(CharacterWalletJournal::select('second_party_id')
-                ->whereNotIn('second_party_id', UniverseName::select('entity_id')->distinct()->get())
-                ->distinct()
-                ->get()
-                ->pluck('second_party_id')
-                ->toArray());
+            ->whereNotIn('second_party_id', UniverseName::select('entity_id')->distinct()->get())
+            ->distinct()
+            ->get()
+            ->pluck('second_party_id')
+            ->toArray());
 
-        $this->entity_ids->flatten()->chunk(self::ITEMS_ID_LIMIT)->each(function ($chunk) {
+        $this->entity_ids->flatten()->chunk($this->items_id_limit)->each(function ($chunk) {
 
             $this->request_body = collect($chunk->values()->all())->unique()->values()->all();
 

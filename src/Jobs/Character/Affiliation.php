@@ -101,20 +101,18 @@ class Affiliation extends EsiBase
         // only character_ids, new instances of the model classes
         // are used.
         $queries = collect([
-            'first_party_id'  => CharacterWalletJournal::join('universe_names', 'first_party_id', '=', 'entity_id')
-                                                       ->where('category', 'character')
-                                                       ->select('first_party_id'),
-            'second_party_id'  => CharacterWalletJournal::join('universe_names', 'second_party_id', '=', 'entity_id')
-                                                        ->where('category', 'character')
-                                                        ->select('second_party_id'),
+            'first_party_id'  => CharacterWalletJournal::join('universe_names',
+                'first_party_id', '=', 'entity_id')->where('category', 'character')->select('first_party_id'),
+            'second_party_id' => CharacterWalletJournal::join('universe_names',
+                'second_party_id', '=', 'entity_id')->where('category', 'character')->select('second_party_id'),
             'client_id'       => (new CharacterWalletTransaction),
             'contact_id'      => CharacterContact::where('contact_type', 'character'),
             'issuer_id'       => (new ContractDetail),
             'character_id'    => (new MailHeader),
             'from'            => MailHeader::whereBetween('from', [3000000, 4000000])
-                                           ->orWhereBetween('from', [90000000, 98000000])
-                                           ->orWhereBetween('from', [200000000, 2100000000])
-                                           ->select('from'),
+                ->orWhereBetween('from', [90000000, 98000000])
+                ->orWhereBetween('from', [200000000, 2100000000])
+                ->select('from'),
             'recipient_id'    => MailRecipient::where('recipient_type', 'character'),
             'owner_id'        => (new CharacterChatChannelInfo),
             'accessor_id'     => CharacterChatChannelMember::where('accessor_type', 'character'),
