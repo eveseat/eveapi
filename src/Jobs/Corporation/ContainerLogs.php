@@ -83,6 +83,8 @@ class ContainerLogs extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($logs->isCachedLoad()) return;
+
             collect($logs)->each(function ($log) {
 
                 CorporationContainerLog::firstOrNew([

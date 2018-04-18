@@ -94,6 +94,8 @@ class Journals extends EsiBase
                         'division'       => $division->division,
                     ]);
 
+                    if ($journal->isCachedLoad()) return;
+
                     // If we have no more entries, break the loop.
                     if (collect($journal)->count() === 0)
                         break;

@@ -84,6 +84,8 @@ class Journal extends EsiBase
                 'character_id' => $this->getCharacterId(),
             ]);
 
+            if ($journal->isCachedLoad()) return;
+
             // If we have no more entries, break the loop.
             if (collect($journal)->count() === 0)
                 break;

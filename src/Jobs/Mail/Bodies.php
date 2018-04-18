@@ -84,6 +84,8 @@ class Bodies extends EsiBase
                 'mail_id'      => $mail_id,
             ]);
 
+            if ($body->isCachedLoad()) return;
+
             MailBody::firstOrCreate([
                 'mail_id' => $mail_id,
                 'body'    => $body->body,

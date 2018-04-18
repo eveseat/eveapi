@@ -70,6 +70,8 @@ class MailingLists extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($mailing_lists->isCachedLoad()) return;
+
         collect($mailing_lists)->each(function ($list) {
 
             MailMailingList::firstOrCreate([

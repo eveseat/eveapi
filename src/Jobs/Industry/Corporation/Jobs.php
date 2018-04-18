@@ -89,6 +89,8 @@ class Jobs extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($industry_jobs->isCachedLoad()) return;
+
             collect($industry_jobs)->each(function ($job) {
 
                 CorporationIndustryJob::firstOrNew([

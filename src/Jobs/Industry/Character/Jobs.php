@@ -77,6 +77,8 @@ class Jobs extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($industry_jobs->isCachedLoad()) return;
+
         collect($industry_jobs)->each(function ($job) {
 
             CharacterIndustryJob::firstOrNew([

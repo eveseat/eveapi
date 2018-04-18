@@ -101,6 +101,8 @@ class Starbases extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($starbases->isCachedLoad()) return;
+
             collect($starbases)->each(function ($starbase) {
 
                 CorporationStarbase::firstOrNew([

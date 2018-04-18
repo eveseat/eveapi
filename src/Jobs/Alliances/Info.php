@@ -63,6 +63,8 @@ class Info extends EsiBase
                 'alliance_id' => $alliance->alliance_id,
             ]);
 
+            if ($info->isCachedLoad()) return;
+
             Alliance::find($alliance->alliance_id)->fill([
                 'name'                    => $info->name,
                 'creator_id'              => $info->creator_id,

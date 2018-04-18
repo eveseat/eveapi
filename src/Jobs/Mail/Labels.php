@@ -70,6 +70,8 @@ class Labels extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($lables->isCachedLoad()) return;
+
         collect($lables->labels)->each(function ($label) {
 
             // Create the label

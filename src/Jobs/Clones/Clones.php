@@ -73,6 +73,8 @@ class Clones extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($clone->isCachedLoad()) return;
+
         // Populate current clone information
         CharacterClone::firstOrNew([
             'character_id' => $this->getCharacterId(),

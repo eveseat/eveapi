@@ -83,6 +83,8 @@ class Detail extends EsiBase
                 'event_id'     => $event_id,
             ]);
 
+            if ($detail->isCachedLoad()) return;
+
             CharacterCalendarEventDetail::firstOrCreate([
                 'event_id'   => $event_id,
                 'owner_id'   => $detail->owner_id,

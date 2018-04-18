@@ -77,6 +77,8 @@ class Standings extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($standings->isCachedLoad()) return;
+
             collect($standings)->each(function ($standing) {
 
                 CorporationStanding::firstOrNew([

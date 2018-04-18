@@ -70,6 +70,8 @@ class Planets extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($planets->isCachedLoad()) return;
+
         collect($planets)->each(function ($planet) {
 
             CharacterPlanet::firstOrNew([

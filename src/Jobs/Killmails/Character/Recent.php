@@ -68,6 +68,8 @@ class Recent extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($killmails->isCachedLoad()) return;
+
         collect($killmails)->each(function ($killmail) {
 
             CharacterKillmail::firstOrCreate([

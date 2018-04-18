@@ -77,6 +77,8 @@ class Mining extends EsiBase
                 'character_id' => $this->getCharacterId(),
             ]);
 
+            if ($mining->isCachedLoad()) return;
+
             collect($mining)->each(function ($ledger_entry) {
 
                 CharacterMining::firstOrNew([

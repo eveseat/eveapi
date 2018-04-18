@@ -101,6 +101,8 @@ class Outposts extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($outposts->isCachedLoad()) return;
+
             collect($outposts)->each(function ($outpost_id) {
 
                 CorporationOutpost::firstOrNew([

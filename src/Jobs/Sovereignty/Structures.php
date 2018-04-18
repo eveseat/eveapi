@@ -61,6 +61,8 @@ class Structures extends EsiBase
 
         $structures = $this->retrieve();
 
+        if ($structures->isCachedLoad()) return;
+
         collect($structures)->each(function ($structure) {
 
             SovereigntyStructure::firstOrNew([

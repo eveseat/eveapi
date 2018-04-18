@@ -83,6 +83,8 @@ class IssuedMedals extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($medals->isCachedLoad()) return;
+
             collect($medals)->each(function ($medal) {
 
                 CorporationIssuedMedal::firstOrNew([

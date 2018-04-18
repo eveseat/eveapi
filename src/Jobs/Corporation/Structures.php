@@ -103,6 +103,8 @@ class Structures extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($structures->isCachedLoad()) return;
+
             collect($structures)->each(function ($structure) {
 
                 // Ensure that we have an entry for this structure_id in the

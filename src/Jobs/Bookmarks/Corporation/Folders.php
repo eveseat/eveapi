@@ -97,6 +97,8 @@ class Folders extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($folders->isCachedLoad()) return;
+
             collect($folders)->each(function ($folder) {
 
                 CorporationBookmarkFolder::firstOrNew([

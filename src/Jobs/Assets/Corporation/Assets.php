@@ -102,6 +102,8 @@ class Assets extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($assets->isCachedLoad()) return;
+
             collect($assets)->each(function ($asset) {
 
                 CorporationAsset::firstOrNew([

@@ -71,6 +71,8 @@ class Members extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($members->isCachedLoad()) return;
+
         collect($members)->each(function ($member_id) {
 
             CorporationMember::firstOrNew([

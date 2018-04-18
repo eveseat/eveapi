@@ -72,6 +72,8 @@ class Events extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($events->isCachedLoad()) return;
+
         collect($events)->each(function ($event) {
 
             CharacterCalendarEvent::firstOrNew([

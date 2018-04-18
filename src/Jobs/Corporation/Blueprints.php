@@ -103,6 +103,8 @@ class Blueprints extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($blueprints->isCachedLoad()) return;
+
             collect($blueprints)->each(function ($blueprint) {
 
                 CorporationBlueprint::firstOrNew([

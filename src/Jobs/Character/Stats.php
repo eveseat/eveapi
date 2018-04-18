@@ -72,6 +72,8 @@ class Stats extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($stats->isCachedLoad()) return;
+
         // Process each years aggregate
         collect($stats)->each(function ($aggregate) {
 

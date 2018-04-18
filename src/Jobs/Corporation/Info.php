@@ -64,6 +64,8 @@ class Info extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($corporation->isCachedLoad()) return;
+
         CorporationInfo::firstOrNew([
             'corporation_id' => $this->getCorporationId(),
         ])->fill([

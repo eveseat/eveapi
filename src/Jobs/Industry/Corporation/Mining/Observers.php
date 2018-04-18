@@ -82,6 +82,8 @@ class Observers extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($mining_observers->isCachedLoad()) return;
+
         collect($mining_observers)->each(function ($observer) {
 
             CorporationIndustryMiningObserver::firstOrNew([

@@ -109,6 +109,8 @@ class Titles extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($titles->isCachedLoad()) return;
+
         collect($titles)->each(function ($title) {
 
             CorporationTitle::firstOrNew([

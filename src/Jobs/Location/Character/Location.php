@@ -70,6 +70,8 @@ class Location extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($location->isCachedLoad()) return;
+
         CharacterLocation::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([

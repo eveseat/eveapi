@@ -97,6 +97,8 @@ class Folders extends EsiBase
                 'character_id' => $this->getCharacterId(),
             ]);
 
+            if ($folders->isCachedLoad()) return;
+
             collect($folders)->each(function ($folder) {
 
                 CharacterBookmarkFolder::firstOrNew([

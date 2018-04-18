@@ -101,6 +101,8 @@ class CustomsOffices extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($customs_offices->isCachedLoad()) return;
+
             collect($customs_offices)->each(function ($customs_office) {
 
                 CorporationCustomsOffice::firstOrNew([

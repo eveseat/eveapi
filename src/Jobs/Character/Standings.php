@@ -72,6 +72,8 @@ class Standings extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($standings->isCachedLoad()) return;
+
         collect($standings)->each(function ($standing) {
 
             CharacterStanding::firstOrNew([

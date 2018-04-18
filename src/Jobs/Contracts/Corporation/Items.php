@@ -96,6 +96,8 @@ class Items extends EsiBase
                 'contract_id'    => $contract_id,
             ]);
 
+            if ($items->isCachedLoad()) return;
+
             collect($items)->each(function ($item) use ($contract_id) {
 
                 ContractItem::firstOrCreate([

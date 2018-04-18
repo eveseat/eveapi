@@ -76,6 +76,8 @@ class Facilities extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($facilities->isCachedLoad()) return;
+
         collect($facilities)->each(function ($facility) {
 
             CorporationFacility::firstOrNew([

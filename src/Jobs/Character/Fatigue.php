@@ -72,6 +72,8 @@ class Fatigue extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($fatigue->isCachedLoad()) return;
+
         CharacterFatigue::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([

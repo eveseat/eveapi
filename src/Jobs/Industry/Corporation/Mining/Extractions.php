@@ -75,6 +75,8 @@ class Extractions extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($mining_extractions->isCachedLoad()) return;
+
         collect($mining_extractions)->each(function ($extraction) {
 
             CorporationIndustryMiningExtraction::firstOrNew([

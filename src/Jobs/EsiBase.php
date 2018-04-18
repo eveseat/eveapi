@@ -206,6 +206,23 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
+     * Get the character_id we have for the token in this job.
+     *
+     * An exception will be thrown if an empty token is set.
+     *
+     * @return int
+     * @throws \Exception
+     */
+    public function getCharacterId(): int
+    {
+
+        if (is_null($this->token))
+            throw new \Exception('No token specified');
+
+        return $this->token->character_id;
+    }
+
+    /**
      * @param array $path_values
      *
      * @return \Seat\Eseye\Containers\EsiResponse
@@ -227,6 +244,11 @@ abstract class EsiBase implements ShouldQueue
             $client->page($this->page);
 
         $result = $client->invoke($this->method, $this->endpoint, $path_values);
+
+        // If this is a cached load, don't bother with any further
+        // processing.
+        if ($result->isCachedLoad())
+            return $result;
 
         // Perform error checking
         $this->logWarnings($result);
@@ -372,23 +394,6 @@ abstract class EsiBase implements ShouldQueue
             return ['unknown_tag', 'public'];
 
         return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
-    }
-
-    /**
-     * Get the character_id we have for the token in this job.
-     *
-     * An exception will be thrown if an empty token is set.
-     *
-     * @return int
-     * @throws \Exception
-     */
-    public function getCharacterId(): int
-    {
-
-        if (is_null($this->token))
-            throw new \Exception('No token specified');
-
-        return $this->token->character_id;
     }
 
     /**

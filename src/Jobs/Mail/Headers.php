@@ -71,6 +71,8 @@ class Headers extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($mail->isCachedLoad()) return;
+
         collect($mail)->each(function ($header) {
 
             MailHeader::firstOrCreate([

@@ -63,6 +63,8 @@ class AllianceHistory extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($history->isCachedLoad()) return;
+
         collect($history)->each(function ($alliance) {
 
             CorporationAllianceHistory::firstOrNew([

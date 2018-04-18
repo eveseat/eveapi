@@ -63,6 +63,8 @@ class CorporationHistory extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($corporation_history->isCachedLoad()) return;
+
         collect($corporation_history)->each(function ($corporation) {
 
             CharacterCorporationHistory::firstOrCreate([

@@ -72,6 +72,8 @@ class Notifications extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($notifications->isCachedLoad()) return;
+
         collect($notifications)->each(function ($notification) {
 
             CharacterNotification::firstOrCreate([

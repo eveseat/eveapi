@@ -75,6 +75,8 @@ class Balances extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($balances->isCachedLoad()) return;
+
         collect($balances)->each(function ($balance) {
 
             CorporationWalletBalance::firstOrNew([

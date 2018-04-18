@@ -102,6 +102,8 @@ class Blueprints extends EsiBase
                 'character_id' => $this->getCharacterId(),
             ]);
 
+            if ($blueprints->isCachedLoad()) return;
+
             // Process the blueprints from the response
             collect($blueprints)->each(function ($blueprint) {
 

@@ -64,6 +64,8 @@ class Members extends EsiBase
                 'alliance_id' => $alliance->alliance_id,
             ]);
 
+            if ($corporations->isCachedLoad()) return;
+
             collect($corporations)->each(function ($corporation_id) use ($alliance) {
 
                 AllianceMember::firstOrCreate([

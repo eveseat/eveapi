@@ -82,6 +82,8 @@ class Orders extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($orders->isCachedLoad()) return;
+
             collect($orders)->each(function ($order) {
 
                 CorporationOrder::firstOrNew([

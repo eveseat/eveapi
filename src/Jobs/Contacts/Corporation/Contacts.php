@@ -98,6 +98,8 @@ class Contacts extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($contacts->isCachedLoad()) return;
+
             collect($contacts)->each(function ($contact) {
 
                 CorporationContact::firstOrNew([

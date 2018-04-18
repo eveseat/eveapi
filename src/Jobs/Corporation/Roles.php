@@ -84,6 +84,8 @@ class Roles extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($roles->isCachedLoad()) return;
+
         collect($roles)->each(function ($role) {
 
             collect($this->types)->each(function ($type) use ($role) {

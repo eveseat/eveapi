@@ -76,6 +76,8 @@ class MembersLimit extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($limit->isCachedLoad()) return;
+
         if (! property_exists($limit, 'scalar'))
             return;
 

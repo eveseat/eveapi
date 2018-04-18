@@ -70,6 +70,8 @@ class Ship extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($ship->isCachedLoad()) return;
+
         CharacterShip::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([

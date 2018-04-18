@@ -75,6 +75,8 @@ class MembersTitles extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($member_titles->isCachedLoad()) return;
+
         collect($member_titles)->filter(function ($member) {
 
             // Filter out members that do not have any titles.

@@ -94,6 +94,8 @@ class Bookmarks extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($bookmarks->isCachedLoad()) return;
+
         // TODO: Complete this, v2 endpoint appears to be sick now.
     }
 }

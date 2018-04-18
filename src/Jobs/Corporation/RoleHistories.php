@@ -82,6 +82,8 @@ class RoleHistories extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($roles->isCachedLoad()) return;
+
             collect($roles)->each(function ($role) {
 
                 collect($role->old_roles)->each(function ($role_id) use ($role) {

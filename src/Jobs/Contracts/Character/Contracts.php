@@ -80,6 +80,8 @@ class Contracts extends EsiBase
                 'character_id' => $this->getCharacterId(),
             ]);
 
+            if ($contracts->isCachedLoad()) return;
+
             collect($contracts)->each(function ($contract) {
 
                 // Update or create the contract details.

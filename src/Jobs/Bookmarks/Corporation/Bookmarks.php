@@ -101,6 +101,8 @@ class Bookmarks extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($bookmarks->isCachedLoad()) return;
+
             collect($bookmarks)->each(function ($bookmark) {
 
                 $normalized_location = $this->find_nearest_celestial(

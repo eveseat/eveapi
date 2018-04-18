@@ -81,6 +81,8 @@ class Detail extends EsiBase
                 'killmail_hash' => $killmail_hash,
             ]);
 
+            if ($detail->isCachedLoad()) return;
+
             KillmailDetail::firstOrCreate([
                 'killmail_id'     => $killmail_id,
                 'killmail_time'   => carbon($detail->killmail_time),

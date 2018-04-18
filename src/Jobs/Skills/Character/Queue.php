@@ -70,6 +70,8 @@ class Queue extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($skill_queue->isCachedLoad()) return;
+
         collect($skill_queue)->each(function ($skill) {
 
             CharacterSkillQueue::firstOrNew([

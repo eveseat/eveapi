@@ -70,6 +70,8 @@ class Orders extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($orders->isCachedLoad()) return;
+
         collect($orders)->each(function ($order) {
 
             CharacterOrder::firstOrNew([

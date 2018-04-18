@@ -65,6 +65,8 @@ class Info extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($character_info->isCachedLoad()) return;
+
         CharacterInfo::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
             'name'            => $character_info->name,
             'description'     => $character_info->optional('description'),

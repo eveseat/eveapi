@@ -70,6 +70,8 @@ class Attributes extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($attributes->isCachedLoad()) return;
+
         CharacterAttribute::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([

@@ -72,6 +72,8 @@ class Skills extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($character_skills->isCachedLoad()) return;
+
         CharacterInfo::firstOrCreate(['character_id' => $this->getCharacterId()]);
 
         CharacterInfoSkill::firstOrNew(['character_id' => $this->getCharacterId()])->fill([

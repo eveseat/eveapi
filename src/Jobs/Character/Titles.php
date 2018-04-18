@@ -72,6 +72,8 @@ class Titles extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($titles->isCachedLoad()) return;
+
         // This is a small enough list to just wipe and add
         CharacterTitle::where('character_id', $this->getCharacterId())
             ->delete();

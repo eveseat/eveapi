@@ -72,6 +72,8 @@ class Medals extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($medals->isCachedLoad()) return;
+
         collect($medals)->each(function ($medal) {
 
             CharacterMedal::firstOrNew([

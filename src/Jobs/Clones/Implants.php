@@ -72,6 +72,8 @@ class Implants extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($implants->isCachedLoad()) return;
+
         collect($implants)->each(function ($implant) {
 
             CharacterImplant::firstOrCreate([

@@ -74,6 +74,8 @@ class ChatChannels extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($chat_channels->isCachedLoad()) return;
+
         collect($chat_channels)->each(function ($channel) {
 
             // Update the info about the channel. We add/update

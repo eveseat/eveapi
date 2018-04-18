@@ -76,6 +76,8 @@ class Recent extends EsiBase
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if ($killmails->isCachedLoad()) return;
+
         collect($killmails)->each(function ($killmail) {
 
             CorporationKillmail::firstOrCreate([

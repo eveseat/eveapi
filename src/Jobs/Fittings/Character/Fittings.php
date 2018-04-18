@@ -71,6 +71,8 @@ class Fittings extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($fittings->isCachedLoad()) return;
+
         collect($fittings)->each(function ($fitting) {
 
             CharacterFitting::firstOrNew([

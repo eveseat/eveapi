@@ -70,6 +70,8 @@ class Online extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($online->isCachedLoad()) return;
+
         CharacterOnline::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([

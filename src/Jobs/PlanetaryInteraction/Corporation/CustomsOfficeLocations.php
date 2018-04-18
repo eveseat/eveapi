@@ -82,6 +82,8 @@ class CustomsOfficeLocations extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($locations->isCachedLoad()) return;
+
             collect($locations)->each(function ($location) use ($chunk) {
 
                 $nearest_celestial = $this->find_nearest_celestial(

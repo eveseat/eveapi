@@ -101,6 +101,8 @@ class Shareholders extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if ($shareholders->isCachedLoad()) return;
+
             collect($shareholders)->each(function ($shareholder) {
 
                 CorporationShareholder::firstOrNew([

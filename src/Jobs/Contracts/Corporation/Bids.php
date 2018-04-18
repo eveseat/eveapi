@@ -90,6 +90,8 @@ class Bids extends EsiBase
                     'contract_id'    => $contract_id,
                 ]);
 
+                if ($bids->isCachedLoad()) return;
+
                 collect($bids)->each(function ($bid) use ($contract_id) {
 
                     ContractBid::firstOrCreate([

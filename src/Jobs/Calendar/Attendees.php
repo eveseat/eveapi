@@ -91,6 +91,8 @@ class Attendees extends EsiBase
                     'event_id'     => $event->event_id,
                 ]);
 
+                if ($attendees->isCachedLoad()) return;
+
                 collect($attendees)->each(function ($attendee) use ($event) {
 
                     CharacterCalendarAttendee::firstOrNew([

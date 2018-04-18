@@ -70,6 +70,8 @@ class Balance extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($balance->isCachedLoad()) return;
+
         CharacterWalletBalance::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([

@@ -61,6 +61,8 @@ class Map extends EsiBase
 
         $systems = $this->retrieve();
 
+        if ($systems->isCachedLoad()) return;
+
         collect($systems)->each(function ($system) {
 
             SovereigntyMap::firstOrNew([

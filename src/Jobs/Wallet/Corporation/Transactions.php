@@ -94,6 +94,8 @@ class Transactions extends EsiBase
                         'division'       => $division->division,
                     ]);
 
+                    if ($transactions->isCachedLoad()) return;
+
                     // If we have no more entries, break the loop.
                     if (collect($transactions)->count() === 0)
                         break;

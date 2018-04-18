@@ -72,6 +72,8 @@ class Labels extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($labels->isCachedLoad()) return;
+
         collect($labels)->each(function ($label) {
 
             CharacterContactLabel::firstOrNew([

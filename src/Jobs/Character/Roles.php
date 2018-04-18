@@ -72,6 +72,8 @@ class Roles extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($roles->isCachedLoad()) return;
+
         foreach (['roles', 'roles_at_hq', 'roles_at_base', 'roles_at_other'] as $scope) {
 
             // Add new roles for this scope

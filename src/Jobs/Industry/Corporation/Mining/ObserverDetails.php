@@ -89,6 +89,8 @@ class ObserverDetails extends EsiBase
                         'observer_id'    => $observer->observer_id,
                     ]);
 
+                    if ($detail->isCachedLoad()) return;
+
                     collect($detail)->each(function ($data) use ($observer) {
 
                         CorporationIndustryMiningObserverData::firstOrNew([

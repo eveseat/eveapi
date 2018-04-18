@@ -72,6 +72,8 @@ class AgentsResearch extends EsiBase
             'character_id' => $this->getCharacterId(),
         ]);
 
+        if ($agents_research->isCachedLoad()) return;
+
         collect($agents_research)->each(function ($agent_research) {
 
             CharacterAgentResearch::firstOrNew([
