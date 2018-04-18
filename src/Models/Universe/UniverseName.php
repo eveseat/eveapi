@@ -20,20 +20,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Wallet;
+namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterWalletJournal.
- * @package Seat\Eveapi\Models\Wallet
+ * Class UniverseName.
+ * @package Seat\Eveapi\Models\Universe
  */
-class CharacterWalletJournal extends Model
+class UniverseName extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
@@ -47,15 +43,6 @@ class CharacterWalletJournal extends Model
     /**
      * @var string
      */
-    protected $primaryKey = ['character_id', 'ref_id'];
+    protected $primaryKey = 'entity_id';
 
-    public function first_party()
-    {
-        return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id');
-    }
-
-    public function second_party()
-    {
-        return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id');
-    }
 }

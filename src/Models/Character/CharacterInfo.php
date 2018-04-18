@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
+use Seat\Services\Traits\NotableTrait;
 
 /**
  * Class CharacterInfo.
@@ -31,6 +32,8 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
  */
 class CharacterInfo extends Model
 {
+    use NotableTrait;
+
     /**
      * @var bool
      */
