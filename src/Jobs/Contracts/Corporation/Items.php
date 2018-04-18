@@ -85,6 +85,14 @@ class Items extends EsiBase
     protected $cycle_duration = 10;
 
     /**
+     * The maximum number of requests that can be made per
+     * throttling cycle.
+     *
+     * @var int
+     */
+    protected $max_cycle_requests = 20;
+
+    /**
      * Items constructor.
      *
      * @param \Seat\Eveapi\Models\RefreshToken|null $token
@@ -151,7 +159,7 @@ class Items extends EsiBase
             // have made 20 requests in the last 10 seconds.
             // If the time we started, plus 10 seconds is more than the current
             // time, wait for the remainder of the time.
-            if ($this->iteration_count >= 20 &&
+            if ($this->iteration_count >= $this->max_cycle_requests &&
                 $this->cycle_start->addSeconds($this->cycle_duration) > carbon('now')) {
 
                 $wait_duration = $this->cycle_start->addSeconds($this->cycle_duration)
