@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAgentResearch;
 
 /**
- * Class AgentsResearch
+ * Class AgentsResearch.
  * @package Seat\Eveapi\Jobs\Character
  */
 class AgentsResearch extends EsiBase
@@ -72,6 +71,8 @@ class AgentsResearch extends EsiBase
         $agents_research = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($agents_research->isCachedLoad()) return;
 
         collect($agents_research)->each(function ($agent_research) {
 

@@ -22,14 +22,13 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\ContractItem;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
-
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Items
+ * Class Items.
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
 class Items extends EsiBase
@@ -60,6 +59,53 @@ class Items extends EsiBase
     protected $tags = ['corporation', 'contracts', 'items'];
 
     /**
+     * The number of requests made in the current throttle cycle.
+     *
+     * https://github.com/ccpgames/esi-issues/issues/636
+     *
+     * > The way it works is you can make 20 requests per 10 seconds
+     * > for a contract tied to a specific character ID.
+     *
+     * @var int
+     */
+    protected $iteration_count = 0;
+
+    /**
+     * The time when the current throttle iteration cycle started.
+     *
+     * @var \Carbon\Carbon
+     */
+    protected $cycle_start;
+
+    /**
+     * The number of seconds for a single throttle cycle.
+     *
+     * @var int
+     */
+    protected $cycle_duration = 10;
+
+    /**
+     * The maximum number of requests that can be made per
+     * throttling cycle.
+     *
+     * @var int
+     */
+    protected $max_cycle_requests = 20;
+
+    /**
+     * Items constructor.
+     *
+     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     */
+    public function __construct(RefreshToken $token = null)
+    {
+
+        $this->cycle_start = carbon('now');
+
+        parent::__construct($token);
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -69,10 +115,6 @@ class Items extends EsiBase
     {
 
         if (! $this->authenticated()) return;
-
-        // add throttling feature
-        // https://github.com/ccpgames/esi-issues/issues/636
-        $throttler = 20;
 
         $empty_contracts = CorporationContract::join('contract_details',
             'corporation_contracts.contract_id', '=',
@@ -89,14 +131,16 @@ class Items extends EsiBase
             })
             ->pluck('corporation_contracts.contract_id');
 
-        $empty_contracts->each(function ($contract_id) use ($throttler) {
+        $empty_contracts->each(function ($contract_id) {
 
-            $throttler--;
+            $this->iteration_count++;
 
             $items = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
                 'contract_id'    => $contract_id,
             ]);
+
+            if ($items->isCachedLoad()) return;
 
             collect($items)->each(function ($item) use ($contract_id) {
 
@@ -111,12 +155,31 @@ class Items extends EsiBase
                 ]);
             });
 
-            if ($throttler < 1) {
-                // break process for 10 seconds
-                sleep(10);
-                // reset throttler count
-                $throttler = 20;
+            // Check if we should be sleeping. This should be true if we
+            // have made 20 requests in the last 10 seconds.
+            // If the time we started, plus 10 seconds is more than the current
+            // time, wait for the remainder of the time.
+            if ($this->iteration_count >= $this->max_cycle_requests &&
+                $this->cycle_start->addSeconds($this->cycle_duration) > carbon('now')) {
+
+                $wait_duration = $this->cycle_start->addSeconds($this->cycle_duration)
+                    ->diffInSeconds(carbon('now'));
+
+                sleep($wait_duration);
+
+                // Reset the cycle start time as well as the iteration count.
+                $this->cycle_start = carbon('now');
+                $this->iteration_count = 0;
             }
+
+            // Check if we should just reset the iteration & cycle count as a result of
+            // us not using the full 20 requests in a 10 second window.
+            if ($this->cycle_start->addSeconds($this->cycle_duration) < carbon('now')) {
+
+                $this->cycle_start = carbon('now');
+                $this->iteration_count = 0;
+            }
+
         });
     }
 }

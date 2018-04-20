@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationOutpost;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Outposts
+ * Class Outposts.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Outposts extends EsiBase
@@ -100,6 +100,8 @@ class Outposts extends EsiBase
             $outposts = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($outposts->isCachedLoad()) return;
 
             collect($outposts)->each(function ($outpost_id) {
 

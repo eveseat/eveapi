@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
 use Seat\Eveapi\Models\Contracts\ContractItem;
 
 /**
- * Class Items
+ * Class Items.
  * @package Seat\Eveapi\Jobs\Contracts\Character
  */
 class Items extends EsiBase
@@ -89,6 +88,8 @@ class Items extends EsiBase
                 'character_id' => $this->getCharacterId(),
                 'contract_id'  => $contract_id,
             ]);
+
+            if ($items->isCachedLoad()) return;
 
             collect($items)->each(function ($item) use ($contract_id) {
 

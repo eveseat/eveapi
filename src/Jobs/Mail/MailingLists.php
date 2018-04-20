@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Mail;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Mail\MailMailingList;
 
 /**
- * Class MailingLists
+ * Class MailingLists.
  * @package Seat\Eveapi\Jobs\Mail
  */
 class MailingLists extends EsiBase
@@ -70,6 +69,8 @@ class MailingLists extends EsiBase
         $mailing_lists = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($mailing_lists->isCachedLoad()) return;
 
         collect($mailing_lists)->each(function ($list) {
 

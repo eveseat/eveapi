@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterJumpClone
+ * Class CharacterJumpClone.
  * @package Seat\Eveapi\Models\Clones
  */
 class CharacterJumpClone extends Model

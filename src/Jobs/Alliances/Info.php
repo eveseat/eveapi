@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Alliances;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Alliances\Alliance;
 
 /**
- * Class Info
+ * Class Info.
  * @package Seat\Eveapi\Jobs\Alliances
  */
 class Info extends EsiBase
@@ -63,6 +62,8 @@ class Info extends EsiBase
             $info = $this->retrieve([
                 'alliance_id' => $alliance->alliance_id,
             ]);
+
+            if ($info->isCachedLoad()) return;
 
             Alliance::find($alliance->alliance_id)->fill([
                 'name'                    => $info->name,

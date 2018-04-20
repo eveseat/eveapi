@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
 
 /**
- * Class Jobs
+ * Class Jobs.
  * @package Seat\Eveapi\Jobs\Industry\Corporation
  */
 class Jobs extends EsiBase
@@ -89,6 +88,8 @@ class Jobs extends EsiBase
             $industry_jobs = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($industry_jobs->isCachedLoad()) return;
 
             collect($industry_jobs)->each(function ($job) {
 

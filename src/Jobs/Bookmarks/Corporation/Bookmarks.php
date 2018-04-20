@@ -27,9 +27,8 @@ use Seat\Eveapi\Models\Bookmarks\CorporationBookmark;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Traits\Utils;
 
-
 /**
- * Class Bookmarks
+ * Class Bookmarks.
  * @package Seat\Eveapi\Jobs\Bookmarks\Corporation
  */
 class Bookmarks extends EsiBase
@@ -101,6 +100,8 @@ class Bookmarks extends EsiBase
             $bookmarks = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($bookmarks->isCachedLoad()) return;
 
             collect($bookmarks)->each(function ($bookmark) {
 

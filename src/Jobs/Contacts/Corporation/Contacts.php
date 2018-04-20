@@ -22,14 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\RefreshToken;
 
-
 /**
- * Class Contacts
+ * Class Contacts.
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
 class Contacts extends EsiBase
@@ -99,6 +97,8 @@ class Contacts extends EsiBase
             $contacts = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($contacts->isCachedLoad()) return;
 
             collect($contacts)->each(function ($contact) {
 

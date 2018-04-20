@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationIssuedMedal;
 
 /**
- * Class IssuedMedals
+ * Class IssuedMedals.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class IssuedMedals extends EsiBase
@@ -82,6 +82,8 @@ class IssuedMedals extends EsiBase
             $medals = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($medals->isCachedLoad()) return;
 
             collect($medals)->each(function ($medal) {
 

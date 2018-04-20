@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 
 /**
- * Class Events
+ * Class Events.
  * @package Seat\Eveapi\Jobs\Calendar
  */
 class Events extends EsiBase
@@ -71,6 +71,8 @@ class Events extends EsiBase
         $events = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($events->isCachedLoad()) return;
 
         collect($events)->each(function ($event) {
 

@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterFatigue;
 
 /**
- * Class Fatigue
+ * Class Fatigue.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Fatigue extends EsiBase
@@ -72,6 +71,8 @@ class Fatigue extends EsiBase
         $fatigue = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($fatigue->isCachedLoad()) return;
 
         CharacterFatigue::firstOrNew([
             'character_id' => $this->getCharacterId(),

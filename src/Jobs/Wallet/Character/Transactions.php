@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
 /**
- * Class Transactions
+ * Class Transactions.
  * @package Seat\Eveapi\Jobs\Wallet\Character
  */
 class Transactions extends EsiBase
@@ -84,6 +83,8 @@ class Transactions extends EsiBase
             $transactions = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
+
+            if ($transactions->isCachedLoad()) return;
 
             // If we have no more entries, break the loop.
             if (collect($transactions)->count() === 0)

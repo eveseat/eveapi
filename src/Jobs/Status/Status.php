@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Status;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Status\ServerStatus;
 
 /**
- * Class Status
+ * Class Status.
  * @package Seat\Eveapi\Jobs\Status
  */
 class Status extends EsiBase
@@ -63,6 +62,9 @@ class Status extends EsiBase
     {
 
         $status = $this->retrieve();
+
+        if ($status->isCachedLoad()) return;
+
         $latest_status = ServerStatus::latest()->first();
 
         // The endpoint caches for 30 seconds, so make sure we

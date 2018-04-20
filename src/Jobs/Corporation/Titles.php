@@ -28,7 +28,7 @@ use Seat\Eveapi\Models\Corporation\CorporationTitleRole;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Titles
+ * Class Titles.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Titles extends EsiBase
@@ -108,6 +108,8 @@ class Titles extends EsiBase
         $titles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($titles->isCachedLoad()) return;
 
         collect($titles)->each(function ($title) {
 

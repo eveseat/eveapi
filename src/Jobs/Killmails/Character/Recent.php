@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Killmails\CharacterKillmail;
 
 /**
- * Class Recent
+ * Class Recent.
  * @package Seat\Eveapi\Jobs\Killmails\Character
  */
 class Recent extends EsiBase
@@ -68,6 +67,8 @@ class Recent extends EsiBase
         $killmails = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($killmails->isCachedLoad()) return;
 
         collect($killmails)->each(function ($killmail) {
 

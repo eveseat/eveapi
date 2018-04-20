@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
- * Class Info
+ * Class Info.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Info extends EsiBase
@@ -63,6 +63,8 @@ class Info extends EsiBase
         $corporation = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($corporation->isCachedLoad()) return;
 
         CorporationInfo::firstOrNew([
             'corporation_id' => $this->getCorporationId(),

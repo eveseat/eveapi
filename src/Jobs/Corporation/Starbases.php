@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationStarbase;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Starbases
+ * Class Starbases.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Starbases extends EsiBase
@@ -58,7 +58,7 @@ class Starbases extends EsiBase
     protected $roles = ['Director'];
 
     /**
-     * @var array 
+     * @var array
      */
     protected $tags = ['corporation', 'starbases'];
 
@@ -100,6 +100,8 @@ class Starbases extends EsiBase
             $starbases = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($starbases->isCachedLoad()) return;
 
             collect($starbases)->each(function ($starbase) {
 

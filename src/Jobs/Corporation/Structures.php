@@ -29,7 +29,7 @@ use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
- * Class Structures
+ * Class Structures.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Structures extends EsiBase
@@ -102,6 +102,8 @@ class Structures extends EsiBase
             $structures = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($structures->isCachedLoad()) return;
 
             collect($structures)->each(function ($structure) {
 

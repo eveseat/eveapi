@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Market\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 
 /**
- * Class Orders
+ * Class Orders.
  * @package Seat\Eveapi\Jobs\Market\Corporation
  */
 class Orders extends EsiBase
@@ -82,6 +81,8 @@ class Orders extends EsiBase
             $orders = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($orders->isCachedLoad()) return;
 
             collect($orders)->each(function ($order) {
 

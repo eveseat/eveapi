@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterBluePrint;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Blueprints
+ * Class Blueprints.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Blueprints extends EsiBase
@@ -102,6 +101,8 @@ class Blueprints extends EsiBase
             $blueprints = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
+
+            if ($blueprints->isCachedLoad()) return;
 
             // Process the blueprints from the response
             collect($blueprints)->each(function ($blueprint) {

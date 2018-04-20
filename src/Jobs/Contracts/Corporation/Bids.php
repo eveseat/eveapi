@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\ContractBid;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 
 /**
- * Class Bids
+ * Class Bids.
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
 class Bids extends EsiBase
@@ -90,6 +89,8 @@ class Bids extends EsiBase
                     'corporation_id' => $this->getCorporationId(),
                     'contract_id'    => $contract_id,
                 ]);
+
+                if ($bids->isCachedLoad()) return;
 
                 collect($bids)->each(function ($bid) use ($contract_id) {
 

@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterAgentsResearch
+ * Class CharacterAgentsResearch.
  * @package App
  */
 class CharacterAgentResearch extends Model

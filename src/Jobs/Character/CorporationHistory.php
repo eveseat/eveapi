@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterCorporationHistory;
 
@@ -63,6 +62,8 @@ class CorporationHistory extends EsiBase
         $corporation_history = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($corporation_history->isCachedLoad()) return;
 
         collect($corporation_history)->each(function ($corporation) {
 

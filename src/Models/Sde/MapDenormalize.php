@@ -22,14 +22,12 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
 use Seat\Eveapi\Traits\IsReadOnly;
 
-
 /**
- * Class MapDenormalize
+ * Class MapDenormalize.
  * @package Seat\Eveapi\Models\Sde
  */
 class MapDenormalize extends Model

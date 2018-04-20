@@ -22,13 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 
-
 /**
- * Class Names
+ * Class Names.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
 class Names extends EsiBase

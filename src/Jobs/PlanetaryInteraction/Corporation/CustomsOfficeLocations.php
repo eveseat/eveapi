@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
 use Seat\Eveapi\Traits\Utils;
 
 /**
- * Class CustomsOffices
+ * Class CustomsOffices.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class CustomsOfficeLocations extends EsiBase
@@ -81,6 +81,8 @@ class CustomsOfficeLocations extends EsiBase
             $locations = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($locations->isCachedLoad()) return;
 
             collect($locations)->each(function ($location) use ($chunk) {
 

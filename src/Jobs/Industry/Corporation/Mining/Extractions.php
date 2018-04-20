@@ -22,13 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
-
 /**
- * Class Extractions
+ * Class Extractions.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
 class Extractions extends EsiBase
@@ -76,6 +74,8 @@ class Extractions extends EsiBase
         $mining_extractions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($mining_extractions->isCachedLoad()) return;
 
         collect($mining_extractions)->each(function ($extraction) {
 

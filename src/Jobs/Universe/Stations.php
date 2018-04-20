@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStationService;
 
 /**
- * Class Stations
+ * Class Stations.
  * @package Seat\Eveapi\Jobs\Universe
  */
 class Stations extends EsiBase
@@ -57,7 +57,7 @@ class Stations extends EsiBase
     protected $tags = ['public', 'universe', 'stations'];
 
     /**
-     * Execute the job
+     * Execute the job.
      *
      * @throws \Throwable
      */
@@ -128,5 +128,4 @@ class Stations extends EsiBase
             ->delete();
 
     }
-
 }

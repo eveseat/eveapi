@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\FIttings\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contacts\CharacterFitting;
 use Seat\Eveapi\Models\Contacts\CharacterFittingItem;
 
 /**
- * Class Fittings
+ * Class Fittings.
  * @package Seat\Eveapi\Jobs\FIttings\Character
  */
 class Fittings extends EsiBase
@@ -71,6 +70,8 @@ class Fittings extends EsiBase
         $fittings = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($fittings->isCachedLoad()) return;
 
         collect($fittings)->each(function ($fitting) {
 

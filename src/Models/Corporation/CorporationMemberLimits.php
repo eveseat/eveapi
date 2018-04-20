@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Corporation;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CorporationMembersLimit
+ * Class CorporationMembersLimit.
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationMemberLimits extends Model

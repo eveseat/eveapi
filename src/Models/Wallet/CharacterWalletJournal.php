@@ -23,10 +23,11 @@
 namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterWalletJournal
+ * Class CharacterWalletJournal.
  * @package Seat\Eveapi\Models\Wallet
  */
 class CharacterWalletJournal extends Model
@@ -47,4 +48,22 @@ class CharacterWalletJournal extends Model
      * @var string
      */
     protected $primaryKey = ['character_id', 'ref_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function first_party()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function second_party()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id');
+    }
 }

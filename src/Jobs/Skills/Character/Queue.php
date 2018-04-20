@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Skills\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Skills\CharacterSkillQueue;
 
 /**
- * Class Queue
+ * Class Queue.
  * @package Seat\Eveapi\Jobs\Skills\Character
  */
 class Queue extends EsiBase
@@ -70,6 +69,8 @@ class Queue extends EsiBase
         $skill_queue = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($skill_queue->isCachedLoad()) return;
 
         collect($skill_queue)->each(function ($skill) {
 

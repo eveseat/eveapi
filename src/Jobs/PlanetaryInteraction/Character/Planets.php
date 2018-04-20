@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 
@@ -70,6 +69,8 @@ class Planets extends EsiBase
         $planets = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($planets->isCachedLoad()) return;
 
         collect($planets)->each(function ($planet) {
 

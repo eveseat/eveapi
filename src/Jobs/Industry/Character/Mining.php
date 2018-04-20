@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CharacterMining;
 
 /**
- * Class Mining
+ * Class Mining.
  * @package Seat\Eveapi\Jobs\Industry\Character
  */
 class Mining extends EsiBase
@@ -78,8 +77,9 @@ class Mining extends EsiBase
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            collect($mining)->each(function ($ledger_entry) {
+            if ($mining->isCachedLoad()) return;
 
+            collect($mining)->each(function ($ledger_entry) {
 
                 CharacterMining::firstOrNew([
                     'character_id'    => $this->getCharacterId(),

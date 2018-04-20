@@ -22,14 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserverData;
 
-
 /**
- * Class ObserverDetails
+ * Class ObserverDetails.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
 class ObserverDetails extends EsiBase
@@ -90,6 +88,8 @@ class ObserverDetails extends EsiBase
                         'corporation_id' => $this->getCorporationId(),
                         'observer_id'    => $observer->observer_id,
                     ]);
+
+                    if ($detail->isCachedLoad()) return;
 
                     collect($detail)->each(function ($data) use ($observer) {
 

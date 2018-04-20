@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 
 /**
- * Class Transactions
+ * Class Transactions.
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
 class Transactions extends EsiBase
@@ -94,6 +93,8 @@ class Transactions extends EsiBase
                         'corporation_id' => $this->getCorporationId(),
                         'division'       => $division->division,
                     ]);
+
+                    if ($transactions->isCachedLoad()) return;
 
                     // If we have no more entries, break the loop.
                     if (collect($transactions)->count() === 0)

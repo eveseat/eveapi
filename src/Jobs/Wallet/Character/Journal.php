@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 
 /**
- * Class Journal
+ * Class Journal.
  * @package Seat\Eveapi\Jobs\Wallet\Character
  */
 class Journal extends EsiBase
@@ -83,6 +83,8 @@ class Journal extends EsiBase
             $journal = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
+
+            if ($journal->isCachedLoad()) return;
 
             // If we have no more entries, break the loop.
             if (collect($journal)->count() === 0)

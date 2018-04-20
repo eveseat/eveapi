@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMemberLimits;
 
 /**
- * Class MembersLimit
+ * Class MembersLimit.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class MembersLimit extends EsiBase
@@ -75,6 +75,8 @@ class MembersLimit extends EsiBase
         $limit = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($limit->isCachedLoad()) return;
 
         if (! property_exists($limit, 'scalar'))
             return;

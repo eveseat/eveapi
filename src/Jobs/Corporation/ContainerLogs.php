@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationContainerLog;
 
 /**
- * Class ContainerLogs
+ * Class ContainerLogs.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class ContainerLogs extends EsiBase
@@ -82,6 +82,8 @@ class ContainerLogs extends EsiBase
             $logs = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($logs->isCachedLoad()) return;
 
             collect($logs)->each(function ($log) {
 

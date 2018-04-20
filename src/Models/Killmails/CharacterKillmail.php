@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterKillmail
+ * Class CharacterKillmail.
  * @package Seat\Eveapi\Models\Killmails
  */
 class CharacterKillmail extends Model

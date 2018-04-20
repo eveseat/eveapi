@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterStanding;
 
 /**
- * Class Standings
+ * Class Standings.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Standings extends EsiBase
@@ -72,6 +71,8 @@ class Standings extends EsiBase
         $standings = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($standings->isCachedLoad()) return;
 
         collect($standings)->each(function ($standing) {
 

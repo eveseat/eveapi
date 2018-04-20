@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 
 /**
- * Class MemberTracking
+ * Class MemberTracking.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class MemberTracking extends EsiBase
@@ -74,6 +74,8 @@ class MemberTracking extends EsiBase
         $members = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($members->isCachedLoad()) return;
 
         collect($members)->each(function ($member) {
 

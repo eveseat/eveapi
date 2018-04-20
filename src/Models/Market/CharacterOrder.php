@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterOrder
+ * Class CharacterOrder.
  * @package Seat\Eveapi\Models\Market
  */
 class CharacterOrder extends Model

@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Calendar;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
 
 /**
- * Class Detail
+ * Class Detail.
  * @package Seat\Eveapi\Jobs\Calendar
  */
 class Detail extends EsiBase
@@ -83,6 +82,8 @@ class Detail extends EsiBase
                 'character_id' => $this->getCharacterId(),
                 'event_id'     => $event_id,
             ]);
+
+            if ($detail->isCachedLoad()) return;
 
             CharacterCalendarEventDetail::firstOrCreate([
                 'event_id'   => $event_id,

@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class InvType
+ * Class InvType.
  * @package Seat\Eveapi\Models\Sde
  */
 class InvType extends Model

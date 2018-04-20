@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationIndustryMiningObserver
+ * Class CorporationIndustryMiningObserver.
  * @package Seat\Eveapi\Models\Industry
  */
 class CorporationIndustryMiningObserver extends Model

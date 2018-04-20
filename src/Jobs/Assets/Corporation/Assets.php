@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Assets
+ * Class Assets.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
 class Assets extends EsiBase
@@ -101,6 +101,8 @@ class Assets extends EsiBase
             $assets = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($assets->isCachedLoad()) return;
 
             collect($assets)->each(function ($asset) {
 

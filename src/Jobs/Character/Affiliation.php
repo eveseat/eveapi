@@ -22,13 +22,13 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterChatChannelInfo;
 use Seat\Eveapi\Models\Character\CharacterChatChannelMember;
 use Seat\Eveapi\Models\Character\CharacterNotification;
 use Seat\Eveapi\Models\Contacts\CharacterContact;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Mail\MailHeader;
 use Seat\Eveapi\Models\Mail\MailRecipient;
 use Seat\Eveapi\Models\RefreshToken;
@@ -36,7 +36,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
 /**
- * Class Affiliation
+ * Class Affiliation.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Affiliation extends EsiBase
@@ -96,17 +96,23 @@ class Affiliation extends EsiBase
     public function handle()
     {
 
-        // A list of column => query to retreive character_ids for
-        // affiliation lookups. If no constraint is needed to get
+        // A list of column => query to retrieve character_ids for
+        // affiliation lookup. If no constraint is needed to get
         // only character_ids, new instances of the model classes
         // are used.
         $queries = collect([
-            'first_party_id'  => CharacterWalletJournal::where('first_party_type', 'character'),
-            'second_party_id' => CharacterWalletJournal::where('second_party_type', 'character'),
+            'first_party_id'  => CharacterWalletJournal::join('universe_names',
+                'first_party_id', '=', 'entity_id')->where('category', 'character')->select('first_party_id'),
+            'second_party_id' => CharacterWalletJournal::join('universe_names',
+                'second_party_id', '=', 'entity_id')->where('category', 'character')->select('second_party_id'),
             'client_id'       => (new CharacterWalletTransaction),
             'contact_id'      => CharacterContact::where('contact_type', 'character'),
             'issuer_id'       => (new ContractDetail),
-            'from'            => (new MailHeader),
+            'character_id'    => (new MailHeader),
+            'from'            => MailHeader::whereBetween('from', [3000000, 4000000])
+                ->orWhereBetween('from', [90000000, 98000000])
+                ->orWhereBetween('from', [200000000, 2100000000])
+                ->select('from'),
             'recipient_id'    => MailRecipient::where('recipient_type', 'character'),
             'owner_id'        => (new CharacterChatChannelInfo),
             'accessor_id'     => CharacterChatChannelMember::where('accessor_type', 'character'),

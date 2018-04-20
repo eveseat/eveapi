@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class CustomsOffices
+ * Class CustomsOffices.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class CustomsOffices extends EsiBase
@@ -100,6 +100,8 @@ class CustomsOffices extends EsiBase
             $customs_offices = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($customs_offices->isCachedLoad()) return;
 
             collect($customs_offices)->each(function ($customs_office) {
 

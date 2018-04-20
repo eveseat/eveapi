@@ -22,13 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
 
-
 /**
- * Class Jobs
+ * Class Jobs.
  * @package Seat\Eveapi\Jobs\Industry\Character
  */
 class Jobs extends EsiBase
@@ -78,6 +76,8 @@ class Jobs extends EsiBase
         $industry_jobs = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($industry_jobs->isCachedLoad()) return;
 
         collect($industry_jobs)->each(function ($job) {
 

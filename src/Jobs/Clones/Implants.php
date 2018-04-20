@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Clones;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Clones\CharacterImplant;
 
 /**
- * Class Implants
+ * Class Implants.
  * @package Seat\Eveapi\Jobs\Clones
  */
 class Implants extends EsiBase
@@ -72,6 +71,8 @@ class Implants extends EsiBase
         $implants = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($implants->isCachedLoad()) return;
 
         collect($implants)->each(function ($implant) {
 

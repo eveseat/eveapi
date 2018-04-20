@@ -22,14 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Bookmarks\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
 use Seat\Eveapi\Models\RefreshToken;
 
-
 /**
- * Class Folders
+ * Class Folders.
  * @package Seat\Eveapi\Jobs\Bookmarks\Corporation
  */
 class Folders extends EsiBase
@@ -98,6 +96,8 @@ class Folders extends EsiBase
             $folders = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($folders->isCachedLoad()) return;
 
             collect($folders)->each(function ($folder) {
 

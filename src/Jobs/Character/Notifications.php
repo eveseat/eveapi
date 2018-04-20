@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterNotification;
 
 /**
- * Class Notifications
+ * Class Notifications.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Notifications extends EsiBase
@@ -72,6 +71,8 @@ class Notifications extends EsiBase
         $notifications = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($notifications->isCachedLoad()) return;
 
         collect($notifications)->each(function ($notification) {
 

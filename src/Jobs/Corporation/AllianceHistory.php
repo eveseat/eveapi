@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationAllianceHistory;
 
 /**
- * Class AllianceHistory
+ * Class AllianceHistory.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class AllianceHistory extends EsiBase
@@ -62,6 +62,8 @@ class AllianceHistory extends EsiBase
         $history = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($history->isCachedLoad()) return;
 
         collect($history)->each(function ($alliance) {
 

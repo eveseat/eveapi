@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterRole;
 
 /**
- * Class Roles
+ * Class Roles.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Roles extends EsiBase
@@ -72,6 +71,8 @@ class Roles extends EsiBase
         $roles = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($roles->isCachedLoad()) return;
 
         foreach (['roles', 'roles_at_hq', 'roles_at_base', 'roles_at_other'] as $scope) {
 

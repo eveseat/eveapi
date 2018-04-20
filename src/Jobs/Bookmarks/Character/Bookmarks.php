@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Bookmarks
+ * Class Bookmarks.
  * @package Seat\Eveapi\Jobs\Bookmarks\Characters
  */
 class Bookmarks extends EsiBase
@@ -93,6 +93,8 @@ class Bookmarks extends EsiBase
         $bookmarks = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($bookmarks->isCachedLoad()) return;
 
         // TODO: Complete this, v2 endpoint appears to be sick now.
     }

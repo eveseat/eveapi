@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterContact
+ * Class CharacterContact.
  * @package Seat\Eveapi\Models\Contacts
  */
 class CharacterContact extends Model

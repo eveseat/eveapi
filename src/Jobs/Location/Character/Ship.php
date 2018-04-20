@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Location\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Location\CharacterShip;
 
 /**
- * Class Ship
+ * Class Ship.
  * @package Seat\Eveapi\Jobs\Location\Character
  */
 class Ship extends EsiBase
@@ -70,6 +69,8 @@ class Ship extends EsiBase
         $ship = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($ship->isCachedLoad()) return;
 
         CharacterShip::firstOrNew([
             'character_id' => $this->getCharacterId(),

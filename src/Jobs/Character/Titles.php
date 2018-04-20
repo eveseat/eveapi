@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterTitle;
 
 /**
- * Class Title
+ * Class Title.
  * @package Seat\Eveapi\Jobs\Character
  */
 class Titles extends EsiBase
@@ -72,6 +71,8 @@ class Titles extends EsiBase
         $titles = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($titles->isCachedLoad()) return;
 
         // This is a small enough list to just wipe and add
         CharacterTitle::where('character_id', $this->getCharacterId())

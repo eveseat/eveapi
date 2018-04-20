@@ -29,7 +29,7 @@ use Seat\Eveapi\Models\Corporation\CorporationStarbaseFuel;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Starbase
+ * Class Starbase.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class StarbaseDetails extends EsiBase

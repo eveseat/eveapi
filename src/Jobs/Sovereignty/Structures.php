@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyStructure;
 
 /**
- * Class Structures
+ * Class Structures.
  * @package Seat\Eveapi\Jobs\Sovereignty
  */
 class Structures extends EsiBase
@@ -52,7 +52,7 @@ class Structures extends EsiBase
     protected $tags = ['public', 'sovereignty', 'structures'];
 
     /**
-     * Execute the job
+     * Execute the job.
      *
      * @throws \Throwable
      */
@@ -60,6 +60,8 @@ class Structures extends EsiBase
     {
 
         $structures = $this->retrieve();
+
+        if ($structures->isCachedLoad()) return;
 
         collect($structures)->each(function ($structure) {
 

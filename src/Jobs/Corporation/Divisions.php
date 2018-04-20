@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 
 /**
- * Class Divisions
+ * Class Divisions.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Divisions extends EsiBase
@@ -75,6 +75,8 @@ class Divisions extends EsiBase
         $divisions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($divisions->isCachedLoad()) return;
 
         if (property_exists($divisions, 'hangar'))
 

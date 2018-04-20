@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 
 /**
- * Class CorporationAsset
+ * Class CorporationAsset.
  * @package Seat\Eveapi\Models\Assets
  */
 class CorporationAsset extends Model
@@ -61,7 +61,7 @@ class CorporationAsset extends Model
     }
 
     /**
-     * Provide a rate of the used space based on item capacity and stored item volume
+     * Provide a rate of the used space based on item capacity and stored item volume.
      *
      * @return float
      */
@@ -75,7 +75,7 @@ class CorporationAsset extends Model
     }
 
     /**
-     * Provide the used space based on stored item volume
+     * Provide the used space based on stored item volume.
      *
      * @return float
      */

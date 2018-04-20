@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationRoleHistory;
 
 /**
- * Class RoleHistories
+ * Class RoleHistories.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class RoleHistories extends EsiBase
@@ -82,6 +81,8 @@ class RoleHistories extends EsiBase
             $roles = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($roles->isCachedLoad()) return;
 
             collect($roles)->each(function ($role) {
 

@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 
 /**
- * Class Balances
+ * Class Balances.
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
 class Balances extends EsiBase
@@ -75,6 +74,8 @@ class Balances extends EsiBase
         $balances = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($balances->isCachedLoad()) return;
 
         collect($balances)->each(function ($balance) {
 

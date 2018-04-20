@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationShareholder;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Shareholders
+ * Class Shareholders.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Shareholders extends EsiBase
@@ -100,6 +100,8 @@ class Shareholders extends EsiBase
             $shareholders = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($shareholders->isCachedLoad()) return;
 
             collect($shareholders)->each(function ($shareholder) {
 

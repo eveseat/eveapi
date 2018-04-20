@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Skills\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Skills\CharacterAttribute;
 
 /**
- * Class Attributes
+ * Class Attributes.
  * @package Seat\Eveapi\Jobs\Skills\Character
  */
 class Attributes extends EsiBase
@@ -70,6 +69,8 @@ class Attributes extends EsiBase
         $attributes = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($attributes->isCachedLoad()) return;
 
         CharacterAttribute::firstOrNew([
             'character_id' => $this->getCharacterId(),

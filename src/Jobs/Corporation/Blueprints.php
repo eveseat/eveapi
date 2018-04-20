@@ -27,7 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Blueprints
+ * Class Blueprints.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Blueprints extends EsiBase
@@ -102,6 +102,8 @@ class Blueprints extends EsiBase
             $blueprints = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
+
+            if ($blueprints->isCachedLoad()) return;
 
             collect($blueprints)->each(function ($blueprint) {
 

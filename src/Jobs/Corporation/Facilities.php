@@ -26,7 +26,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationFacility;
 
 /**
- * Class Facilities
+ * Class Facilities.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Facilities extends EsiBase
@@ -75,6 +75,8 @@ class Facilities extends EsiBase
         $facilities = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($facilities->isCachedLoad()) return;
 
         collect($facilities)->each(function ($facility) {
 

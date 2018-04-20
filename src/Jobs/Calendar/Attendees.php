@@ -22,13 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Calendar;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarAttendee;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
 
 /**
- * Class Attendees
+ * Class Attendees.
  * @package Seat\Eveapi\Jobs\Calendar
  */
 class Attendees extends EsiBase
@@ -73,7 +72,7 @@ class Attendees extends EsiBase
 
     /**
      * TODO: Why do we have this as a seperate call?
-     * We should add this to handle()
+     * We should add this to handle().
      *
      * @param string $owner_type
      * @param int    $owner_id
@@ -91,6 +90,8 @@ class Attendees extends EsiBase
                     'character_id' => $this->getCharacterId(),
                     'event_id'     => $event->event_id,
                 ]);
+
+                if ($attendees->isCachedLoad()) return;
 
                 collect($attendees)->each(function ($attendee) use ($event) {
 

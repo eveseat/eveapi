@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMemberTitle;
 
 /**
- * Class MembersTitles
+ * Class MembersTitles.
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class MembersTitles extends EsiBase
@@ -75,6 +74,8 @@ class MembersTitles extends EsiBase
         $member_titles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
+
+        if ($member_titles->isCachedLoad()) return;
 
         collect($member_titles)->filter(function ($member) {
 

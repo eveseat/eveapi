@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Location\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Location\CharacterOnline;
 
 /**
- * Class Online
+ * Class Online.
  * @package Seat\Eveapi\Jobs\Location\Character
  */
 class Online extends EsiBase
@@ -70,6 +69,8 @@ class Online extends EsiBase
         $online = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($online->isCachedLoad()) return;
 
         CharacterOnline::firstOrNew([
             'character_id' => $this->getCharacterId(),

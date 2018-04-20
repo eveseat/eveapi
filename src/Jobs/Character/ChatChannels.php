@@ -22,14 +22,13 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterChatChannel;
 use Seat\Eveapi\Models\Character\CharacterChatChannelInfo;
 use Seat\Eveapi\Models\Character\CharacterChatChannelMember;
 
 /**
- * Class ChatChannels
+ * Class ChatChannels.
  * @package Seat\Eveapi\Jobs\Character
  */
 class ChatChannels extends EsiBase
@@ -74,6 +73,8 @@ class ChatChannels extends EsiBase
         $chat_channels = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($chat_channels->isCachedLoad()) return;
 
         collect($chat_channels)->each(function ($channel) {
 

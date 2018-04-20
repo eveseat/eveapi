@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Location;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CharacterLocation
+ * Class CharacterLocation.
  * @package Seat\Eveapi\Models\Killmails
  */
 class CharacterLocation extends Model
