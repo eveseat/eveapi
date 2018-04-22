@@ -67,6 +67,15 @@ class CharacterInfo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function corporation_roles()
+    {
+
+        return $this->hasMany(CharacterRole::class, 'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function corporation_history()
     {
 
