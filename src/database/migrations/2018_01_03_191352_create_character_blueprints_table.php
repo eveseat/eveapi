@@ -24,7 +24,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCharacterBluePrintsTable extends Migration
+class CreateCharacterBlueprintsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -34,7 +34,7 @@ class CreateCharacterBluePrintsTable extends Migration
     public function up()
     {
 
-        Schema::create('character_blue_prints', function (Blueprint $table) {
+        Schema::create('character_blueprints', function (Blueprint $table) {
 
             $table->bigInteger('item_id')->primary();
 
@@ -61,6 +61,6 @@ class CreateCharacterBluePrintsTable extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('character_blue_prints');
+        Schema::dropIfExists('character_blueprints');
     }
 }

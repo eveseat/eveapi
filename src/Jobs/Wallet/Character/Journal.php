@@ -57,6 +57,11 @@ class Journal extends EsiBase
     protected $tags = ['character', 'wallet', 'journal'];
 
     /**
+     * @var int
+     */
+    protected $page = 1;
+
+    /**
      * A counter used to walk the journal backwards.
      *
      * @var int
@@ -125,6 +130,9 @@ class Journal extends EsiBase
             // Update the from_id to be the new lowest ref_id we
             // know of. The next all will use this.
             $this->from_id = collect($journal)->min('id') - 1;
+
+            if (! $this->nextPage($journal->pages))
+                break;
         }
     }
 }

@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class CharacterBluePrints.
  * @package App
  */
-class CharacterBluePrint extends Model
+class CharacterBlueprint extends Model
 {
     /**
      * @var bool
