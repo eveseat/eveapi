@@ -20,19 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Sde;
+namespace Seat\Eveapi\Models\Market;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Market\Price;
-use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Eveapi\Models\Sde\InvType;
 
 /**
- * Class InvType.
- * @package Seat\Eveapi\Models\Sde
+ * Class Price.
+ * @package Seat\Eveapi\Models\Market
  */
-class InvType extends Model
+class Price extends Model
 {
-    use IsReadOnly;
 
     /**
      * @var bool
@@ -42,31 +40,23 @@ class InvType extends Model
     /**
      * @var string
      */
-    protected $table = 'invTypes';
+    protected $primaryKey = 'type_id';
 
     /**
      * @var string
      */
-    protected $primaryKey = 'typeID';
+    protected $table = 'market_prices';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @var bool
      */
-    public function dogmaAttributes()
-    {
-        return $this->hasMany(DgmTypeAttribute::class, 'typeID', 'typeID');
-    }
+    protected static $unguarded = true;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function group()
+    public function type()
     {
-        return $this->belongsTo(InvGroup::class, 'groupID', 'groupID');
-    }
-
-    public function prices()
-    {
-        return $this->hasOne(Price::class, 'type_id', 'typeID');
+        return $this->hasOne(InvType::class, 'typeID', 'type_id');
     }
 }

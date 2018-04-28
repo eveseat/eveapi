@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -41,5 +43,68 @@ class CharacterMining extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['character_id', 'date', 'solar_system_id', 'type_id'];
+    protected $primaryKey = ['character_id', 'date', 'time', 'solar_system_id', 'type_id'];
+
+    /**
+     * @var array
+     */
+    protected $appends = [
+        'amount', 'volumes',
+    ];
+
+    /**
+     * @return float
+     */
+    public function getAmountAttribute()
+    {
+        if (is_null($this->type))
+            return 0.0;
+
+        if (is_null($this->type->prices))
+            return 0.0;
+
+        return $this->quantity * $this->type->prices->average_price;
+    }
+
+    /**
+     * @return float
+     */
+    public function getVolumesAttribute()
+    {
+        if (is_null($this->type))
+            return 0.0;
+
+        return $this->quantity * $this->type->volume;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function type()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function system()
+    {
+        return $this->hasOne(MapDenormalize::class, 'itemID', 'solar_system_id');
+    }
+
+    /**
+     * @param array $options
+     * @return bool
+     */
+    public function save(array $options = [])
+    {
+        if (is_null($this->getAttributeValue('date')))
+            $this->setAttribute('date', carbon()->toDateString());
+
+        $this->setAttribute('month', carbon($this->getAttributeValue('date'))->month);
+        $this->setAttribute('year', carbon($this->getAttributeValue('date'))->year);
+
+        return parent::save($options);
+    }
 }
