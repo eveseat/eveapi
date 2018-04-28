@@ -61,7 +61,8 @@ class CharacterInfo extends Model
     {
 
         return CharacterCorporationHistory::where('character_id', $this->character_id)
-            ->latest()->first();
+            ->orderBy('record_id', 'desc')
+            ->first();
     }
 
     /**
