@@ -30,6 +30,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Containers\EsiResponse;
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Character\CharacterRole;
 use Seat\Eveapi\Models\RefreshToken;
@@ -116,7 +117,7 @@ abstract class EsiBase implements ShouldQueue
     protected $query_string = [];
 
     /**
-     * @var
+     * @var \Seat\Eveapi\Models\RefreshToken
      */
     protected $token;
 
@@ -243,7 +244,30 @@ abstract class EsiBase implements ShouldQueue
         if (! is_null($this->page))
             $client->page($this->page);
 
-        $result = $client->invoke($this->method, $this->endpoint, $path_values);
+        // Generally, we want to bubble up exceptions all the way to the
+        // callee. However, in the case of this worker class, we need to
+        // try and be vigilant with tokens that may have expired. So for
+        // those cases we wrap in a try/catch.
+        try {
+
+            $result = $client->invoke($this->method, $this->endpoint, $path_values);
+
+        } catch (RequestFailedException $exception) {
+
+            // If the token can't login and we get an HTTP 400 together with
+            // and error message stating that this is an invalid_token, remove
+            // the token from SeAT.
+            if ($exception->getEsiResponse()->getErrorCode() == 400 &&
+                $exception->getEsiResponse()->error() == 'invalid_token: The refresh token is expired.') {
+
+                // Remove the invalid token
+                $this->token->delete();
+            }
+
+            // Rethrow the exception
+            throw $exception;
+        }
+
 
         // If this is a cached load, don't bother with any further
         // processing.
@@ -283,7 +307,6 @@ abstract class EsiBase implements ShouldQueue
      * Get an instance of Eseye to use for this job.
      *
      * @return \Seat\Eseye\Eseye
-     * @throws \Illuminate\Container\EntryNotFoundException
      * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function eseye()
