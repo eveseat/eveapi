@@ -44,7 +44,7 @@ class Notifications extends EsiBase
     /**
      * @var int
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var string
@@ -84,7 +84,7 @@ class Notifications extends EsiBase
                 'sender_type'     => $notification->sender_type,
                 'timestamp'       => carbon($notification->timestamp),
                 'is_read'         => isset($notification->is_read) ? $notification->is_read : false,
-                'text'            => $notification->text,
+                'text'            => $notification->text ?? null,
             ]);
         });
     }

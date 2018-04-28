@@ -117,7 +117,7 @@ class Titles extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
                 'title_id'       => $title->title_id,
             ])->fill([
-                'name' => $title->name,
+                'name'           => $title->name ?? sprintf('Untitled %d', (int) sqrt($title->title_id - 1)),
             ])->save();
 
             collect($this->types)->each(function ($type) use ($title) {

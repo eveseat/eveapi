@@ -45,7 +45,7 @@ class CreateCharacterNotificationsTable extends Migration
             $table->enum('sender_type', ['character', 'corporation', 'alliance', 'faction', 'other']);
             $table->dateTime('timestamp');
             $table->boolean('is_read')->default(false);
-            $table->text('text');
+            $table->text('text')->nullable();
 
             $table->index('character_id');
             $table->index('notification_id');

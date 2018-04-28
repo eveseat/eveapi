@@ -63,6 +63,11 @@ class Journals extends EsiBase
     protected $tags = ['corporation', 'wallet', 'journals'];
 
     /**
+     * @var int
+     */
+    protected $page = 1;
+
+    /**
      * A counter used to walk the journal backwards.
      *
      * @var int
@@ -129,7 +134,7 @@ class Journals extends EsiBase
                             // introduced in v4
                             'description'       => $entry->description,
                             'context_id'        => $entry->context_id ?? null,
-                            'context_type_id'   => $entry->context_type_id ?? null,
+                            'context_id_type'   => $entry->context_id_type ?? null,
                         ])->save();
 
                     });
@@ -137,10 +142,16 @@ class Journals extends EsiBase
                     // Update the from_id to be the new lowest ref_id we
                     // know of. The next call will use this.
                     $this->from_id = collect($journal)->min('id') - 1;
+
+                    if (! $this->nextPage($journal->pages))
+                        break;
                 }
 
                 // Reset the from_id for the next wallet division
                 $this->from_id = PHP_INT_MAX;
+
+                // Reset the page for the next wallet division
+                $this->page = 1;
             });
     }
 }
