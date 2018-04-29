@@ -24,8 +24,6 @@ namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
-use Seat\Eveapi\Models\Character\CharacterChatChannelInfo;
-use Seat\Eveapi\Models\Character\CharacterChatChannelMember;
 use Seat\Eveapi\Models\Character\CharacterNotification;
 use Seat\Eveapi\Models\Contacts\CharacterContact;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
@@ -114,8 +112,6 @@ class Affiliation extends EsiBase
                 ->orWhereBetween('from', [200000000, 2100000000])
                 ->select('from'),
             'recipient_id'    => MailRecipient::where('recipient_type', 'character'),
-            'owner_id'        => (new CharacterChatChannelInfo),
-            'accessor_id'     => CharacterChatChannelMember::where('accessor_type', 'character'),
             'sender_id'       => CharacterNotification::where('sender_type', 'character'),
         ]);
 
@@ -134,14 +130,14 @@ class Affiliation extends EsiBase
             $this->request_body = $chunk->values()->all();
             $affiliations = $this->retrieve();
 
-            collect($affiliations)->each(function ($affilication) {
+            collect($affiliations)->each(function ($affiliation) {
 
                 CharacterAffiliation::firstOrNew([
-                    'character_id' => $affilication->character_id,
+                    'character_id' => $affiliation->character_id,
                 ])->fill([
-                    'corporation_id' => $affilication->corporation_id,
-                    'alliance_id'    => $affilication->alliance_id ?? null,
-                    'faction_id'     => $affilication->faction_id ?? null,
+                    'corporation_id' => $affiliation->corporation_id,
+                    'alliance_id'    => $affiliation->alliance_id ?? null,
+                    'faction_id'     => $affiliation->faction_id ?? null,
                 ])->save();
             });
         });

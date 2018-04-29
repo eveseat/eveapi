@@ -68,7 +68,7 @@ class Status extends EsiBase
         $latest_status = ServerStatus::latest()->first();
 
         // The endpoint caches for 30 seconds, so make sure we
-        // dont add more entries before that cache has expired.
+        // don't add more entries before that cache has expired.
         if (! $latest_status || $latest_status->created_at->addSeconds(30)
                 ->lt(carbon())) {
 

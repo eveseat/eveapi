@@ -71,7 +71,7 @@ class Attendees extends EsiBase
     }
 
     /**
-     * TODO: Why do we have this as a seperate call?
+     * TODO: Why do we have this as a separate call?
      * We should add this to handle().
      *
      * @param string $owner_type

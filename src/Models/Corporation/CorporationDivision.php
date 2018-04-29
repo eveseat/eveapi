@@ -45,6 +45,8 @@ class CorporationDivision extends Model
     protected $primaryKey = ['corporation_id', 'type', 'division'];
 
     /**
+     * @param $value
+     *
      * @return string
      */
     public function getNameAttribute($value)

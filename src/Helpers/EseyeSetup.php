@@ -34,6 +34,7 @@ class EseyeSetup
 {
     /**
      * EseyeSetup constructor.
+     * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function __construct()
     {
@@ -53,6 +54,7 @@ class EseyeSetup
      * @param \Seat\Eseye\Containers\EsiAuthentication|null $authentication
      *
      * @return \Seat\Eseye\Eseye
+     * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function get(EsiAuthentication $authentication = null): Eseye
     {

@@ -77,7 +77,7 @@ class Stats extends EsiBase
         // Process each years aggregate
         collect($stats)->each(function ($aggregate) {
 
-            // Seperate stats by categories
+            // Separate stats by categories
             foreach (['character', 'combat', 'industry', 'inventory', 'isk', 'market',
                          'mining', 'module', 'orbital', 'pve', 'social', 'travel', ] as $category) {
 

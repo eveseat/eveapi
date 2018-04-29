@@ -41,8 +41,8 @@ trait HasCompositePrimaryKey
 
     /**
      * Sadly, composite primary keys in Eloquent does not seem to
-     * be a *thing*. This override allowes for things like firstOrUpdate()
-     * to work. However, many other eloquent static methods dont work with
+     * be a *thing*. This override allows for things like firstOrUpdate()
+     * to work. However, many other eloquent static methods don't work with
      * composite keys. ¯\_(ツ)_/¯.
      *
      * Monkey patch refs:

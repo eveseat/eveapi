@@ -120,7 +120,7 @@ class Assets extends EsiBase
             });
 
             // Update the list of known item_id's which should be
-            // excluded from the databse cleanup later.
+            // excluded from the database cleanup later.
             $this->known_assets->push(collect($assets)
                 ->pluck('item_id')->flatten()->all());
 

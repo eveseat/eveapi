@@ -168,7 +168,7 @@ class Structures extends EsiBase
                 } else {
 
                     // If no services are defined on this structure, remove all of the
-                    // ones we might have in the databse.
+                    // ones we might have in the database.
                     CorporationStructureService::where('corporation_id', $structure->corporation_id)
                         ->where('structure_id', $structure->structure_id)
                         ->delete();

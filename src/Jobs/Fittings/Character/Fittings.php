@@ -84,7 +84,7 @@ class Fittings extends EsiBase
                 'ship_type_id' => $fitting->ship_type_id,
             ])->save();
 
-            // Check that we have this fittings items in the database. If we dont,
+            // Check that we have this fittings items in the database. If we don't,
             // just add it. Cleanups of the fittings table will cascade deletes to
             // these items.
             if (CharacterFittingItem::where('fitting_id', $fitting->fitting_id)->count() === 0) {

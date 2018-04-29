@@ -66,13 +66,13 @@ class Labels extends EsiBase
 
         if (! $this->authenticated()) return;
 
-        $lables = $this->retrieve([
+        $labels = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($lables->isCachedLoad()) return;
+        if ($labels->isCachedLoad()) return;
 
-        collect($lables->labels)->each(function ($label) {
+        collect($labels->labels)->each(function ($label) {
 
             // Create the label
             MailLabel::firstOrCreate([

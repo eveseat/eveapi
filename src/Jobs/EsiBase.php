@@ -173,7 +173,7 @@ abstract class EsiBase implements ShouldQueue
             }
 
             // Considering a corporation role was required with the scope,
-            // fail the authentication check. If we dont fail here, simply
+            // fail the authentication check. If we don't fail here, simply
             // granting the SSO scope would pass the next truth test.
             return false;
         }
