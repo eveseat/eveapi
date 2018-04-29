@@ -13,11 +13,12 @@
       "Seat\\Eveapi\\": "src/"
     }
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "alpha",
   "prefer-stable": true,
   "require": {
     "php": ">=7.1",
     "laravel/framework": "5.5.*",
+    "eveseat/eseye": "~1",
     "eveseat/services": "~3",
     "doctrine/dbal": "^2.6"
   },
