@@ -49,6 +49,7 @@ class CorporationMemberTracking extends Model
      */
     public function type()
     {
+
         return $this->belongsTo(InvType::class, 'ship_type_id', 'typeID');
     }
 }

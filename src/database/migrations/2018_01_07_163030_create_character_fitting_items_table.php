@@ -49,9 +49,9 @@ class CreateCharacterFittingItemsTable extends Migration
             $table->timestamps();
 
             $table->foreign('fitting_id')
-                  ->references('fitting_id')
-                  ->on('character_fittings')
-                  ->onDelete('cascade');
+                ->references('fitting_id')
+                ->on('character_fittings')
+                ->onDelete('cascade');
         });
     }
 

@@ -54,11 +54,13 @@ class MapDenormalize extends Model
      */
     public function type()
     {
+
         return $this->belongsTo(InvType::class, 'typeID', 'typeID');
     }
 
     public function sovereignty()
     {
+
         return $this->hasOne(SovereigntyMap::class, 'system_id', 'itemID');
     }
 }

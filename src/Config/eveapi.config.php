@@ -28,5 +28,5 @@ return [
     'enable_joblog' => false,
 
     'eseye_logfile' => storage_path('logs/eseye.log'),
-    'eseye_cache' => storage_path('eseye'),
+    'eseye_cache'   => storage_path('eseye'),
 ];

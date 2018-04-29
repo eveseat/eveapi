@@ -49,6 +49,7 @@ class CorporationCustomsOffice extends Model
      */
     public function planet()
     {
+
         return $this->belongsTo(MapDenormalize::class, 'location_id', 'itemID');
     }
 
@@ -57,6 +58,7 @@ class CorporationCustomsOffice extends Model
      */
     public function system()
     {
+
         return $this->belongsTo(MapDenormalize::class, 'system_id', 'itemID');
     }
 }

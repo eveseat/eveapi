@@ -124,7 +124,7 @@ class Stations extends EsiBase
 
         UniverseStationService::where('station_id', $structure->station_id)
             ->whereNotIn('service_name', collect($structure->services)
-            ->pluck('name')->flatten()->all())
+                ->pluck('name')->flatten()->all())
             ->delete();
 
     }

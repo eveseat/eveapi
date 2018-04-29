@@ -87,7 +87,7 @@ trait Utils
 
         $possible_celestials = MapDenormalize::where('solarSystemID', $solar_system_id)
             ->whereNotNull('itemName')
-            ->where('x', '<>', '0.0') // Exclude the systems star.
+            ->where('x', '<>', '0.0')// Exclude the systems star.
             ->whereIn('groupID', [6, 7, 8, 9, 10])
             ->get();
 

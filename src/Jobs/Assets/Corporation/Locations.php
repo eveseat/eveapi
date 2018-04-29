@@ -90,7 +90,7 @@ class Locations extends EsiBase
         CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
             ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
             ->where('corporation_id', $this->getCorporationId())
-            ->where('is_singleton', true) // only singleton items may have a specific location
+            ->where('is_singleton', true)// only singleton items may have a specific location
             // it seems only items from that categories can have a specific location
             // 2  : Celestial
             // 6  : Ship

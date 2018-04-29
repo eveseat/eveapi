@@ -34,11 +34,6 @@ class CharacterFittingItem extends Model
     use HasCompositePrimaryKey;
 
     /**
-     * @var array
-     */
-    protected $primaryKey = ['fitting_id', 'type_id', 'flag'];
-
-    /**
      * @var bool
      */
     protected static $unguarded = true;
@@ -47,4 +42,9 @@ class CharacterFittingItem extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @var array
+     */
+    protected $primaryKey = ['fitting_id', 'type_id', 'flag'];
 }

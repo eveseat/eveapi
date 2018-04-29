@@ -33,6 +33,7 @@ class CreateMarketPricesTable extends Migration
      */
     public function up()
     {
+
         Schema::create('market_prices', function (Blueprint $table) {
 
             $table->bigInteger('type_id');
@@ -52,6 +53,7 @@ class CreateMarketPricesTable extends Migration
      */
     public function down()
     {
+
         Schema::dropIfExists('market_prices');
     }
 }

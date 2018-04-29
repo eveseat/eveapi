@@ -51,6 +51,7 @@ class CorporationInfo extends Model
      */
     public function homeStation()
     {
+
         return $this->belongsTo(UniverseStation::class, 'home_station_id', 'station_id');
     }
 
@@ -59,6 +60,7 @@ class CorporationInfo extends Model
      */
     public function getAttributeMemberLimit()
     {
+
         return optional(CorporationMemberLimits::find($this->corporation_id))->limit;
     }
 }
