@@ -57,6 +57,7 @@ class CharacterMining extends Model
      */
     public function getAmountAttribute()
     {
+
         if (is_null($this->type))
             return 0.0;
 
@@ -71,6 +72,7 @@ class CharacterMining extends Model
      */
     public function getVolumesAttribute()
     {
+
         if (is_null($this->type))
             return 0.0;
 
@@ -82,6 +84,7 @@ class CharacterMining extends Model
      */
     public function type()
     {
+
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
     }
 
@@ -90,15 +93,18 @@ class CharacterMining extends Model
      */
     public function system()
     {
+
         return $this->hasOne(MapDenormalize::class, 'itemID', 'solar_system_id');
     }
 
     /**
      * @param array $options
+     *
      * @return bool
      */
     public function save(array $options = [])
     {
+
         if (is_null($this->getAttributeValue('date')))
             $this->setAttribute('date', carbon()->toDateString());
 

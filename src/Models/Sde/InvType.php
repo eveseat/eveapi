@@ -54,6 +54,7 @@ class InvType extends Model
      */
     public function dogmaAttributes()
     {
+
         return $this->hasMany(DgmTypeAttribute::class, 'typeID', 'typeID');
     }
 
@@ -62,11 +63,16 @@ class InvType extends Model
      */
     public function group()
     {
+
         return $this->belongsTo(InvGroup::class, 'groupID', 'groupID');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function prices()
     {
+
         return $this->hasOne(Price::class, 'type_id', 'typeID');
     }
 }

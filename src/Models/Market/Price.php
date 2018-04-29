@@ -35,6 +35,11 @@ class Price extends Model
     /**
      * @var bool
      */
+    protected static $unguarded = true;
+
+    /**
+     * @var bool
+     */
     public $incrementing = false;
 
     /**
@@ -48,15 +53,11 @@ class Price extends Model
     protected $table = 'market_prices';
 
     /**
-     * @var bool
-     */
-    protected static $unguarded = true;
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()
     {
+
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
     }
 }

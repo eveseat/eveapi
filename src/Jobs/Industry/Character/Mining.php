@@ -112,7 +112,7 @@ class Mining extends EsiBase
                         'solar_system_id' => $ledger_entry->solar_system_id,
                         'type_id'         => $ledger_entry->type_id,
                     ], [
-                        'quantity'        => $delta_quantity,
+                        'quantity' => $delta_quantity,
                     ]);
 
                 }

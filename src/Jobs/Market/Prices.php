@@ -31,7 +31,6 @@ use Seat\Eveapi\Models\Market\Price;
  */
 class Prices extends EsiBase
 {
-
     /**
      * @var string
      */
@@ -77,6 +76,5 @@ class Prices extends EsiBase
             ]);
 
         });
-
     }
 }
