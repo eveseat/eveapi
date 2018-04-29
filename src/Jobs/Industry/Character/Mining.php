@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Character;
 
+use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CharacterMining;
 
@@ -81,14 +82,40 @@ class Mining extends EsiBase
 
             collect($mining)->each(function ($ledger_entry) {
 
-                CharacterMining::firstOrNew([
-                    'character_id'    => $this->getCharacterId(),
-                    'date'            => $ledger_entry->date,
-                    'solar_system_id' => $ledger_entry->solar_system_id,
-                    'type_id'         => $ledger_entry->type_id,
-                ])->fill([
-                    'quantity' => $ledger_entry->quantity,
-                ])->save();
+                // retrieve daily mined amount for current type, system and character
+                $row = CharacterMining::select(DB::raw('SUM(quantity) as quantity'))
+                    ->where('character_id', $this->getCharacterId())
+                    ->where('date', $ledger_entry->date)
+                    ->where('solar_system_id', $ledger_entry->solar_system_id)
+                    ->where('type_id', $ledger_entry->type_id)
+                    ->first();
+
+                // get the current UTC time for potential new mining ledger entry
+                $delta_time = carbon()->setTimezone('UTC')->toTimeString();
+
+                // compute delta between daily knew mined amount and new daily mined amount
+                $delta_quantity = $ledger_entry->quantity - (is_null($row) ? 0 : $row->quantity);
+
+                // in case delta is 0, we skip the entry since there are no needs to store empty value
+                if ($delta_quantity != 0) {
+
+                    // in case the entry date does not match with the current date, we reset entry time to midnight as
+                    // a last entry
+                    if ($ledger_entry->date != carbon()->setTimezone('UTC')->toDateString())
+                        $delta_time = '23:59:59';
+
+                    // finally, we create the new entry
+                    CharacterMining::updateOrCreate([
+                        'character_id'    => $this->getCharacterId(),
+                        'date'            => $ledger_entry->date,
+                        'time'            => $delta_time,
+                        'solar_system_id' => $ledger_entry->solar_system_id,
+                        'type_id'         => $ledger_entry->type_id,
+                    ], [
+                        'quantity'        => $delta_quantity,
+                    ]);
+
+                }
 
             });
 

@@ -20,53 +20,63 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Sde;
+namespace Seat\Eveapi\Jobs\Market;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\Price;
-use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class InvType.
- * @package Seat\Eveapi\Models\Sde
+ * Class Prices.
+ * @package Seat\Eveapi\Jobs\Market
  */
-class InvType extends Model
+class Prices extends EsiBase
 {
-    use IsReadOnly;
+
+    /**
+     * @var string
+     */
+    protected $method = 'get';
+
+    /**
+     * @var string
+     */
+    protected $endpoint = '/markets/prices/';
+
+    /**
+     * @var string
+     */
+    protected $version = 'v1';
 
     /**
      * @var bool
      */
-    public $incrementing = false;
+    protected $public_call = true;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $table = 'invTypes';
+    protected $tags = ['public', 'market', 'prices'];
 
     /**
-     * @var string
+     * Execute the job.
+     *
+     * @throws \Throwable
      */
-    protected $primaryKey = 'typeID';
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function dogmaAttributes()
+    public function handle()
     {
-        return $this->hasMany(DgmTypeAttribute::class, 'typeID', 'typeID');
-    }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function group()
-    {
-        return $this->belongsTo(InvGroup::class, 'groupID', 'groupID');
-    }
+        $prices = $this->retrieve();
 
-    public function prices()
-    {
-        return $this->hasOne(Price::class, 'type_id', 'typeID');
+        collect($prices)->each(function ($price) {
+
+            Price::updateOrCreate([
+                'type_id' => $price->type_id,
+            ], [
+                'average_price'  => $price->average_price ?? 0.0,
+                'adjusted_price' => $price->adjusted_price ?? 0.0,
+            ]);
+
+        });
+
     }
 }

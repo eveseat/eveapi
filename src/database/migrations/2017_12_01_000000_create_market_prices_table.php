@@ -24,7 +24,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCharacterMiningsTable extends Migration
+class CreateMarketPricesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -33,29 +33,15 @@ class CreateCharacterMiningsTable extends Migration
      */
     public function up()
     {
+        Schema::create('market_prices', function (Blueprint $table) {
 
-        Schema::create('character_minings', function (Blueprint $table) {
-
-            $table->bigInteger('character_id');
-            $table->date('date');
-            $table->time('time');
-            $table->integer('year');
-            $table->integer('month');
-            $table->integer('solar_system_id');
-            $table->integer('type_id');
-            $table->bigInteger('quantity');
-
-            $table->primary(['character_id', 'date', 'time', 'solar_system_id', 'type_id'],
-                'mining_primary');
-            $table->index(['character_id', 'date', 'solar_system_id', 'type_id'], 'mining_date_systype');
-            $table->index('character_id');
-            $table->index('date');
-            $table->index('year');
-            $table->index(['year', 'month']);
-            $table->index('solar_system_id');
-            $table->index('type_id');
-
+            $table->bigInteger('type_id');
+            $table->decimal('average_price', 30, 2)->default(0.0);
+            $table->decimal('adjusted_price', 30, 2)->default(0.0);
             $table->timestamps();
+
+            $table->primary(['type_id']);
+
         });
     }
 
@@ -66,7 +52,6 @@ class CreateCharacterMiningsTable extends Migration
      */
     public function down()
     {
-
-        Schema::dropIfExists('character_minings');
+        Schema::dropIfExists('market_prices');
     }
 }
