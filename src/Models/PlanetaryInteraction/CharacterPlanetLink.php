@@ -48,5 +48,5 @@ class CharacterPlanetLink extends Model
      * @var array
      */
     protected $primaryKey = [
-        'character_id', 'planet_id', 'source_pin_id', 'destination_pin_id',];
+        'character_id', 'planet_id', 'source_pin_id', 'destination_pin_id', ];
 }

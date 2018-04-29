@@ -268,7 +268,6 @@ abstract class EsiBase implements ShouldQueue
             throw $exception;
         }
 
-
         // If this is a cached load, don't bother with any further
         // processing.
         if ($result->isCachedLoad())
