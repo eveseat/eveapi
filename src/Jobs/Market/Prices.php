@@ -66,15 +66,19 @@ class Prices extends EsiBase
 
         $prices = $this->retrieve();
 
-        collect($prices)->each(function ($price) {
+        collect($prices)->chunk(1000)->each(function ($chunk) {
 
-            Price::updateOrCreate([
-                'type_id' => $price->type_id,
-            ], [
-                'average_price'  => $price->average_price ?? 0.0,
-                'adjusted_price' => $price->adjusted_price ?? 0.0,
-            ]);
+            $records = $chunk->map(function ($item, $key) {
+                return [
+                    'type_id'        => $item->type_id,
+                    'average_price'  => $item->average_price ?? 0.0,
+                    'adjusted_price' => $item->adjusted_price ?? 0.0,
+                    'created_at'     => carbon(),
+                    'updated_at'     => carbon(),
+                ];
+            });
 
+            Price::updateOrInsert($records->toArray());
         });
     }
 }
