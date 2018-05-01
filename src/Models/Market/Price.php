@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Market;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Traits\BulkInsertUpdate;
 
 /**
  * Class Price.
@@ -32,6 +33,8 @@ use Seat\Eveapi\Models\Sde\InvType;
  */
 class Price extends Model
 {
+
+    use BulkInsertUpdate;
 
     /**
      * @var bool
@@ -60,41 +63,5 @@ class Price extends Model
     {
 
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
-    }
-
-    /**
-     * @param array $rows
-     * @return mixed
-     *
-     * @author Roman Baranovsky
-     * @link https://gist.github.com/RuGa/5354e44883c7651fd15c
-     */
-    public static function updateOrInsert(array $rows)
-    {
-        $table = DB::getTablePrefix() . with(new self)->getTable();
-
-        $first = reset($rows);
-
-        $columns = implode(', ', array_map(function ($value) { return "$value"; }, array_keys($first)));
-
-        $values = implode(', ', array_map(function ($row) {
-            return '(' . implode(', ', array_map(function ($value) {
-                if (is_null($value))
-                    return 'null';
-
-                return '"' . str_replace('"', '""', $value) . '"';
-            }, $row)) . ')';
-        }, $rows));
-
-        $updates = implode(', ', array_map(function ($value) {
-            if ($value == 'created_at')
-                return 'created_at = created_at';
-
-            return "$value = VALUES($value)";
-        }, array_keys($first)));
-
-        $sql = "INSERT INTO {$table} ({$columns}) VALUES {$values} ON DUPLICATE KEY UPDATE {$updates}";
-
-        return DB::statement($sql);
     }
 }

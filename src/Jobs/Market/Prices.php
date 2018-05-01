@@ -63,7 +63,6 @@ class Prices extends EsiBase
      */
     public function handle()
     {
-
         $prices = $this->retrieve();
 
         collect($prices)->chunk(1000)->each(function ($chunk) {
@@ -78,7 +77,12 @@ class Prices extends EsiBase
                 ];
             });
 
-            Price::updateOrInsert($records->toArray());
+            Price::insertOnDuplicateKey($records->toArray(), [
+                'type_id',
+                'average_price',
+                'adjusted_price',
+                'updated_at',
+            ]);
         });
     }
 }
