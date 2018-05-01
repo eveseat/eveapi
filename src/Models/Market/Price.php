@@ -65,6 +65,9 @@ class Price extends Model
     /**
      * @param array $rows
      * @return mixed
+     *
+     * @author Roman Baranovsky
+     * @link https://gist.github.com/RuGa/5354e44883c7651fd15c
      */
     public static function updateOrInsert(array $rows)
     {
