@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Traits\BulkInsertUpdate;
 
 /**
  * Class CharacterAffiliation.
@@ -30,6 +31,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CharacterAffiliation extends Model
 {
+    use BulkInsertUpdate;
+
     /**
      * @var bool
      */

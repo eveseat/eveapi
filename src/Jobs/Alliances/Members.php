@@ -66,11 +66,21 @@ class Members extends EsiBase
 
             if ($corporations->isCachedLoad()) return;
 
-            collect($corporations)->each(function ($corporation_id) use ($alliance) {
+            collect($corporations)->chunk(1000)->each(function ($chunk) use ($alliance) {
 
-                AllianceMember::firstOrCreate([
-                    'alliance_id'    => $alliance->alliance_id,
-                    'corporation_id' => $corporation_id,
+                $records = $chunk->map(function ($corporation_id) use ($alliance) {
+                    return [
+                        'alliance_id'    => $alliance->alliance_id,
+                        'corporation_id' => $corporation_id,
+                        'created_at'     => carbon(),
+                        'updated_at'     => carbon(),
+                    ];
+                });
+
+                AllianceMember::insertOnDuplicateKey($records->toArray(), [
+                    'alliance_id',
+                    'corporation_id',
+                    'updated_at',
                 ]);
             });
 

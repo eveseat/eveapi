@@ -62,10 +62,19 @@ class Alliances extends EsiBase
 
         if ($alliances->isCachedLoad()) return;
 
-        collect($alliances)->each(function ($alliance_id) {
+        collect($alliances)->chunk(1000)->each(function ($chunk) {
 
-            Alliance::firstOrCreate([
-                'alliance_id' => $alliance_id,
+            $records = $chunk->map(function ($alliance_id) {
+                return [
+                    'alliance_id' => $alliance_id,
+                    'created_at'     => carbon(),
+                    'updated_at'     => carbon(),
+                ];
+            });
+
+            Alliance::insertOnDuplicateKey($records->toArray(), [
+                'alliance_id',
+                'updated_at',
             ]);
         });
 
