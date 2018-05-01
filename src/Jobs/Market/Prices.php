@@ -63,11 +63,13 @@ class Prices extends EsiBase
      */
     public function handle()
     {
+
         $prices = $this->retrieve();
 
         collect($prices)->chunk(1000)->each(function ($chunk) {
 
             $records = $chunk->map(function ($item, $key) {
+
                 return [
                     'type_id'        => $item->type_id,
                     'average_price'  => $item->average_price ?? 0.0,

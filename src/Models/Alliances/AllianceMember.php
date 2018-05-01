@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Models\Alliances;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\BulkInsertUpdate;
+use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -32,8 +32,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class AllianceMember extends Model
 {
-    use HasCompositePrimaryKey;
-    use BulkInsertUpdate;
+    use HasCompositePrimaryKey, CanBulkInsertOrUpdate;
 
     /**
      * @var bool

@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Models\Market;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\BulkInsertUpdate;
+use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
 
 /**
  * Class Price.
@@ -33,7 +33,7 @@ use Seat\Eveapi\Traits\BulkInsertUpdate;
 class Price extends Model
 {
 
-    use BulkInsertUpdate;
+    use CanBulkInsertOrUpdate;
 
     /**
      * @var bool

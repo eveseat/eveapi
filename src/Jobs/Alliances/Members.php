@@ -69,6 +69,7 @@ class Members extends EsiBase
             collect($corporations)->chunk(1000)->each(function ($chunk) use ($alliance) {
 
                 $records = $chunk->map(function ($corporation_id) use ($alliance) {
+
                     return [
                         'alliance_id'    => $alliance->alliance_id,
                         'corporation_id' => $corporation_id,

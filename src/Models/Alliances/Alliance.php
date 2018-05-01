@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Models\Alliances;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\BulkInsertUpdate;
+use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
 
 /**
  * Class Alliance.
@@ -31,7 +31,7 @@ use Seat\Eveapi\Traits\BulkInsertUpdate;
  */
 class Alliance extends Model
 {
-    use BulkInsertUpdate;
+    use CanBulkInsertOrUpdate;
 
     /**
      * @var bool
