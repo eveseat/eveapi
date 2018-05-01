@@ -64,7 +64,7 @@ class Alliances extends EsiBase
 
         collect($alliances)->chunk(1000)->each(function ($chunk) {
 
-            $records = $chunk->map(function($alliance_id) {
+            $records = $chunk->map(function ($alliance_id) {
                 return [
                     'alliance_id' => $alliance_id,
                     'created_at'     => carbon(),

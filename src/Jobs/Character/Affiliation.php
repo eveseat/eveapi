@@ -132,7 +132,7 @@ class Affiliation extends EsiBase
 
             collect($affiliations)->chunk(1000)->each(function ($affiliation_chunk) {
 
-                $records = $affiliation_chunk->map(function($affiliation) {
+                $records = $affiliation_chunk->map(function ($affiliation) {
                     return [
                         'character_id'   => $affiliation->character_id,
                         'corporation_id' => $affiliation->corporation_id,
@@ -149,7 +149,7 @@ class Affiliation extends EsiBase
                     'alliance_id',
                     'faction_id',
                     'updated_at',
-                ]);;
+                ]);
             });
         });
     }

@@ -1,18 +1,31 @@
 <?php
-/**
- * User: Warlof Tutsimo <loic.leuilliot@gmail.com>
- * Date: 01/05/2018
- * Time: 10:37
+
+/*
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 namespace Seat\Eveapi\Traits;
-
 
 use Illuminate\Database\Grammar;
 
 trait BulkInsertUpdate
 {
-
     /**
      * @param array $values
      * @param array|null $updateColumns
@@ -101,11 +114,12 @@ trait BulkInsertUpdate
     public static function getModel()
     {
         $model = get_called_class();
+
         return new $model;
     }
 
     /**
-     * Convert a multi-dimensional array into a simple array
+     * Convert a multi-dimensional array into a simple array.
      *
      * @param array $records
      * @return array
@@ -122,18 +136,19 @@ trait BulkInsertUpdate
     }
 
     /**
-     * Provide the model table name and prefix
+     * Provide the model table name and prefix.
      *
      * @return string
      */
     private static function getTableName()
     {
         $model = self::getModel();
+
         return $model->getConnection()->getTablePrefix() . $model->getTable();
     }
 
     /**
-     * Produce an insert on duplicate sql statement
+     * Produce an insert on duplicate sql statement.
      *
      * @author Yada Khov
      * @param array $values
@@ -153,7 +168,7 @@ trait BulkInsertUpdate
         if (empty($updateColumns))
             $updateColumns = array_keys(reset($values));
 
-        $updateColumns = collect($updateColumns)->map(function($column) {
+        $updateColumns = collect($updateColumns)->map(function ($column) {
             return sprintf('`%s` = VALUES(`%s`)', $column, $column);
         })->implode(', ');
 
@@ -163,7 +178,7 @@ trait BulkInsertUpdate
     }
 
     /**
-     * Produce an insert ignore sql statement
+     * Produce an insert ignore sql statement.
      *
      * @author Yada Khov
      * @param array $values
@@ -175,7 +190,7 @@ trait BulkInsertUpdate
 
         $columns = $grammar->columnize(array_keys(reset($values)));
 
-        $parameters = collect($values)->map(function($record) use ($grammar) {
+        $parameters = collect($values)->map(function ($record) use ($grammar) {
             return '(' . $grammar->parameterize($record) . ')';
         })->implode(', ');
 
@@ -185,7 +200,7 @@ trait BulkInsertUpdate
     }
 
     /**
-     * Produce a replace sql statement
+     * Produce a replace sql statement.
      *
      * @author Yada Khov
      * @param array $values
@@ -197,7 +212,7 @@ trait BulkInsertUpdate
 
         $columns = $grammar->columnize(array_keys(reset($values)));
 
-        $parameters = collect($values)->map(function($record) use ($grammar) {
+        $parameters = collect($values)->map(function ($record) use ($grammar) {
             return '(' . $grammar->parameterize($record) . ')';
         })->implode(', ');
 
@@ -205,5 +220,4 @@ trait BulkInsertUpdate
 
         return $sql;
     }
-
 }

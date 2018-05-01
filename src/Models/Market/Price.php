@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Market;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\BulkInsertUpdate;
 
