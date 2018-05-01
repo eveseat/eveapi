@@ -44,4 +44,22 @@ class KillmailDetail extends Model
      * @var string
      */
     protected $primaryKey = 'killmail_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attackers()
+    {
+
+        return $this->hasMany(KillmailAttacker::class, 'killmail_id', 'killmail_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function victims()
+    {
+
+        return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id');
+    }
 }

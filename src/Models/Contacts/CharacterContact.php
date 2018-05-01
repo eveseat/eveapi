@@ -42,4 +42,13 @@ class CharacterContact extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'contact_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function label()
+    {
+
+        return $this->hasOne(CharacterContactLabel::class, 'label_id', 'label_id');
+    }
 }
