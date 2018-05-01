@@ -71,16 +71,17 @@ class Price extends Model
      */
     public static function updateOrInsert(array $rows)
     {
-        $table = DB::getTablePrefix().with(new self)->getTable();
+        $table = DB::getTablePrefix() . with(new self)->getTable();
 
         $first = reset($rows);
 
-        $columns = implode(', ', array_map(function($value) { return "$value"; }, array_keys($first)));
+        $columns = implode(', ', array_map(function ($value) { return "$value"; }, array_keys($first)));
 
         $values = implode(', ', array_map(function ($row) {
             return '(' . implode(', ', array_map(function ($value) {
-                if (is_null ($value))
+                if (is_null($value))
                     return 'null';
+
                 return '"' . str_replace('"', '""', $value) . '"';
             }, $row)) . ')';
         }, $rows));
@@ -88,6 +89,7 @@ class Price extends Model
         $updates = implode(', ', array_map(function ($value) {
             if ($value == 'created_at')
                 return 'created_at = created_at';
+
             return "$value = VALUES($value)";
         }, array_keys($first)));
 
