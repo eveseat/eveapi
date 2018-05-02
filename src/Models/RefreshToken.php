@@ -78,6 +78,6 @@ class RefreshToken extends Model
     public function user()
     {
 
-        return $this->belongsTo(User::class, 'id', 'character_id');
+        return $this->belongsTo(User::class, 'character_id', 'id');
     }
 }
