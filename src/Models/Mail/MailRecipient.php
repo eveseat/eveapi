@@ -44,4 +44,20 @@ class MailRecipient extends Model
      * @var null
      */
     protected $primaryKey = null;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function mail()
+    {
+        return $this->belongsTo(MailHeader::class, 'mail_id', 'mail_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function body()
+    {
+        return $this->hasOne(MailBody::class, 'mail_id', 'mail_id');
+    }
 }
