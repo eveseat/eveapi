@@ -42,6 +42,13 @@ class CharacterJumpClone extends Model
     /**
      * @var array
      */
+    protected $casts = [
+        'implants' => 'array',
+    ];
+
+    /**
+     * @var array
+     */
     protected $primaryKey = ['character_id', 'jump_clone_id'];
 
     /**

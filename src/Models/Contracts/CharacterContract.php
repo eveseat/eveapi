@@ -42,4 +42,13 @@ class CharacterContract extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'contract_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function detail()
+    {
+
+        return $this->hasOne(ContractDetail::class, 'contract_id', 'contract_id');
+    }
 }
