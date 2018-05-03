@@ -63,15 +63,26 @@ class Map extends EsiBase
 
         if ($systems->isCachedLoad()) return;
 
-        collect($systems)->each(function ($system) {
+        collect($systems)->chunk(1000)->each(function ($chunk) {
 
-            SovereigntyMap::firstOrNew([
-                'system_id' => $system->system_id,
-            ])->fill([
-                'alliance_id'    => $system->alliance_id ?? null,
-                'corporation_id' => $system->corporation_id ?? null,
-                'faction_id'     => $system->faction_id ?? null,
-            ])->save();
+            $records = $chunk->map(function ($system, $key) {
+                return [
+                    'system_id'      => $system->system_id,
+                    'alliance_id'    => $system->alliance_id ?? null,
+                    'corporation_id' => $system->corporation_id ?? null,
+                    'faction_id'     => $system->faction_id ?? null,
+                    'created_at'     => carbon(),
+                    'updated_at'     => carbon(),
+                ];
+            });
+
+            SovereigntyMap::insertOnDuplicateKey($records->toArray(), [
+                'system_id',
+                'alliance_id',
+                'corporation_id',
+                'faction_id',
+                'updated_at',
+            ]);
 
         });
 
