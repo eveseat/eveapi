@@ -166,6 +166,12 @@ abstract class EsiBase implements ShouldQueue
         // Check if the current scope also needs a corp role. If it does,
         // ensure that the current character also has the required role.
         if (count($this->roles) > 0) {
+
+            // in case the attached corporation is an NPC one
+            // we don't have to execute the job - we will not be able to collect anything anyway
+            if (1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000)
+                return false;
+
             if (in_array($this->scope, $this->token->scopes) && ! empty(
                 array_intersect($this->roles, $this->getCharacterRoles()))) {
 
