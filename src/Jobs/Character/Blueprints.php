@@ -105,19 +105,34 @@ class Blueprints extends EsiBase
             if ($blueprints->isCachedLoad()) return;
 
             // Process the blueprints from the response
-            collect($blueprints)->each(function ($blueprint) {
+            collect($blueprints)->chunk(100)->each(function ($chunk) {
 
-                CharacterBlueprint::firstOrNew([
-                    'character_id' => $this->getCharacterId(),
-                    'item_id'      => $blueprint->item_id,
-                ])->fill([
-                    'type_id'             => $blueprint->type_id,
-                    'location_flag'       => $blueprint->location_flag,
-                    'quantity'            => $blueprint->quantity,
-                    'time_efficiency'     => $blueprint->time_efficiency,
-                    'material_efficiency' => $blueprint->material_efficiency,
-                    'runs'                => $blueprint->runs,
-                ])->save();
+                $records = $chunk->map(function ($blueprint, $key) {
+                    return [
+                        'character_id'        => $this->getCharacterId(),
+                        'item_id'             => $blueprint->item_id,
+                        'type_id'             => $blueprint->type_id,
+                        'location_flag'       => $blueprint->location_flag,
+                        'quantity'            => $blueprint->quantity,
+                        'time_efficiency'     => $blueprint->time_efficiency,
+                        'material_efficiency' => $blueprint->material_efficiency,
+                        'runs'                => $blueprint->runs,
+                        'created_at'          => carbon(),
+                        'updated_at'          => carbon(),
+                    ];
+                });
+
+                CharacterBlueprint::insertOnDuplicateKey($records->toArray(), [
+                    'character_id',
+                    'item_id',
+                    'type_id',
+                    'location_flag',
+                    'quantity',
+                    'time_efficiency',
+                    'material_efficiency',
+                    'runs',
+                    'updated_at',
+                ]);
 
             });
 
