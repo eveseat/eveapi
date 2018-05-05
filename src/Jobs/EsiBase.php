@@ -166,6 +166,15 @@ abstract class EsiBase implements ShouldQueue
         // Check if the current scope also needs a corp role. If it does,
         // ensure that the current character also has the required role.
         if (count($this->roles) > 0) {
+
+            // Ignore NPC corporations by marking the job as unauthenticated.
+            // This is admittedly a little hacky, so a batter way is needed
+            // more long term.
+            // ID range references:
+            //  https://gist.github.com/a-tal/5ff5199fdbeb745b77cb633b7f4400bb
+            if (1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000)
+                return false;
+
             if (in_array($this->scope, $this->token->scopes) && ! empty(
                 array_intersect($this->roles, $this->getCharacterRoles()))) {
 
@@ -190,20 +199,19 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
-     * Get the current characters roles.
+     * Get the corporation a refresh_token is associated with.
      *
-     * @return array
+     * This is based on the character's token we have corporation
+     * membership.
+     *
+     * @return int
      * @throws \Exception
      */
-    public function getCharacterRoles(): array
+    public function getCorporationId(): int
     {
 
-        return CharacterRole::where('character_id', $this->getCharacterId())
-            // https://eve-seat.slack.com/archives/C0H3VGH4H/p1515081536000720
-            // > @ccp_snowden: most things will require `roles`, most things are
-            // > not contextually aware enough to make hq/base decisions
-            ->where('scope', 'roles')
-            ->pluck('role')->all();
+        return CharacterInfo::where('character_id', $this->getCharacterId())
+            ->first()->corporation_id;
     }
 
     /**
@@ -221,6 +229,23 @@ abstract class EsiBase implements ShouldQueue
             throw new \Exception('No token specified');
 
         return $this->token->character_id;
+    }
+
+    /**
+     * Get the current characters roles.
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function getCharacterRoles(): array
+    {
+
+        return CharacterRole::where('character_id', $this->getCharacterId())
+            // https://eve-seat.slack.com/archives/C0H3VGH4H/p1515081536000720
+            // > @ccp_snowden: most things will require `roles`, most things are
+            // > not contextually aware enough to make hq/base decisions
+            ->where('scope', 'roles')
+            ->pluck('role')->all();
     }
 
     /**
@@ -416,22 +441,6 @@ abstract class EsiBase implements ShouldQueue
             return ['unknown_tag', 'public'];
 
         return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
-    }
-
-    /**
-     * Get the corporation a refresh_token is associated with.
-     *
-     * This is based on the character's token we have corporation
-     * membership.
-     *
-     * @return int
-     * @throws \Exception
-     */
-    public function getCorporationId(): int
-    {
-
-        return CharacterInfo::where('character_id', $this->getCharacterId())
-            ->first()->corporation_id;
     }
 
     /**
