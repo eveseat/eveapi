@@ -60,7 +60,6 @@ trait CanBulkInsertOrUpdate
         return $model->getConnection()->affectingStatement($sql, $values);
     }
 
-
     /**
      * @return mixed
      */
@@ -71,7 +70,6 @@ trait CanBulkInsertOrUpdate
 
         return new $model;
     }
-
 
     /**
      * @param \Illuminate\Database\Grammar $grammar
@@ -133,7 +131,6 @@ trait CanBulkInsertOrUpdate
         return $values;
     }
 
-
     /**
      * @param array $values
      *
@@ -163,7 +160,6 @@ trait CanBulkInsertOrUpdate
         return $model->getConnection()->affectingStatement($sql, $values);
     }
 
-
     /**
      * @param \Illuminate\Database\Grammar $grammar
      * @param array                        $values
@@ -186,7 +182,6 @@ trait CanBulkInsertOrUpdate
 
         return $sql;
     }
-
 
     /**
      * @param array $values
@@ -216,7 +211,6 @@ trait CanBulkInsertOrUpdate
 
         return $model->getConnection()->affectingStatement($sql, $values);
     }
-
 
     /**
      * @param \Illuminate\Database\Grammar $grammar
