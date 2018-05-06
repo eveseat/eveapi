@@ -105,20 +105,36 @@ class Blueprints extends EsiBase
 
             if ($blueprints->isCachedLoad()) return;
 
-            collect($blueprints)->each(function ($blueprint) {
+            collect($blueprints)->chunk(100)->each(function ($chunk) {
 
-                CorporationBlueprint::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'item_id'        => $blueprint->item_id,
-                ])->fill([
-                    'type_id'             => $blueprint->type_id,
-                    'location_id'         => $blueprint->location_id,
-                    'location_flag'       => $blueprint->location_flag,
-                    'quantity'            => $blueprint->quantity,
-                    'time_efficiency'     => $blueprint->time_efficiency,
-                    'material_efficiency' => $blueprint->material_efficiency,
-                    'runs'                => $blueprint->runs,
-                ])->save();
+                $records = $chunk->map(function ($blueprint, $key) {
+                    return [
+                        'corporation_id' => $this->getCorporationId(),
+                        'item_id'        => $blueprint->item_id,
+                        'type_id'             => $blueprint->type_id,
+                        'location_id'         => $blueprint->location_id,
+                        'location_flag'       => $blueprint->location_flag,
+                        'quantity'            => $blueprint->quantity,
+                        'time_efficiency'     => $blueprint->time_efficiency,
+                        'material_efficiency' => $blueprint->material_efficiency,
+                        'runs'                => $blueprint->runs,
+                        'created_at'          => carbon(),
+                        'updated_at'          => carbon(),
+                    ];
+                });
+
+                CorporationBlueprint::insertOnDuplicateKey($records->toArray(), [
+                    'corporation_id',
+                    'item_id',
+                    'type_id',
+                    'location_id',
+                    'location_flag',
+                    'quantity',
+                    'time_efficiency',
+                    'material_efficiency',
+                    'runs',
+                    'updated_at',
+                ]);
 
             });
 
