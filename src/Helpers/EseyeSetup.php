@@ -43,7 +43,7 @@ class EseyeSetup
         $config->http_user_agent = 'SeAT v' . config('eveapi.config.version');
         $config->logfile_location = config('eveapi.config.eseye_logfile');
         $config->file_cache_location = config('eveapi.config.eseye_cache');
-        $config->logger_level =  config('eveapi.config.eseye_loglevel');
+        $config->logger_level = config('eveapi.config.eseye_loglevel');
     }
 
     /**
