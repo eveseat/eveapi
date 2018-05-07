@@ -364,6 +364,9 @@ abstract class EsiBase implements ShouldQueue
     /**
      * Logs warnings to the Eseye logger.
      *
+     * These warnings will also cause analytics jobs to be
+     * sent to allow for monitoring of endpoint changes.
+     *
      * @param \Seat\Eseye\Containers\EsiResponse $response
      *
      * @throws \Throwable
@@ -371,16 +374,39 @@ abstract class EsiBase implements ShouldQueue
     public function logWarnings(EsiResponse $response): void
     {
 
-        // While development heavy, throw exceptions to help.
-        if (! is_null($response->pages) && $this->page === null)
+        if (! is_null($response->pages) && $this->page === null) {
+
             $this->eseye()->getLogger()->warning('Response contained pages but none was expected');
 
-        if (! is_null($this->page) && $response->pages === null)
+            dispatch((new Analytics((new AnalyticsContainer)
+                ->set('type', 'endpoint_warning')
+                ->set('ec', 'unexpected_page')
+                ->set('el', $this->version)
+                ->set('ev', $this->endpoint))));
+        }
+
+        if (! is_null($this->page) && $response->pages === null) {
+
             $this->eseye()->getLogger()->warning('Expected a paged response but had none');
 
-        if (array_key_exists('Warning', $response->headers))
+            dispatch((new Analytics((new AnalyticsContainer)
+                ->set('type', 'endpoint_warning')
+                ->set('ec', 'missing_pages')
+                ->set('el', $this->version)
+                ->set('ev', $this->endpoint))));
+        }
+
+        if (array_key_exists('Warning', $response->headers)) {
+
             $this->eseye()->getLogger()->warning('A response contained a warning: ' .
                 $response->headers['Warning']);
+
+            dispatch((new Analytics((new AnalyticsContainer)
+                ->set('type', 'generic_warning')
+                ->set('ec', 'missing_pages')
+                ->set('el', $this->endpoint)
+                ->set('ev', $response->headers['Warning']))));
+        }
     }
 
     /**
