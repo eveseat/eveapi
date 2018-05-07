@@ -22,11 +22,12 @@
 
 return [
 
-    'version'       => '3.0.0-beta4',
+    'version'       => '3.0.0-beta6',
 
     // API Joblog logging
     'enable_joblog' => false,
 
-    'eseye_logfile' => storage_path('logs/eseye.log'),
-    'eseye_cache'   => storage_path('eseye'),
+    'eseye_logfile'  => storage_path('logs'),
+    'eseye_cache'    => storage_path('eseye'),
+    'eseye_loglevel' => 'info', // valid entries are RFC 5424 levels ('debug', 'info', 'warn', 'error')
 ];

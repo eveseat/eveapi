@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
+use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterBluePrints.
@@ -30,6 +32,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CharacterBlueprint extends Model
 {
+    use CanBulkInsertOrUpdate;
+    use HasCompositePrimaryKey;
+
     /**
      * @var bool
      */
@@ -38,5 +43,5 @@ class CharacterBlueprint extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'character_id';
+    protected $primaryKey = ['character_id', 'item_id'];
 }

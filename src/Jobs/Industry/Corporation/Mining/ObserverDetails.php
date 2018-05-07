@@ -40,7 +40,7 @@ class ObserverDetails extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/corporations/{corporation_id}/observers/{observer_id}/';
+    protected $endpoint = '/corporation/{corporation_id}/mining/observers/{observer_id}/';
 
     /**
      * @var string

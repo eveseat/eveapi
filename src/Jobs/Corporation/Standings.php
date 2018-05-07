@@ -79,15 +79,26 @@ class Standings extends EsiBase
 
             if ($standings->isCachedLoad()) return;
 
-            collect($standings)->each(function ($standing) {
+            collect($standings)->chunk(100)->each(function ($chunk) {
 
-                CorporationStanding::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'from_type'      => $standing->from_type,
-                    'from_id'        => $standing->from_id,
-                ])->fill([
-                    'standing' => $standing->standing,
-                ])->save();
+                $records = $chunk->map(function ($standing, $key) {
+                    return [
+                        'corporation_id' => $this->getCorporationId(),
+                        'from_type'      => $standing->from_type,
+                        'from_id'        => $standing->from_id,
+                        'standing'       => $standing->standing,
+                        'created_at'     => carbon(),
+                        'updated_at'     => carbon(),
+                    ];
+                });
+
+                CorporationStanding::insertOnDuplicateKey($records->toArray(), [
+                    'corporation_id',
+                    'from_type',
+                    'from_id',
+                    'standing',
+                    'updated_at',
+                ]);
             });
 
             if (! $this->nextPage($standings->pages))
