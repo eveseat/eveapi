@@ -175,6 +175,12 @@ abstract class EsiBase implements ShouldQueue
             if (1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000)
                 return false;
 
+            // Check the role needed for this call. The minimum role would
+            // be configured in the roles attribute, but we will add the
+            // 'Director' role as directors automatically have all roles.
+            array_push($this->roles, 'Director');
+
+            // Perform the check.
             if (in_array($this->scope, $this->token->scopes) && ! empty(
                 array_intersect($this->roles, $this->getCharacterRoles()))) {
 
