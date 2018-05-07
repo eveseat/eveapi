@@ -53,6 +53,8 @@ class CreateCharacterBookmarksTable extends Migration
             $table->double('x')->nullable();
             $table->double('y')->nullable();
             $table->double('z')->nullable();
+            $table->bigInteger('map_id')->nullable();
+            $table->string('map_name')->nullable();
 
             $table->primary(['character_id', 'bookmark_id']);
             $table->index('folder_id');
