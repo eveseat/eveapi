@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -34,6 +35,8 @@ use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Character\CharacterRole;
 use Seat\Eveapi\Models\RefreshToken;
+use Seat\Services\Helpers\AnalyticsContainer;
+use Seat\Services\Jobs\Analytics;
 
 /**
  * Class EsiBase.
@@ -232,7 +235,7 @@ abstract class EsiBase implements ShouldQueue
     {
 
         if (is_null($this->token))
-            throw new \Exception('No token specified');
+            throw new Exception('No token specified');
 
         return $this->token->character_id;
     }
@@ -324,13 +327,13 @@ abstract class EsiBase implements ShouldQueue
     {
 
         if (! in_array($this->method, ['get', 'post', 'put', 'patch', 'delete']))
-            throw new \Exception('Invalid HTTP method used');
+            throw new Exception('Invalid HTTP method used');
 
         if (trim($this->endpoint) === '')
-            throw new \Exception('Empty endpoint used');
+            throw new Exception('Empty endpoint used');
 
         if (trim($this->version) === '')
-            throw new \Exception('Version is empty');
+            throw new Exception('Version is empty');
     }
 
     /**
@@ -447,6 +450,29 @@ abstract class EsiBase implements ShouldQueue
             return ['unknown_tag', 'public'];
 
         return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
+    }
+
+    /**
+     * When a job fails, grab some information and send a
+     * GA event about the exception. The Analytics job
+     * does the work of checking if analytics is disabled
+     * or not, so we don't have to care about that here.
+     *
+     * @param \Exception $exception
+     *
+     * @throws \Exception
+     */
+    public function failed(Exception $exception)
+    {
+
+        // Analytics. Report only the Exception class and message.
+        dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'exception')
+            ->set('exd', get_class($exception) . ':' . $exception->getMessage())
+            ->set('exf', 1))));
+
+        // Rethrow the original exception for Horizon
+        throw $exception;
     }
 
     /**
