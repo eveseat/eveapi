@@ -100,7 +100,7 @@ class Bookmarks extends EsiBase
                 'character_id' => $this->getCharacterId(),
             ]);
 
-//            if ($bookmarks->isCachedLoad()) return;
+            if ($bookmarks->isCachedLoad()) return;
 
             collect($bookmarks)->each(function ($bookmark) {
 
@@ -136,7 +136,6 @@ class Bookmarks extends EsiBase
             if (! $this->nextPage($bookmarks->pages))
                 break;
         }
-
 
         CharacterBookmark::where('character_id', $this->getCharacterId())
             ->whereNotIn('bookmark_id', $this->known_bookmarks->flatten()->all())
