@@ -8,5 +8,7 @@
 [![License](https://poser.pugx.org/eveseat/eveapi/license)](https://packagist.org/packages/eveseat/eveapi)
 [![StyleCI](https://styleci.io/repos/41200663/shield?branch=master)](https://styleci.io/repos/41200663)
 
-## This repository contains the EVE API Updater code for SeAT
-Please use the main SeAT repository [here](https://github.com/eveseat/seat) for issues.
+## This repository contains the EVE ESI Updater code for SeAT
+Although the name of this package is misleading it contains the ESI Updated code not API. Please use the main SeAT repository [here](https://github.com/eveseat/seat) for issues.
+
+
