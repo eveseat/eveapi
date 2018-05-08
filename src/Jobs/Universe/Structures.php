@@ -101,7 +101,7 @@ class Structures extends EsiBase
                 $model = UniverseStructure::firstOrNew([
                     'structure_id' => $character_asset->location_id,
                 ])->fill([
-                    'name'            => 'Unknown structure',
+                    'name'            => 'Unknown Structure',
                     'solar_system_id' => 0,
                     'x'               => 0.0,
                     'y'               => 0.0,

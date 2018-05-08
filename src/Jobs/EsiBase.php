@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -34,6 +35,8 @@ use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Character\CharacterRole;
 use Seat\Eveapi\Models\RefreshToken;
+use Seat\Services\Helpers\AnalyticsContainer;
+use Seat\Services\Jobs\Analytics;
 
 /**
  * Class EsiBase.
@@ -175,6 +178,12 @@ abstract class EsiBase implements ShouldQueue
             if (1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000)
                 return false;
 
+            // Check the role needed for this call. The minimum role would
+            // be configured in the roles attribute, but we will add the
+            // 'Director' role as directors automatically have all roles.
+            array_push($this->roles, 'Director');
+
+            // Perform the check.
             if (in_array($this->scope, $this->token->scopes) && ! empty(
                 array_intersect($this->roles, $this->getCharacterRoles()))) {
 
@@ -226,7 +235,7 @@ abstract class EsiBase implements ShouldQueue
     {
 
         if (is_null($this->token))
-            throw new \Exception('No token specified');
+            throw new Exception('No token specified');
 
         return $this->token->character_id;
     }
@@ -318,13 +327,13 @@ abstract class EsiBase implements ShouldQueue
     {
 
         if (! in_array($this->method, ['get', 'post', 'put', 'patch', 'delete']))
-            throw new \Exception('Invalid HTTP method used');
+            throw new Exception('Invalid HTTP method used');
 
         if (trim($this->endpoint) === '')
-            throw new \Exception('Empty endpoint used');
+            throw new Exception('Empty endpoint used');
 
         if (trim($this->version) === '')
-            throw new \Exception('Version is empty');
+            throw new Exception('Version is empty');
     }
 
     /**
@@ -355,6 +364,9 @@ abstract class EsiBase implements ShouldQueue
     /**
      * Logs warnings to the Eseye logger.
      *
+     * These warnings will also cause analytics jobs to be
+     * sent to allow for monitoring of endpoint changes.
+     *
      * @param \Seat\Eseye\Containers\EsiResponse $response
      *
      * @throws \Throwable
@@ -362,16 +374,39 @@ abstract class EsiBase implements ShouldQueue
     public function logWarnings(EsiResponse $response): void
     {
 
-        // While development heavy, throw exceptions to help.
-        if (! is_null($response->pages) && $this->page === null)
+        if (! is_null($response->pages) && $this->page === null) {
+
             $this->eseye()->getLogger()->warning('Response contained pages but none was expected');
 
-        if (! is_null($this->page) && $response->pages === null)
+            dispatch((new Analytics((new AnalyticsContainer)
+                ->set('type', 'endpoint_warning')
+                ->set('ec', 'unexpected_page')
+                ->set('el', $this->version)
+                ->set('ev', $this->endpoint))));
+        }
+
+        if (! is_null($this->page) && $response->pages === null) {
+
             $this->eseye()->getLogger()->warning('Expected a paged response but had none');
 
-        if (array_key_exists('Warning', $response->headers))
+            dispatch((new Analytics((new AnalyticsContainer)
+                ->set('type', 'endpoint_warning')
+                ->set('ec', 'missing_pages')
+                ->set('el', $this->version)
+                ->set('ev', $this->endpoint))));
+        }
+
+        if (array_key_exists('Warning', $response->headers)) {
+
             $this->eseye()->getLogger()->warning('A response contained a warning: ' .
                 $response->headers['Warning']);
+
+            dispatch((new Analytics((new AnalyticsContainer)
+                ->set('type', 'generic_warning')
+                ->set('ec', 'missing_pages')
+                ->set('el', $this->endpoint)
+                ->set('ev', $response->headers['Warning']))));
+        }
     }
 
     /**
@@ -441,6 +476,29 @@ abstract class EsiBase implements ShouldQueue
             return ['unknown_tag', 'public'];
 
         return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
+    }
+
+    /**
+     * When a job fails, grab some information and send a
+     * GA event about the exception. The Analytics job
+     * does the work of checking if analytics is disabled
+     * or not, so we don't have to care about that here.
+     *
+     * @param \Exception $exception
+     *
+     * @throws \Exception
+     */
+    public function failed(Exception $exception)
+    {
+
+        // Analytics. Report only the Exception class and message.
+        dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'exception')
+            ->set('exd', get_class($exception) . ':' . $exception->getMessage())
+            ->set('exf', 1))));
+
+        // Rethrow the original exception for Horizon
+        throw $exception;
     }
 
     /**

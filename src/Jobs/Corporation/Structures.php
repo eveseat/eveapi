@@ -110,16 +110,19 @@ class Structures extends EsiBase
                 // Ensure that we have an entry for this structure_id in the
                 // UniverseStructures model. We set the name to unknown for now
                 // but this will update when that models updater runs.
-                UniverseStructure::firstOrCreate([
+                $model = UniverseStructure::firstOrNew([
                     'structure_id' => $structure->structure_id,
                 ])->fill([
-                    'type_id'         => $structure->type_id,
                     'solar_system_id' => $structure->system_id,
-                    'name'            => 'Unknown',
+                    'type_id'         => $structure->type_id,
+                    'name'            => 'Unknown Structure',
                     'x'               => 0.0,
                     'y'               => 0.0,
                     'z'               => 0.0,
-                ])->save();
+                ]);
+
+                // Persist the structure only if it doesn't already exists
+                if (! $model->exists) $model->save();
 
                 CorporationStructure::firstOrNew([
                     'corporation_id' => $structure->corporation_id,
