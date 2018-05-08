@@ -166,6 +166,10 @@ abstract class EsiBase implements ShouldQueue
         if ($this->public_call || is_null($this->token) || $this->scope === 'public')
             return true;
 
+        // skip all corporation job for NPC corp.
+        if (in_array('corporation', $this->tags()) && $this->isNPCCorporation())
+            return false;
+
         // Check if the current scope also needs a corp role. If it does,
         // ensure that the current character also has the required role.
         if (count($this->roles) > 0) {
@@ -175,7 +179,7 @@ abstract class EsiBase implements ShouldQueue
             // more long term.
             // ID range references:
             //  https://gist.github.com/a-tal/5ff5199fdbeb745b77cb633b7f4400bb
-            if (1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000)
+            if ($this->isNPCCorporation())
                 return false;
 
             // Check the role needed for this call. The minimum role would
@@ -221,6 +225,20 @@ abstract class EsiBase implements ShouldQueue
 
         return CharacterInfo::where('character_id', $this->getCharacterId())
             ->first()->corporation_id;
+    }
+
+    /**
+     * Determine if a corporation is in NPC range
+     *
+     * @return bool
+     * @throws Exception
+     */
+    private function isNPCCorporation(): bool
+    {
+        // ID range references:
+        //  https://gist.github.com/a-tal/5ff5199fdbeb745b77cb633b7f4400bb
+
+        return (1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000);
     }
 
     /**
