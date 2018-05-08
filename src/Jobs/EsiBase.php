@@ -228,7 +228,7 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
-     * Determine if a corporation is in NPC range
+     * Determine if a corporation is in NPC range.
      *
      * @return bool
      * @throws Exception
@@ -238,7 +238,7 @@ abstract class EsiBase implements ShouldQueue
         // ID range references:
         //  https://gist.github.com/a-tal/5ff5199fdbeb745b77cb633b7f4400bb
 
-        return (1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000);
+        return 1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000;
     }
 
     /**
