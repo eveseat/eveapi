@@ -105,38 +105,50 @@ class Journals extends EsiBase
                     if (collect($journal)->count() === 0)
                         break;
 
-                    collect($journal)->each(function ($entry) use ($division) {
+                    collect($journal)->chunk(1000)->each(function ($chunk) use ($division) {
 
-                        $journal_entry = CorporationWalletJournal::firstOrNew([
-                            'corporation_id' => $this->getCorporationId(),
-                            'division'       => $division->division,
-                            'id'             => $entry->id,
+                        $records = $chunk->map(function ($entry, $key) use ($division) {
+
+                            return [
+                                'corporation_id' => $this->getCorporationId(),
+                                'division'       => $division->division,
+                                'id'             => $entry->id,
+                                'date'            => carbon($entry->date),
+                                'ref_type'        => $entry->ref_type,
+                                'first_party_id'  => $entry->first_party_id ?? null,
+                                'second_party_id' => $entry->second_party_id ?? null,
+                                'amount'          => $entry->amount ?? null,
+                                'balance'         => $entry->balance ?? null,
+                                'reason'          => $entry->reason ?? null,
+                                'tax_receiver_id' => $entry->tax_receiver_id ?? null,
+                                'tax'             => $entry->tax ?? null,
+                                // introduced in v4
+                                'description'     => $entry->description,
+                                'context_id'      => $entry->context_id ?? null,
+                                'context_id_type' => $entry->context_id_type ?? null,
+                                'created_at'      => carbon(),
+                                'updated_at'      => carbon(),
+                            ];
+                        });
+
+                        CorporationWalletJournal::insertOnDuplicateKey($records->toArray(), [
+                            'corporation_id',
+                            'division',
+                            'id',
+                            'date',
+                            'ref_type',
+                            'first_party_id',
+                            'second_party_id',
+                            'amount',
+                            'balance',
+                            'reason',
+                            'tax_receiver_id',
+                            'tax',
+                            'description',
+                            'context_id',
+                            'context_id_type',
+                            'updated_at',
                         ]);
-
-                        // If this journal entry has already been recorded,
-                        // move on to the next.
-                        if ($journal_entry->exists)
-                            return;
-
-                        $journal_entry->fill([
-                            'corporation_id'  => $this->getCorporationId(),
-                            'division'        => $division->division,
-                            'id'              => $entry->id,
-                            'date'            => carbon($entry->date),
-                            'ref_type'        => $entry->ref_type,
-                            'first_party_id'  => $entry->first_party_id ?? null,
-                            'second_party_id' => $entry->second_party_id ?? null,
-                            'amount'          => $entry->amount ?? null,
-                            'balance'         => $entry->balance ?? null,
-                            'reason'          => $entry->reason ?? null,
-                            'tax_receiver_id' => $entry->tax_receiver_id ?? null,
-                            'tax'             => $entry->tax ?? null,
-                            // introduced in v4
-                            'description'     => $entry->description,
-                            'context_id'      => $entry->context_id ?? null,
-                            'context_id_type' => $entry->context_id_type ?? null,
-                        ])->save();
-
                     });
 
                     // Update the from_id to be the new lowest ref_id we

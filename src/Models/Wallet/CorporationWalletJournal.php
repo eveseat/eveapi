@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -31,6 +32,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationWalletJournal extends Model
 {
+    use CanBulkInsertOrUpdate;
     use HasCompositePrimaryKey;
 
     /**
