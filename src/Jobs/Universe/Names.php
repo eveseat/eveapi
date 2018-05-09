@@ -75,6 +75,7 @@ class Names extends EsiBase
 
         $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')
             ->whereNotIn('first_party_id', UniverseName::select('entity_id')->distinct()->get())
+            ->whereNotNull('first_party_id')
             ->distinct()
             ->get()
             ->pluck('first_party_id')
@@ -82,6 +83,7 @@ class Names extends EsiBase
 
         $this->entity_ids->push(CharacterWalletJournal::select('second_party_id')
             ->whereNotIn('second_party_id', UniverseName::select('entity_id')->distinct()->get())
+            ->whereNotNull('second_party_id')
             ->distinct()
             ->get()
             ->pluck('second_party_id')
