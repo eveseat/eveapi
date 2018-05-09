@@ -166,17 +166,17 @@ abstract class EsiBase implements ShouldQueue
         if ($this->public_call || is_null($this->token) || $this->scope === 'public')
             return true;
 
+        // Ignore NPC corporations by marking the job as unauthenticated.
+        // This is admittedly a little hacky, so a better way is needed
+        // more long term.
+        if (in_array('corporation', $this->tags()) && $this->isNPCCorporation())
+            return false;
+
         // Check if the current scope also needs a corp role. If it does,
         // ensure that the current character also has the required role.
         if (count($this->roles) > 0) {
 
-            // Ignore NPC corporations by marking the job as unauthenticated.
-            // This is admittedly a little hacky, so a batter way is needed
-            // more long term.
-            // ID range references:
-            //  https://gist.github.com/a-tal/5ff5199fdbeb745b77cb633b7f4400bb
-            if (1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000)
-                return false;
+            if ($this->isNPCCorporation()) return false;
 
             // Check the role needed for this call. The minimum role would
             // be configured in the roles attribute, but we will add the
@@ -208,19 +208,29 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
-     * Get the corporation a refresh_token is associated with.
+     * Assign this job a tag so that Horizon can categorize and allow
+     * for specific tags to be monitored.
      *
-     * This is based on the character's token we have corporation
-     * membership.
+     * If a job specifies the tags property, that is added to the
+     * character_id tag that automatically gets appended.
      *
-     * @return int
+     * @return array
      * @throws \Exception
      */
-    public function getCorporationId(): int
+    public function tags(): array
     {
 
-        return CharacterInfo::where('character_id', $this->getCharacterId())
-            ->first()->corporation_id;
+        if (property_exists($this, 'tags')) {
+            if (is_null($this->token))
+                return array_merge($this->tags, ['public']);
+
+            return array_merge($this->tags, ['character_id:' . $this->getCharacterId()]);
+        }
+
+        if (is_null($this->token))
+            return ['unknown_tag', 'public'];
+
+        return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
     }
 
     /**
@@ -238,6 +248,36 @@ abstract class EsiBase implements ShouldQueue
             throw new Exception('No token specified');
 
         return $this->token->character_id;
+    }
+
+    /**
+     * Determine if the current corporation ID is in NPC corporation range.
+     *
+     * @return bool
+     * @throws Exception
+     */
+    private function isNPCCorporation(): bool
+    {
+
+        // ID range references:
+        //  https://gist.github.com/a-tal/5ff5199fdbeb745b77cb633b7f4400bb
+        return 1000000 >= $this->getCorporationId() && $this->getCorporationId() <= 2000000;
+    }
+
+    /**
+     * Get the corporation a refresh_token is associated with.
+     *
+     * This is based on the character's token we have corporation
+     * membership.
+     *
+     * @return int
+     * @throws \Exception
+     */
+    public function getCorporationId(): int
+    {
+
+        return CharacterInfo::where('character_id', $this->getCharacterId())
+            ->first()->corporation_id;
     }
 
     /**
@@ -450,32 +490,6 @@ abstract class EsiBase implements ShouldQueue
         $this->page++;
 
         return true;
-    }
-
-    /**
-     * Assign this job a tag so that Horizon can categorize and allow
-     * for specific tags to be monitored.
-     *
-     * If a job specifies the tags property, that is added to the
-     * character_id tag that automatically gets appended.
-     *
-     * @return array
-     * @throws \Exception
-     */
-    public function tags(): array
-    {
-
-        if (property_exists($this, 'tags')) {
-            if (is_null($this->token))
-                return array_merge($this->tags, ['public']);
-
-            return array_merge($this->tags, ['character_id:' . $this->getCharacterId()]);
-        }
-
-        if (is_null($this->token))
-            return ['unknown_tag', 'public'];
-
-        return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
     }
 
     /**
