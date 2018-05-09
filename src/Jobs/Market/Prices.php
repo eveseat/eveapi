@@ -66,6 +66,8 @@ class Prices extends EsiBase
 
         $prices = $this->retrieve();
 
+        if ($prices->isCachedLoad()) return;
+
         collect($prices)->chunk(1000)->each(function ($chunk) {
 
             $records = $chunk->map(function ($item, $key) {
