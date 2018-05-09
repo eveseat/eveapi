@@ -131,24 +131,7 @@ class Journals extends EsiBase
                             ];
                         });
 
-                        CorporationWalletJournal::insertOnDuplicateKey($records->toArray(), [
-                            'corporation_id',
-                            'division',
-                            'id',
-                            'date',
-                            'ref_type',
-                            'first_party_id',
-                            'second_party_id',
-                            'amount',
-                            'balance',
-                            'reason',
-                            'tax_receiver_id',
-                            'tax',
-                            'description',
-                            'context_id',
-                            'context_id_type',
-                            'updated_at',
-                        ]);
+                        CorporationWalletJournal::insertIgnore($records->toArray());
                     });
 
                     // Update the from_id to be the new lowest ref_id we
