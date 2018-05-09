@@ -34,6 +34,11 @@ class CorporationIndustryMiningObserverData extends Model
     use HasCompositePrimaryKey;
 
     /**
+     * @var string
+     */
+    protected $table = 'corporation_industry_mining_observer_data';
+
+    /**
      * @var bool
      */
     protected static $unguarded = true;
