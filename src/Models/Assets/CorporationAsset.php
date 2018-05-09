@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
 
 /**
  * Class CorporationAsset.
@@ -31,6 +32,8 @@ use Seat\Eveapi\Models\Sde\InvType;
  */
 class CorporationAsset extends Model
 {
+    use CanBulkInsertOrUpdate;
+
     /**
      * @var bool
      */
