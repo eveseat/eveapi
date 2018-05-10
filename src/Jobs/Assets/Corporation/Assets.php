@@ -104,19 +104,35 @@ class Assets extends EsiBase
 
             if ($assets->isCachedLoad()) return;
 
-            collect($assets)->each(function ($asset) {
+            collect($assets)->chunk(1000)->each(function ($chunk) {
 
-                CorporationAsset::firstOrNew([
-                    'item_id'        => $asset->item_id,
-                    'corporation_id' => $this->getCorporationId(),
-                ])->fill([
-                    'type_id'       => $asset->type_id,
-                    'quantity'      => $asset->quantity,
-                    'location_id'   => $asset->location_id,
-                    'location_type' => $asset->location_type,
-                    'location_flag' => $asset->location_flag,
-                    'is_singleton'  => $asset->is_singleton,
-                ])->save();
+                $records = $chunk->map(function ($asset, $key) {
+
+                    return [
+                        'item_id'        => $asset->item_id,
+                        'corporation_id' => $this->getCorporationId(),
+                        'type_id'        => $asset->type_id,
+                        'quantity'       => $asset->quantity,
+                        'location_id'    => $asset->location_id,
+                        'location_type'  => $asset->location_type,
+                        'location_flag'  => $asset->location_flag,
+                        'is_singleton'   => $asset->is_singleton,
+                        'created_at'     => carbon(),
+                        'updated_at'     => carbon(),
+                    ];
+                });
+
+                CorporationAsset::insertOnDuplicateKey($records->toArray(), [
+                    'item_id',
+                    'corporation_id',
+                    'type_id',
+                    'quantity',
+                    'location_id',
+                    'location_type',
+                    'location_flag',
+                    'is_singleton',
+                    'updated_at',
+                ]);
             });
 
             // Update the list of known item_id's which should be

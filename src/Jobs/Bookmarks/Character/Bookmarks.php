@@ -102,32 +102,55 @@ class Bookmarks extends EsiBase
 
             if ($bookmarks->isCachedLoad()) return;
 
-            collect($bookmarks)->each(function ($bookmark) {
+            collect($bookmarks)->chunk(1000)->each(function ($chunk) {
 
-                $normalized_location = $this->find_nearest_celestial(
-                    $bookmark->location_id,
-                    $bookmark->position->x ?? 0.0,
-                    $bookmark->position->y ?? 0.0,
-                    $bookmark->position->z ?? 0.0);
+                $records = $chunk->map(function ($bookmark, $key) {
 
-                CharacterBookmark::firstOrNew([
-                    'character_id' => $this->getCharacterId(),
-                    'bookmark_id'  => $bookmark->bookmark_id,
-                ])->fill([
-                    'creator_id'  => $bookmark->creator_id,
-                    'folder_id'   => $bookmark->folder_id ?? null,
-                    'created'     => carbon($bookmark->created),
-                    'label'       => $bookmark->label,
-                    'notes'       => $bookmark->notes,
-                    'location_id' => $bookmark->location_id,
-                    'item_id'     => $bookmark->item->item_id ?? null,
-                    'type_id'     => $bookmark->item->type_id ?? null,
-                    'x'           => $bookmark->coordinates->x ?? null,
-                    'y'           => $bookmark->coordinates->y ?? null,
-                    'z'           => $bookmark->coordinates->z ?? null,
-                    'map_id'      => $normalized_location['map_id'],
-                    'map_name'    => $normalized_location['map_name'],
-                ])->save();
+                    $normalized_location = $this->find_nearest_celestial(
+                        $bookmark->location_id,
+                        $bookmark->position->x ?? 0.0,
+                        $bookmark->position->y ?? 0.0,
+                        $bookmark->position->z ?? 0.0);
+
+                    return [
+                        'character_id' => $this->getCharacterId(),
+                        'bookmark_id'  => $bookmark->bookmark_id,
+                        'creator_id'   => $bookmark->creator_id,
+                        'folder_id'    => $bookmark->folder_id ?? null,
+                        'created'      => carbon($bookmark->created),
+                        'label'        => $bookmark->label,
+                        'notes'        => $bookmark->notes,
+                        'location_id'  => $bookmark->location_id,
+                        'item_id'      => $bookmark->item->item_id ?? null,
+                        'type_id'      => $bookmark->item->type_id ?? null,
+                        'x'            => $bookmark->coordinates->x ?? null,
+                        'y'            => $bookmark->coordinates->y ?? null,
+                        'z'            => $bookmark->coordinates->z ?? null,
+                        'map_id'       => $normalized_location['map_id'],
+                        'map_name'     => $normalized_location['map_name'],
+                        'created_at'   => carbon(),
+                        'updated_at'   => carbon(),
+                    ];
+                });
+
+                CharacterBookmark::insertOnDuplicateKey($records->toArray(), [
+                    'character_id',
+                    'bookmark_id',
+                    'creator_id',
+                    'folder_id',
+                    'created',
+                    'label',
+                    'notes',
+                    'location_id',
+                    'item_id',
+                    'type_id',
+                    'x',
+                    'y',
+                    'z',
+                    'map_id',
+                    'map_name',
+                    'updated_at',
+                ]);
             });
 
             $this->known_bookmarks->push(collect($bookmarks)
