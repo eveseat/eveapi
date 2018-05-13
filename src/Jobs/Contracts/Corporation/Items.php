@@ -147,6 +147,7 @@ class Items extends EsiBase
                 ContractItem::firstOrCreate([
                     'contract_id'  => $contract_id,
                     'record_id'    => $item->record_id,
+                ],[
                     'type_id'      => $item->type_id,
                     'quantity'     => $item->quantity,
                     'raw_quantity' => $item->raw_quantity ?? null,

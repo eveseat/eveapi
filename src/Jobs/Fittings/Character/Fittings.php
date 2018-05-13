@@ -95,6 +95,7 @@ class Fittings extends EsiBase
                         'fitting_id' => $fitting->fitting_id,
                         'type_id'    => $item->type_id,
                         'flag'       => $item->flag,
+                    ],[
                         'quantity'   => $item->quantity,
                     ]);
                 });
