@@ -78,7 +78,7 @@ class Headers extends EsiBase
             MailHeader::firstOrCreate([
                 'character_id' => $this->getCharacterId(),
                 'mail_id'      => $header->mail_id,
-            ],[
+            ], [
                 'subject'      => $header->subject,
                 'from'         => $header->from,
                 'timestamp'    => carbon($header->timestamp),

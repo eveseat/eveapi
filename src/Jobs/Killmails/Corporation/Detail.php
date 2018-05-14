@@ -90,7 +90,7 @@ class Detail extends EsiBase
 
             KillmailDetail::firstOrCreate([
                 'killmail_id'     => $killmail_id,
-            ],[
+            ], [
                 'killmail_time'   => carbon($detail->killmail_time),
                 'solar_system_id' => $detail->solar_system_id,
                 'moon_id'         => $detail->moon_id ?? null,
@@ -99,7 +99,7 @@ class Detail extends EsiBase
 
             KillmailVictim::firstOrCreate([
                 'killmail_id'    => $killmail_id,
-            ],[
+            ], [
                 'character_id'   => $detail->victim->character_id ?? null,
                 'corporation_id' => $detail->victim->corporation_id ?? null,
                 'alliance_id'    => $detail->victim->alliance_id ?? null,

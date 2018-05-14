@@ -88,7 +88,7 @@ class Bodies extends EsiBase
 
             MailBody::firstOrCreate([
                 'mail_id' => $mail_id,
-            ],[
+            ], [
                 'body'    => $body->body,
             ]);
         });

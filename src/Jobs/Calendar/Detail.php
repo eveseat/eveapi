@@ -87,7 +87,7 @@ class Detail extends EsiBase
 
             CharacterCalendarEventDetail::firstOrCreate([
                 'event_id'   => $event_id,
-            ],[
+            ], [
                 'owner_id'   => $detail->owner_id,
                 'owner_name' => $detail->owner_name,
                 'duration'   => $detail->duration,
