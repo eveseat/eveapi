@@ -96,6 +96,7 @@ class Bids extends EsiBase
 
                     ContractBid::firstOrCreate([
                         'bid_id'      => $bid->bid_id,
+                    ], [
                         'contract_id' => $contract_id,
                         'bidder_id'   => $bid->bidder_id,
                         'date_bid'    => carbon($bid->date_bid),

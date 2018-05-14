@@ -86,6 +86,7 @@ class Structures extends EsiBase
 
                 UniverseStructure::firstOrNew([
                     'structure_id'    => $character_asset->location_id,
+                ], [
                     'name'            => $structure->name,
                     'solar_system_id' => $structure->solar_system_id,
                     'x'               => $structure->position->x,
