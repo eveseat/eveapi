@@ -59,6 +59,9 @@ class CharacterAsset extends Model
     public function getNameAttribute($value)
     {
 
+        if (! $this->type)
+            return null;
+
         if (is_null($value) || $value == '')
             return $this->type->typeName;
 
