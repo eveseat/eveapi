@@ -98,7 +98,8 @@ class CharacterInfo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function ship(){
+    public function ship()
+    {
         return $this->hasOne(CharacterShip::class,'character_id','character_id');
     }
 }
