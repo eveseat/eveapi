@@ -49,6 +49,7 @@ class CharacterShip extends Model
 
     public function type()
     {
-        return $this->belongsTo(InvType::class,"ship_type_id","typeID");
+
+        return $this->belongsTo(InvType::class, 'ship_type_id', 'typeID');
     }
 }
