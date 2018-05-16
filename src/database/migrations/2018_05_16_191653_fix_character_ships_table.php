@@ -20,9 +20,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class FixCharacterShipsTable extends Migration
 {
@@ -33,7 +33,9 @@ class FixCharacterShipsTable extends Migration
      */
     public function up()
     {
+
         Schema::table('character_ships', function (Blueprint $table) {
+
             $table->bigInteger('ship_type_id')->after('ship_name');
         });
     }
@@ -45,7 +47,9 @@ class FixCharacterShipsTable extends Migration
      */
     public function down()
     {
+
         Schema::table('character_ships', function (Blueprint $table) {
+
             $table->dropColumn('ship_type_id');
         });
     }
