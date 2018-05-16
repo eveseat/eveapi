@@ -20,14 +20,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-return [
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
-    'version'       => '3.0.0-beta12',
+class FixCorporationIndustryMiningObserverDataTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::rename('corporation_mining_observer_data', 'corporation_industry_mining_observer_data');
+    }
 
-    // API Joblog logging
-    'enable_joblog' => false,
-
-    'eseye_logfile'  => storage_path('logs'),
-    'eseye_cache'    => storage_path('eseye'),
-    'eseye_loglevel' => 'info', // valid entries are RFC 5424 levels ('debug', 'info', 'warn', 'error')
-];
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::rename('corporation_industry_mining_observer_data', 'corporation_mining_observer_data');
+    }
+}

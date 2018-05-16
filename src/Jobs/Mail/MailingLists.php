@@ -77,6 +77,7 @@ class MailingLists extends EsiBase
             MailMailingList::firstOrCreate([
                 'character_id'    => $this->getCharacterId(),
                 'mailing_list_id' => $list->mailing_list_id,
+            ], [
                 'name'            => $list->name,
             ]);
         });

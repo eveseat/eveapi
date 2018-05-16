@@ -75,6 +75,7 @@ class Recent extends EsiBase
             CharacterKillmail::firstOrCreate([
                 'character_id'  => $this->getCharacterId(),
                 'killmail_id'   => $killmail->killmail_id,
+            ], [
                 'killmail_hash' => $killmail->killmail_hash,
             ]);
         });
