@@ -100,6 +100,7 @@ class CharacterInfo extends Model
      */
     public function ship()
     {
-        return $this->hasOne(CharacterShip::class,'character_id','character_id');
+
+        return $this->hasOne(CharacterShip::class, 'character_id', 'character_id');
     }
 }
