@@ -74,6 +74,7 @@ class Items extends EsiBase
             ->where('character_id', $this->getCharacterId())
             ->where('type', '<>', 'courier')
             ->where('status', '<>', 'deleted')
+            ->where('volume', '>', 0)
             ->whereNotIn('character_contracts.contract_id', function ($query) {
 
                 $query->select('contract_id')
