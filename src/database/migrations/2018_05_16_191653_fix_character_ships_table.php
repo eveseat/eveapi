@@ -20,36 +20,37 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Location;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
-
-/**
- * Class CharacterShip.
- *
- * @package Seat\Eveapi\Models\Location
- */
-class CharacterShip extends Model
+class FixCharacterShipsTable extends Migration
 {
     /**
-     * @var bool
+     * Run the migrations.
+     *
+     * @return void
      */
-    protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'character_id';
-
-    public function type()
+    public function up()
     {
 
-        return $this->belongsTo(InvType::class, 'ship_type_id', 'typeID');
+        Schema::table('character_ships', function (Blueprint $table) {
+
+            $table->bigInteger('ship_type_id')->after('ship_name');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+
+        Schema::table('character_ships', function (Blueprint $table) {
+
+            $table->dropColumn('ship_type_id');
+        });
     }
 }

@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Location\CharacterShip;
 use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 use Seat\Services\Traits\NotableTrait;
 
@@ -92,5 +93,14 @@ class CharacterInfo extends Model
 
         return $this->hasMany(CharacterSkill::class,
             'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function ship()
+    {
+
+        return $this->hasOne(CharacterShip::class, 'character_id', 'character_id');
     }
 }
