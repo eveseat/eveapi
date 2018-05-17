@@ -74,6 +74,11 @@ class Structures extends EsiBase
                 ->pluck('stationID')->flatten())
             ->select('location_id')
             ->distinct()
+            // Until CCP can sort out this endpoint, pick 30 random locations
+            // and try to get those names. We hard cap it at 30 otherwise we
+            // will quickly kill the error limit, resulting in a ban.
+            ->inRandomOrder()
+            ->limit(30)
             ->get();
 
         foreach ($character_assets as $character_asset) {
@@ -85,7 +90,7 @@ class Structures extends EsiBase
                 ]);
 
                 UniverseStructure::firstOrNew([
-                    'structure_id'    => $character_asset->location_id,
+                    'structure_id' => $character_asset->location_id,
                 ], [
                     'name'            => $structure->name,
                     'solar_system_id' => $structure->solar_system_id,
@@ -109,7 +114,7 @@ class Structures extends EsiBase
                     'z'               => 0.0,
                 ]);
 
-                // persist the structure only if it doesn't already exists
+                // persist the structure only if it doesn't already exist
                 if (! $model->exists)
                     $model->save();
             }

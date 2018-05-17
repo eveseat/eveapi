@@ -81,7 +81,7 @@ class Names extends EsiBase
             ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
             ->where('character_id', $this->getCharacterId())
             ->where('is_singleton', true)// only singleton items may be named
-            // it seems only items from that categories can be named
+            // It seems like only items from these categories can be named
             // 2  : Celestial
             // 6  : Ship
             // 22 : Deployable

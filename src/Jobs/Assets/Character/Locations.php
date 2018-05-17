@@ -84,7 +84,7 @@ class Locations extends EsiBase
             ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
             ->where('character_id', $this->getCharacterId())
             ->where('is_singleton', true)// only singleton items may have a specific location
-            // it seems only items from that categories can have a specific location
+            // It seems like only items from these categories can have a specific location
             // 2  : Celestial
             // 6  : Ship
             // 22 : Deployable

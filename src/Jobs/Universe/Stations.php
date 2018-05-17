@@ -35,7 +35,6 @@ use Seat\Eveapi\Models\Universe\UniverseStationService;
  */
 class Stations extends EsiBase
 {
-
     /**
      * @var string
      */
@@ -93,6 +92,9 @@ class Stations extends EsiBase
             });
     }
 
+    /**
+     * @param \Seat\Eseye\Containers\EsiResponse $structure
+     */
     private function updateStructure(EsiResponse $structure)
     {
 

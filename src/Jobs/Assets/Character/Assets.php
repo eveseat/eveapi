@@ -104,8 +104,8 @@ class Assets extends EsiBase
                 $records = $chunk->map(function ($asset, $key) {
 
                     return [
-                        'item_id'      => $asset->item_id,
-                        'character_id' => $this->getCharacterId(),
+                        'item_id'       => $asset->item_id,
+                        'character_id'  => $this->getCharacterId(),
                         'type_id'       => $asset->type_id,
                         'quantity'      => $asset->quantity,
                         'location_id'   => $asset->location_id,
