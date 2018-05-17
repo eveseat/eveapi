@@ -82,5 +82,12 @@ class Alliances extends EsiBase
         // Remove alliances that are closed / no longer listen in the API.
         Alliance::whereNotIn('alliance_id', collect($alliances)->flatten()->all())
             ->delete();
+
+        // For each retrieved alliance ID, queue a dedicated job which will retrieve alliance information
+        Alliance::all()->each(function ($alliance) {
+            $job = new Info();
+            $job->setAlliance($alliance);
+            dispatch($alliance);
+        });
     }
 }
