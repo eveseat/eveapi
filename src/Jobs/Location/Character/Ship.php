@@ -77,7 +77,7 @@ class Ship extends EsiBase
         ])->fill([
             'ship_item_id' => $ship->ship_item_id,
             'ship_name'    => $ship->ship_name,
-            'ship_type_id'    => $ship->ship_type_id,
+            'ship_type_id' => $ship->ship_type_id,
         ])->save();
     }
 }

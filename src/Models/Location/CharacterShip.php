@@ -47,6 +47,9 @@ class CharacterShip extends Model
      */
     protected $primaryKey = 'character_id';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function type()
     {
 
