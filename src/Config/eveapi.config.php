@@ -22,7 +22,7 @@
 
 return [
 
-    'version'       => '3.0.0-beta12',
+    'version'       => '3.0.0-beta13',
 
     // API Joblog logging
     'enable_joblog' => false,
