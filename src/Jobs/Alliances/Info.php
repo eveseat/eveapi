@@ -52,7 +52,7 @@ class Info extends EsiBase
     protected $tags = ['public', 'alliances', 'info'];
 
     /**
-     * @var Alliance
+     * @var \Seat\Eveapi\Models\Alliances\Alliance
      */
     private $alliance;
 
@@ -64,8 +64,9 @@ class Info extends EsiBase
     public function handle()
     {
 
-        if (is_null($this->alliance))
-            return;
+        // Without an alliance set, we won't know which Alliance
+        // we need to get information for.
+        if (! $this->alliance) return;
 
         $info = $this->retrieve([
             'alliance_id' => $this->alliance->alliance_id,
@@ -85,10 +86,13 @@ class Info extends EsiBase
     }
 
     /**
+     * Set the alliance context for this job.
+     *
      * @param Alliance $alliance
      */
     public function setAlliance(Alliance $alliance)
     {
+
         $this->alliance = $alliance;
     }
 }
