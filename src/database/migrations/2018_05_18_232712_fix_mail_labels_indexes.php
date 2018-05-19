@@ -36,7 +36,7 @@ class FixMailLabelsIndexes extends Migration
 
         Schema::table('mail_labels', function (Blueprint $table) {
 
-            $table->dropIndex('label_id');
+            $table->dropIndex('mail_labels_label_id_index');
             $table->primary(['character_id', 'label_id']);
 
         });
@@ -50,7 +50,7 @@ class FixMailLabelsIndexes extends Migration
     public function down()
     {
 
-        Schema::table('character_ships', function (Blueprint $table) {
+        Schema::table('mail_labels', function (Blueprint $table) {
 
             $table->dropPrimary(['character_id', 'label_id']);
             $table->index('label_id');
