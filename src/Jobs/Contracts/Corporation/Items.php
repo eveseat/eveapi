@@ -93,6 +93,25 @@ class Items extends EsiBase
     protected $max_cycle_requests = 20;
 
     /**
+     * The maximum runtime for this job before Horizon
+     * comes along and kills the fun.
+     *
+     * 10 minutes.
+     *
+     * @var \Illuminate\Config\Repository|mixed
+     */
+    protected $max_job_runtime = 600;
+
+    /**
+     * When did this job start.
+     *
+     * Used when calculating when we should stop.
+     *
+     * @var \Carbon\Carbon
+     */
+    protected $job_start_time;
+
+    /**
      * Items constructor.
      *
      * @param \Seat\Eveapi\Models\RefreshToken|null $token
@@ -101,6 +120,7 @@ class Items extends EsiBase
     {
 
         $this->cycle_start = carbon('now');
+        $this->job_start_time = carbon('now');
 
         parent::__construct($token);
     }
@@ -145,8 +165,8 @@ class Items extends EsiBase
             collect($items)->each(function ($item) use ($contract_id) {
 
                 ContractItem::firstOrCreate([
-                    'contract_id'  => $contract_id,
-                    'record_id'    => $item->record_id,
+                    'contract_id' => $contract_id,
+                    'record_id'   => $item->record_id,
                 ], [
                     'type_id'      => $item->type_id,
                     'quantity'     => $item->quantity,
@@ -155,6 +175,12 @@ class Items extends EsiBase
                     'is_included'  => $item->is_included,
                 ]);
             });
+
+            // Check if we should be stopping this job all together.
+            // The nexy time a job is queued it will just continue
+            // where it left off.
+            if ($this->job_start_time->addSeconds($this->max_job_runtime) > carbon('now'))
+                return false;
 
             // Check if we should be sleeping. This should be true if we
             // have made 20 requests in the last 10 seconds.
