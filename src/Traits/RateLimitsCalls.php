@@ -22,9 +22,8 @@
 
 namespace Seat\Eveapi\Traits;
 
-
 /**
- * Trait RateLimitsCalls
+ * Trait RateLimitsCalls.
  * @package Seat\Eveapi\Traits
  */
 trait RateLimitsCalls
