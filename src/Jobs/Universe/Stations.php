@@ -128,6 +128,5 @@ class Stations extends EsiBase
             ->whereNotIn('service_name', collect($structure->services)
                 ->pluck('name')->flatten()->all())
             ->delete();
-
     }
 }

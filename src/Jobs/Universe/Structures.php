@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Eveapi\Traits\RateLimitsCalls;
 
 /**
  * Class Structures.
@@ -35,6 +36,20 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  */
 class Structures extends EsiBase
 {
+    use RateLimitsCalls;
+
+    /**
+     * The maximum number of calls that can be made per minute.
+     * @var int
+     */
+    public $rate_limit = 20;
+
+    /**
+     * The cache key to use when checking the rate limit.
+     *
+     * @var string
+     */
+    public $rate_limit_key = 'universe.structures';
 
     /**
      * @var string
@@ -61,6 +76,7 @@ class Structures extends EsiBase
      *
      * @return void
      * @throws \Throwable
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function handle()
     {
@@ -68,12 +84,25 @@ class Structures extends EsiBase
         $character_assets = CharacterAsset::where('character_id', $this->getCharacterId())
             ->where('location_flag', 'Hangar')
             ->where('location_type', 'other')
-            ->whereNotIn('location_id', UniverseStation::all()
-                ->pluck('station_id')->flatten())
-            ->whereNotIn('location_id', StaStation::all()
-                ->pluck('stationID')->flatten())
-            ->select('location_id')
-            ->distinct()
+            ->whereNotIn('location_id', function ($query) {
+
+                $query->select('station_id')
+                    ->from((new UniverseStation)->getTable());
+            })
+            ->whereNotIn('location_id', function ($query) {
+
+                $query->select('stationID')
+                    ->from((new StaStation)->getTable());
+            })
+            // Remove strucutres that already have a name resolved
+            // within the last week.
+            ->whereNotIn('location_id', function ($query) {
+
+                $query->select('structure_id')
+                    ->from((new UniverseStructure)->getTable())
+                    ->where('updated_at', '<', carbon('now')->subWeek());
+            })
+            ->select('location_id')->distinct()
             // Until CCP can sort out this endpoint, pick 30 random locations
             // and try to get those names. We hard cap it at 30 otherwise we
             // will quickly kill the error limit, resulting in a ban.
@@ -85,9 +114,15 @@ class Structures extends EsiBase
 
             try {
 
+                // If we are rate limited, stop working.
+                if ($this->isRateLimited()) break;
+
                 $structure = $this->retrieve([
                     'structure_id' => $character_asset->location_id,
                 ]);
+
+                // Increment the call count we have this far.
+                $this->incrementRateLimitCallCount(1);
 
                 UniverseStructure::firstOrNew([
                     'structure_id' => $character_asset->location_id,
