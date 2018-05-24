@@ -87,7 +87,7 @@ class Alliances extends EsiBase
         Alliance::all()->each(function ($alliance) {
             $job = new Info();
             $job->setAlliance($alliance);
-            dispatch($alliance);
+            dispatch($job);
         });
     }
 }

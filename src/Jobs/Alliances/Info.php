@@ -68,6 +68,8 @@ class Info extends EsiBase
         // we need to get information for.
         if (! $this->alliance) return;
 
+        array_push($this->tags, 'alliance_id:' . $this->alliance->alliance_id);
+
         $info = $this->retrieve([
             'alliance_id' => $this->alliance->alliance_id,
         ]);
