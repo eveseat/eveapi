@@ -256,7 +256,7 @@ abstract class EsiBase implements ShouldQueue
      * @return bool
      * @throws Exception
      */
-    private function isNPCCorporation(): bool
+    public function isNPCCorporation(): bool
     {
 
         // ID range references:
