@@ -103,13 +103,14 @@ class Affiliation extends EsiBase
                 'first_party_id', '=', 'entity_id')->where('category', 'character')->select('first_party_id'),
             'second_party_id' => CharacterWalletJournal::join('universe_names',
                 'second_party_id', '=', 'entity_id')->where('category', 'character')->select('second_party_id'),
-            'client_id'       => (new CharacterWalletTransaction),
+            'client_id'       => CharacterWalletTransaction::whereBetween('client_id', [3000000, 4000000])
+                ->orWhereBetween('client_id', [90000000, 98000000])
+                ->select('client_id'),
             'contact_id'      => CharacterContact::where('contact_type', 'character'),
             'issuer_id'       => (new ContractDetail),
             'character_id'    => (new MailHeader),
             'from'            => MailHeader::whereBetween('from', [3000000, 4000000])
                 ->orWhereBetween('from', [90000000, 98000000])
-                ->orWhereBetween('from', [200000000, 2100000000])
                 ->select('from'),
             'recipient_id'    => MailRecipient::where('recipient_type', 'character'),
             'sender_id'       => CharacterNotification::where('sender_type', 'character'),
