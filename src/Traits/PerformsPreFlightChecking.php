@@ -99,7 +99,10 @@ trait PerformsPreFlightChecking
     {
 
         // Get the latest ESI status.
-        $status = EsiStatus::latest()->first();
+        $status = Cache::remember('esi_db_status', 1, function () {
+
+            return EsiStatus::latest()->first();
+        });
 
         // If the data is too old, return false by default.
         // Not being able to ping ESI could be indicative
