@@ -71,6 +71,8 @@ class Names extends EsiBase
     public function handle()
     {
 
+        if (! $this->preflighted()) return;
+
         $this->entity_ids = collect();
 
         $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')

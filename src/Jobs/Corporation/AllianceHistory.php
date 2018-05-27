@@ -59,7 +59,7 @@ class AllianceHistory extends EsiBase
     public function handle()
     {
 
-        if ($this->isNPCCorporation()) return;
+        if (! $this->preflighted()) return;
 
         $history = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

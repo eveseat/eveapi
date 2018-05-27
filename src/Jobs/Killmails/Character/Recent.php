@@ -64,6 +64,8 @@ class Recent extends EsiBase
     public function handle()
     {
 
+        if (! $this->preflighted()) return;
+
         $killmails = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

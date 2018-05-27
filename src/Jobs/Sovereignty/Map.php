@@ -59,6 +59,8 @@ class Map extends EsiBase
     public function handle()
     {
 
+        if (! $this->preflighted()) return;
+
         $systems = $this->retrieve();
 
         if ($systems->isCachedLoad()) return;

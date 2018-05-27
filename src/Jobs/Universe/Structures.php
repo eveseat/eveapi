@@ -81,6 +81,8 @@ class Structures extends EsiBase
     public function handle()
     {
 
+        if (! $this->preflighted()) return;
+
         $character_assets = CharacterAsset::where('character_id', $this->getCharacterId())
             ->where('location_flag', 'Hangar')
             ->where('location_type', 'other')

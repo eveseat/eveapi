@@ -58,6 +58,8 @@ class Members extends EsiBase
     public function handle()
     {
 
+        if (! $this->preflighted()) return;
+
         Alliance::all()->each(function ($alliance) {
 
             $corporations = $this->retrieve([

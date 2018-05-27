@@ -59,6 +59,8 @@ class Structures extends EsiBase
     public function handle()
     {
 
+        if (! $this->preflighted()) return;
+
         $structures = $this->retrieve();
 
         if ($structures->isCachedLoad()) return;

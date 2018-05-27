@@ -60,7 +60,7 @@ class Info extends EsiBase
     public function handle()
     {
 
-        if ($this->isNPCCorporation()) return;
+        if (! $this->preflighted()) return;
 
         $corporation = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

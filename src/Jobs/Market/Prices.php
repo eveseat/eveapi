@@ -64,6 +64,8 @@ class Prices extends EsiBase
     public function handle()
     {
 
+        if (! $this->preflighted()) return;
+
         $prices = $this->retrieve();
 
         if ($prices->isCachedLoad()) return;
