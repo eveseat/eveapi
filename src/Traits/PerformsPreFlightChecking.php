@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Traits;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Seat\Eveapi\Models\Status\EsiStatus;
 
@@ -97,6 +98,9 @@ trait PerformsPreFlightChecking
      */
     public function isEsiDown(): bool
     {
+
+        // Check if we may have hit an error threshold
+        if ($this->isEsiRateLimited()) return true;
 
         // Get the latest ESI status.
         $status = Cache::remember('esi_db_status', 1, function () {

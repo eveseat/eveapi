@@ -35,6 +35,7 @@ use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Character\CharacterRole;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Traits\PerformsPreFlightChecking;
+use Seat\Eveapi\Traits\RateLimitsEsiCalls;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 
@@ -44,7 +45,8 @@ use Seat\Services\Jobs\Analytics;
  */
 abstract class EsiBase implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, PerformsPreFlightChecking;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,
+        PerformsPreFlightChecking, RateLimitsEsiCalls;
 
     /**
      * The number of times the job may be attempted.
@@ -170,6 +172,23 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
+     * Get the character_id we have for the token in this job.
+     *
+     * An exception will be thrown if an empty token is set.
+     *
+     * @return int
+     * @throws \Exception
+     */
+    public function getCharacterId(): int
+    {
+
+        if (is_null($this->token))
+            throw new Exception('No token specified');
+
+        return $this->token->character_id;
+    }
+
+    /**
      * @param array $path_values
      *
      * @return \Seat\Eseye\Containers\EsiResponse
@@ -273,23 +292,6 @@ abstract class EsiBase implements ShouldQueue
             return ['unknown_tag', 'public'];
 
         return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
-    }
-
-    /**
-     * Get the character_id we have for the token in this job.
-     *
-     * An exception will be thrown if an empty token is set.
-     *
-     * @return int
-     * @throws \Exception
-     */
-    public function getCharacterId(): int
-    {
-
-        if (is_null($this->token))
-            throw new Exception('No token specified');
-
-        return $this->token->character_id;
     }
 
     /**
@@ -414,12 +416,19 @@ abstract class EsiBase implements ShouldQueue
      * does the work of checking if analytics is disabled
      * or not, so we don't have to care about that here.
      *
+     * On top of that, we also increment the error rate
+     * limiter. This is checked as part of the preflight
+     * checks when API calls are made.
+     *
      * @param \Exception $exception
      *
      * @throws \Exception
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function failed(Exception $exception)
     {
+
+        $this->incrementEsiRateLimit();
 
         // Analytics. Report only the Exception class and message.
         dispatch((new Analytics((new AnalyticsContainer)
