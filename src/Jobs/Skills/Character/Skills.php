@@ -66,7 +66,7 @@ class Skills extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $character_skills = $this->retrieve([
             'character_id' => $this->getCharacterId(),

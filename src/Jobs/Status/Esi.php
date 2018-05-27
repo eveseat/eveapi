@@ -20,16 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Clones;
+namespace Seat\Eveapi\Jobs\Status;
 
+use Exception;
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Clones\CharacterImplant;
+use Seat\Eveapi\Models\Status\EsiStatus;
 
 /**
- * Class Implants.
- * @package Seat\Eveapi\Jobs\Clones
+ * Class Status.
+ * @package Seat\Eveapi\Jobs\Status
  */
-class Implants extends EsiBase
+class Esi extends EsiBase
 {
     /**
      * @var string
@@ -39,22 +40,12 @@ class Implants extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/implants/';
-
-    /**
-     * @var string
-     */
-    protected $version = 'v1';
-
-    /**
-     * @var string
-     */
-    protected $scope = 'esi-clones.read_implants.v1';
+    protected $endpoint = '/ping';
 
     /**
      * @var array
      */
-    protected $tags = ['character', 'implants'];
+    protected $tags = ['ccp', 'meta', 'public'];
 
     /**
      * Execute the job.
@@ -66,24 +57,22 @@ class Implants extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        $start = microtime(true);
 
-        $implants = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
+        try {
+
+            $status = $this->retrieve()->raw;
+
+        } catch (Exception $exception) {
+
+            $status = 'Request failed with: ' . $exception->getMessage();
+        }
+
+        $end = microtime(true) - $start;
+
+        EsiStatus::create([
+            'status'       => $status,
+            'request_time' => $end,
         ]);
-
-        if ($implants->isCachedLoad()) return;
-
-        collect($implants)->each(function ($implant) {
-
-            CharacterImplant::firstOrCreate([
-                'character_id' => $this->getCharacterId(),
-                'type_id'      => $implant,
-            ]);
-        });
-
-        CharacterImplant::where('character_id', $this->getCharacterId())
-            ->whereNotIn('type_id', collect($implants)->flatten()->all())
-            ->delete();
     }
 }

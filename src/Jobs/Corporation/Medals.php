@@ -73,7 +73,7 @@ class Medals extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         while (true) {
 

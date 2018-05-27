@@ -66,7 +66,7 @@ class Roles extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $roles = $this->retrieve([
             'character_id' => $this->getCharacterId(),

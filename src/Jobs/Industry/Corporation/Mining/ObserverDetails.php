@@ -77,7 +77,7 @@ class ObserverDetails extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
             ->get()->each(function ($observer) {

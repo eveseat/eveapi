@@ -134,7 +134,7 @@ class Items extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $empty_contracts = CorporationContract::join('contract_details',
             'corporation_contracts.contract_id', '=',

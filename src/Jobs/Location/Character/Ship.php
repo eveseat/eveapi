@@ -64,7 +64,7 @@ class Ship extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $ship = $this->retrieve([
             'character_id' => $this->getCharacterId(),

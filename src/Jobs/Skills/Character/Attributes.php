@@ -64,7 +64,7 @@ class Attributes extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $attributes = $this->retrieve([
             'character_id' => $this->getCharacterId(),

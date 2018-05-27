@@ -65,7 +65,7 @@ class Attendees extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $this->updateAttendees('character', $this->getCharacterId());
     }

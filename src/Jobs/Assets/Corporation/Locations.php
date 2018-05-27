@@ -81,7 +81,7 @@ class Locations extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         // all items which need to be singleton
 

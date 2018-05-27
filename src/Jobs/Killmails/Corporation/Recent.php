@@ -70,7 +70,7 @@ class Recent extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $killmails = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

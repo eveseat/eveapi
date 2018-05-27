@@ -69,7 +69,7 @@ class MembersTitles extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $member_titles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

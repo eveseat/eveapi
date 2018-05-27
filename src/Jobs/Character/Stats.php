@@ -66,7 +66,7 @@ class Stats extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $stats = $this->retrieve([
             'character_id' => $this->getCharacterId(),

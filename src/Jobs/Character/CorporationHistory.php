@@ -57,7 +57,7 @@ class CorporationHistory extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $corporation_history = $this->retrieve([
             'character_id' => $this->getCharacterId(),

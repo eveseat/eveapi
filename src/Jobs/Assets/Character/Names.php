@@ -73,7 +73,7 @@ class Names extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.

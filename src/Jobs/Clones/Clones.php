@@ -67,7 +67,7 @@ class Clones extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $clone = $this->retrieve([
             'character_id' => $this->getCharacterId(),

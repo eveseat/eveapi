@@ -93,7 +93,7 @@ class Blueprints extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         // Start an infinite loop for the paged requests.
         while (true) {

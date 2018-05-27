@@ -49,7 +49,7 @@ class Status extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['ccp'];
+    protected $tags = ['ccp', 'public'];
 
     /**
      * Execute the job.

@@ -66,7 +66,7 @@ class AgentsResearch extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $agents_research = $this->retrieve([
             'character_id' => $this->getCharacterId(),

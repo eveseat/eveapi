@@ -70,7 +70,7 @@ class MembersLimit extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         $limit = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

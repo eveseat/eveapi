@@ -77,7 +77,7 @@ class Transactions extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($division) {

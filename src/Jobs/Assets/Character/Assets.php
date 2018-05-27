@@ -89,7 +89,7 @@ class Assets extends EsiBase
     public function handle(): void
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         while (true) {
 

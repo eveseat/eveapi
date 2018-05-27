@@ -71,7 +71,7 @@ class Transactions extends EsiBase
     public function handle()
     {
 
-        if (! $this->authenticated()) return;
+        if (! $this->preflighted()) return;
 
         // Perform a journal walk backwards to get all of the
         // entries as far back as possible. When the response from
