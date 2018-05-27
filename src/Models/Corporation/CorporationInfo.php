@@ -278,7 +278,6 @@ class CorporationInfo extends Model
     public function member_limit()
     {
 
-
         return $this->hasOne(CorporationMemberLimits::class,
             'corporation_id', 'corporation_id');
     }
