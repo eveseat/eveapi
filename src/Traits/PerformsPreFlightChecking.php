@@ -108,6 +108,9 @@ trait PerformsPreFlightChecking
             return EsiStatus::latest()->first();
         });
 
+        // If we don't have a status yet, assume everything is ok.
+        if (! $status) return false;
+
         // If the data is too old, return false by default.
         // Not being able to ping ESI could be indicative
         // of many other problems.
