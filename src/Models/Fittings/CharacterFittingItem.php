@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -47,4 +48,10 @@ class CharacterFittingItem extends Model
      * @var array
      */
     protected $primaryKey = ['fitting_id', 'type_id', 'flag'];
+
+    public function type()
+    {
+
+        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
 }

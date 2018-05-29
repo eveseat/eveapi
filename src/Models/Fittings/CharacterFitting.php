@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -42,4 +43,20 @@ class CharacterFitting extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'fitting_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function items()
+    {
+
+        return $this->hasMany(CharacterFittingItem::class,
+            'fitting_id', 'fitting_id');
+    }
+
+    public function shiptype()
+    {
+
+        return $this->hasOne(InvType::class, 'typeID', 'ship_type_id');
+    }
 }
