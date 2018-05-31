@@ -75,7 +75,7 @@ class Items extends EsiBase
      *
      * @var \Carbon\Carbon
      */
-    protected $cycle_start;
+    protected $cycle_start_time;
 
     /**
      * The number of seconds for a single throttle cycle.
@@ -96,11 +96,9 @@ class Items extends EsiBase
      * The maximum runtime for this job before Horizon
      * comes along and kills the fun.
      *
-     * 10 minutes.
-     *
      * @var \Illuminate\Config\Repository|mixed
      */
-    protected $max_job_runtime = 600;
+    protected $max_job_runtime = 240;
 
     /**
      * When did this job start.
@@ -119,7 +117,7 @@ class Items extends EsiBase
     public function __construct(RefreshToken $token = null)
     {
 
-        $this->cycle_start = carbon('now');
+        $this->cycle_start_time = carbon('now');
         $this->job_start_time = carbon('now');
 
         parent::__construct($token);
@@ -146,7 +144,8 @@ class Items extends EsiBase
             ->whereNotIn('corporation_contracts.contract_id', function ($query) {
 
                 $query->select('contract_id')
-                    ->from('contract_items');
+                    ->distinct()
+                    ->from((new ContractItem)->getTable());
 
             })
             ->pluck('corporation_contracts.contract_id');
@@ -177,9 +176,9 @@ class Items extends EsiBase
             });
 
             // Check if we should be stopping this job all together.
-            // The nexy time a job is queued it will just continue
+            // The next time a job is queued it will just continue
             // where it left off.
-            if ($this->job_start_time->addSeconds($this->max_job_runtime) > carbon('now'))
+            if ($this->job_start_time->copy()->addSeconds($this->max_job_runtime) < carbon('now'))
                 return false;
 
             // Check if we should be sleeping. This should be true if we
@@ -187,26 +186,26 @@ class Items extends EsiBase
             // If the time we started, plus 10 seconds is more than the current
             // time, wait for the remainder of the time.
             if ($this->iteration_count >= $this->max_cycle_requests &&
-                $this->cycle_start->addSeconds($this->cycle_duration) > carbon('now')) {
+                $this->cycle_start_time->copy()->addSeconds($this->cycle_duration) < carbon('now')) {
 
-                $wait_duration = $this->cycle_start->addSeconds($this->cycle_duration)
+                $wait_duration = $this->cycle_start_time->copy()->addSeconds($this->cycle_duration)
                     ->diffInSeconds(carbon('now'));
 
                 sleep($wait_duration);
 
                 // Reset the cycle start time as well as the iteration count.
-                $this->cycle_start = carbon('now');
+                $this->cycle_start_time = carbon('now');
                 $this->iteration_count = 0;
             }
 
             // Check if we should just reset the iteration & cycle count as a result of
             // us not using the full 20 requests in a 10 second window.
-            if ($this->cycle_start->addSeconds($this->cycle_duration) < carbon('now')) {
+            if ($this->cycle_start_time->copy()->addSeconds($this->cycle_duration) < carbon('now')) {
 
-                $this->cycle_start = carbon('now');
+                $this->cycle_start_time = carbon('now');
                 $this->iteration_count = 0;
-            }
 
+            }
         });
     }
 }
