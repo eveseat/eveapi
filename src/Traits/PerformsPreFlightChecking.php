@@ -52,14 +52,14 @@ trait PerformsPreFlightChecking
         // Just stop if ESI is considered down.
         if ($this->isEsiDown()) return false;
 
-        // Public endpoints need no checking
-        if ($this->isPublicEndpoint()) return true;
-
         // Ignore NPC corporations by marking the job as unauthenticated.
         // This is admittedly a little hacky, so a better way is needed
         // more long term.
         if (in_array('corporation', $this->tags()) && $this->isNPCCorporation())
             return false;
+
+        // Public endpoints need no checking
+        if ($this->isPublicEndpoint()) return true;
 
         // Check if the current scope also needs a corp role. If it does,
         // ensure that the current character also has the required role
@@ -143,7 +143,7 @@ trait PerformsPreFlightChecking
      * Determine if the current corporation ID is in NPC corporation range.
      *
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     public function isNPCCorporation(): bool
     {
