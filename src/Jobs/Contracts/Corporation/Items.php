@@ -163,15 +163,16 @@ class Items extends EsiBase
 
             collect($items)->each(function ($item) use ($contract_id) {
 
-                ContractItem::firstOrCreate([
-                    'contract_id' => $contract_id,
-                    'record_id'   => $item->record_id,
-                ], [
+                ContractItem::insertOnDuplicateKey([
+                    'contract_id'  => $contract_id,
+                    'record_id'    => $item->record_id,
                     'type_id'      => $item->type_id,
                     'quantity'     => $item->quantity,
                     'raw_quantity' => $item->raw_quantity ?? null,
                     'is_singleton' => $item->is_singleton,
                     'is_included'  => $item->is_included,
+                ], [
+                    'contract_id', 'record_id',
                 ]);
             });
 

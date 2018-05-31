@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -31,7 +32,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class ContractItem extends Model
 {
-    use HasCompositePrimaryKey;
+    use HasCompositePrimaryKey, CanBulkInsertOrUpdate;
 
     /**
      * @var bool
