@@ -25,10 +25,10 @@ namespace Seat\Eveapi\Traits;
 use Illuminate\Database\Grammar;
 
 /**
- * Trait CanBulkInsertUpdate.
+ * Trait CanUpsertIgnoreReplace.
  * @package Seat\Eveapi\Traits
  */
-trait CanBulkInsertOrUpdate
+trait CanUpsertIgnoreReplace
 {
     /**
      * @param array      $values
@@ -36,16 +36,20 @@ trait CanBulkInsertOrUpdate
      *
      * @return bool
      */
-    public static function insertOnDuplicateKey(array $values, array $updateColumns = null)
+    public static function upsert(array $values, array $updateColumns = null)
     {
 
         if (empty($values))
             return true;
 
-        if (! is_array(reset($values)))
+        if (! is_array(reset($values))) {
+
             $values = [$values];
-        else {
+
+        } else {
+
             foreach ($values as $key => $value) {
+
                 ksort($value);
                 $values[$key] = $value;
             }
@@ -53,7 +57,8 @@ trait CanBulkInsertOrUpdate
 
         $model = self::getModel();
 
-        $sql = static::compileInsertOnDuplicate($model->getConnection()->getQueryGrammar(), $values, $updateColumns);
+        $sql = static::compileUpsert(
+            $model->getConnection()->getQueryGrammar(), $values, $updateColumns);
 
         $values = static::inLineArray($values);
 
@@ -78,7 +83,7 @@ trait CanBulkInsertOrUpdate
      *
      * @return string
      */
-    private static function compileInsertOnDuplicate(Grammar $grammar, array $values, array $updateColumns = null)
+    private static function compileUpsert(Grammar $grammar, array $values, array $updateColumns = null)
     {
 
         $table = static::getTableName();
@@ -88,6 +93,7 @@ trait CanBulkInsertOrUpdate
         $parameters = collect($values)->map(function ($record) use ($grammar) {
 
             return '(' . $grammar->parameterize($record) . ')';
+
         })->implode(', ');
 
         if (empty($updateColumns))
@@ -96,6 +102,7 @@ trait CanBulkInsertOrUpdate
         $updateColumns = collect($updateColumns)->map(function ($column) {
 
             return sprintf('`%s` = VALUES(`%s`)', $column, $column);
+
         })->implode(', ');
 
         $sql = "INSERT INTO `$table` ($columns) VALUES $parameters ON DUPLICATE KEY UPDATE $updateColumns";
@@ -124,9 +131,8 @@ trait CanBulkInsertOrUpdate
 
         $values = [];
 
-        foreach ($records as $record) {
+        foreach ($records as $record)
             $values = array_merge($values, array_values($record));
-        }
 
         return $values;
     }
@@ -142,10 +148,14 @@ trait CanBulkInsertOrUpdate
         if (empty($values))
             return true;
 
-        if (! is_array(reset($values)))
+        if (! is_array(reset($values))) {
+
             $values = [$values];
-        else {
+
+        } else {
+
             foreach ($values as $key => $value) {
+
                 ksort($value);
                 $values[$key] = $value;
             }
@@ -176,6 +186,7 @@ trait CanBulkInsertOrUpdate
         $parameters = collect($values)->map(function ($record) use ($grammar) {
 
             return '(' . $grammar->parameterize($record) . ')';
+
         })->implode(', ');
 
         $sql = "INSERT IGNORE INTO `$table` ($columns) VALUES $parameters";
@@ -194,10 +205,14 @@ trait CanBulkInsertOrUpdate
         if (empty($values))
             return true;
 
-        if (! is_array(reset($values)))
+        if (! is_array(reset($values))) {
+
             $values = [$values];
-        else {
+
+        } else {
+
             foreach ($values as $key => $value) {
+
                 ksort($value);
                 $values[$key] = $value;
             }
@@ -228,6 +243,7 @@ trait CanBulkInsertOrUpdate
         $parameters = collect($values)->map(function ($record) use ($grammar) {
 
             return '(' . $grammar->parameterize($record) . ')';
+
         })->implode(', ');
 
         $sql = "REPLACE INTO `$table` ($columns) VALUES $parameters";

@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
+use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -32,7 +32,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationStanding extends Model
 {
-    use CanBulkInsertOrUpdate;
+    use CanUpsertIgnoreReplace;
     use HasCompositePrimaryKey;
 
     /**

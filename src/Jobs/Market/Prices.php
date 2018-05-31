@@ -83,7 +83,7 @@ class Prices extends EsiBase
                 ];
             });
 
-            Price::insertOnDuplicateKey($records->toArray(), [
+            Price::upsert($records->toArray(), [
                 'type_id',
                 'average_price',
                 'adjusted_price',

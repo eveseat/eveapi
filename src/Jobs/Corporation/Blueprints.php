@@ -123,7 +123,7 @@ class Blueprints extends EsiBase
                     ];
                 });
 
-                CorporationBlueprint::insertOnDuplicateKey($records->toArray(), [
+                CorporationBlueprint::upsert($records->toArray(), [
                     'corporation_id',
                     'item_id',
                     'type_id',

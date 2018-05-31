@@ -92,7 +92,7 @@ class Standings extends EsiBase
                     ];
                 });
 
-                CorporationStanding::insertOnDuplicateKey($records->toArray(), [
+                CorporationStanding::upsert($records->toArray(), [
                     'corporation_id',
                     'from_type',
                     'from_id',

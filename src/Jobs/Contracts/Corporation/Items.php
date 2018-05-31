@@ -163,7 +163,7 @@ class Items extends EsiBase
 
             collect($items)->each(function ($item) use ($contract_id) {
 
-                ContractItem::insertOnDuplicateKey([
+                ContractItem::upsert([
                     'contract_id'  => $contract_id,
                     'record_id'    => $item->record_id,
                     'type_id'      => $item->type_id,

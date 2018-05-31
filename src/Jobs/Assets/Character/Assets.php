@@ -117,7 +117,7 @@ class Assets extends EsiBase
                     ];
                 });
 
-                CharacterAsset::insertOnDuplicateKey($records->toArray(), [
+                CharacterAsset::upsert($records->toArray(), [
                     'item_id',
                     'character_id',
                     'type_id',

@@ -78,7 +78,7 @@ class Map extends EsiBase
                 ];
             });
 
-            SovereigntyMap::insertOnDuplicateKey($records->toArray(), [
+            SovereigntyMap::upsert($records->toArray(), [
                 'system_id',
                 'alliance_id',
                 'corporation_id',

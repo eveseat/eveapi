@@ -122,7 +122,7 @@ class Assets extends EsiBase
                     ];
                 });
 
-                CorporationAsset::insertOnDuplicateKey($records->toArray(), [
+                CorporationAsset::upsert($records->toArray(), [
                     'item_id',
                     'corporation_id',
                     'type_id',

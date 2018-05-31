@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
+use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CharacterAffiliation.
@@ -31,7 +31,7 @@ use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
  */
 class CharacterAffiliation extends Model
 {
-    use CanBulkInsertOrUpdate;
+    use CanUpsertIgnoreReplace;
 
     /**
      * @var bool

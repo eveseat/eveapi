@@ -133,7 +133,7 @@ class Bookmarks extends EsiBase
                     ];
                 });
 
-                CharacterBookmark::insertOnDuplicateKey($records->toArray(), [
+                CharacterBookmark::upsert($records->toArray(), [
                     'character_id',
                     'bookmark_id',
                     'creator_id',

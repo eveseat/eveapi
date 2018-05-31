@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
+use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CharacterAsset.
@@ -32,7 +32,7 @@ use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
  */
 class CharacterAsset extends Model
 {
-    use CanBulkInsertOrUpdate;
+    use CanUpsertIgnoreReplace;
 
     /**
      * @var bool

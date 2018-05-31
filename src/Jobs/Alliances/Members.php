@@ -80,7 +80,7 @@ class Members extends EsiBase
                     ];
                 });
 
-                AllianceMember::insertOnDuplicateKey($records->toArray(), [
+                AllianceMember::upsert($records->toArray(), [
                     'alliance_id',
                     'corporation_id',
                     'updated_at',

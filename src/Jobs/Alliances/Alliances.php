@@ -75,7 +75,7 @@ class Alliances extends EsiBase
                 ];
             });
 
-            Alliance::insertOnDuplicateKey($records->toArray(), [
+            Alliance::upsert($records->toArray(), [
                 'alliance_id',
                 'updated_at',
             ]);

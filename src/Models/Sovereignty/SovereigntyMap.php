@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Models\Sovereignty;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
+use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class SovereigntyMap.
@@ -31,7 +31,7 @@ use Seat\Eveapi\Traits\CanBulkInsertOrUpdate;
  */
 class SovereigntyMap extends Model
 {
-    use CanBulkInsertOrUpdate;
+    use CanUpsertIgnoreReplace;
 
     /**
      * @var bool

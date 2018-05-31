@@ -122,7 +122,7 @@ class Blueprints extends EsiBase
                     ];
                 });
 
-                CharacterBlueprint::insertOnDuplicateKey($records->toArray(), [
+                CharacterBlueprint::upsert($records->toArray(), [
                     'character_id',
                     'item_id',
                     'type_id',

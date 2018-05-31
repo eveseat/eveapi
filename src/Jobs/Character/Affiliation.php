@@ -146,7 +146,7 @@ class Affiliation extends EsiBase
                     ];
                 });
 
-                CharacterAffiliation::insertOnDuplicateKey($records->toArray(), [
+                CharacterAffiliation::upsert($records->toArray(), [
                     'character_id',
                     'corporation_id',
                     'alliance_id',
