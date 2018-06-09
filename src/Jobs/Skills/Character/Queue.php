@@ -57,12 +57,19 @@ class Queue extends EsiBase
     protected $tags = ['character', 'skills', 'queue'];
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $known_skills;
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
      */
     public function handle()
     {
+
+        $this->known_skills = collect();
 
         if (! $this->preflighted()) return;
 
@@ -91,6 +98,13 @@ class Queue extends EsiBase
                 'level_start_sp'    => property_exists($skill, 'level_start_sp') ?
                     $skill->level_start_sp : null,
             ])->save();
+
+            $this->known_skills->push($skill->skill_id);
         });
+
+        // dropping outdated skills
+        CharacterSkillQueue::where('character_id', $this->getCharacterId())
+            ->whereNotIn('skill_id', $this->known_skills->toArray())
+            ->delete();
     }
 }
