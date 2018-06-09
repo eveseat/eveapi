@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Seat\Web\Models\User;
 
 /**
@@ -32,6 +33,7 @@ use Seat\Web\Models\User;
  */
 class RefreshToken extends Model
 {
+    use SoftDeletes;
 
     /**
      * @var array
@@ -43,7 +45,7 @@ class RefreshToken extends Model
     /**
      * @var array
      */
-    protected $dates = ['expires_on'];
+    protected $dates = ['expires_on', 'deleted_at'];
 
     /**
      * @var string
