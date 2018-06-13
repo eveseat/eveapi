@@ -54,7 +54,7 @@ class Location extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'location'];
+    protected $tags = ['character', 'location'];
 
     /**
      * Execute the job.
