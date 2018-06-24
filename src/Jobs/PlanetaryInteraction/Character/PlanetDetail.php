@@ -114,11 +114,22 @@ class PlanetDetail extends EsiBase
 
     /**
      * PlanetDetail constructor.
+     *
      * @param RefreshToken|null $token
      */
     public function __construct(RefreshToken $token = null)
     {
+
+        $this->resetCollections();
+
         parent::__construct($token);
+    }
+
+    /**
+     * Resets the collections used for cleanup routines.
+     */
+    private function resetCollections()
+    {
 
         $this->planet_pins = collect();
         $this->planet_factories = collect();
@@ -167,7 +178,7 @@ class PlanetDetail extends EsiBase
                         carbon($pin->last_cycle_start) : null,
                 ])->save();
 
-                // seeding garbage collector
+                // Collect data for the cleanup phase
                 $this->planet_pins->push($pin->pin_id);
 
                 if (property_exists($pin, 'factory_details')) {
@@ -197,7 +208,7 @@ class PlanetDetail extends EsiBase
                         'qty_per_cycle'   => $pin->extractor_details->qty_per_cycle ?? null,
                     ])->save();
 
-                    // seeding garbage collector
+                    // Collect data for the cleanup phase
                     $this->planet_extractors->push($pin->pin_id);
 
                     collect($pin->extractor_details->heads)->each(function ($head) use ($planet, $pin) {
@@ -235,8 +246,8 @@ class PlanetDetail extends EsiBase
 
                         // seeding garbage collector
                         $this->planet_contents->push([
-                            'pin_id'    => $pin->pin_id,
-                            'type_id'   => $content->type_id,
+                            'pin_id'  => $pin->pin_id,
+                            'type_id' => $content->type_id,
                         ]);
 
                     });
@@ -254,7 +265,7 @@ class PlanetDetail extends EsiBase
                     'link_level' => $link->link_level,
                 ])->save();
 
-                // seeding garbage collector
+                // Collect data for the cleanup phase
                 $this->planet_links->push([
                     'source_pin_id'      => $link->source_pin_id,
                     'destination_pin_id' => $link->destination_pin_id,
@@ -290,24 +301,29 @@ class PlanetDetail extends EsiBase
 
                         // seeding garbage collector
                         $this->planet_waypoints->push([
-                            'route_id'  => $route->route_id,
-                            'pin_id'    => $waypoint,
+                            'route_id' => $route->route_id,
+                            'pin_id'   => $waypoint,
                         ]);
 
                     });
                 }
             });
 
-            $this->pruneGarbageCollector($planet);
+            $this->planetCleanup($planet);
         });
     }
 
     /**
+     * Performs a cleanup of any routes, links or contents
+     * of a planet.
+     *
      * @param $planet
+     *
      * @throws \Exception
      */
-    private function pruneGarbageCollector($planet)
+    private function planetCleanup($planet)
     {
+
         // cleaning all waypoints
         $this->cleanRouteWaypoints($planet);
 
@@ -332,37 +348,35 @@ class PlanetDetail extends EsiBase
         // cleaning pins
         $this->cleanPins($planet);
 
-        // reset garbage
-        $this->planet_pins = collect();
-        $this->planet_factories = collect();
-        $this->planet_extractors = collect();
-        $this->planet_heads = collect();
-        $this->planet_links = collect();
-        $this->planet_waypoints = collect();
-        $this->planet_routes = collect();
-        $this->planet_contents = collect();
+        $this->resetCollections();
     }
 
     /**
      * @param $planet
+     *
      * @throws \Exception
      */
     private function cleanRouteWaypoints($planet)
     {
+
         CharacterPlanetRouteWaypoint::where('character_id', $this->getCharacterId())
             ->where('planet_id', $planet->planet_id)
-            ->whereNotIn(DB::raw('CONCAT(route_id, ":", pin_id)'), $this->planet_waypoints->map(function ($item, $key) {
-                return $item->route_id . ':' . $item->pin_id;
-            })->toArray())
+            ->whereNotIn(DB::raw('CONCAT(route_id, ":", pin_id)'), $this->planet_waypoints
+                ->map(function ($item) {
+
+                    return $item['route_id'] . ':' . $item['pin_id'];
+                })->toArray())
             ->delete();
     }
 
     /**
      * @param $planet
+     *
      * @throws \Exception
      */
     private function cleanRoutes($planet)
     {
+
         CharacterPlanetRoute::where('character_id', $this->getCharacterId())
             ->where('planet_id', $planet->planet_id)
             ->whereNotIn('route_id', $this->planet_routes->toArray())
@@ -371,52 +385,66 @@ class PlanetDetail extends EsiBase
 
     /**
      * @param $planet
+     *
      * @throws \Exception
      */
     private function cleanLinks($planet)
     {
+
         CharacterPlanetLink::where('character_id', $this->getCharacterId())
             ->where('planet_id', $planet->planet_id)
-            ->whereNotIn(DB::raw('CONCAT(source_pin_id, ":", destination_pin_id)'), $this->planet_links->map(function ($item, $key) {
-                return $item->source_pin_id . ':' . $item->destination_pin_id;
-            })->toArray())
+            ->whereNotIn(DB::raw('CONCAT(source_pin_id, ":", destination_pin_id)'), $this->planet_links
+                ->map(function ($item) {
+
+                    return $item['source_pin_id'] . ':' . $item['destination_pin_id'];
+                })->toArray())
             ->delete();
     }
 
     /**
      * @param $planet
+     *
      * @throws \Exception
      */
     private function cleanContents($planet)
     {
+
         CharacterPlanetContent::where('character_id', $this->getCharacterId())
             ->where('planet_id', $planet->planet_id)
-            ->whereNotIn(DB::raw('CONCAT(pin_id, ":", type_id)'), $this->planet_contents->map(function ($item, $key) {
-                return $item->pin_id . ':' . $item->type_id;
-            })->toArray())
+            ->whereNotIn(DB::raw('CONCAT(pin_id, ":", type_id)'), $this->planet_contents
+                ->map(function ($item) {
+
+                    return $item['pin_id'] . ':' . $item['type_id'];
+                })->toArray())
             ->delete();
     }
 
     /**
      * @param $planet
+     *
      * @throws \Exception
      */
     private function cleanHeads($planet)
     {
+
         CharacterPlanetHead::where('character_id', $this->getCharacterId())
             ->where('planet_id', $planet->planet_id)
-            ->whereNotIn(DB::raw('CONCAT(extractor_id, ":", head_id)'), $this->planet_heads->map(function ($item, $key) {
-                return $item->extractor_id . ':' . $item->head_id;
-            })->toArray())
+            ->whereNotIn(DB::raw('CONCAT(extractor_id, ":", head_id)'), $this->planet_heads
+                ->map(function ($item) {
+
+                    return $item['extractor_id'] . ':' . $item['head_id'];
+                })->toArray())
             ->delete();
     }
 
     /**
      * @param $planet
+     *
      * @throws \Exception
      */
     private function cleanExtractors($planet)
     {
+
         CharacterPlanetExtractor::where('character_id', $this->getCharacterId())
             ->where('planet_id', $planet->planet_id)
             ->whereNotIn('pin_id', $this->planet_extractors->toArray())
@@ -425,10 +453,12 @@ class PlanetDetail extends EsiBase
 
     /**
      * @param $planet
+     *
      * @throws \Exception
      */
     private function cleanFactories($planet)
     {
+
         CharacterPlanetFactory::where('character_id', $this->getCharacterId())
             ->where('planet_id', $planet->planet_id)
             ->whereNotIn('pin_id', $this->planet_factories->toArray())
@@ -437,10 +467,12 @@ class PlanetDetail extends EsiBase
 
     /**
      * @param $planet
+     *
      * @throws \Exception
      */
     private function cleanPins($planet)
     {
+
         CharacterPlanetPin::where('character_id', $this->getCharacterId())
             ->where('planet_id', $planet->planet_id)
             ->whereNotIn('pin_id', $this->planet_pins->toArray())
