@@ -93,9 +93,6 @@ class CorporationInfo extends Model
         $this->member_tracking()->delete();
         $this->members()->delete();
         $this->orders()->delete();
-        $this->outposts()->delete();
-        $this->outpost_details()->delete();
-        $this->outpost_services()->delete();
         $this->roles()->delete();
         $this->role_history()->delete();
         $this->shareholders()->delete();
@@ -319,36 +316,6 @@ class CorporationInfo extends Model
     {
 
         return $this->hasMany(CorporationOrder::class,
-            'corporation_id', 'corporation_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function outposts()
-    {
-
-        return $this->hasMany(CorporationOutpost::class,
-            'corporation_id', 'corporation_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function outpost_details()
-    {
-
-        return $this->hasMany(CorporationOutpostDetail::class,
-            'corporation_id', 'corporation_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function outpost_services()
-    {
-
-        return $this->hasMany(CorporationOutpostService::class,
             'corporation_id', 'corporation_id');
     }
 
