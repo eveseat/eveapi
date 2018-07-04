@@ -62,5 +62,4 @@ class CorporationMemberTracking extends Model
 
         return $this->belongsTo(User::class, 'character_id', 'id');
     }
-
 }
