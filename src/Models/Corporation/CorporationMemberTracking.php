@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Corporation;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Web\Models\User;
 
 /**
  * Class CorporationMemberTracking.
@@ -52,4 +53,14 @@ class CorporationMemberTracking extends Model
 
         return $this->belongsTo(InvType::class, 'ship_type_id', 'typeID');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+
+        return $this->belongsTo(User::class, 'character_id', 'id');
+    }
+
 }
