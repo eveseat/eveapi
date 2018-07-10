@@ -44,6 +44,9 @@ class EveapiServiceProvider extends ServiceProvider
             __DIR__ . '/database/migrations/' => database_path('migrations'),
         ]);
 
+        // Update api config
+        $this->configure_api();
+
     }
 
     /**
@@ -62,5 +65,23 @@ class EveapiServiceProvider extends ServiceProvider
 
             return new EseyeSetup;
         });
+    }
+
+    /**
+     * Update Laravel 5 Swagger annotation path
+     */
+    private function configure_api()
+    {
+        // ensure current annotations setting is an array of path or transform into it
+        $current_annotations = config('l5-swagger.paths.annotations');
+        if (! is_array($current_annotations))
+            $current_annotations = [$current_annotations];
+
+        // merge paths together and update config
+        config([
+            'l5-swagger.paths.annotations' => array_unique(array_merge($current_annotations, [
+                __DIR__ . '/Models',
+            ])),
+        ]);
     }
 }
