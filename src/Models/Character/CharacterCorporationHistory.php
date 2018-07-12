@@ -28,6 +28,52 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 /**
  * Class CharacterCorporationHistory.
  * @package Seat\Eveapi\Models\Character
+ *
+ * @SWG\Definition(
+ *     description="Character Corporation History",
+ *     title="CharacterCorporationHistory",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="start_date",
+ *     description="The date-time from which the character was inside the corporation"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="corporation_id",
+ *     description="The corporation ID into which the character was"
+ * )
+ *
+ * @SWG\Property(
+ *     type="boolean",
+ *     property="is_deleted",
+ *     description="True if the corporation has been close"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="record_id",
+ *     description="Sorting key"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="created_at",
+ *     description="The date-time when record has been created into SeAT"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="updated_at",
+ *     description="The date-time when record has been updated into SeAT"
+ * )
  */
 class CharacterCorporationHistory extends Model
 {
