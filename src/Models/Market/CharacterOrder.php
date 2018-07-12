@@ -28,6 +28,141 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 /**
  * Class CharacterOrder.
  * @package Seat\Eveapi\Models\Market
+ *
+ * @SWG\Definition(
+ *     description="Character Order",
+ *     title="CharacterOrder",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="order_id",
+ *     description="The market order ID"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="type_id",
+ *     description="The type to which order is referring"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="region_id",
+ *     description="The region up to which the order is valid"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="location_id",
+ *     description="The structure where the order is"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="range",
+ *     description="The range the order is covering"
+ * )
+ *
+ * @SWG\Property(
+ *     type="boolean",
+ *     property="is_buy_order",
+ *     description="True if the order is a buy order"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="price",
+ *     description="The unit price"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="volume_total",
+ *     description="The order initial volume"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="volume_remain",
+ *     description="The order remaining volume"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="issued",
+ *     description="The date-time when the order has been created"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="min_volume",
+ *     description="The minimum volume which is requested for a buy order"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="duration",
+ *     description="The number of seconds the order is valid"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="escrow"
+ * )
+ *
+ * @SWG\Property(
+ *     type="boolean",
+ *     property="is_corporation",
+ *     description="True if the order is a corporation order"
+ * )
+ *
+ * @SWG\Property(
+ *     type="object",
+ *     property="created_at",
+ *     description="The date-time when order has been created into SeAT",
+ *     @SWG\Property(
+ *          type="string",
+ *          format="date-time",
+ *          property="date"
+ *     ),
+ *     @SWG\Property(
+ *          type="integer",
+ *          property="timezone_type"
+ *     ),
+ *     @SWG\Property(
+ *          type="string",
+ *          property="timezone"
+ *     )
+ * )
+ *
+ * @SWG\Property(
+ *     type="object",
+ *     property="updated_at",
+ *     description="The date-time when order has been updated into SeAT",
+ *     @SWG\Property(
+ *          type="string",
+ *          format="date-time",
+ *          property="date"
+ *     ),
+ *     @SWG\Property(
+ *          type="integer",
+ *          property="timezone_type"
+ *     ),
+ *     @SWG\Property(
+ *          type="string",
+ *          property="timezone"
+ *     )
+ * )
  */
 class CharacterOrder extends Model
 {
