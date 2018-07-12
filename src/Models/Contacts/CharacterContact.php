@@ -28,6 +28,94 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 /**
  * Class CharacterContact.
  * @package Seat\Eveapi\Models\Contacts
+ *
+ * @SWG\Definition(
+ *     description="Character Contact",
+ *     title="CharacterContact",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="contact_id",
+ *     description="The entity ID"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="float",
+ *     property="standing",
+ *     description="The standing between -10 and 10"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     enum={"character","corporation","alliance","faction"},
+ *     property="contact_type",
+ *     description="The entity type"
+ * )
+ *
+ * @SWG\Property(
+ *     type="boolean",
+ *     property="is_watched",
+ *     description="True if the contact is in the watchlist"
+ * )
+ *
+ * @SWG\Property(
+ *     type="boolean",
+ *     property="is_blocked",
+ *     description="True if the contact is in the blacklist"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="label_id",
+ *     description="The labels mask attached to the the contact"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="label_data"
+ * )
+ *
+ * @SWG\Property(
+ *     type="object",
+ *     property="created_at",
+ *     description="The contact creation date",
+ *     @SWG\Property(
+ *          type="string",
+ *          format="date-time",
+ *          property="date"
+ *     ),
+ *     @SWG\Property(
+ *          type="integer",
+ *          property="timezone_type"
+ *     ),
+ *     @SWG\Property(
+ *          type="string",
+ *          property="timezone"
+ *     )
+ * )
+ *
+ * @SWG\Property(
+ *     type="object",
+ *     property="updated_at",
+ *     description="The contact creation date",
+ *     @SWG\Property(
+ *          type="string",
+ *          format="date-time",
+ *          property="date"
+ *     ),
+ *     @SWG\Property(
+ *          type="integer",
+ *          property="timezone_type"
+ *     ),
+ *     @SWG\Property(
+ *          type="string",
+ *          property="timezone"
+ *     )
+ * )
  */
 class CharacterContact extends Model
 {
