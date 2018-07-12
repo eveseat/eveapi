@@ -68,7 +68,7 @@ class EveapiServiceProvider extends ServiceProvider
     }
 
     /**
-     * Update Laravel 5 Swagger annotation path
+     * Update Laravel 5 Swagger annotation path.
      */
     private function configure_api()
     {

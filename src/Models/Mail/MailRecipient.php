@@ -47,7 +47,6 @@ use Illuminate\Database\Eloquent\Model;
  *     property="recipient_type",
  *     description="The recipient qualifier"
  * )
- *
  */
 class MailRecipient extends Model
 {
