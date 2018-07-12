@@ -29,6 +29,104 @@ use Seat\Eveapi\Traits\IsReadOnly;
 /**
  * Class InvType.
  * @package Seat\Eveapi\Models\Sde
+ *
+ * @SWG\Definition(
+ *     description="Inventory Type",
+ *     title="InvType",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     minimum=1,
+ *     property="typeID",
+ *     description="The inventory type ID"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     minimum=1,
+ *     property="groupID",
+ *     description="The group to which the type is related"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="typeName",
+ *     description="The inventory type name"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="description",
+ *     description="The inventory type description"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="mass",
+ *     description="The inventory type mass"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="volume",
+ *     description="The inventory type volume"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="capacity",
+ *     description="The inventory type storage capacity"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="portionSize"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="raceID",
+ *     description="The race to which the inventory type is tied"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="basePrice",
+ *     description="The initial price used by NPC to create order"
+ * )
+ *
+ * @SWG\Property(
+ *     type="boolean",
+ *     property="published",
+ *     description="True if the item is available in-game"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="marketGroupID",
+ *     description="The group into which the item is available on market"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="iconID"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="soundID"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="graphicID"
+ * )
  */
 class InvType extends Model
 {
