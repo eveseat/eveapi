@@ -27,6 +27,51 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class KillmailDetail.
  * @package Seat\Eveapi\Models\Killmails
+ *
+ * @SWG\Definition(
+ *     description="Killmail Detail",
+ *     title="KillmailDetail",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="killmail_time",
+ *     description="The date-time when kill append"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="solar_system_id",
+ *     description="The solar system identifier in which the kill occurs"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="moon_id",
+ *     description="The moon identifier near to which the kill occurs"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="war_id",
+ *     description="The war identifier in which the kill involves"
+ * )
+ *
+ * @SWG\Property(
+ *     type="array",
+ *     property="attackers",
+ *     description="A list of attackers",
+ *     @SWG\Items(ref="#/definitions/KillmailAttacker")
+ * )
+ *
+ * @SWG\Property(
+ *     property="victims",
+ *     description="The victim",
+ *     ref="#/definitions/KillmailVictim"
+ * )
  */
 class KillmailDetail extends Model
 {
