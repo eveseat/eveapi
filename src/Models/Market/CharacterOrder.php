@@ -127,41 +127,17 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  * )
  *
  * @SWG\Property(
- *     type="object",
+ *     type="string",
+ *     format="date-time",
  *     property="created_at",
- *     description="The date-time when order has been created into SeAT",
- *     @SWG\Property(
- *          type="string",
- *          format="date-time",
- *          property="date"
- *     ),
- *     @SWG\Property(
- *          type="integer",
- *          property="timezone_type"
- *     ),
- *     @SWG\Property(
- *          type="string",
- *          property="timezone"
- *     )
+ *     description="The date-time when order has been created into SeAT"
  * )
  *
  * @SWG\Property(
- *     type="object",
+ *     type="string",
+ *     format="date-time",
  *     property="updated_at",
- *     description="The date-time when order has been updated into SeAT",
- *     @SWG\Property(
- *          type="string",
- *          format="date-time",
- *          property="date"
- *     ),
- *     @SWG\Property(
- *          type="integer",
- *          property="timezone_type"
- *     ),
- *     @SWG\Property(
- *          type="string",
- *          property="timezone"
- *     )
+ *     description="The date-time when order has been updated into SeAT"
  * )
  */
 class CharacterOrder extends Model
