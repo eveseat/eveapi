@@ -28,6 +28,24 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 /**
  * Class CorporationContract.
  * @package Seat\Eveapi\Models\Contacts
+ *
+ * @SWG\Definition(
+ *     description="Corporation Contract",
+ *     title="CorporationContract",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="contract_id",
+ *     description="The contract identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     property="detail",
+ *     ref="#/definitions/ContractDetail"
+ * )
  */
 class CorporationContract extends Model
 {
