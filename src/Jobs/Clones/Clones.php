@@ -99,7 +99,7 @@ class Clones extends EsiBase
                 'name'          => isset($jump_clone->name) ? $jump_clone->name : null,
                 'location_id'   => $jump_clone->location_id,
                 'location_type' => $jump_clone->location_type,
-                'implants'      => json_encode($jump_clone->implants),
+                'implants'      => $jump_clone->implants,
             ])->save();
         });
 

@@ -41,6 +41,102 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 /**
  * Class CorporationInfo.
  * @package Seat\Eveapi\Models\Corporation
+ *
+ * @SWG\Definition(
+ *      description="Corporation Sheet",
+ *      title="CorporationInfo",
+ *      type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="name",
+ *     description="The name of the corporation"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="ticker",
+ *     description="The corporation ticker name"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="member_count",
+ *     description="The member amount of the corporation"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     minimum=90000000,
+ *     property="ceo_id",
+ *     description="The character ID of the corporation CEO"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     minimum=99000000,
+ *     property="alliance_id",
+ *     description="The alliance ID of the corporation if any"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="description",
+ *     description="The corporation description"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="float",
+ *     property="tax_rate",
+ *     description="The corporation tax rate"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="date_founded",
+ *     description="The corporation creation date"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="creator_id",
+ *     description="The corporation founder character ID"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="uri",
+ *     property="url",
+ *     description="The corporation homepage link"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     minimum=500000,
+ *     maximum=1000000,
+ *     property="faction_id",
+ *     description="The corporation faction if any"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="home_station_id",
+ *     description="The home station where the corporation has its HQ"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="shares",
+ *     description="The shares attached to the corporation"
+ * )
  */
 class CorporationInfo extends Model
 {

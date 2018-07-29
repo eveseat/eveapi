@@ -29,6 +29,60 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 /**
  * Class CharacterJumpClone.
  * @package Seat\Eveapi\Models\Clones
+ *
+ * @SWG\Definition(
+ *     description="Character Jump Clone",
+ *     title="CharacterJumpClone",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="jump_clone_id",
+ *     description="Unique jump clone identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="name",
+ *     description="Clone name if set"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="location_id",
+ *     description="The structure into which the clone resides"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     enum={"station","structure"},
+ *     property="location_type",
+ *     description="The structure type qualifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="array",
+ *     property="implants",
+ *     description="A list of type ID",
+ *     @SWG\Items(type="integer")
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="created_at",
+ *     description="The date-time when record has been created into SeAT"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="updated_at",
+ *     description="The date-time when record has been updated into SeAT"
+ * )
  */
 class CharacterJumpClone extends Model
 {

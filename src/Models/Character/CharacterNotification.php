@@ -27,6 +27,71 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class CharacterNotification.
  * @package Seat\Eveapi\Models\Character
+ *
+ * @SWG\Definition(
+ *     description="Character Notification",
+ *     title="CharacterNotification",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="notification_id",
+ *     description="The notification identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="type",
+ *     description="The notification type"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="sender_id",
+ *     description="The entity who sent the notification"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     enum={"character","corporation","alliance","faction","other"},
+ *     property="sender_type",
+ *     description="The sender qualifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="timestamp",
+ *     description="The date-time when notification has been sent"
+ * )
+ *
+ * @SWG\Property(
+ *     type="boolean",
+ *     property="is_read",
+ *     description="True if the notification has been red"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="text",
+ *     description="The notification content"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="created_at",
+ *     description="The date-time when notification has been created into SeAT"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="updated_at",
+ *     description="The date-time when notification has been updated into SeAT"
+ * )
  */
 class CharacterNotification extends Model
 {

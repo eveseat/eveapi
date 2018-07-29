@@ -82,7 +82,7 @@ class Headers extends EsiBase
                 'subject'      => $header->subject,
                 'from'         => $header->from,
                 'timestamp'    => carbon($header->timestamp),
-                'labels'       => json_encode($header->labels),
+                'labels'       => $header->labels,
             ]);
 
             // Update the 'read' status

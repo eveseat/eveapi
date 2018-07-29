@@ -50,6 +50,104 @@ use Seat\Services\Traits\NotableTrait;
 /**
  * Class CharacterInfo.
  * @package Seat\Eveapi\Models\Character
+ *
+ * @SWG\Definition(
+ *     description="Character Info",
+ *     title="CharacterInfo",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="name",
+ *     description="Character name"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="description",
+ *     description="Character biography"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="corporation_id",
+ *     description="Character corporation identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="alliance_id",
+ *     description="Character alliance identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="birthday",
+ *     description="Character birthday"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     enum={"male", "female"},
+ *     property="gender",
+ *     description="Character gender"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="race_id",
+ *     description="Character race identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="bloodline_id",
+ *     description="Character bloodline identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="ancenstry_id",
+ *     description="Character ancenstry identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="security_status",
+ *     description="Character security status"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="faction_id",
+ *     description="Character faction identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="created_at",
+ *     description="The date-time when record has been created into SeAT"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="updated_at",
+ *     description="The date-time when record has been updated into SeAT"
+ * )
+ *
+ * @SWG\Property(
+ *     type="number",
+ *     format="double",
+ *     property="balance",
+ *     description="Character wallet balance"
+ * )
  */
 class CharacterInfo extends Model
 {

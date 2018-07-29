@@ -28,6 +28,39 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 /**
  * Class CorporationKillmail.
  * @package Seat\Eveapi\Models\Killmails
+ *
+ * @SWG\Definition(
+ *     description="Character Killmail",
+ *     title="CharacterKillmail",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="killmail_id",
+ *     description="The killmail identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="killmail_hash",
+ *     description="The killmail hash"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="created_at",
+ *     description="The date-time when record has been created into SeAT"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="updated_at",
+ *     description="The date-time when record has been updated into SeAT"
+ * )
  */
 class CorporationKillmail extends Model
 {

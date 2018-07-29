@@ -30,6 +30,67 @@ use Seat\Web\Models\User;
 /**
  * Class RefreshToken.
  * @package Seat\Eveapi\Models
+ *
+ * @SWG\Definition(
+ *     description="EVE Online SSO Refresh Token",
+ *     title="RefreshToken",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     minimum=90000000,
+ *     description="Character ID to which the token is tied",
+ *     property="character_id"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     description="Refresh token hash",
+ *     property="refresh_token"
+ * )
+ *
+ * @SWG\Property(
+ *     type="array",
+ *     description="Scopes granted for this token",
+ *     property="scopes",
+ *     @SWG\Items(type="string")
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     description="The datetime UTC when the token expires",
+ *     property="expires_on"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     description="The short life access token",
+ *     property="token"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     description="The date-time when the token has been created into SeAT",
+ *     property="created_at"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     description="The date-time when the token has been updated into SeAT",
+ *     property="updated_at"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     description="The date-time when the token has been disabled",
+ *     property="deleted_at"
+ * )
  */
 class RefreshToken extends Model
 {

@@ -27,6 +27,58 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class MailHeader.
  * @package Seat\Eveapi\Models\Character
+ *
+ * @SWG\Definition(
+ *     description="Mail Header",
+ *     title="MailHeader",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="mail_id",
+ *     description="The mail identifier"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="subject",
+ *     description="The mail topic"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     format="int64",
+ *     property="from",
+ *     description="The mail sender"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     format="date-time",
+ *     property="timestamp",
+ *     description="The date-time when the mail has been sent"
+ * )
+ *
+ * @SWG\Property(
+ *     type="boolean",
+ *     property="boolean",
+ *     description="True if the mail has been red"
+ * )
+ *
+ * @SWG\Property(
+ *     type="string",
+ *     property="body",
+ *     description="The mail content"
+ * )
+ *
+ * @SWG\Property(
+ *     type="array",
+ *     property="recipients",
+ *     description="A list of recipients",
+ *     @SWG\Items(ref="#/definitions/MailRecipient")
+ * )
  */
 class MailHeader extends Model
 {

@@ -29,6 +29,42 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 /**
  * Class CharacterSkill.
  * @package Seat\Eveapi\Models\Character
+ *
+ * @SWG\Definition(
+ *     description="Character Skill",
+ *     title="CharacterSkill",
+ *     type="object"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="skill_id",
+ *     description="The skill inventory type ID"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="skillpoints_in_skill",
+ *     description="The amount of skill point actually learned for that skill"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="trained_skill_level",
+ *     description="The level up to which the skill as been learned"
+ * )
+ *
+ * @SWG\Property(
+ *     type="integer",
+ *     property="active_skill_level",
+ *     description="The level actually training"
+ * )
+ *
+ * @SWG\Property(
+ *     property="type",
+ *     ref="#/definitions/InvType",
+ *     description="The inventory type information"
+ * )
  */
 class CharacterSkill extends Model
 {
