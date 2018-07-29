@@ -93,5 +93,10 @@ class Skills extends EsiBase
                 'active_skill_level'   => $character_skill->active_skill_level,
             ])->save();
         });
+
+        // delete skills which have been removed
+        CharacterSkill::where('character_id', $this->getCharacterId())
+            ->whereNotIn('skill_id', collect($character_skills->skills)->pluck('skill_id')->flatten()->all())
+            ->delete();
     }
 }
