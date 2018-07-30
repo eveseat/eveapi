@@ -130,10 +130,12 @@ class Structures extends EsiBase
                     'structure_id' => $character_asset->location_id,
                 ], [
                     'name'            => $structure->name,
+                    'owner_id'        => $structure->owner_id,
                     'solar_system_id' => $structure->solar_system_id,
                     'x'               => $structure->position->x,
                     'y'               => $structure->position->y,
                     'z'               => $structure->position->z,
+                    'type_id'         => property_exists($structure, 'type_id') ? $structure->type_id : null,
                 ])->save();
 
             } catch (RequestFailedException $e) {
@@ -145,10 +147,12 @@ class Structures extends EsiBase
                     'structure_id' => $character_asset->location_id,
                 ])->fill([
                     'name'            => 'Unknown Structure',
+                    'owner_id'        => null,
                     'solar_system_id' => 0,
                     'x'               => 0.0,
                     'y'               => 0.0,
                     'z'               => 0.0,
+                    'type_id'         => null,
                 ]);
 
                 // persist the structure only if it doesn't already exist
