@@ -24,6 +24,9 @@ namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\StaStation;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Web\Models\User;
 
@@ -203,5 +206,21 @@ class CorporationMemberTracking extends Model
     {
 
         return $this->belongsTo(User::class, 'character_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function location()
+    {
+        // System range
+        if ($this->location_id >= 30000001 && $this->location_id <= 31002604)
+            return $this->belongsTo(MapDenormalize::class, 'location_id', 'itemID');
+
+        // Station range
+        if ($this->location_id >= 60000000 && $this->location_id <= 64000000)
+            return $this->belongsTo(StaStation::class, 'location_id', 'stationID');
+
+        return $this->belongsTo(UniverseStructure::class, 'location_id', 'structure_id');
     }
 }
