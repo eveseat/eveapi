@@ -122,6 +122,13 @@ class CorporationContact extends Model
     use HasCompositePrimaryKey;
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'label_ids' => 'array',
+    ];
+
+    /**
      * @var bool
      */
     protected static $unguarded = true;
