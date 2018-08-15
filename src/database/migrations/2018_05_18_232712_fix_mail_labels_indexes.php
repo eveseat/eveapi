@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class FixMailLabelsIndexes extends Migration
@@ -34,12 +35,16 @@ class FixMailLabelsIndexes extends Migration
     public function up()
     {
 
-        Schema::table('mail_labels', function (Blueprint $table) {
+        $indexes = collect(DB::select('SHOW INDEXES FROM mail_labels'));
 
-            $table->dropIndex('mail_labels_label_id_index');
-            $table->primary(['character_id', 'label_id']);
+        if ($indexes->pluck('Key_name')->contains('mail_labels_label_id_index')) {
+            Schema::table('mail_labels', function (Blueprint $table) {
 
-        });
+                $table->dropIndex('mail_labels_label_id_index');
+                $table->primary(['character_id', 'label_id']);
+
+            });
+        }
     }
 
     /**
@@ -50,10 +55,14 @@ class FixMailLabelsIndexes extends Migration
     public function down()
     {
 
-        Schema::table('mail_labels', function (Blueprint $table) {
+        $indexes = collect(DB::select('SHOW INDEXES FROM mail_labels'));
 
-            $table->dropPrimary(['character_id', 'label_id']);
-            $table->index('label_id');
-        });
+        if (! $indexes->pluck('Key_name')->contains('mail_labels_label_id_index')) {
+            Schema::table('mail_labels', function (Blueprint $table) {
+
+                $table->dropPrimary(['character_id', 'label_id']);
+                $table->index('label_id');
+            });
+        }
     }
 }
