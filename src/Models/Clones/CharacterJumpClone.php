@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Clones;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\StaStation;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -114,6 +115,6 @@ class CharacterJumpClone extends Model
         if ($this->location_type == 'station')
             return $this->belongsTo(StaStation::class, 'location_id', 'stationID');
 
-        return $this->belongsTo(StaStation::class, 'location_id', 'stationID');
+        return $this->belongsTo(UniverseStructure::class, 'location_id', 'structure_id');
     }
 }
