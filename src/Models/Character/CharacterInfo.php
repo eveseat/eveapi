@@ -163,7 +163,7 @@ use Seat\Services\Traits\NotableTrait;
  *          type="number",
  *          format="int64",
  *          property="unallocated_sp",
- *          description="The total skill points non allocated for this character"
+ *          description="The total skill points not allocated for this character"
  *     )
  * )
  */
