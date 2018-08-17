@@ -157,9 +157,47 @@ class MapDenormalize extends Model
         return $this->belongsTo(InvType::class, 'typeID', 'typeID');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function sovereignty()
     {
 
         return $this->hasOne(SovereigntyMap::class, 'system_id', 'itemID');
+    }
+
+    /**
+     * @return int
+     */
+    public function getStructureIdAttribute()
+    {
+        return $this->structure_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSolarSystemIdAttribute()
+    {
+        if (! is_null($this->solarSystemID))
+            return $this->solarSystemID;
+
+        return $this->itemID;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTypeIdAttribute()
+    {
+        return $this->typeID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameAttribute()
+    {
+        return $this->itemName;
     }
 }
