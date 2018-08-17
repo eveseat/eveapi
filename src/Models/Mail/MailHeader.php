@@ -99,6 +99,13 @@ class MailHeader extends Model
     protected $primaryKey = null;
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'labels' => 'array',
+    ];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function body()
