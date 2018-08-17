@@ -116,7 +116,7 @@ class Structures extends EsiBase
                     'x'               => $structure->position->x,
                     'y'               => $structure->position->y,
                     'z'               => $structure->position->z,
-                    'type_id'         => property_exists($structure, 'type_id') ? $structure->type_id : null,
+                    'type_id'         => $structure->type_id ?? null,
                 ])->save();
 
             } catch (RequestFailedException $e) {
@@ -144,11 +144,14 @@ class Structures extends EsiBase
     }
 
     /**
+     * Gets the current characters asset locations.
+     *
      * @return array
      * @throws \Exception
      */
-    private function getCharacterAssetLocations() : array
+    private function getCharacterAssetLocations(): array
     {
+
         $assets = CharacterAsset::where('character_id', $this->getCharacterId())
             ->where('location_flag', 'Hangar')
             ->where('location_type', 'other')
@@ -179,17 +182,22 @@ class Structures extends EsiBase
             ->limit(30)
             ->get();
 
-        return $assets->map(function ($asset, $key) {
+        return $assets->map(function ($asset) {
+
             return $asset->location_id;
+
         })->all();
     }
 
     /**
+     * @param array $exclude_location_ids
+     *
      * @return array
      * @throws \Exception
      */
-    private function getCorporationAssetLocations(array $exclude_location_ids = []) : array
+    private function getCorporationAssetLocations(array $exclude_location_ids = []): array
     {
+
         $assets = CorporationAsset::where('corporation_id', $this->getCorporationId())
             ->whereIn('location_flag', ['OfficeFolder', 'CorpDeliveries'])
             ->where('location_type', 'other')
@@ -225,7 +233,8 @@ class Structures extends EsiBase
             ->limit(30)
             ->get();
 
-        return $assets->map(function ($asset, $key) {
+        return $assets->map(function ($asset) {
+
             return $asset->location_id;
         })->all();
     }
