@@ -45,7 +45,7 @@ class Contacts extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var string
@@ -109,7 +109,7 @@ class Contacts extends EsiBase
                     'standing'     => $contact->standing,
                     'contact_type' => $contact->contact_type,
                     'is_watched'   => $contact->is_watched ?? false,
-                    'label_id'     => $contact->label_id ?? null,
+                    'label_ids'    => $contact->label_ids ?? null,
                 ])->save();
             });
 

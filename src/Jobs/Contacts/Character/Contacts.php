@@ -45,7 +45,7 @@ class Contacts extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var string
@@ -108,9 +108,9 @@ class Contacts extends EsiBase
                 ])->fill([
                     'standing'     => $contact->standing,
                     'contact_type' => $contact->contact_type,
-                    'is_watched'   => isset($contact->is_watched) ? $contact->is_watched : false,
-                    'is_blocked'   => isset($contact->is_blocked) ? $contact->is_blocked : false,
-                    'label_id'     => isset($contact->label_id) ? $contact->label_id : null,
+                    'is_watched'   => $contact->is_watched ?? false,
+                    'is_blocked'   => $contact->is_blocked ?? false,
+                    'label_ids'    => $contact->label_ids ?? null,
                 ])->save();
             });
 
