@@ -148,6 +148,24 @@ use Seat\Services\Traits\NotableTrait;
  *     property="balance",
  *     description="Character wallet balance"
  * )
+ *
+ * @SWG\Property(
+ *     type="object",
+ *     property="skillpoints",
+ *     description="",
+ *     @SWG\Property(
+ *          type="number",
+ *          format="int64",
+ *          property="total_sp",
+ *          description="The total skill points owned by the character"
+ *     ),
+ *     @SWG\Property(
+ *          type="number",
+ *          format="int64",
+ *          property="unallocated_sp",
+ *          description="The total skill points non allocated for this character"
+ *     )
+ * )
  */
 class CharacterInfo extends Model
 {
@@ -510,6 +528,15 @@ class CharacterInfo extends Model
     {
 
         return $this->hasMany(CharacterSkill::class,
+            'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function skillpoints()
+    {
+        return $this->hasOne(CharacterInfoSkill::class,
             'character_id', 'character_id');
     }
 
