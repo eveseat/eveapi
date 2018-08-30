@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Jobs\Industry\Character;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CharacterMining;
+use Seat\Eveapi\Models\Market\Price;
 
 /**
  * Class Mining.
@@ -83,7 +84,7 @@ class Mining extends EsiBase
             collect($mining)->each(function ($ledger_entry) {
 
                 // retrieve daily mined amount for current type, system and character
-                $row = CharacterMining::select(DB::raw('SUM(quantity) as quantity'))
+                $row = CharacterMining::select(DB::raw('SUM(quantity) as quantity, SUM(average_price) as average_price, SUM(adjusted_price) as adjusted_price'))
                     ->where('character_id', $this->getCharacterId())
                     ->where('date', $ledger_entry->date)
                     ->where('solar_system_id', $ledger_entry->solar_system_id)
@@ -113,6 +114,30 @@ class Mining extends EsiBase
                         'type_id'         => $ledger_entry->type_id,
                     ], [
                         'quantity' => $delta_quantity,
+                    ]);
+
+                }
+
+                // in case of non populated prices we store the value
+                if ($row->average_price === 0.0 && $row->adjusted_price === 0.0) {
+
+                    // calculate isk amount to persists
+                    $average_price =  Price::find($ledger_entry->type_id)->average_price;
+                    $average_price = (is_null($average_price) ? 0.0 : $average_price);
+
+                    $adjusted_price =  Price::find($ledger_entry->type_id)->adjusted_price;
+                    $adjusted_price = (is_null($adjusted_price) ? 0.0 : $adjusted_price);
+
+                    // finally, we create the new entry
+                    CharacterMining::updateOrCreate([
+                        'character_id'    => $this->getCharacterId(),
+                        'date'            => $ledger_entry->date,
+                        'time'            => $delta_time,
+                        'solar_system_id' => $ledger_entry->solar_system_id,
+                        'type_id'         => $ledger_entry->type_id,
+                    ], [
+                        'average_price'   => $average_price,
+                        'adjusted_price'  => $adjusted_price,
                     ]);
 
                 }

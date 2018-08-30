@@ -49,23 +49,9 @@ class CharacterMining extends Model
      * @var array
      */
     protected $appends = [
-        'amount', 'volumes',
+        'volumes',
     ];
 
-    /**
-     * @return float
-     */
-    public function getAmountAttribute()
-    {
-
-        if (is_null($this->type))
-            return 0.0;
-
-        if (is_null($this->type->prices))
-            return 0.0;
-
-        return $this->quantity * $this->type->prices->average_price;
-    }
 
     /**
      * @return float
