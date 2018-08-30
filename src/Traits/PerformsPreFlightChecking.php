@@ -69,7 +69,7 @@ trait PerformsPreFlightChecking
             // Don't process NPC corporations.
             if ($this->isNPCCorporation()) return false;
 
-            // Ensure that the chracter has the needed roles to make
+            // Ensure that the character has the needed roles to make
             // a call to this endpoint.
             if ($this->isCorpCharacterWithRoles())
                 return true;
