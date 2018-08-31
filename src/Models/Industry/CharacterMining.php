@@ -52,7 +52,9 @@ class CharacterMining extends Model
         'value', 'volumes',
     ];
 
-
+    /**
+     * @return float|int
+     */
     public function getValueAttribute()
     {
 
