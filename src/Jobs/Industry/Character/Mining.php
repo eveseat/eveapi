@@ -121,24 +121,25 @@ class Mining extends EsiBase
                 // in case of non populated prices we store the value
                 if ($row->average_price === 0.0 && $row->adjusted_price === 0.0) {
 
+                    if ($ledger_entry->date != carbon()->setTimezone('UTC')->toDateString())
+                        $delta_time = '23:59:59';
+
                     // calculate isk amount to persists
-                    $average_price =  Price::find($ledger_entry->type_id)->average_price;
+                    $average_price =  optional(Price::find($ledger_entry->type_id))->average_price;
                     $average_price = (is_null($average_price) ? 0.0 : $average_price);
 
-                    $adjusted_price =  Price::find($ledger_entry->type_id)->adjusted_price;
+                    $adjusted_price =  optional(Price::find($ledger_entry->type_id))->adjusted_price;
                     $adjusted_price = (is_null($adjusted_price) ? 0.0 : $adjusted_price);
 
-                    // finally, we create the new entry
-                    CharacterMining::updateOrCreate([
-                        'character_id'    => $this->getCharacterId(),
-                        'date'            => $ledger_entry->date,
-                        'time'            => $delta_time,
-                        'solar_system_id' => $ledger_entry->solar_system_id,
-                        'type_id'         => $ledger_entry->type_id,
-                    ], [
-                        'average_price'   => $average_price,
-                        'adjusted_price'  => $adjusted_price,
-                    ]);
+                    CharacterMining::where('character_id', $this->getCharacterId())
+                        ->where('date', $ledger_entry->date)
+                        ->where('time', $delta_time)
+                        ->where('solar_system_id' , $ledger_entry->solar_system_id)
+                        ->where('type_id', $ledger_entry->type_id)
+                        ->update([
+                            'average_price'   => $average_price,
+                            'adjusted_price'  => $adjusted_price
+                        ]);
 
                 }
 
