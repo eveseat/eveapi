@@ -49,9 +49,15 @@ class CharacterMining extends Model
      * @var array
      */
     protected $appends = [
-        'volumes',
+        'value', 'volumes',
     ];
 
+
+    public function getValueAttribute()
+    {
+
+        return $this->quantity * $this->average_price;
+    }
 
     /**
      * @return float
