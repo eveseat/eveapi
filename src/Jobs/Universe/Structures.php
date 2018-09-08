@@ -37,6 +37,14 @@ class Structures extends EsiBase
 {
     use RateLimitsCalls;
 
+    const BUGGED_ASSETS_RANGE = [40000000, 50000000];
+
+    const ASSET_SAFETY = 2004;
+
+    const SOLAR_SYSTEMS_RANGE = [30000000, 33000000];
+
+    const UPWELL_STRUCTURES_RANGE = [60000000, 64000000];
+
     /**
      * The maximum number of calls that can be made per minute.
      * @var int
@@ -87,14 +95,12 @@ class Structures extends EsiBase
 
         if (! $this->preflighted()) return;
 
-        $corporation_asset_locations = [];
-
         // retrieve unresolved location from character
         $character_asset_locations = $this->getCharacterAssetLocations();
 
         // retrieve unresolved location from corporation
-        if (in_array('Director', $this->getCharacterRoles()))
-            $corporation_asset_locations = $this->getCorporationAssetLocations($character_asset_locations);
+        $corporation_asset_locations = in_array('Director', $this->getCharacterRoles()) ?
+            $this->getCorporationAssetLocations($character_asset_locations) : collect();
 
         // merge both character and corporation arrays
         $location_ids = array_merge($character_asset_locations, $corporation_asset_locations);
@@ -164,13 +170,13 @@ class Structures extends EsiBase
             ->where('location_flag', 'Hangar')
             ->where('location_type', 'other')
             // Asset Safety
-            ->where('location_id', '<>', 2004)
+            ->where('location_id', '<>', self::ASSET_SAFETY)
             // Solar Systems
-            ->whereNotBetween('location_id', [30000000, 33000000])
+            ->whereNotBetween('location_id', self::SOLAR_SYSTEMS_RANGE)
             // Bugged Assets
-            ->whereNotBetween('location_id', [40000000, 50000000])
+            ->whereNotBetween('location_id', self::BUGGED_ASSETS_RANGE)
             // Station / Outpost
-            ->whereNotBetween('location_id', [60000000, 64000000])
+            ->whereNotBetween('location_id', self::UPWELL_STRUCTURES_RANGE)
             // stuffs
             ->whereNotIn('location_id', function ($query) {
                 $query->select('item_id')
@@ -217,13 +223,13 @@ class Structures extends EsiBase
             // ignore already listed location_id
             ->whereNotIn('location_id', $exclude_location_ids)
             // Asset Safety
-            ->where('location_id', '<>', 2004)
+            ->where('location_id', '<>', self::ASSET_SAFETY)
             // Solar Systems
-            ->whereNotBetween('location_id', [30000000, 33000000])
+            ->whereNotBetween('location_id', self::SOLAR_SYSTEMS_RANGE)
             // Bugged Assets
-            ->whereNotBetween('location_id', [40000000, 50000000])
+            ->whereNotBetween('location_id', self::BUGGED_ASSETS_RANGE)
             // Station / Outpost
-            ->whereNotBetween('location_id', [60000000, 64000000])
+            ->whereNotBetween('location_id', self::UPWELL_STRUCTURES_RANGE)
             // stuffs
             ->whereNotIn('location_id', function ($query) {
                 $query->select('item_id')
