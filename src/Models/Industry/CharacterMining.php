@@ -61,6 +61,18 @@ class CharacterMining extends Model
         if (is_null($this->type))
             return 0.0;
 
+        // in case the type is containing materials - attempt to retrieve their price
+        if ($this->type->materials->count() > 0)
+            return $this->quantity * $this->type->materials->sum(function ($material) {
+                if (is_null($material->type))
+                    return 0.0;
+
+                if (is_null($material->type->prices))
+                    return 0.0;
+
+                return $material->quantity * $material->type->prices->average_price;
+            });
+
         if (is_null($this->type->prices))
             return 0.0;
 
