@@ -100,7 +100,7 @@ class Structures extends EsiBase
 
         // retrieve unresolved location from corporation
         $corporation_asset_locations = in_array('Director', $this->getCharacterRoles()) ?
-            $this->getCorporationAssetLocations($character_asset_locations) : collect();
+            $this->getCorporationAssetLocations($character_asset_locations) : [];
 
         // merge both character and corporation arrays
         $location_ids = array_merge($character_asset_locations, $corporation_asset_locations);
