@@ -26,8 +26,6 @@ use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
-use Seat\Eveapi\Models\Sde\StaStation;
-use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\RateLimitsCalls;
 
@@ -38,6 +36,14 @@ use Seat\Eveapi\Traits\RateLimitsCalls;
 class Structures extends EsiBase
 {
     use RateLimitsCalls;
+
+    const BUGGED_ASSETS_RANGE = [40000000, 50000000];
+
+    const ASSET_SAFETY = 2004;
+
+    const SOLAR_SYSTEMS_RANGE = [30000000, 33000000];
+
+    const UPWELL_STRUCTURES_RANGE = [60000000, 64000000];
 
     /**
      * The maximum number of calls that can be made per minute.
@@ -73,6 +79,11 @@ class Structures extends EsiBase
     protected $tags = ['character', 'universe', 'structures'];
 
     /**
+     * @var string
+     */
+    protected $scope = 'esi-universe.read_structures.v1';
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -88,10 +99,13 @@ class Structures extends EsiBase
         $character_asset_locations = $this->getCharacterAssetLocations();
 
         // retrieve unresolved location from corporation
-        $corporation_asset_locations = $this->getCorporationAssetLocations($character_asset_locations);
+        $corporation_asset_locations = in_array('Director', $this->getCharacterRoles()) ?
+            $this->getCorporationAssetLocations($character_asset_locations) : collect();
 
         // merge both character and corporation arrays
         $location_ids = array_merge($character_asset_locations, $corporation_asset_locations);
+
+        logger()->debug('Structure resolver', ['location_ids' => $location_ids]);
 
         foreach ($location_ids as $location_id) {
 
@@ -155,23 +169,28 @@ class Structures extends EsiBase
         $assets = CharacterAsset::where('character_id', $this->getCharacterId())
             ->where('location_flag', 'Hangar')
             ->where('location_type', 'other')
+            // Asset Safety
+            ->where('location_id', '<>', self::ASSET_SAFETY)
+            // Solar Systems
+            ->whereNotBetween('location_id', self::SOLAR_SYSTEMS_RANGE)
+            // Bugged Assets
+            ->whereNotBetween('location_id', self::BUGGED_ASSETS_RANGE)
+            // Station / Outpost
+            ->whereNotBetween('location_id', self::UPWELL_STRUCTURES_RANGE)
+            // stuffs
             ->whereNotIn('location_id', function ($query) {
-
-                $query->select('station_id')
-                    ->from((new UniverseStation)->getTable());
+                $query->select('item_id')
+                    ->from((new CharacterAsset)->getTable())
+                    ->where('character_id', $this->getCharacterId())
+                    ->distinct();
             })
-            ->whereNotIn('location_id', function ($query) {
-
-                $query->select('stationID')
-                    ->from((new StaStation)->getTable());
-            })
-            // Remove strucutres that already have a name resolved
+            // Remove structures that already have a name resolved
             // within the last week.
             ->whereNotIn('location_id', function ($query) {
 
                 $query->select('structure_id')
                     ->from((new UniverseStructure)->getTable())
-                    ->where('name', '<>', 'Unknown structure')
+                    ->where('name', '<>', 'Unknown Structure')
                     ->where('updated_at', '<', carbon('now')->subWeek());
             })
             ->select('location_id')->distinct()
@@ -179,7 +198,7 @@ class Structures extends EsiBase
             // and try to get those names. We hard cap it at 30 otherwise we
             // will quickly kill the error limit, resulting in a ban.
             ->inRandomOrder()
-            ->limit(30)
+            ->limit(15)
             ->get();
 
         return $assets->map(function ($asset) {
@@ -203,17 +222,20 @@ class Structures extends EsiBase
             ->where('location_type', 'other')
             // ignore already listed location_id
             ->whereNotIn('location_id', $exclude_location_ids)
-            // ignore already known station
+            // Asset Safety
+            ->where('location_id', '<>', self::ASSET_SAFETY)
+            // Solar Systems
+            ->whereNotBetween('location_id', self::SOLAR_SYSTEMS_RANGE)
+            // Bugged Assets
+            ->whereNotBetween('location_id', self::BUGGED_ASSETS_RANGE)
+            // Station / Outpost
+            ->whereNotBetween('location_id', self::UPWELL_STRUCTURES_RANGE)
+            // stuffs
             ->whereNotIn('location_id', function ($query) {
-
-                $query->select('station_id')
-                    ->from((new UniverseStation)->getTable());
-            })
-            // ignore outpost [DEPRECATED ?]
-            ->whereNotIn('location_id', function ($query) {
-
-                $query->select('stationID')
-                    ->from((new StaStation)->getTable());
+                $query->select('item_id')
+                    ->from((new CorporationAsset)->getTable())
+                    ->where('corporation_id', $this->getCorporationId())
+                    ->distinct();
             })
             // Remove structures that already have a name resolved
             // within the last week.
@@ -230,7 +252,7 @@ class Structures extends EsiBase
             // and try to get those names. We hard cap it at 30 otherwise we
             // will quickly kill the error limit, resulting in a ban.
             ->inRandomOrder()
-            ->limit(30)
+            ->limit(15)
             ->get();
 
         return $assets->map(function ($asset) {
