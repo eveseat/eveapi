@@ -157,14 +157,6 @@ class InvType extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function materials()
-    {
-        return $this->hasMany(InvTypeMaterial::class, 'typeID', 'typeID');
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function group()
