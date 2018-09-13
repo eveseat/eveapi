@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Repositories\Eve\EvePrices;
 
 /**
  * Class CharacterMining.
@@ -33,7 +34,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterMining extends Model
 {
-    use HasCompositePrimaryKey;
+    use HasCompositePrimaryKey, EvePrices;
 
     /**
      * @var bool
@@ -58,7 +59,7 @@ class CharacterMining extends Model
     public function getValueAttribute()
     {
 
-        return $this->quantity * $this->average_price;
+        return $this->quantity * $this->getHistoricalPrice($this->type_id, $this->date)->average_price;
     }
 
     /**

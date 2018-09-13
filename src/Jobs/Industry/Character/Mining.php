@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Jobs\Industry\Character;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CharacterMining;
-use Seat\Eveapi\Models\Market\Price;
+use Seat\Services\Repositories\Eve\EvePrices;
 
 /**
  * Class Mining.
@@ -33,6 +33,8 @@ use Seat\Eveapi\Models\Market\Price;
  */
 class Mining extends EsiBase
 {
+    use EvePrices;
+
     /**
      * @var string
      */
@@ -84,7 +86,7 @@ class Mining extends EsiBase
             collect($mining)->each(function ($ledger_entry) {
 
                 // retrieve daily mined amount for current type, system and character
-                $row = CharacterMining::select(DB::raw('SUM(quantity) as quantity, SUM(average_price) as average_price, SUM(adjusted_price) as adjusted_price'))
+                $row = CharacterMining::select(DB::raw('SUM(quantity) as quantity'))
                     ->where('character_id', $this->getCharacterId())
                     ->where('date', $ledger_entry->date)
                     ->where('solar_system_id', $ledger_entry->solar_system_id)
@@ -116,30 +118,7 @@ class Mining extends EsiBase
                         'quantity' => $delta_quantity,
                     ]);
 
-                }
-
-                // in case of non populated prices we store the value
-                if ($row->average_price === 0.0 && $row->adjusted_price === 0.0) {
-
-                    if ($ledger_entry->date != carbon()->setTimezone('UTC')->toDateString())
-                        $delta_time = '23:59:59';
-
-                    // calculate isk amount to persists
-                    $average_price = optional(Price::find($ledger_entry->type_id))->average_price;
-                    $average_price = (is_null($average_price) ? 0.0 : $average_price);
-
-                    $adjusted_price = optional(Price::find($ledger_entry->type_id))->adjusted_price;
-                    $adjusted_price = (is_null($adjusted_price) ? 0.0 : $adjusted_price);
-
-                    CharacterMining::where('character_id', $this->getCharacterId())
-                        ->where('date', $ledger_entry->date)
-                        ->where('time', $delta_time)
-                        ->where('solar_system_id', $ledger_entry->solar_system_id)
-                        ->where('type_id', $ledger_entry->type_id)
-                        ->update([
-                            'average_price'  => $average_price,
-                            'adjusted_price' => $adjusted_price,
-                        ]);
+                    $this->getHistoricalPrice($ledger_entry->type_id, $ledger_entry->date);
 
                 }
 
