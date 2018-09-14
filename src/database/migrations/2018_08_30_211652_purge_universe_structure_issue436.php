@@ -20,14 +20,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-return [
+use Illuminate\Database\Migrations\Migration;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 
-    'version'       => '3.0.6',
+class PurgeUniverseStructureIssue436 extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        UniverseStructure::truncate();
 
-    // API Joblog logging
-    'enable_joblog' => false,
-
-    'eseye_logfile'  => storage_path('logs'),
-    'eseye_cache'    => storage_path('eseye'),
-    'eseye_loglevel' => 'info', // valid entries are RFC 5424 levels ('debug', 'info', 'warn', 'error')
-];
+    }
+}
