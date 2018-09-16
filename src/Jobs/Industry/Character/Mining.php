@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Jobs\Industry\Character;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CharacterMining;
+use Seat\Services\Repositories\Eve\EvePrices;
 
 /**
  * Class Mining.
@@ -32,6 +33,8 @@ use Seat\Eveapi\Models\Industry\CharacterMining;
  */
 class Mining extends EsiBase
 {
+    use EvePrices;
+
     /**
      * @var string
      */
@@ -114,6 +117,8 @@ class Mining extends EsiBase
                     ], [
                         'quantity' => $delta_quantity,
                     ]);
+
+                    $this->getHistoricalPrice($ledger_entry->type_id, $ledger_entry->date);
 
                 }
 
