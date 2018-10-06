@@ -47,34 +47,6 @@ class CharacterMining extends Model
     protected $primaryKey = ['character_id', 'date', 'time', 'solar_system_id', 'type_id'];
 
     /**
-     * @var array
-     */
-    protected $appends = [
-        'value', 'volumes',
-    ];
-
-    /**
-     * @return float|int
-     */
-    public function getValueAttribute()
-    {
-
-        return $this->quantity * $this->getHistoricalPrice($this->type_id, $this->date)->average_price;
-    }
-
-    /**
-     * @return float
-     */
-    public function getVolumesAttribute()
-    {
-
-        if (is_null($this->type))
-            return 0.0;
-
-        return $this->quantity * $this->type->volume;
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()
