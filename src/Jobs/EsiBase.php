@@ -222,8 +222,10 @@ abstract class EsiBase implements ShouldQueue
             // If the token can't login and we get an HTTP 400 together with
             // and error message stating that this is an invalid_token, remove
             // the token from SeAT.
-            if ($exception->getEsiResponse()->getErrorCode() == 400 &&
-                $exception->getEsiResponse()->error() == 'invalid_token: The refresh token is expired.') {
+            if ($exception->getEsiResponse()->getErrorCode() == 400 && in_array($exception->getEsiResponse()->error(), [
+                    'invalid_token: The refresh token is expired.',
+                    'invalid_token: The refresh token does not match the client specified.',
+                ])) {
 
                 // Remove the invalid token
                 $this->token->delete();
