@@ -54,7 +54,7 @@ class Extractions extends EsiBase
     /**
      * @var array
      */
-    protected $roles = ['Structure_Manager'];
+    protected $roles = ['Station_Manager'];
 
     /**
      * @var array
