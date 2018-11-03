@@ -186,14 +186,6 @@ class MapDenormalize extends Model
     }
 
     /**
-     * @return int
-     */
-    public function getTypeIdAttribute()
-    {
-        return $this->typeID;
-    }
-
-    /**
      * @return string
      */
     public function getNameAttribute()
