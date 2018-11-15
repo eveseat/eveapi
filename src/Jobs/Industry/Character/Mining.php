@@ -118,9 +118,10 @@ class Mining extends EsiBase
                         'quantity' => $delta_quantity,
                     ]);
 
-                    $this->getHistoricalPrice($ledger_entry->type_id, $ledger_entry->date);
-
                 }
+
+                // Set Historical Price
+                $this->getHistoricalPrice($ledger_entry->type_id, $ledger_entry->date);
 
             });
 
