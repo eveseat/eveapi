@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class KillmailVictim.
@@ -131,4 +132,10 @@ class KillmailVictim extends Model
      * @var string
      */
     protected $primaryKey = 'killmail_id';
+
+    public function ship_type()
+    {
+
+        return $this->hasOne(InvType::class , 'typeID', 'ship_type_id');
+    }
 }
