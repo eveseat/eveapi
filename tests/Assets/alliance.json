@@ -1,0 +1,12 @@
+{
+  "alliance_id":1,
+  "name": "C C P Alliance",
+  "creator_id": 12345,
+  "creator_corporation_id": 45678,
+  "ticker": "<C C P>",
+  "executor_corporation_id": 98356193,
+  "date_founded": "2016-06-26 21:00:00",
+  "faction_id": null,
+  "created_at": null,
+  "updated_at": null
+}

@@ -47,4 +47,15 @@ class Alliance extends Model
      * @var string
      */
     protected $primaryKey = 'alliance_id';
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'alliance_id' => 'integer',
+        'creator_id' => 'integer',
+        'creator_corporation_id' => 'integer',
+        'executor_corporation_id' => 'integer',
+        'faction_id' => 'integer',
+    ];
 }
