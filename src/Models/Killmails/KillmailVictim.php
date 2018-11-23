@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class KillmailVictim.
@@ -137,5 +138,23 @@ class KillmailVictim extends Model
     {
 
         return $this->hasOne(InvType::class , 'typeID', 'ship_type_id');
+    }
+
+    public function victim_character()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'character_id');
+    }
+
+    public function victim_corporation()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id');
+    }
+
+    public function victim_alliance()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id');
     }
 }
