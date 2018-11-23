@@ -271,6 +271,36 @@ abstract class EsiBase implements ShouldQueue
     }
 
     /**
+     * Return the endpoint to which a Job is attached.
+     *
+     * @return string
+     */
+    public function getEndpoint(): string
+    {
+        return $this->endpoint;
+    }
+
+    /**
+     * Return the endpoint type to which a Job is attached.
+     *
+     * @return string
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * Provide the endpoint version for which a job has been built.
+     *
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
+    /**
      * Assign this job a tag so that Horizon can categorize and allow
      * for specific tags to be monitored.
      *
