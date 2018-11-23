@@ -137,7 +137,7 @@ class KillmailVictim extends Model
     public function ship_type()
     {
 
-        return $this->hasOne(InvType::class , 'typeID', 'ship_type_id');
+        return $this->hasOne(InvType::class, 'typeID', 'ship_type_id');
     }
 
     public function victim_character()

@@ -79,12 +79,12 @@ class CharacterKillmail extends Model
     public function killmail_details()
     {
 
-        return $this->hasOne(KillmailDetail::class , 'killmail_id', 'killmail_id');
+        return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id');
     }
 
     public function killmail_victims()
     {
 
-        return $this->hasOne(KillmailVictim::class , 'killmail_id', 'killmail_id');
+        return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id');
     }
 }
