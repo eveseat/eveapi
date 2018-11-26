@@ -70,7 +70,7 @@ class EveapiServiceProvider extends ServiceProvider
      * be migrated by laravel. More informations:
      * https://laravel.com/docs/5.5/packages#migrations.
      */
-    public function add_migrations()
+    private function add_migrations()
     {
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations/');
     }
