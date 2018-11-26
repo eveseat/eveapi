@@ -76,13 +76,13 @@ class CharacterKillmail extends Model
      */
     protected $primaryKey = ['character_id', 'killmail_id'];
 
-    public function killmail_details()
+    public function killmail_detail()
     {
 
         return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id');
     }
 
-    public function killmail_victims()
+    public function killmail_victim()
     {
 
         return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id');
