@@ -4,49 +4,76 @@ namespace Seat\Eveapi\Tests\ESI;
 
 
 use GuzzleHttp\Client;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Seat\Eveapi\Jobs\EsiBase;
 use Symfony\Component\Finder\Finder;
 
 class EndpointsTest extends TestCase
 {
+    private $failures = [];
 
     public function testEndpoints()
     {
+        // pull latest swagger definition from ESI
         $client = new Client();
         $request = $client->get('https://esi.evetech.net/latest/swagger.json');
         $swagger = json_decode($request->getBody(), true);
 
+        // retrieve all ESI Jobs for checkup
         $esi_jobs = $this->getAllFcqns(__DIR__ . '/../../src/Jobs');
 
         foreach ($esi_jobs as $job) {
-            // init a new object
-            $object = new $job;
 
-            // ensure the object is inheriting EsiBase
-            if (!is_subclass_of($object, EsiBase::class))
+            $class = new ReflectionClass($job);
+
+            if ($class->isAbstract())
                 continue;
+
+            if (! $class->isSubclassOf(EsiBase::class))
+                continue;
+
+            $object = new $job;
 
             print sprintf('Checking validity for [%s] %s@%s%s', $object->getMethod(), $object->getEndpoint(), $object->getVersion(), PHP_EOL);
 
-            // ensure the endpoint still exists
-            $this->assertTrue(
-                array_key_exists($object->getEndpoint(), $swagger['paths']),
-                sprintf('%s endpoint has been removed from ESI.', $object->getEndpoint()));
+            try {
+                // ensure the endpoint still exists
+                $this->assertTrue(
+                    array_key_exists($object->getEndpoint(), $swagger['paths']),
+                    sprintf('%s endpoint has been removed from ESI.', $object->getEndpoint()));
 
-            // ensure the method still exists for this endpoint
-            $this->assertTrue(
-                array_key_exists($object->getMethod(), $swagger['paths'][$object->getEndpoint()]),
-                sprintf('[%s] %s has been removed from ESI.', $object->getMethod(), $object->getEndpoint()));
+                // ensure the method still exists for this endpoint
+                $this->assertTrue(
+                    array_key_exists($object->getMethod(), $swagger['paths'][$object->getEndpoint()]),
+                    sprintf('[%s] %s has been removed from ESI.', $object->getMethod(), $object->getEndpoint()));
 
-            // ensure the used version is not deprecated
-            $swagger_endpoint_versions = $swagger['paths'][$object->getEndpoint()][$object->getMethod()]['x-alternate-versions'];
-            $this->assertContains(
-                $object->getVersion(), $swagger_endpoint_versions,
-                sprintf('[%s] %s@%s is deprecated: %s are available',
-                    $object->getMethod(), $object->getEndpoint(), $object->getVersion(), implode(', ', $swagger_endpoint_versions)));
+                // collection versions and remove dev flag
+                $swagger_endpoint_versions = array_filter($swagger['paths'][$object->getEndpoint()][$object->getMethod()]['x-alternate-versions'], function ($version) {
+                    return ! in_array($version, ['dev', 'legacy']);
+                });
+
+                // sort versions from lower to bigger
+                sort($swagger_endpoint_versions);
+
+                // ensure the used version is not deprecated
+                $this->assertEquals(
+                    $object->getVersion(), array_last($swagger_endpoint_versions),
+                    sprintf('[%s] %s@%s is deprecated: %s are available',
+                        strtoupper($object->getMethod()), $object->getEndpoint(), $object->getVersion(), array_last($swagger_endpoint_versions)));
+
+            } catch (ExpectationFailedException $e) {
+                $this->failures[] = $e->getMessage();
+            }
 
             unset($object);
+        }
+
+        if (! empty($this->failures)) {
+            throw new ExpectationFailedException(
+                sprintf("%d tested jobs with %d outdated jobs: \r\n\t%s", count($esi_jobs), count($this->failures), implode("\r\n\t", $this->failures))
+            );
         }
     }
 
