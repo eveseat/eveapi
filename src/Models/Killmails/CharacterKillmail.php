@@ -76,12 +76,18 @@ class CharacterKillmail extends Model
      */
     protected $primaryKey = ['character_id', 'killmail_id'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function killmail_detail()
     {
 
         return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function killmail_victim()
     {
 
