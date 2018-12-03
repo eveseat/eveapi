@@ -20,14 +20,36 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-return [
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
-    'version'       => '3.0.8',
+class UpdateCorporationOrdersToV3 extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
 
-    // API Joblog logging
-    'enable_joblog' => false,
+        Schema::table('corporation_orders', function ($table) {
 
-    'eseye_logfile'  => storage_path('logs'),
-    'eseye_cache'    => storage_path('eseye'),
-    'eseye_loglevel' => 'info', // valid entries are RFC 5424 levels ('debug', 'info', 'warn', 'error')
-];
+            $table->bigInteger('issued_by')->after('issued')->default(0);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+
+        Schema::table('corporation_orders', function ($table) {
+
+            $table->dropColumn('issued_by');
+        });
+    }
+}
