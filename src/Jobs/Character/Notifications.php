@@ -44,7 +44,7 @@ class Notifications extends EsiBase
     /**
      * @var int
      */
-    protected $version = 'v2';
+    protected $version = 'v3';
 
     /**
      * @var string

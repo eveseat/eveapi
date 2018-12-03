@@ -44,7 +44,7 @@ class Orders extends EsiBase
     /**
      * @var int
      */
-    protected $version = 'v2';
+    protected $version = 'v3';
 
     /**
      * @var string
@@ -99,6 +99,7 @@ class Orders extends EsiBase
                     'volume_total'    => $order->volume_total,
                     'volume_remain'   => $order->volume_remain,
                     'issued'          => carbon($order->issued),
+                    'issued_by'       => $order->issued_by,
                     'min_volume'      => $order->min_volume ?? null,
                     'wallet_division' => $order->wallet_division ?? null,
                     'duration'        => $order->duration ?? null,
