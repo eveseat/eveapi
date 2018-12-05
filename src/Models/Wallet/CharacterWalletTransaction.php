@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -140,4 +141,15 @@ class CharacterWalletTransaction extends Model
 
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function client()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id','client_id');
+    }
+
+
 }
