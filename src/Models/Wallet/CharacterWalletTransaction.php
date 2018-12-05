@@ -148,8 +148,6 @@ class CharacterWalletTransaction extends Model
     public function client()
     {
 
-        return $this->hasOne(UniverseName::class, 'entity_id','client_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'client_id');
     }
-
-
 }
