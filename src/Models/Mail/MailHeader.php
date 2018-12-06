@@ -124,6 +124,9 @@ class MailHeader extends Model
         return $this->hasMany(MailRecipient::class, 'mail_id', 'mail_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function sender()
     {
 
