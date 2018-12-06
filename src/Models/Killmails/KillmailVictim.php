@@ -134,6 +134,9 @@ class KillmailVictim extends Model
      */
     protected $primaryKey = 'killmail_id';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function ship_type()
     {
 
