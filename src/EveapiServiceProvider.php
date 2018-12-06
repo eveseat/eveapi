@@ -39,10 +39,8 @@ class EveapiServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        // Publish migrations
-        $this->publishes([
-            __DIR__ . '/database/migrations/' => database_path('migrations'),
-        ]);
+        // Inform Laravel how to load migrations
+        $this->add_migrations();
 
         // Update api config
         $this->configure_api();
@@ -65,6 +63,16 @@ class EveapiServiceProvider extends ServiceProvider
 
             return new EseyeSetup;
         });
+    }
+
+    /**
+     * Set the path for migrations which should
+     * be migrated by laravel. More informations:
+     * https://laravel.com/docs/5.5/packages#migrations.
+     */
+    private function add_migrations()
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations/');
     }
 
     /**
