@@ -140,18 +140,27 @@ class KillmailVictim extends Model
         return $this->hasOne(InvType::class, 'typeID', 'ship_type_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function victim_character()
     {
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'character_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function victim_corporation()
     {
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function victim_alliance()
     {
 

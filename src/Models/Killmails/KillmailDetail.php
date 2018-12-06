@@ -109,6 +109,9 @@ class KillmailDetail extends Model
         return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function solar_system()
     {
 
