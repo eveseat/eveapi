@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Mail;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class MailHeader.
@@ -121,5 +122,11 @@ class MailHeader extends Model
     {
 
         return $this->hasMany(MailRecipient::class, 'mail_id', 'mail_id');
+    }
+
+    public function sender()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'from');
     }
 }
