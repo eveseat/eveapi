@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
@@ -158,4 +159,22 @@ class CorporationWalletJournal extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'division', 'ref_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function first_party()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function second_party()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id');
+    }
 }
