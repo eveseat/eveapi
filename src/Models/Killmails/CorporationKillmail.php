@@ -75,4 +75,22 @@ class CorporationKillmail extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'killmail_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function killmail_detail()
+    {
+
+        return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function killmail_victim()
+    {
+
+        return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id');
+    }
 }
