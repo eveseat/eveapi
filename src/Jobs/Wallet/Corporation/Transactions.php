@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
@@ -77,61 +78,69 @@ class Transactions extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
-            ->each(function ($division) {
+            if (!$this->preflighted()) return;
 
-                // Perform a journal walk backwards to get all of the
-                // entries as far back as possible. When the response from
-                // ESI is empty, we can assume we have everything.
-                while (true) {
+            CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
+                ->each(function ($division) {
 
-                    $this->query_string = ['from_id' => $this->from_id];
+                    // Perform a journal walk backwards to get all of the
+                    // entries as far back as possible. When the response from
+                    // ESI is empty, we can assume we have everything.
+                    while (true) {
 
-                    $transactions = $this->retrieve([
-                        'corporation_id' => $this->getCorporationId(),
-                        'division'       => $division->division,
-                    ]);
+                        $this->query_string = ['from_id' => $this->from_id];
 
-                    if ($transactions->isCachedLoad()) return;
-
-                    // If we have no more entries, break the loop.
-                    if (collect($transactions)->count() === 0)
-                        break;
-
-                    collect($transactions)->each(function ($transaction) use ($division) {
-
-                        $transaction_entry = CorporationWalletTransaction::firstOrNew([
+                        $transactions = $this->retrieve([
                             'corporation_id' => $this->getCorporationId(),
-                            'division'       => $division->division,
-                            'transaction_id' => $transaction->transaction_id,
+                            'division' => $division->division,
                         ]);
 
-                        // If this transaction entry has already been recorded,
-                        // move on to the next.
-                        if ($transaction_entry->exists)
-                            return;
+                        if ($transactions->isCachedLoad()) return;
 
-                        $transaction_entry->fill([
-                            'date'           => carbon($transaction->date),
-                            'type_id'        => $transaction->type_id,
-                            'location_id'    => $transaction->location_id,
-                            'unit_price'     => $transaction->unit_price,
-                            'quantity'       => $transaction->quantity,
-                            'client_id'      => $transaction->client_id,
-                            'is_buy'         => $transaction->is_buy,
-                            'journal_ref_id' => $transaction->journal_ref_id,
-                        ])->save();
-                    });
+                        // If we have no more entries, break the loop.
+                        if (collect($transactions)->count() === 0)
+                            break;
 
-                    // Update the from_id to be the new lowest (ref_id - 1) that we
-                    // know of. The next all will use this.
-                    $this->from_id = collect($transactions)->min('transaction_id') - 1;
-                }
+                        collect($transactions)->each(function ($transaction) use ($division) {
 
-                // Reset the from_id for the next wallet division
-                $this->from_id = PHP_INT_MAX;
-            });
+                            $transaction_entry = CorporationWalletTransaction::firstOrNew([
+                                'corporation_id' => $this->getCorporationId(),
+                                'division' => $division->division,
+                                'transaction_id' => $transaction->transaction_id,
+                            ]);
+
+                            // If this transaction entry has already been recorded,
+                            // move on to the next.
+                            if ($transaction_entry->exists)
+                                return;
+
+                            $transaction_entry->fill([
+                                'date' => carbon($transaction->date),
+                                'type_id' => $transaction->type_id,
+                                'location_id' => $transaction->location_id,
+                                'unit_price' => $transaction->unit_price,
+                                'quantity' => $transaction->quantity,
+                                'client_id' => $transaction->client_id,
+                                'is_buy' => $transaction->is_buy,
+                                'journal_ref_id' => $transaction->journal_ref_id,
+                            ])->save();
+                        });
+
+                        // Update the from_id to be the new lowest (ref_id - 1) that we
+                        // know of. The next all will use this.
+                        $this->from_id = collect($transactions)->min('transaction_id') - 1;
+                    }
+
+                    // Reset the from_id for the next wallet division
+                    $this->from_id = PHP_INT_MAX;
+                });
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

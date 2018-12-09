@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 
@@ -78,41 +79,49 @@ class Names extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        // Get the assets for this character, chunked in a number of blocks
-        // that the endpoint will accept.
-        CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
-            ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
-            ->where('corporation_id', $this->getCorporationId())
-            ->where('is_singleton', true)// only singleton items may be named
-            // it seems only items from that categories can be named
-            // 2  : Celestial
-            // 6  : Ship
-            // 22 : Deployable
-            // 23 : Starbase
-            // 46 : Orbitals
-            // 65 : Structure
-            ->whereIn('categoryID', [2, 6, 22, 23, 46, 65])// it seems only items from that categories can be named
-            ->select('item_id')
-            ->chunk($this->item_id_limit, function ($item_ids) {
+            if (!$this->preflighted()) return;
 
-                $this->request_body = $item_ids->pluck('item_id')->all();
+            // Get the assets for this character, chunked in a number of blocks
+            // that the endpoint will accept.
+            CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
+                ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
+                ->where('corporation_id', $this->getCorporationId())
+                ->where('is_singleton', true)// only singleton items may be named
+                // it seems only items from that categories can be named
+                // 2  : Celestial
+                // 6  : Ship
+                // 22 : Deployable
+                // 23 : Starbase
+                // 46 : Orbitals
+                // 65 : Structure
+                ->whereIn('categoryID', [2, 6, 22, 23, 46, 65])// it seems only items from that categories can be named
+                ->select('item_id')
+                ->chunk($this->item_id_limit, function ($item_ids) {
 
-                $names = $this->retrieve([
-                    'corporation_id' => $this->getCorporationId(),
-                ]);
+                    $this->request_body = $item_ids->pluck('item_id')->all();
 
-                collect($names)->each(function ($name) {
+                    $names = $this->retrieve([
+                        'corporation_id' => $this->getCorporationId(),
+                    ]);
 
-                    // "None" seems to indidate that no name is set.
-                    if ($name->name === 'None')
-                        return;
+                    collect($names)->each(function ($name) {
 
-                    CorporationAsset::where('corporation_id', $this->getCorporationId())
-                        ->where('item_id', $name->item_id)
-                        ->update(['name' => $name->name]);
+                        // "None" seems to indidate that no name is set.
+                        if ($name->name === 'None')
+                            return;
+
+                        CorporationAsset::where('corporation_id', $this->getCorporationId())
+                            ->where('item_id', $name->item_id)
+                            ->update(['name' => $name->name]);
+                    });
                 });
-            });
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationStarbase;
 use Seat\Eveapi\Models\RefreshToken;
@@ -93,44 +94,52 @@ class Starbases extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        while (true) {
+            if (!$this->preflighted()) return;
 
-            $starbases = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            while (true) {
 
-            if ($starbases->isCachedLoad()) return;
-
-            collect($starbases)->each(function ($starbase) {
-
-                CorporationStarbase::firstOrNew([
+                $starbases = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'starbase_id'    => $starbase->starbase_id,
-                ])->fill([
-                    'moon_id'          => $starbase->moon_id ?? null,
-                    'onlined_since'    => property_exists($starbase, 'onlined_since') ?
-                        carbon($starbase->onlined_since) : null,
-                    'reinforced_until' => property_exists($starbase, 'reinforced_until') ?
-                        carbon($starbase->reinforced_until) : null,
-                    'state'            => $starbase->state ?? null,
-                    'type_id'          => $starbase->type_id,
-                    'system_id'        => $starbase->system_id,
-                    'unanchor_at'      => property_exists($starbase, 'unanchor_at') ?
-                        carbon($starbase->unanchor_at) : null,
-                ])->save();
+                ]);
 
-                $this->known_starbases->push($starbase->starbase_id);
+                if ($starbases->isCachedLoad()) return;
 
-            });
+                collect($starbases)->each(function ($starbase) {
 
-            if (! $this->nextPage($starbases->pages))
-                break;
-        }
+                    CorporationStarbase::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'starbase_id' => $starbase->starbase_id,
+                    ])->fill([
+                        'moon_id' => $starbase->moon_id ?? null,
+                        'onlined_since' => property_exists($starbase, 'onlined_since') ?
+                            carbon($starbase->onlined_since) : null,
+                        'reinforced_until' => property_exists($starbase, 'reinforced_until') ?
+                            carbon($starbase->reinforced_until) : null,
+                        'state' => $starbase->state ?? null,
+                        'type_id' => $starbase->type_id,
+                        'system_id' => $starbase->system_id,
+                        'unanchor_at' => property_exists($starbase, 'unanchor_at') ?
+                            carbon($starbase->unanchor_at) : null,
+                    ])->save();
 
-        CorporationStarbase::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
-            ->delete();
+                    $this->known_starbases->push($starbase->starbase_id);
+
+                });
+
+                if (!$this->nextPage($starbases->pages))
+                    break;
+            }
+
+            CorporationStarbase::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
+                ->delete();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

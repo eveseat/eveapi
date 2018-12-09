@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMember;
 
@@ -65,26 +66,34 @@ class Members extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $members = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($members->isCachedLoad()) return;
-
-        collect($members)->each(function ($member_id) {
-
-            CorporationMember::firstOrNew([
+            $members = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
-                'character_id'   => $member_id,
-            ])->save();
+            ]);
+
+            if ($members->isCachedLoad()) return;
+
+            collect($members)->each(function ($member_id) {
+
+                CorporationMember::firstOrNew([
+                    'corporation_id' => $this->getCorporationId(),
+                    'character_id' => $member_id,
+                ])->save();
+
+            });
+
+            // Remove expelled members
+            CorporationMember::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('character_id', collect($members))
+                ->delete();
+
+        }, function () {
+
+            return $this->delete();
 
         });
-
-        // Remove expelled members
-        CorporationMember::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('character_id', collect($members))
-            ->delete();
     }
 }

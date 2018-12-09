@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationStarbase;
 use Seat\Eveapi\Models\Corporation\CorporationStarbaseDetail;
@@ -90,63 +91,71 @@ class StarbaseDetails extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        CorporationStarbase::where('corporation_id', $this->getCorporationId())
-            ->get()->each(function ($starbase) {
+            if (!$this->preflighted()) return;
 
-                $this->query_string = [
-                    'system_id' => $starbase->system_id,
-                ];
+            CorporationStarbase::where('corporation_id', $this->getCorporationId())
+                ->get()->each(function ($starbase) {
 
-                $detail = $this->retrieve([
-                    'corporation_id' => $this->getCorporationId(),
-                    'starbase_id'    => $starbase->starbase_id,
-                ]);
+                    $this->query_string = [
+                        'system_id' => $starbase->system_id,
+                    ];
 
-                CorporationStarbaseDetail::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'starbase_id'    => $starbase->starbase_id,
-                ])->fill([
-                    'fuel_bay_view'                            => $detail->fuel_bay_view,
-                    'fuel_bay_take'                            => $detail->fuel_bay_take,
-                    'anchor'                                   => $detail->anchor,
-                    'unanchor'                                 => $detail->unanchor,
-                    'online'                                   => $detail->online,
-                    'offline'                                  => $detail->offline,
-                    'allow_corporation_members'                => $detail->allow_corporation_members,
-                    'allow_alliance_members'                   => $detail->allow_alliance_members,
-                    'use_alliance_standings'                   => $detail->use_alliance_standings,
-                    'attack_standing_threshold'                => $detail->attack_standing_threshold ?? null,
-                    'attack_security_status_threshold'         => $detail->attack_security_status_threshold ?? null,
-                    'attack_if_other_security_status_dropping' => $detail->attack_if_other_security_status_dropping,
-                    'attack_if_at_war'                         => $detail->attack_if_at_war,
-                ])->save();
+                    $detail = $this->retrieve([
+                        'corporation_id' => $this->getCorporationId(),
+                        'starbase_id' => $starbase->starbase_id,
+                    ]);
 
-                if (property_exists($detail, 'fuels'))
+                    CorporationStarbaseDetail::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'starbase_id' => $starbase->starbase_id,
+                    ])->fill([
+                        'fuel_bay_view' => $detail->fuel_bay_view,
+                        'fuel_bay_take' => $detail->fuel_bay_take,
+                        'anchor' => $detail->anchor,
+                        'unanchor' => $detail->unanchor,
+                        'online' => $detail->online,
+                        'offline' => $detail->offline,
+                        'allow_corporation_members' => $detail->allow_corporation_members,
+                        'allow_alliance_members' => $detail->allow_alliance_members,
+                        'use_alliance_standings' => $detail->use_alliance_standings,
+                        'attack_standing_threshold' => $detail->attack_standing_threshold ?? null,
+                        'attack_security_status_threshold' => $detail->attack_security_status_threshold ?? null,
+                        'attack_if_other_security_status_dropping' => $detail->attack_if_other_security_status_dropping,
+                        'attack_if_at_war' => $detail->attack_if_at_war,
+                    ])->save();
 
-                    collect($detail->fuels)->each(function ($fuel) use ($starbase) {
+                    if (property_exists($detail, 'fuels'))
 
-                        CorporationStarbaseFuel::firstOrNew([
-                            'corporation_id' => $this->getCorporationId(),
-                            'starbase_id'    => $starbase->starbase_id,
-                            'type_id'        => $fuel->type_id,
-                        ])->fill([
-                            'quantity' => $fuel->quantity,
-                        ])->save();
+                        collect($detail->fuels)->each(function ($fuel) use ($starbase) {
 
-                    });
+                            CorporationStarbaseFuel::firstOrNew([
+                                'corporation_id' => $this->getCorporationId(),
+                                'starbase_id' => $starbase->starbase_id,
+                                'type_id' => $fuel->type_id,
+                            ])->fill([
+                                'quantity' => $fuel->quantity,
+                            ])->save();
 
-                $this->known_starbases->push($starbase->starbase_id);
+                        });
 
-            });
+                    $this->known_starbases->push($starbase->starbase_id);
 
-        CorporationStarbaseDetail::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
-            ->delete();
+                });
 
-        CorporationStarbaseFuel::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
-            ->delete();
+            CorporationStarbaseDetail::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
+                ->delete();
+
+            CorporationStarbaseFuel::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
+                ->delete();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

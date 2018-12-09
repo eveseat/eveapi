@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contacts\CorporationContactLabel;
 
@@ -66,26 +67,34 @@ class Labels extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $labels = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($labels->isCachedLoad()) return;
-
-        collect($labels)->each(function ($label) {
-
-            CorporationContactLabel::firstOrNew([
+            $labels = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
-                'label_id'     => $label->label_id,
-            ])->fill([
-                'label_name' => $label->label_name,
-            ])->save();
-        });
+            ]);
 
-        CorporationContactLabel::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('label_id', collect($labels)->pluck('label_id')->flatten()->all())
-            ->delete();
+            if ($labels->isCachedLoad()) return;
+
+            collect($labels)->each(function ($label) {
+
+                CorporationContactLabel::firstOrNew([
+                    'corporation_id' => $this->getCorporationId(),
+                    'label_id' => $label->label_id,
+                ])->fill([
+                    'label_name' => $label->label_name,
+                ])->save();
+            });
+
+            CorporationContactLabel::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('label_id', collect($labels)->pluck('label_id')->flatten()->all())
+                ->delete();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

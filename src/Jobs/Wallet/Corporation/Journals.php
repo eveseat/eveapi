@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
@@ -82,71 +83,79 @@ class Journals extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
-            ->each(function ($division) {
+            if (!$this->preflighted()) return;
 
-                // Perform a journal walk backwards to get all of the
-                // entries as far back as possible. When the response from
-                // ESI is empty, we can assume we have everything.
-                while (true) {
+            CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
+                ->each(function ($division) {
 
-                    $this->query_string = ['from_id' => $this->from_id];
+                    // Perform a journal walk backwards to get all of the
+                    // entries as far back as possible. When the response from
+                    // ESI is empty, we can assume we have everything.
+                    while (true) {
 
-                    $journal = $this->retrieve([
-                        'corporation_id' => $this->getCorporationId(),
-                        'division'       => $division->division,
-                    ]);
+                        $this->query_string = ['from_id' => $this->from_id];
 
-                    if ($journal->isCachedLoad()) return;
+                        $journal = $this->retrieve([
+                            'corporation_id' => $this->getCorporationId(),
+                            'division' => $division->division,
+                        ]);
 
-                    // If we have no more entries, break the loop.
-                    if (collect($journal)->count() === 0)
-                        break;
+                        if ($journal->isCachedLoad()) return;
 
-                    collect($journal)->chunk(1000)->each(function ($chunk) use ($division) {
+                        // If we have no more entries, break the loop.
+                        if (collect($journal)->count() === 0)
+                            break;
 
-                        $records = $chunk->map(function ($entry, $key) use ($division) {
+                        collect($journal)->chunk(1000)->each(function ($chunk) use ($division) {
 
-                            return [
-                                'corporation_id' => $this->getCorporationId(),
-                                'division'       => $division->division,
-                                'id'             => $entry->id,
-                                'date'            => carbon($entry->date),
-                                'ref_type'        => $entry->ref_type,
-                                'first_party_id'  => $entry->first_party_id ?? null,
-                                'second_party_id' => $entry->second_party_id ?? null,
-                                'amount'          => $entry->amount ?? null,
-                                'balance'         => $entry->balance ?? null,
-                                'reason'          => $entry->reason ?? null,
-                                'tax_receiver_id' => $entry->tax_receiver_id ?? null,
-                                'tax'             => $entry->tax ?? null,
-                                // introduced in v4
-                                'description'     => $entry->description,
-                                'context_id'      => $entry->context_id ?? null,
-                                'context_id_type' => $entry->context_id_type ?? null,
-                                'created_at'      => carbon(),
-                                'updated_at'      => carbon(),
-                            ];
+                            $records = $chunk->map(function ($entry, $key) use ($division) {
+
+                                return [
+                                    'corporation_id' => $this->getCorporationId(),
+                                    'division' => $division->division,
+                                    'id' => $entry->id,
+                                    'date' => carbon($entry->date),
+                                    'ref_type' => $entry->ref_type,
+                                    'first_party_id' => $entry->first_party_id ?? null,
+                                    'second_party_id' => $entry->second_party_id ?? null,
+                                    'amount' => $entry->amount ?? null,
+                                    'balance' => $entry->balance ?? null,
+                                    'reason' => $entry->reason ?? null,
+                                    'tax_receiver_id' => $entry->tax_receiver_id ?? null,
+                                    'tax' => $entry->tax ?? null,
+                                    // introduced in v4
+                                    'description' => $entry->description,
+                                    'context_id' => $entry->context_id ?? null,
+                                    'context_id_type' => $entry->context_id_type ?? null,
+                                    'created_at' => carbon(),
+                                    'updated_at' => carbon(),
+                                ];
+                            });
+
+                            CorporationWalletJournal::insertIgnore($records->toArray());
                         });
 
-                        CorporationWalletJournal::insertIgnore($records->toArray());
-                    });
+                        // Update the from_id to be the new lowest ref_id we
+                        // know of. The next call will use this.
+                        $this->from_id = collect($journal)->min('id') - 1;
 
-                    // Update the from_id to be the new lowest ref_id we
-                    // know of. The next call will use this.
-                    $this->from_id = collect($journal)->min('id') - 1;
+                        if (!$this->nextPage($journal->pages))
+                            break;
+                    }
 
-                    if (! $this->nextPage($journal->pages))
-                        break;
-                }
+                    // Reset the from_id for the next wallet division
+                    $this->from_id = PHP_INT_MAX;
 
-                // Reset the from_id for the next wallet division
-                $this->from_id = PHP_INT_MAX;
+                    // Reset the page for the next wallet division
+                    $this->page = 1;
+                });
 
-                // Reset the page for the next wallet division
-                $this->page = 1;
-            });
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

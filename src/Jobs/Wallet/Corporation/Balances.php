@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 
@@ -69,22 +70,30 @@ class Balances extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $balances = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($balances->isCachedLoad()) return;
-
-        collect($balances)->each(function ($balance) {
-
-            CorporationWalletBalance::firstOrNew([
+            $balances = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
-                'division'       => $balance->division,
-            ])->fill([
-                'balance' => $balance->balance,
-            ])->save();
+            ]);
+
+            if ($balances->isCachedLoad()) return;
+
+            collect($balances)->each(function ($balance) {
+
+                CorporationWalletBalance::firstOrNew([
+                    'corporation_id' => $this->getCorporationId(),
+                    'division' => $balance->division,
+                ])->fill([
+                    'balance' => $balance->balance,
+                ])->save();
+
+            });
+
+        }, function () {
+
+            return $this->delete();
 
         });
     }

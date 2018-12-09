@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
@@ -72,56 +73,64 @@ class Contracts extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        while (true) {
+            if (!$this->preflighted()) return;
 
-            $contracts = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            while (true) {
 
-            if ($contracts->isCachedLoad()) return;
-
-            collect($contracts)->each(function ($contract) {
-
-                // Update or create the contract details.
-                ContractDetail::firstOrNew([
-                    'contract_id' => $contract->contract_id,
-                ])->fill([
-                    'issuer_id'             => $contract->issuer_id,
-                    'issuer_corporation_id' => $contract->issuer_corporation_id,
-                    'assignee_id'           => $contract->assignee_id,
-                    'acceptor_id'           => $contract->acceptor_id,
-                    'start_location_id'     => $contract->start_location_id ?? null,
-                    'end_location_id'       => $contract->end_location_id ?? null,
-                    'type'                  => $contract->type,
-                    'status'                => $contract->status,
-                    'title'                 => $contract->title ?? null,
-                    'for_corporation'       => $contract->for_corporation,
-                    'availability'          => $contract->availability,
-                    'date_issued'           => carbon($contract->date_issued),
-                    'date_expired'          => carbon($contract->date_expired),
-                    'date_accepted'         => isset($contract->date_accepted) ?
-                        carbon($contract->date_accepted) : null,
-                    'days_to_complete'      => $contract->days_to_complete ?? null,
-                    'date_completed'        => isset($contract->date_completed) ?
-                        carbon($contract->date_completed) : null,
-                    'price'                 => $contract->price ?? null,
-                    'reward'                => $contract->reward ?? null,
-                    'collateral'            => $contract->collateral ?? null,
-                    'buyout'                => $contract->buyout ?? null,
-                    'volume'                => $contract->volume ?? null,
-                ])->save();
-
-                // Ensure the character is associated to this contract
-                CorporationContract::firstOrCreate([
+                $contracts = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'contract_id'    => $contract->contract_id,
                 ]);
-            });
 
-            if (! $this->nextPage($contracts->pages))
-                break;
-        }
+                if ($contracts->isCachedLoad()) return;
+
+                collect($contracts)->each(function ($contract) {
+
+                    // Update or create the contract details.
+                    ContractDetail::firstOrNew([
+                        'contract_id' => $contract->contract_id,
+                    ])->fill([
+                        'issuer_id' => $contract->issuer_id,
+                        'issuer_corporation_id' => $contract->issuer_corporation_id,
+                        'assignee_id' => $contract->assignee_id,
+                        'acceptor_id' => $contract->acceptor_id,
+                        'start_location_id' => $contract->start_location_id ?? null,
+                        'end_location_id' => $contract->end_location_id ?? null,
+                        'type' => $contract->type,
+                        'status' => $contract->status,
+                        'title' => $contract->title ?? null,
+                        'for_corporation' => $contract->for_corporation,
+                        'availability' => $contract->availability,
+                        'date_issued' => carbon($contract->date_issued),
+                        'date_expired' => carbon($contract->date_expired),
+                        'date_accepted' => isset($contract->date_accepted) ?
+                            carbon($contract->date_accepted) : null,
+                        'days_to_complete' => $contract->days_to_complete ?? null,
+                        'date_completed' => isset($contract->date_completed) ?
+                            carbon($contract->date_completed) : null,
+                        'price' => $contract->price ?? null,
+                        'reward' => $contract->reward ?? null,
+                        'collateral' => $contract->collateral ?? null,
+                        'buyout' => $contract->buyout ?? null,
+                        'volume' => $contract->volume ?? null,
+                    ])->save();
+
+                    // Ensure the character is associated to this contract
+                    CorporationContract::firstOrCreate([
+                        'corporation_id' => $this->getCorporationId(),
+                        'contract_id' => $contract->contract_id,
+                    ]);
+                });
+
+                if (!$this->nextPage($contracts->pages))
+                    break;
+            }
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

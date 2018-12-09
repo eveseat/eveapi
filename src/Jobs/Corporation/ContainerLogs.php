@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationContainerLog;
 
@@ -75,39 +76,47 @@ class ContainerLogs extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        while (true) {
+            if (!$this->preflighted()) return;
 
-            $logs = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            while (true) {
 
-            if ($logs->isCachedLoad()) return;
-
-            collect($logs)->each(function ($log) {
-
-                CorporationContainerLog::firstOrNew([
+                $logs = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'container_id'   => $log->container_id,
-                    'logged_at'      => carbon($log->logged_at),
-                ])->fill([
-                    'container_type_id'  => $log->container_type_id,
-                    'character_id'       => $log->character_id,
-                    'location_id'        => $log->location_id,
-                    'action'             => $log->action,
-                    'location_flag'      => $log->location_flag,
-                    'password_type'      => $log->password_type ?? null,
-                    'type_id'            => $log->type_id ?? null,
-                    'quantity'           => $log->quantity ?? null,
-                    'old_config_bitmask' => $log->old_config_bitmask ?? null,
-                    'new_config_bitmask' => $log->new_config_bitmask ?? null,
-                ])->save();
+                ]);
 
-            });
+                if ($logs->isCachedLoad()) return;
 
-            if (! $this->nextPage($logs->pages))
-                break;
-        }
+                collect($logs)->each(function ($log) {
+
+                    CorporationContainerLog::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'container_id' => $log->container_id,
+                        'logged_at' => carbon($log->logged_at),
+                    ])->fill([
+                        'container_type_id' => $log->container_type_id,
+                        'character_id' => $log->character_id,
+                        'location_id' => $log->location_id,
+                        'action' => $log->action,
+                        'location_flag' => $log->location_flag,
+                        'password_type' => $log->password_type ?? null,
+                        'type_id' => $log->type_id ?? null,
+                        'quantity' => $log->quantity ?? null,
+                        'old_config_bitmask' => $log->old_config_bitmask ?? null,
+                        'new_config_bitmask' => $log->new_config_bitmask ?? null,
+                    ])->save();
+
+                });
+
+                if (!$this->nextPage($logs->pages))
+                    break;
+            }
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

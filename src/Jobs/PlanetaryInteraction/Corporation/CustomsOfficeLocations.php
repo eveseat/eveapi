@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
 use Seat\Eveapi\Traits\Utils;
@@ -72,43 +73,51 @@ class CustomsOfficeLocations extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', $this->tags()))->limit(1)->then(function () {
 
-        $customs_offices = CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->get();
+            if (!$this->preflighted()) return;
 
-        collect($customs_offices)->chunk(1000)->each(function ($chunk) {
+            $customs_offices = CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->get();
 
-            $this->request_body = $chunk->map(function ($office) {
+            collect($customs_offices)->chunk(1000)->each(function ($chunk) {
 
-                return $office->office_id;
-            })->flatten()->toArray();
+                $this->request_body = $chunk->map(function ($office) {
 
-            $locations = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+                    return $office->office_id;
+                })->flatten()->toArray();
 
-            if ($locations->isCachedLoad()) return;
-
-            collect($locations)->each(function ($location) use ($chunk) {
-
-                $nearest_celestial = $this->find_nearest_celestial(
-                    $chunk->firstWhere('office_id', $location->item_id)->system_id,
-                    $location->position->x,
-                    $location->position->y,
-                    $location->position->z
-                );
-
-                CorporationCustomsOffice::firstOrNew([
+                $locations = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'office_id'      => $location->item_id,
-                ])->fill([
-                    'x'           => $location->position->x,
-                    'y'           => $location->position->y,
-                    'z'           => $location->position->z,
-                    'location_id' => $nearest_celestial['map_id'],
-                ])->save();
+                ]);
+
+                if ($locations->isCachedLoad()) return;
+
+                collect($locations)->each(function ($location) use ($chunk) {
+
+                    $nearest_celestial = $this->find_nearest_celestial(
+                        $chunk->firstWhere('office_id', $location->item_id)->system_id,
+                        $location->position->x,
+                        $location->position->y,
+                        $location->position->z
+                    );
+
+                    CorporationCustomsOffice::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'office_id' => $location->item_id,
+                    ])->fill([
+                        'x' => $location->position->x,
+                        'y' => $location->position->y,
+                        'z' => $location->position->z,
+                        'location_id' => $nearest_celestial['map_id'],
+                    ])->save();
+
+                });
 
             });
+
+        }, function () {
+
+            return $this->delete();
 
         });
     }

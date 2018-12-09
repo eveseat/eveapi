@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationRoleHistory;
 
@@ -74,52 +75,60 @@ class RoleHistories extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        while (true) {
+            if (!$this->preflighted()) return;
 
-            $roles = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            while (true) {
 
-            if ($roles->isCachedLoad()) return;
+                $roles = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                ]);
 
-            collect($roles)->each(function ($role) {
+                if ($roles->isCachedLoad()) return;
 
-                collect($role->old_roles)->each(function ($role_id) use ($role) {
+                collect($roles)->each(function ($role) {
 
-                    CorporationRoleHistory::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'character_id'   => $role->character_id,
-                        'changed_at'     => carbon($role->changed_at),
-                        'role_type'      => $role->role_type,
-                        'state'          => 'old',
-                        'role'           => $role_id,
-                    ])->fill([
-                        'issuer_id' => $role->issuer_id,
-                    ])->save();
+                    collect($role->old_roles)->each(function ($role_id) use ($role) {
+
+                        CorporationRoleHistory::firstOrNew([
+                            'corporation_id' => $this->getCorporationId(),
+                            'character_id' => $role->character_id,
+                            'changed_at' => carbon($role->changed_at),
+                            'role_type' => $role->role_type,
+                            'state' => 'old',
+                            'role' => $role_id,
+                        ])->fill([
+                            'issuer_id' => $role->issuer_id,
+                        ])->save();
+
+                    });
+
+                    collect($role->new_roles)->each(function ($role_id) use ($role) {
+
+                        CorporationRoleHistory::firstOrNew([
+                            'corporation_id' => $this->getCorporationId(),
+                            'character_id' => $role->character_id,
+                            'changed_at' => carbon($role->changed_at),
+                            'role_type' => $role->role_type,
+                            'state' => 'new',
+                            'role' => $role_id,
+                        ])->fill([
+                            'issuer_id' => $role->issuer_id,
+                        ])->save();
+
+                    });
 
                 });
 
-                collect($role->new_roles)->each(function ($role_id) use ($role) {
+                if (!$this->nextPage($roles->pages))
+                    break;
+            }
 
-                    CorporationRoleHistory::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'character_id'   => $role->character_id,
-                        'changed_at'     => carbon($role->changed_at),
-                        'role_type'      => $role->role_type,
-                        'state'          => 'new',
-                        'role'           => $role_id,
-                    ])->fill([
-                        'issuer_id' => $role->issuer_id,
-                    ])->save();
+        }, function () {
 
-                });
+            return $this->delete();
 
-            });
-
-            if (! $this->nextPage($roles->pages))
-                break;
-        }
+        });
     }
 }

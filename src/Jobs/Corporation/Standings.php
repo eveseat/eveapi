@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationStanding;
 
@@ -69,40 +70,48 @@ class Standings extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        while (true) {
+            if (!$this->preflighted()) return;
 
-            $standings = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            while (true) {
 
-            if ($standings->isCachedLoad()) return;
+                $standings = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                ]);
 
-            collect($standings)->chunk(100)->each(function ($chunk) {
+                if ($standings->isCachedLoad()) return;
 
-                $records = $chunk->map(function ($standing, $key) {
-                    return [
-                        'corporation_id' => $this->getCorporationId(),
-                        'from_type'      => $standing->from_type,
-                        'from_id'        => $standing->from_id,
-                        'standing'       => $standing->standing,
-                        'created_at'     => carbon(),
-                        'updated_at'     => carbon(),
-                    ];
+                collect($standings)->chunk(100)->each(function ($chunk) {
+
+                    $records = $chunk->map(function ($standing, $key) {
+                        return [
+                            'corporation_id' => $this->getCorporationId(),
+                            'from_type' => $standing->from_type,
+                            'from_id' => $standing->from_id,
+                            'standing' => $standing->standing,
+                            'created_at' => carbon(),
+                            'updated_at' => carbon(),
+                        ];
+                    });
+
+                    CorporationStanding::upsert($records->toArray(), [
+                        'corporation_id',
+                        'from_type',
+                        'from_id',
+                        'standing',
+                        'updated_at',
+                    ]);
                 });
 
-                CorporationStanding::upsert($records->toArray(), [
-                    'corporation_id',
-                    'from_type',
-                    'from_id',
-                    'standing',
-                    'updated_at',
-                ]);
-            });
+                if (!$this->nextPage($standings->pages))
+                    break;
+            }
 
-            if (! $this->nextPage($standings->pages))
-                break;
-        }
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

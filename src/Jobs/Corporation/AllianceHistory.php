@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationAllianceHistory;
 
@@ -59,24 +60,32 @@ class AllianceHistory extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $history = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($history->isCachedLoad()) return;
-
-        collect($history)->each(function ($alliance) {
-
-            CorporationAllianceHistory::firstOrNew([
+            $history = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
-                'record_id'      => $alliance->record_id,
-            ])->fill([
-                'start_date'  => carbon($alliance->start_date),
-                'alliance_id' => $alliance->alliance_id ?? null,
-                'is_deleted'  => $alliance->is_deleted ?? false,
-            ])->save();
+            ]);
+
+            if ($history->isCachedLoad()) return;
+
+            collect($history)->each(function ($alliance) {
+
+                CorporationAllianceHistory::firstOrNew([
+                    'corporation_id' => $this->getCorporationId(),
+                    'record_id' => $alliance->record_id,
+                ])->fill([
+                    'start_date' => carbon($alliance->start_date),
+                    'alliance_id' => $alliance->alliance_id ?? null,
+                    'is_deleted' => $alliance->is_deleted ?? false,
+                ])->save();
+
+            });
+
+        }, function () {
+
+            return $this->delete();
 
         });
     }

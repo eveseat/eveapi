@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationShareholder;
 use Seat\Eveapi\Models\RefreshToken;
@@ -93,37 +94,45 @@ class Shareholders extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        while (true) {
+            if (!$this->preflighted()) return;
 
-            $shareholders = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            while (true) {
 
-            if ($shareholders->isCachedLoad()) return;
+                $shareholders = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                ]);
 
-            collect($shareholders)->each(function ($shareholder) {
+                if ($shareholders->isCachedLoad()) return;
 
-                CorporationShareholder::firstOrNew([
-                    'corporation_id'   => $this->getCorporationId(),
-                    'shareholder_type' => $shareholder->shareholder_type,
-                    'shareholder_id'   => $shareholder->shareholder_id,
-                ])->fill([
-                    'share_count' => $shareholder->share_count,
-                ])->save();
+                collect($shareholders)->each(function ($shareholder) {
 
-            });
+                    CorporationShareholder::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'shareholder_type' => $shareholder->shareholder_type,
+                        'shareholder_id' => $shareholder->shareholder_id,
+                    ])->fill([
+                        'share_count' => $shareholder->share_count,
+                    ])->save();
 
-            $this->known_shareholders->push(collect($shareholders)
-                ->pluck(['shareholder_type', 'shareholder_id'])->flatten()->all());
+                });
 
-            if (! $this->nextPage($shareholders->pages))
-                break;
-        }
+                $this->known_shareholders->push(collect($shareholders)
+                    ->pluck(['shareholder_type', 'shareholder_id'])->flatten()->all());
 
-        CorporationShareholder::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('shareholder_id', $this->known_shareholders->flatten()->all())
-            ->delete();
+                if (!$this->nextPage($shareholders->pages))
+                    break;
+            }
+
+            CorporationShareholder::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('shareholder_id', $this->known_shareholders->flatten()->all())
+                ->delete();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

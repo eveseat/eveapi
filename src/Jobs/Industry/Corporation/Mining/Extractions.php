@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
@@ -69,26 +70,33 @@ class Extractions extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $mining_extractions = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($mining_extractions->isCachedLoad()) return;
+            $mining_extractions = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-        collect($mining_extractions)->each(function ($extraction) {
+            if ($mining_extractions->isCachedLoad()) return;
 
-            CorporationIndustryMiningExtraction::firstOrNew([
-                'corporation_id'        => $this->getCorporationId(),
-                'structure_id'          => $extraction->structure_id,
-            ])->fill([
-                'extraction_start_time' => carbon($extraction->extraction_start_time),
-                'moon_id'            => $extraction->moon_id,
-                'chunk_arrival_time' => carbon($extraction->chunk_arrival_time),
-                'natural_decay_time' => carbon($extraction->natural_decay_time),
-            ])->save();
+            collect($mining_extractions)->each(function ($extraction) {
+
+                CorporationIndustryMiningExtraction::firstOrNew([
+                    'corporation_id' => $this->getCorporationId(),
+                    'structure_id' => $extraction->structure_id,
+                ])->fill([
+                    'extraction_start_time' => carbon($extraction->extraction_start_time),
+                    'moon_id' => $extraction->moon_id,
+                    'chunk_arrival_time' => carbon($extraction->chunk_arrival_time),
+                    'natural_decay_time' => carbon($extraction->natural_decay_time),
+                ])->save();
+            });
+
+        }, function () {
+
+            return $this->delete();
+
         });
-
     }
 }

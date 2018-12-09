@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Bookmarks\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
 use Seat\Eveapi\Models\RefreshToken;
@@ -89,37 +90,45 @@ class Folders extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        while (true) {
+            if (!$this->preflighted()) return;
 
-            $folders = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            while (true) {
 
-            if ($folders->isCachedLoad()) return;
-
-            collect($folders)->each(function ($folder) {
-
-                CorporationBookmarkFolder::firstOrNew([
+                $folders = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'folder_id'      => $folder->folder_id,
-                ])->fill([
-                    'name'       => $folder->name,
-                    'creator_id' => $folder->creator_id ?? null,
-                ])->save();
-            });
+                ]);
 
-            $this->known_folder_ids->push(collect($folders)
-                ->pluck('folder_id')->flatten()->all());
+                if ($folders->isCachedLoad()) return;
 
-            if (! $this->nextPage($folders->pages))
-                break;
-        }
+                collect($folders)->each(function ($folder) {
 
-        // Cleanup removed folders
-        CorporationBookmarkFolder::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('folder_id', $this->known_folder_ids->flatten()->all())
-            ->delete();
+                    CorporationBookmarkFolder::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'folder_id' => $folder->folder_id,
+                    ])->fill([
+                        'name' => $folder->name,
+                        'creator_id' => $folder->creator_id ?? null,
+                    ])->save();
+                });
+
+                $this->known_folder_ids->push(collect($folders)
+                    ->pluck('folder_id')->flatten()->all());
+
+                if (!$this->nextPage($folders->pages))
+                    break;
+            }
+
+            // Cleanup removed folders
+            CorporationBookmarkFolder::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('folder_id', $this->known_folder_ids->flatten()->all())
+                ->delete();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

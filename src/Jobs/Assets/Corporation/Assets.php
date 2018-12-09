@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\RefreshToken;
@@ -94,59 +95,67 @@ class Assets extends EsiBase
     public function handle(): void
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        while (true) {
+            if (!$this->preflighted()) return;
 
-            $assets = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            while (true) {
 
-            if ($assets->isCachedLoad()) return;
+                $assets = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                ]);
 
-            collect($assets)->chunk(1000)->each(function ($chunk) {
+                if ($assets->isCachedLoad()) return;
 
-                $records = $chunk->map(function ($asset, $key) {
+                collect($assets)->chunk(1000)->each(function ($chunk) {
 
-                    return [
-                        'item_id'        => $asset->item_id,
-                        'corporation_id' => $this->getCorporationId(),
-                        'type_id'        => $asset->type_id,
-                        'quantity'       => $asset->quantity,
-                        'location_id'    => $asset->location_id,
-                        'location_type'  => $asset->location_type,
-                        'location_flag'  => $asset->location_flag,
-                        'is_singleton'   => $asset->is_singleton,
-                        'created_at'     => carbon(),
-                        'updated_at'     => carbon(),
-                    ];
+                    $records = $chunk->map(function ($asset, $key) {
+
+                        return [
+                            'item_id' => $asset->item_id,
+                            'corporation_id' => $this->getCorporationId(),
+                            'type_id' => $asset->type_id,
+                            'quantity' => $asset->quantity,
+                            'location_id' => $asset->location_id,
+                            'location_type' => $asset->location_type,
+                            'location_flag' => $asset->location_flag,
+                            'is_singleton' => $asset->is_singleton,
+                            'created_at' => carbon(),
+                            'updated_at' => carbon(),
+                        ];
+                    });
+
+                    CorporationAsset::upsert($records->toArray(), [
+                        'item_id',
+                        'corporation_id',
+                        'type_id',
+                        'quantity',
+                        'location_id',
+                        'location_type',
+                        'location_flag',
+                        'is_singleton',
+                        'updated_at',
+                    ]);
                 });
 
-                CorporationAsset::upsert($records->toArray(), [
-                    'item_id',
-                    'corporation_id',
-                    'type_id',
-                    'quantity',
-                    'location_id',
-                    'location_type',
-                    'location_flag',
-                    'is_singleton',
-                    'updated_at',
-                ]);
-            });
+                // Update the list of known item_id's which should be
+                // excluded from the database cleanup later.
+                $this->known_assets->push(collect($assets)
+                    ->pluck('item_id')->flatten()->all());
 
-            // Update the list of known item_id's which should be
-            // excluded from the database cleanup later.
-            $this->known_assets->push(collect($assets)
-                ->pluck('item_id')->flatten()->all());
+                if (!$this->nextPage($assets->pages))
+                    break;
+            }
 
-            if (! $this->nextPage($assets->pages))
-                break;
-        }
+            // Cleanup old assets
+            CorporationAsset::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('item_id', $this->known_assets->flatten()->all())
+                ->delete();
 
-        // Cleanup old assets
-        CorporationAsset::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('item_id', $this->known_assets->flatten()->all())
-            ->delete();
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Killmails\CorporationKillmail;
 
@@ -70,22 +71,30 @@ class Recent extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $killmails = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($killmails->isCachedLoad()) return;
-
-        collect($killmails)->each(function ($killmail) {
-
-            CorporationKillmail::firstOrCreate([
+            $killmails = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
-                'killmail_id'    => $killmail->killmail_id,
-            ], [
-                'killmail_hash'  => $killmail->killmail_hash,
             ]);
+
+            if ($killmails->isCachedLoad()) return;
+
+            collect($killmails)->each(function ($killmail) {
+
+                CorporationKillmail::firstOrCreate([
+                    'corporation_id' => $this->getCorporationId(),
+                    'killmail_id' => $killmail->killmail_id,
+                ], [
+                    'killmail_hash' => $killmail->killmail_hash,
+                ]);
+            });
+
+        }, function () {
+
+            return $this->delete();
+
         });
     }
 }

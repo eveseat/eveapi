@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserverData;
@@ -77,41 +78,49 @@ class ObserverDetails extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
-            ->get()->each(function ($observer) {
+            if (!$this->preflighted()) return;
 
-                while (true) {
+            CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
+                ->get()->each(function ($observer) {
 
-                    $detail = $this->retrieve([
-                        'corporation_id' => $this->getCorporationId(),
-                        'observer_id'    => $observer->observer_id,
-                    ]);
+                    while (true) {
 
-                    if ($detail->isCachedLoad()) return;
+                        $detail = $this->retrieve([
+                            'corporation_id' => $this->getCorporationId(),
+                            'observer_id' => $observer->observer_id,
+                        ]);
 
-                    collect($detail)->each(function ($data) use ($observer) {
+                        if ($detail->isCachedLoad()) return;
 
-                        CorporationIndustryMiningObserverData::firstOrNew([
-                            'corporation_id'          => $this->getCorporationId(),
-                            'observer_id'             => $observer->observer_id,
-                            'recorded_corporation_id' => $data->recorded_corporation_id,
-                            'character_id'            => $data->character_id,
-                            'type_id'                 => $data->type_id,
-                        ])->fill([
-                            'last_updated' => $data->last_updated,
-                            'quantity'     => $data->quantity,
-                        ])->save();
+                        collect($detail)->each(function ($data) use ($observer) {
 
-                    });
+                            CorporationIndustryMiningObserverData::firstOrNew([
+                                'corporation_id' => $this->getCorporationId(),
+                                'observer_id' => $observer->observer_id,
+                                'recorded_corporation_id' => $data->recorded_corporation_id,
+                                'character_id' => $data->character_id,
+                                'type_id' => $data->type_id,
+                            ])->fill([
+                                'last_updated' => $data->last_updated,
+                                'quantity' => $data->quantity,
+                            ])->save();
 
-                    if (! $this->nextPage($detail->pages))
-                        break;
+                        });
 
-                }
+                        if (!$this->nextPage($detail->pages))
+                            break;
 
-                $this->page = 1;
-            });
+                    }
+
+                    $this->page = 1;
+                });
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

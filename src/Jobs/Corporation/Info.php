@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
@@ -60,31 +61,39 @@ class Info extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $corporation = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($corporation->isCachedLoad()) return;
+            $corporation = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-        CorporationInfo::firstOrNew([
-            'corporation_id' => $this->getCorporationId(),
-        ])->fill([
-            'name'            => $corporation->name,
-            'ticker'          => $corporation->ticker,
-            'member_count'    => $corporation->member_count,
-            'ceo_id'          => $corporation->ceo_id,
-            'alliance_id'     => $corporation->alliance_id ?? null,
-            'description'     => $corporation->description ?? null,
-            'tax_rate'        => $corporation->tax_rate,
-            'date_founded'    => property_exists($corporation, 'date_founded') ?
-                carbon($corporation->date_founded) : null,
-            'creator_id'      => $corporation->creator_id,
-            'url'             => $corporation->url ?? null,
-            'faction_id'      => $corporation->faction_id ?? null,
-            'home_station_id' => $corporation->home_station_id ?? null,
-            'shares'          => $corporation->shares ?? null,
-        ])->save();
+            if ($corporation->isCachedLoad()) return;
+
+            CorporationInfo::firstOrNew([
+                'corporation_id' => $this->getCorporationId(),
+            ])->fill([
+                'name' => $corporation->name,
+                'ticker' => $corporation->ticker,
+                'member_count' => $corporation->member_count,
+                'ceo_id' => $corporation->ceo_id,
+                'alliance_id' => $corporation->alliance_id ?? null,
+                'description' => $corporation->description ?? null,
+                'tax_rate' => $corporation->tax_rate,
+                'date_founded' => property_exists($corporation, 'date_founded') ?
+                    carbon($corporation->date_founded) : null,
+                'creator_id' => $corporation->creator_id,
+                'url' => $corporation->url ?? null,
+                'faction_id' => $corporation->faction_id ?? null,
+                'home_station_id' => $corporation->home_station_id ?? null,
+                'shares' => $corporation->shares ?? null,
+            ])->save();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

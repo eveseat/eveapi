@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationRole;
 
@@ -83,38 +84,46 @@ class Roles extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $roles = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($roles->isCachedLoad()) return;
+            $roles = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-        collect($roles)->each(function ($role) {
+            if ($roles->isCachedLoad()) return;
 
-            collect($this->types)->each(function ($type) use ($role) {
+            collect($roles)->each(function ($role) {
 
-                if (! property_exists($role, $type))
-                    return;
+                collect($this->types)->each(function ($type) use ($role) {
 
-                collect($role->{$type})->each(function ($name) use ($role, $type) {
+                    if (!property_exists($role, $type))
+                        return;
 
-                    CorporationRole::firstOrCreate([
-                        'corporation_id' => $this->getCorporationId(),
-                        'character_id'   => $role->character_id,
-                        'type'           => $type,
-                        'role'           => $name,
-                    ]);
+                    collect($role->{$type})->each(function ($name) use ($role, $type) {
 
+                        CorporationRole::firstOrCreate([
+                            'corporation_id' => $this->getCorporationId(),
+                            'character_id' => $role->character_id,
+                            'type' => $type,
+                            'role' => $name,
+                        ]);
+
+                    });
+
+                    CorporationRole::where('corporation_id', $this->getCorporationId())
+                        ->where('character_id', $role->character_id)
+                        ->where('type', $type)
+                        ->whereNotIn('role', collect($role->{$type})->flatten()->all())
+                        ->delete();
                 });
-
-                CorporationRole::where('corporation_id', $this->getCorporationId())
-                    ->where('character_id', $role->character_id)
-                    ->where('type', $type)
-                    ->whereNotIn('role', collect($role->{$type})->flatten()->all())
-                    ->delete();
             });
+
+        }, function () {
+
+            return $this->delete();
+
         });
     }
 }

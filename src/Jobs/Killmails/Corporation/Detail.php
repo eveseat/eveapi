@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Killmails\CorporationKillmail;
 use Seat\Eveapi\Models\Killmails\KillmailAttacker;
@@ -68,82 +69,94 @@ class Detail extends EsiBase
      */
     public function handle()
     {
+        logger()->debug('Corporation Killmails Detail Job has been queued', [
+            'unique_key' => implode(':', array_merge($this->tags, [$this->getCorporationId()])),
+        ]);
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $killmails = CorporationKillmail::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('killmail_id', function ($query) {
+            if (!$this->preflighted()) return;
 
-                $query->select('killmail_id')
-                    ->from('killmail_details');
+            $killmails = CorporationKillmail::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('killmail_id', function ($query) {
 
-            })->pluck('killmail_id', 'killmail_hash');
+                    $query->select('killmail_id')
+                        ->from('killmail_details');
 
-        $killmails->each(function ($killmail_id, $killmail_hash) {
+                })->pluck('killmail_id', 'killmail_hash');
 
-            $detail = $this->retrieve([
-                'killmail_id'   => $killmail_id,
-                'killmail_hash' => $killmail_hash,
-            ]);
+            $killmails->each(function ($killmail_id, $killmail_hash) {
 
-            if ($detail->isCachedLoad()) return;
-
-            KillmailDetail::firstOrCreate([
-                'killmail_id'     => $killmail_id,
-            ], [
-                'killmail_time'   => carbon($detail->killmail_time),
-                'solar_system_id' => $detail->solar_system_id,
-                'moon_id'         => $detail->moon_id ?? null,
-                'war_id'          => $detail->war_id ?? null,
-            ]);
-
-            KillmailVictim::firstOrCreate([
-                'killmail_id'    => $killmail_id,
-            ], [
-                'character_id'   => $detail->victim->character_id ?? null,
-                'corporation_id' => $detail->victim->corporation_id ?? null,
-                'alliance_id'    => $detail->victim->alliance_id ?? null,
-                'faction_id'     => $detail->victim->faction_id ?? null,
-                'damage_taken'   => $detail->victim->damage_taken,
-                'ship_type_id'   => $detail->victim->ship_type_id,
-                'x'              => $detail->victim->position->x ?? null,
-                'y'              => $detail->victim->position->y ?? null,
-                'z'              => $detail->victim->position->z ?? null,
-            ]);
-
-            collect($detail->attackers)->each(function ($attacker) use ($killmail_id) {
-
-                KillmailAttacker::firstOrCreate([
-                    'killmail_id'     => $killmail_id,
-                    'character_id'    => $attacker->character_id ?? null,
-                    'corporation_id'  => $attacker->corporation_id ?? null,
-                    'alliance_id'     => $attacker->alliance_id ?? null,
-                    'faction_id'      => $attacker->faction_id ?? null,
-                    'security_status' => $attacker->security_status,
-                    'final_blow'      => $attacker->final_blow,
-                    'damage_done'     => $attacker->damage_done,
-                    'ship_type_id'    => $attacker->ship_type_id ?? null,
-                    'weapon_type_id'  => $attacker->weapon_type_id ?? null,
+                $detail = $this->retrieve([
+                    'killmail_id' => $killmail_id,
+                    'killmail_hash' => $killmail_hash,
                 ]);
+
+                if ($detail->isCachedLoad()) return;
+
+                KillmailDetail::firstOrCreate([
+                    'killmail_id' => $killmail_id,
+                ], [
+                    'killmail_time' => carbon($detail->killmail_time),
+                    'solar_system_id' => $detail->solar_system_id,
+                    'moon_id' => $detail->moon_id ?? null,
+                    'war_id' => $detail->war_id ?? null,
+                ]);
+
+                KillmailVictim::firstOrCreate([
+                    'killmail_id' => $killmail_id,
+                ], [
+                    'character_id' => $detail->victim->character_id ?? null,
+                    'corporation_id' => $detail->victim->corporation_id ?? null,
+                    'alliance_id' => $detail->victim->alliance_id ?? null,
+                    'faction_id' => $detail->victim->faction_id ?? null,
+                    'damage_taken' => $detail->victim->damage_taken,
+                    'ship_type_id' => $detail->victim->ship_type_id,
+                    'x' => $detail->victim->position->x ?? null,
+                    'y' => $detail->victim->position->y ?? null,
+                    'z' => $detail->victim->position->z ?? null,
+                ]);
+
+                collect($detail->attackers)->each(function ($attacker) use ($killmail_id) {
+
+                    KillmailAttacker::firstOrCreate([
+                        'killmail_id' => $killmail_id,
+                        'character_id' => $attacker->character_id ?? null,
+                        'corporation_id' => $attacker->corporation_id ?? null,
+                        'alliance_id' => $attacker->alliance_id ?? null,
+                        'faction_id' => $attacker->faction_id ?? null,
+                        'security_status' => $attacker->security_status,
+                        'final_blow' => $attacker->final_blow,
+                        'damage_done' => $attacker->damage_done,
+                        'ship_type_id' => $attacker->ship_type_id ?? null,
+                        'weapon_type_id' => $attacker->weapon_type_id ?? null,
+                    ]);
+                });
+
+                if (property_exists($detail->victim, 'items')) {
+
+                    collect($detail->victim->items)->each(function ($item) use ($killmail_id) {
+
+                        KillmailVictimItem::firstOrNew([
+                            'killmail_id' => $killmail_id,
+                            'item_type_id' => $item->item_type_id,
+                        ])->fill([
+                            'quantity_destroyed' => $item->quantity_destroyed ?? null,
+                            'quantity_dropped' => $item->quantity_dropped ?? null,
+                            'singleton' => $item->singleton,
+                            'flag' => $item->flag,
+                        ])->save();
+
+                        // TODO: Process $item->items as a nested model.
+                    });
+                }
             });
 
-            if (property_exists($detail->victim, 'items')) {
+        }, function () {
 
-                collect($detail->victim->items)->each(function ($item) use ($killmail_id) {
+            logger()->warning('Corporation Killmails Details job will be removed since another similar job is already queued.');
+            return $this->delete();
 
-                    KillmailVictimItem::firstOrNew([
-                        'killmail_id'  => $killmail_id,
-                        'item_type_id' => $item->item_type_id,
-                    ])->fill([
-                        'quantity_destroyed' => $item->quantity_destroyed ?? null,
-                        'quantity_dropped'   => $item->quantity_dropped ?? null,
-                        'singleton'          => $item->singleton,
-                        'flag'               => $item->flag,
-                    ])->save();
-
-                    // TODO: Process $item->items as a nested model.
-                });
-            }
         });
     }
 }

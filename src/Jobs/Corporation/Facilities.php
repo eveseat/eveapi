@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationFacility;
 
@@ -70,27 +71,35 @@ class Facilities extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $facilities = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($facilities->isCachedLoad()) return;
-
-        collect($facilities)->each(function ($facility) {
-
-            CorporationFacility::firstOrNew([
+            $facilities = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
-                'facility_id'    => $facility->facility_id,
-            ])->fill([
-                'type_id'   => $facility->type_id,
-                'system_id' => $facility->system_id,
-            ])->save();
-        });
+            ]);
 
-        CorporationFacility::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('facility_id', collect($facilities)->pluck('facility_id')->all())
-            ->delete();
+            if ($facilities->isCachedLoad()) return;
+
+            collect($facilities)->each(function ($facility) {
+
+                CorporationFacility::firstOrNew([
+                    'corporation_id' => $this->getCorporationId(),
+                    'facility_id' => $facility->facility_id,
+                ])->fill([
+                    'type_id' => $facility->type_id,
+                    'system_id' => $facility->system_id,
+                ])->save();
+            });
+
+            CorporationFacility::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('facility_id', collect($facilities)->pluck('facility_id')->all())
+                ->delete();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

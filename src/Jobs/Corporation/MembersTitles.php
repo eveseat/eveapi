@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMemberTitle;
 
@@ -69,39 +70,47 @@ class MembersTitles extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $member_titles = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($member_titles->isCachedLoad()) return;
+            $member_titles = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-        collect($member_titles)->filter(function ($member) {
+            if ($member_titles->isCachedLoad()) return;
 
-            // Filter out members that do not have any titles.
-            return count($member->titles) > 0;
+            collect($member_titles)->filter(function ($member) {
 
-        })->each(function ($member) {
-
-            // Attach each title to the member
-            collect($member->titles)->each(function ($title) use ($member) {
-
-                CorporationMemberTitle::firstOrCreate([
-                    'corporation_id' => $this->getCorporationId(),
-                    'character_id'   => $member->character_id,
-                    'title_id'       => $title,
-                ]);
-            });
-        });
-
-        // Cleanup members of this corporation that may no longer have any titles.
-        CorporationMemberTitle::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('character_id', collect($member_titles)->filter(function ($member) {
-
+                // Filter out members that do not have any titles.
                 return count($member->titles) > 0;
 
-            })->pluck('character_id')->flatten()->all())
-            ->delete();
+            })->each(function ($member) {
+
+                // Attach each title to the member
+                collect($member->titles)->each(function ($title) use ($member) {
+
+                    CorporationMemberTitle::firstOrCreate([
+                        'corporation_id' => $this->getCorporationId(),
+                        'character_id' => $member->character_id,
+                        'title_id' => $title,
+                    ]);
+                });
+            });
+
+            // Cleanup members of this corporation that may no longer have any titles.
+            CorporationMemberTitle::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('character_id', collect($member_titles)->filter(function ($member) {
+
+                    return count($member->titles) > 0;
+
+                })->pluck('character_id')->flatten()->all())
+                ->delete();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

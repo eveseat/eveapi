@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationMemberLimits;
 
@@ -70,22 +71,29 @@ class MembersLimit extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        $limit = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+            if (!$this->preflighted()) return;
 
-        if ($limit->isCachedLoad()) return;
+            $limit = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-        if (! property_exists($limit, 'scalar'))
-            return;
+            if ($limit->isCachedLoad()) return;
 
-        CorporationMemberLimits::firstOrNew([
-            'corporation_id' => $this->getCorporationId(),
-        ])->fill([
-            'limit' => $limit->scalar,
-        ])->save();
+            if (!property_exists($limit, 'scalar'))
+                return;
 
+            CorporationMemberLimits::firstOrNew([
+                'corporation_id' => $this->getCorporationId(),
+            ])->fill([
+                'limit' => $limit->scalar,
+            ])->save();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }

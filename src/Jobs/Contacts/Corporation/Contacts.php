@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\RefreshToken;
@@ -90,39 +91,47 @@ class Contacts extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
+        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-        while (true) {
+            if (!$this->preflighted()) return;
 
-            $contacts = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            while (true) {
 
-            if ($contacts->isCachedLoad()) return;
-
-            collect($contacts)->each(function ($contact) {
-
-                CorporationContact::firstOrNew([
+                $contacts = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'contact_id'     => $contact->contact_id,
-                ])->fill([
-                    'standing'     => $contact->standing,
-                    'contact_type' => $contact->contact_type,
-                    'is_watched'   => $contact->is_watched ?? false,
-                    'label_ids'    => $contact->label_ids ?? null,
-                ])->save();
-            });
+                ]);
 
-            $this->known_contact_ids->push(collect($contacts)
-                ->pluck('contact_id')->flatten()->all());
+                if ($contacts->isCachedLoad()) return;
 
-            if (! $this->nextPage($contacts->pages))
-                break;
-        }
+                collect($contacts)->each(function ($contact) {
 
-        // Cleanup old contacts
-        CorporationContact::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('contact_id', $this->known_contact_ids->flatten()->all())
-            ->delete();
+                    CorporationContact::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'contact_id' => $contact->contact_id,
+                    ])->fill([
+                        'standing' => $contact->standing,
+                        'contact_type' => $contact->contact_type,
+                        'is_watched' => $contact->is_watched ?? false,
+                        'label_ids' => $contact->label_ids ?? null,
+                    ])->save();
+                });
+
+                $this->known_contact_ids->push(collect($contacts)
+                    ->pluck('contact_id')->flatten()->all());
+
+                if (!$this->nextPage($contacts->pages))
+                    break;
+            }
+
+            // Cleanup old contacts
+            CorporationContact::where('corporation_id', $this->getCorporationId())
+                ->whereNotIn('contact_id', $this->known_contact_ids->flatten()->all())
+                ->delete();
+
+        }, function () {
+
+            return $this->delete();
+
+        });
     }
 }
