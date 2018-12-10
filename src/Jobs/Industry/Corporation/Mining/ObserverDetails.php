@@ -99,7 +99,7 @@ class ObserverDetails extends EsiBase
                             'recorded_corporation_id' => $data->recorded_corporation_id,
                             'character_id'            => $data->character_id,
                             'type_id'                 => $data->type_id,
-							'last_updated'            => $data->last_updated,
+                            'last_updated'            => $data->last_updated,
                         ])->fill([
                             'quantity'     => $data->quantity,
                         ])->save();
