@@ -98,7 +98,7 @@ class Structures extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             while (true) {
 
@@ -125,7 +125,7 @@ class Structures extends EsiBase
                     ]);
 
                     // Persist the structure only if it doesn't already exists
-                    if (!$model->exists) $model->save();
+                    if (! $model->exists) $model->save();
 
                     CorporationStructure::firstOrNew([
                         'corporation_id' => $structure->corporation_id,
@@ -183,7 +183,7 @@ class Structures extends EsiBase
                     $this->known_structures->push($structure->structure_id);
                 });
 
-                if (!$this->nextPage($structures->pages))
+                if (! $this->nextPage($structures->pages))
                     break;
             }
 

@@ -74,7 +74,7 @@ class Bids extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             $unfinished_auctions = CorporationContract::join('contract_details',
                 'corporation_contracts.contract_id', '=',
@@ -107,7 +107,7 @@ class Bids extends EsiBase
                         ]);
                     });
 
-                    if (!$this->nextPage($bids->pages))
+                    if (! $this->nextPage($bids->pages))
                         break;
                 }
 

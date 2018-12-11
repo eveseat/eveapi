@@ -106,7 +106,7 @@ class Titles extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             $titles = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
@@ -120,12 +120,12 @@ class Titles extends EsiBase
                     'corporation_id' => $this->getCorporationId(),
                     'title_id' => $title->title_id,
                 ])->fill([
-                    'name' => $title->name ?? sprintf('Untitled %d', (int)sqrt($title->title_id - 1)),
+                    'name' => $title->name ?? sprintf('Untitled %d', (int) sqrt($title->title_id - 1)),
                 ])->save();
 
                 collect($this->types)->each(function ($type) use ($title) {
 
-                    if (!property_exists($title, $type))
+                    if (! property_exists($title, $type))
                         return;
 
                     collect($title->{$type})->each(function ($name) use ($title, $type) {

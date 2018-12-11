@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use function foo\func;
 use Illuminate\Support\Facades\Redis;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Corporation\CorporationIssuedMedal;
@@ -79,7 +78,7 @@ class IssuedMedals extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             while (true) {
 
@@ -104,7 +103,7 @@ class IssuedMedals extends EsiBase
 
                 });
 
-                if (!$this->nextPage($medals->pages))
+                if (! $this->nextPage($medals->pages))
                     break;
             }
 

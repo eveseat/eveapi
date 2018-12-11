@@ -96,7 +96,7 @@ class Shareholders extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             while (true) {
 
@@ -121,7 +121,7 @@ class Shareholders extends EsiBase
                 $this->known_shareholders->push(collect($shareholders)
                     ->pluck(['shareholder_type', 'shareholder_id'])->flatten()->all());
 
-                if (!$this->nextPage($shareholders->pages))
+                if (! $this->nextPage($shareholders->pages))
                     break;
             }
 

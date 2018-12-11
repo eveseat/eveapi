@@ -75,7 +75,7 @@ class CustomsOfficeLocations extends EsiBase
 
         Redis::funnel(implode(':', $this->tags()))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             $customs_offices = CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->get();
 

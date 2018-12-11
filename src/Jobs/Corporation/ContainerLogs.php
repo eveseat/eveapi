@@ -78,7 +78,7 @@ class ContainerLogs extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             while (true) {
 
@@ -109,7 +109,7 @@ class ContainerLogs extends EsiBase
 
                 });
 
-                if (!$this->nextPage($logs->pages))
+                if (! $this->nextPage($logs->pages))
                     break;
             }
 

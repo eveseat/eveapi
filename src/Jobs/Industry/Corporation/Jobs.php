@@ -84,7 +84,7 @@ class Jobs extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             while (true) {
 
@@ -126,7 +126,7 @@ class Jobs extends EsiBase
                     ])->save();
                 });
 
-                if (!$this->nextPage($industry_jobs->pages))
+                if (! $this->nextPage($industry_jobs->pages))
                     return;
             }
 

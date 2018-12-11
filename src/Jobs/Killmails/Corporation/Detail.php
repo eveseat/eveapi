@@ -69,13 +69,10 @@ class Detail extends EsiBase
      */
     public function handle()
     {
-        logger()->debug('Corporation Killmails Detail Job has been queued', [
-            'unique_key' => implode(':', array_merge($this->tags, [$this->getCorporationId()])),
-        ]);
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             $killmails = CorporationKillmail::where('corporation_id', $this->getCorporationId())
                 ->whereNotIn('killmail_id', function ($query) {
@@ -154,7 +151,6 @@ class Detail extends EsiBase
 
         }, function () {
 
-            logger()->warning('Corporation Killmails Details job will be removed since another similar job is already queued.');
             return $this->delete();
 
         });

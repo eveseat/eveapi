@@ -97,7 +97,7 @@ class Assets extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             while (true) {
 
@@ -143,7 +143,7 @@ class Assets extends EsiBase
                 $this->known_assets->push(collect($assets)
                     ->pluck('item_id')->flatten()->all());
 
-                if (!$this->nextPage($assets->pages))
+                if (! $this->nextPage($assets->pages))
                     break;
             }
 

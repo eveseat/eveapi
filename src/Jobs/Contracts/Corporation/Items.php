@@ -135,7 +135,7 @@ class Items extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             $empty_contracts = CorporationContract::join('contract_details',
                 'corporation_contracts.contract_id', '=',

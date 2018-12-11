@@ -73,7 +73,7 @@ class Divisions extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             $divisions = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),

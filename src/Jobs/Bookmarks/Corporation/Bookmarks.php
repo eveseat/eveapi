@@ -96,7 +96,7 @@ class Bookmarks extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             while (true) {
 
@@ -137,7 +137,7 @@ class Bookmarks extends EsiBase
                 $this->known_bookmarks->push(collect($bookmarks)
                     ->pluck('bookmark_id')->flatten()->all());
 
-                if (!$this->nextPage($bookmarks->pages))
+                if (! $this->nextPage($bookmarks->pages))
                     break;
             }
 

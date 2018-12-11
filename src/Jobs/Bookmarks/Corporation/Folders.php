@@ -92,7 +92,7 @@ class Folders extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             while (true) {
 
@@ -116,7 +116,7 @@ class Folders extends EsiBase
                 $this->known_folder_ids->push(collect($folders)
                     ->pluck('folder_id')->flatten()->all());
 
-                if (!$this->nextPage($folders->pages))
+                if (! $this->nextPage($folders->pages))
                     break;
             }
 

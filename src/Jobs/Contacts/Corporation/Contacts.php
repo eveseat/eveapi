@@ -93,7 +93,7 @@ class Contacts extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             while (true) {
 
@@ -119,7 +119,7 @@ class Contacts extends EsiBase
                 $this->known_contact_ids->push(collect($contacts)
                     ->pluck('contact_id')->flatten()->all());
 
-                if (!$this->nextPage($contacts->pages))
+                if (! $this->nextPage($contacts->pages))
                     break;
             }
 
