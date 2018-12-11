@@ -80,7 +80,7 @@ class ObserverDetails extends EsiBase
 
         Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
 
-            if (!$this->preflighted()) return;
+            if (! $this->preflighted()) return;
 
             CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
                 ->get()->each(function ($observer) {
@@ -89,7 +89,7 @@ class ObserverDetails extends EsiBase
 
                         $detail = $this->retrieve([
                             'corporation_id' => $this->getCorporationId(),
-                            'observer_id' => $observer->observer_id,
+                            'observer_id'    => $observer->observer_id,
                         ]);
 
                         if ($detail->isCachedLoad()) return;
@@ -97,19 +97,19 @@ class ObserverDetails extends EsiBase
                         collect($detail)->each(function ($data) use ($observer) {
 
                             CorporationIndustryMiningObserverData::firstOrNew([
-                                'corporation_id' => $this->getCorporationId(),
-                                'observer_id' => $observer->observer_id,
+                                'corporation_id'          => $this->getCorporationId(),
+                                'observer_id'             => $observer->observer_id,
                                 'recorded_corporation_id' => $data->recorded_corporation_id,
-                                'character_id' => $data->character_id,
-                                'type_id' => $data->type_id,
+                                'character_id'            => $data->character_id,
+                                'type_id'                 => $data->type_id,
+                                'last_updated'            => $data->last_updated,
                             ])->fill([
-                                'last_updated' => $data->last_updated,
                                 'quantity' => $data->quantity,
                             ])->save();
 
                         });
 
-                        if (!$this->nextPage($detail->pages))
+                        if (! $this->nextPage($detail->pages))
                             break;
 
                     }
