@@ -46,5 +46,5 @@ class CorporationIndustryMiningObserverData extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id'];
+    protected $primaryKey = ['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'updated_at'];
 }
