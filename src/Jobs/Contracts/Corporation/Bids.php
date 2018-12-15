@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Contracts\ContractBid;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 
@@ -31,7 +30,7 @@ use Seat\Eveapi\Models\Contracts\CorporationContract;
  * Class Bids.
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
-class Bids extends EsiBase
+class Bids extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -64,61 +63,50 @@ class Bids extends EsiBase
     protected $page = 1;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $unfinished_auctions = CorporationContract::join('contract_details',
+            'corporation_contracts.contract_id', '=',
+            'contract_details.contract_id')
+            ->where('corporation_id', $this->getCorporationId())
+            ->where('type', 'auction')
+            ->whereNotIn('status', ['finished', 'deleted'])
+            ->pluck('corporation_contracts.contract_id');
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        $unfinished_auctions->each(function ($contract_id) {
 
-            if (! $this->preflighted()) return;
+            while (true) {
 
-            $unfinished_auctions = CorporationContract::join('contract_details',
-                'corporation_contracts.contract_id', '=',
-                'contract_details.contract_id')
-                ->where('corporation_id', $this->getCorporationId())
-                ->where('type', 'auction')
-                ->whereNotIn('status', ['finished', 'deleted'])
-                ->pluck('corporation_contracts.contract_id');
+                $bids = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                    'contract_id' => $contract_id,
+                ]);
 
-            $unfinished_auctions->each(function ($contract_id) {
+                if ($bids->isCachedLoad()) return;
 
-                while (true) {
+                collect($bids)->each(function ($bid) use ($contract_id) {
 
-                    $bids = $this->retrieve([
-                        'corporation_id' => $this->getCorporationId(),
+                    ContractBid::firstOrCreate([
+                        'bid_id' => $bid->bid_id,
+                    ], [
                         'contract_id' => $contract_id,
+                        'bidder_id' => $bid->bidder_id,
+                        'date_bid' => carbon($bid->date_bid),
+                        'amount' => $bid->amount,
                     ]);
+                });
 
-                    if ($bids->isCachedLoad()) return;
+                if (! $this->nextPage($bids->pages))
+                    break;
+            }
 
-                    collect($bids)->each(function ($bid) use ($contract_id) {
-
-                        ContractBid::firstOrCreate([
-                            'bid_id' => $bid->bid_id,
-                        ], [
-                            'contract_id' => $contract_id,
-                            'bidder_id' => $bid->bidder_id,
-                            'date_bid' => carbon($bid->date_bid),
-                            'amount' => $bid->amount,
-                        ]);
-                    });
-
-                    if (! $this->nextPage($bids->pages))
-                        break;
-                }
-
-                // reset the page back to page one for the next contract
-                $this->page = 1;
-            });
-
-        }, function () {
-
-            return $this->delete();
-
+            // reset the page back to page one for the next contract
+            $this->page = 1;
         });
     }
 }

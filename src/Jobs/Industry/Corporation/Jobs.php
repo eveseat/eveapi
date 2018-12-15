@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
 
 /**
  * Class Jobs.
  * @package Seat\Eveapi\Jobs\Industry\Corporation
  */
-class Jobs extends EsiBase
+class Jobs extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -75,65 +74,55 @@ class Jobs extends EsiBase
     protected $page = 1;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $industry_jobs = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($industry_jobs->isCachedLoad()) return;
 
-            while (true) {
+            collect($industry_jobs)->each(function ($job) {
 
-                $industry_jobs = $this->retrieve([
+                CorporationIndustryJob::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                ]);
+                    'job_id' => $job->job_id,
+                ])->fill([
+                    'installer_id' => $job->installer_id,
+                    'facility_id' => $job->facility_id,
+                    'location_id' => $job->location_id,
+                    'activity_id' => $job->activity_id,
+                    'blueprint_id' => $job->blueprint_id,
+                    'blueprint_type_id' => $job->blueprint_type_id,
+                    'blueprint_location_id' => $job->blueprint_location_id,
+                    'output_location_id' => $job->output_location_id,
+                    'runs' => $job->runs,
+                    'cost' => $job->cost ?? null,
+                    'licensed_runs' => $job->licensed_runs ?? null,
+                    'probability' => $job->probability ?? null,
+                    'product_type_id' => $job->product_type_id ?? null,
+                    'status' => $job->status,
+                    'duration' => $job->duration,
+                    'start_date' => carbon($job->start_date),
+                    'end_date' => carbon($job->end_date),
+                    'pause_date' => property_exists($job, 'pause_date') ?
+                        carbon($job->pause_date) : null,
+                    'completed_date' => property_exists($job, 'completed_date') ?
+                        carbon($job->completed_date) : null,
+                    'completed_character_id' => $job->completed_character_id ?? null,
+                    'successful_runs' => $job->successful_runs ?? null,
+                ])->save();
+            });
 
-                if ($industry_jobs->isCachedLoad()) return;
-
-                collect($industry_jobs)->each(function ($job) {
-
-                    CorporationIndustryJob::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'job_id' => $job->job_id,
-                    ])->fill([
-                        'installer_id' => $job->installer_id,
-                        'facility_id' => $job->facility_id,
-                        'location_id' => $job->location_id,
-                        'activity_id' => $job->activity_id,
-                        'blueprint_id' => $job->blueprint_id,
-                        'blueprint_type_id' => $job->blueprint_type_id,
-                        'blueprint_location_id' => $job->blueprint_location_id,
-                        'output_location_id' => $job->output_location_id,
-                        'runs' => $job->runs,
-                        'cost' => $job->cost ?? null,
-                        'licensed_runs' => $job->licensed_runs ?? null,
-                        'probability' => $job->probability ?? null,
-                        'product_type_id' => $job->product_type_id ?? null,
-                        'status' => $job->status,
-                        'duration' => $job->duration,
-                        'start_date' => carbon($job->start_date),
-                        'end_date' => carbon($job->end_date),
-                        'pause_date' => property_exists($job, 'pause_date') ?
-                            carbon($job->pause_date) : null,
-                        'completed_date' => property_exists($job, 'completed_date') ?
-                            carbon($job->completed_date) : null,
-                        'completed_character_id' => $job->completed_character_id ?? null,
-                        'successful_runs' => $job->successful_runs ?? null,
-                    ])->save();
-                });
-
-                if (! $this->nextPage($industry_jobs->pages))
-                    return;
-            }
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+            if (! $this->nextPage($industry_jobs->pages))
+                return;
+        }
     }
 }

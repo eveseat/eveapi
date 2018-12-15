@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -31,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class CustomsOffices.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class CustomsOffices extends EsiBase
+class CustomsOffices extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -87,63 +86,53 @@ class CustomsOffices extends EsiBase
     }
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $customs_offices = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($customs_offices->isCachedLoad()) return;
 
-            while (true) {
+            collect($customs_offices)->each(function ($customs_office) {
 
-                $customs_offices = $this->retrieve([
+                CorporationCustomsOffice::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                ]);
+                    'office_id' => $customs_office->office_id,
+                ])->fill([
+                    'system_id' => $customs_office->system_id,
+                    'reinforce_exit_start' => $customs_office->reinforce_exit_start,
+                    'reinforce_exit_end' => $customs_office->reinforce_exit_end,
+                    'corporation_tax_rate' => $customs_office->corporation_tax_rate ?? null,
+                    'allow_alliance_access' => $customs_office->allow_alliance_access,
+                    'alliance_tax_rate' => $customs_office->alliance_tax_rate ?? null,
+                    'allow_access_with_standings' => $customs_office->allow_access_with_standings,
+                    'standing_level' => $customs_office->standing_level ?? null,
+                    'excellent_standing_tax_rate' => $customs_office->excellent_standing_tax_rate ?? null,
+                    'good_standing_tax_rate' => $customs_office->good_standing_tax_rate ?? null,
+                    'neutral_standing_tax_rate' => $customs_office->neutral_standing_tax_rate ?? null,
+                    'bad_standing_tax_rate' => $customs_office->bad_standing_tax_rate ?? null,
+                    'terrible_standing_tax_rate' => $customs_office->terrible_standing_tax_rate ?? null,
+                ])->save();
 
-                if ($customs_offices->isCachedLoad()) return;
+                $this->known_structures->push($customs_office->office_id);
 
-                collect($customs_offices)->each(function ($customs_office) {
+            });
 
-                    CorporationCustomsOffice::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'office_id' => $customs_office->office_id,
-                    ])->fill([
-                        'system_id' => $customs_office->system_id,
-                        'reinforce_exit_start' => $customs_office->reinforce_exit_start,
-                        'reinforce_exit_end' => $customs_office->reinforce_exit_end,
-                        'corporation_tax_rate' => $customs_office->corporation_tax_rate ?? null,
-                        'allow_alliance_access' => $customs_office->allow_alliance_access,
-                        'alliance_tax_rate' => $customs_office->alliance_tax_rate ?? null,
-                        'allow_access_with_standings' => $customs_office->allow_access_with_standings,
-                        'standing_level' => $customs_office->standing_level ?? null,
-                        'excellent_standing_tax_rate' => $customs_office->excellent_standing_tax_rate ?? null,
-                        'good_standing_tax_rate' => $customs_office->good_standing_tax_rate ?? null,
-                        'neutral_standing_tax_rate' => $customs_office->neutral_standing_tax_rate ?? null,
-                        'bad_standing_tax_rate' => $customs_office->bad_standing_tax_rate ?? null,
-                        'terrible_standing_tax_rate' => $customs_office->terrible_standing_tax_rate ?? null,
-                    ])->save();
+            if (! $this->nextPage($customs_offices->pages))
+                break;
+        }
 
-                    $this->known_structures->push($customs_office->office_id);
-
-                });
-
-                if (! $this->nextPage($customs_offices->pages))
-                    break;
-            }
-
-            // Cleanup customs offices that were not in the response.
-            CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())
-                ->whereNotIn('office_id', $this->known_structures->flatten()->all())
-                ->delete();
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+        // Cleanup customs offices that were not in the response.
+        CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('office_id', $this->known_structures->flatten()->all())
+            ->delete();
     }
 }

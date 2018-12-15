@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationMember;
 
 /**
  * Class Members.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Members extends EsiBase
+class Members extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -58,42 +57,31 @@ class Members extends EsiBase
     protected $tags = ['corporation', 'members'];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $members = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($members->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        collect($members)->each(function ($member_id) {
 
-            $members = $this->retrieve([
+            CorporationMember::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-            ]);
-
-            if ($members->isCachedLoad()) return;
-
-            collect($members)->each(function ($member_id) {
-
-                CorporationMember::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'character_id' => $member_id,
-                ])->save();
-
-            });
-
-            // Remove expelled members
-            CorporationMember::where('corporation_id', $this->getCorporationId())
-                ->whereNotIn('character_id', collect($members))
-                ->delete();
-
-        }, function () {
-
-            return $this->delete();
+                'character_id' => $member_id,
+            ])->save();
 
         });
+
+        // Remove expelled members
+        CorporationMember::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('character_id', collect($members))
+            ->delete();
     }
 }

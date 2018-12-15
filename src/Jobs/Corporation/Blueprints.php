@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -31,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Blueprints.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Blueprints extends EsiBase
+class Blueprints extends AbstractCorporationJob
 {
 
     /**
@@ -88,76 +87,65 @@ class Blueprints extends EsiBase
     }
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $blueprints = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($blueprints->isCachedLoad()) return;
 
-            while (true) {
+            collect($blueprints)->chunk(100)->each(function ($chunk) {
 
-                $blueprints = $this->retrieve([
-                    'corporation_id' => $this->getCorporationId(),
-                ]);
-
-                if ($blueprints->isCachedLoad()) return;
-
-                collect($blueprints)->chunk(100)->each(function ($chunk) {
-
-                    $records = $chunk->map(function ($blueprint, $key) {
-                        return [
-                            'corporation_id' => $this->getCorporationId(),
-                            'item_id' => $blueprint->item_id,
-                            'type_id' => $blueprint->type_id,
-                            'location_id' => $blueprint->location_id,
-                            'location_flag' => $blueprint->location_flag,
-                            'quantity' => $blueprint->quantity,
-                            'time_efficiency' => $blueprint->time_efficiency,
-                            'material_efficiency' => $blueprint->material_efficiency,
-                            'runs' => $blueprint->runs,
-                            'created_at' => carbon(),
-                            'updated_at' => carbon(),
-                        ];
-                    });
-
-                    CorporationBlueprint::upsert($records->toArray(), [
-                        'corporation_id',
-                        'item_id',
-                        'type_id',
-                        'location_id',
-                        'location_flag',
-                        'quantity',
-                        'time_efficiency',
-                        'material_efficiency',
-                        'runs',
-                        'updated_at',
-                    ]);
-
+                $records = $chunk->map(function ($blueprint, $key) {
+                    return [
+                        'corporation_id' => $this->getCorporationId(),
+                        'item_id' => $blueprint->item_id,
+                        'type_id' => $blueprint->type_id,
+                        'location_id' => $blueprint->location_id,
+                        'location_flag' => $blueprint->location_flag,
+                        'quantity' => $blueprint->quantity,
+                        'time_efficiency' => $blueprint->time_efficiency,
+                        'material_efficiency' => $blueprint->material_efficiency,
+                        'runs' => $blueprint->runs,
+                        'created_at' => carbon(),
+                        'updated_at' => carbon(),
+                    ];
                 });
 
-                $this->known_blueprints->push(collect($blueprints)
-                    ->pluck('item_id')->flatten()->all());
+                CorporationBlueprint::upsert($records->toArray(), [
+                    'corporation_id',
+                    'item_id',
+                    'type_id',
+                    'location_id',
+                    'location_flag',
+                    'quantity',
+                    'time_efficiency',
+                    'material_efficiency',
+                    'runs',
+                    'updated_at',
+                ]);
 
-                if (! $this->nextPage($blueprints->pages))
-                    break;
+            });
 
-            }
+            $this->known_blueprints->push(collect($blueprints)
+                ->pluck('item_id')->flatten()->all());
 
-            // Cleanup lost blueprints
-            CorporationBlueprint::where('corporation_id', $this->getCorporationId())
-                ->whereNotIn('item_id', $this->known_blueprints->flatten()->all())
-                ->delete();
+            if (! $this->nextPage($blueprints->pages))
+                break;
 
-        }, function () {
+        }
 
-            return $this->delete();
-
-        });
+        // Cleanup lost blueprints
+        CorporationBlueprint::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('item_id', $this->known_blueprints->flatten()->all())
+            ->delete();
     }
 }

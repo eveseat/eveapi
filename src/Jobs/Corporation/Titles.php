@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationTitle;
 use Seat\Eveapi\Models\Corporation\CorporationTitleRole;
 use Seat\Eveapi\Models\RefreshToken;
@@ -32,7 +31,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Titles.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Titles extends EsiBase
+class Titles extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -97,67 +96,57 @@ class Titles extends EsiBase
     }
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $titles = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($titles->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        collect($titles)->each(function ($title) {
 
-            $titles = $this->retrieve([
+            CorporationTitle::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-            ]);
+                'title_id' => $title->title_id,
+            ])->fill([
+                'name' => $title->name ?? sprintf('Untitled %d', (int) sqrt($title->title_id - 1)),
+            ])->save();
 
-            if ($titles->isCachedLoad()) return;
+            collect($this->types)->each(function ($type) use ($title) {
 
-            collect($titles)->each(function ($title) {
+                if (! property_exists($title, $type))
+                    return;
 
-                CorporationTitle::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'title_id' => $title->title_id,
-                ])->fill([
-                    'name' => $title->name ?? sprintf('Untitled %d', (int) sqrt($title->title_id - 1)),
-                ])->save();
+                collect($title->{$type})->each(function ($name) use ($title, $type) {
 
-                collect($this->types)->each(function ($type) use ($title) {
-
-                    if (! property_exists($title, $type))
-                        return;
-
-                    collect($title->{$type})->each(function ($name) use ($title, $type) {
-
-                        CorporationTitleRole::firstOrCreate([
-                            'corporation_id' => $this->getCorporationId(),
-                            'title_id' => $title->title_id,
-                            'type' => $type,
-                            'role' => $name,
-                        ]);
-                    });
-
-                    CorporationTitleRole::where('corporation_id', $this->getCorporationId())
-                        ->where('title_id', $title->title_id)
-                        ->where('type', $type)
-                        ->whereNotIn('role', collect($title->{$type})->flatten()->all())
-                        ->delete();
-
+                    CorporationTitleRole::firstOrCreate([
+                        'corporation_id' => $this->getCorporationId(),
+                        'title_id' => $title->title_id,
+                        'type' => $type,
+                        'role' => $name,
+                    ]);
                 });
 
-                $this->known_titles->push($title->title_id);
+                CorporationTitleRole::where('corporation_id', $this->getCorporationId())
+                    ->where('title_id', $title->title_id)
+                    ->where('type', $type)
+                    ->whereNotIn('role', collect($title->{$type})->flatten()->all())
+                    ->delete();
 
             });
 
-            CorporationTitle::where('corporation_id', $this->getCorporationId())
-                ->whereNotIn('title_id', $this->known_titles->flatten()->all())
-                ->delete();
-
-        }, function () {
-
-            return $this->delete();
+            $this->known_titles->push($title->title_id);
 
         });
+
+        CorporationTitle::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('title_id', $this->known_titles->flatten()->all())
+            ->delete();
     }
 }

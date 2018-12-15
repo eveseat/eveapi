@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Traits\Utils;
 
@@ -31,7 +30,7 @@ use Seat\Eveapi\Traits\Utils;
  * Class Locations.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
-class Locations extends EsiBase
+class Locations extends AbstractCorporationJob
 {
     use Utils;
 
@@ -74,119 +73,108 @@ class Locations extends EsiBase
     protected $item_id_limit = 1000;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        // all items which need to be singleton
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        // Get the assets for this character, chunked in a number of blocks
+        // that the endpoint will accept.
+        CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
+            ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
+            ->where('corporation_id', $this->getCorporationId())
+            ->where('is_singleton', true)// only singleton items may have a specific location
+            // it seems only items from that categories can have a specific location
+            // 2  : Celestial
+            // 6  : Ship
+            // 22 : Deployable
+            // 23 : Starbase
+            // 65 : Structure
+            ->whereIn('categoryID', [2, 6, 22, 23, 65])
+            ->select('item_id')
+            ->chunk($this->item_id_limit, function ($item_ids) {
 
-            if (! $this->preflighted()) return;
+                $this->request_body = $item_ids->pluck('item_id')->all();
 
-            // all items which need to be singleton
+                $locations = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                ]);
 
-            // Get the assets for this character, chunked in a number of blocks
-            // that the endpoint will accept.
-            CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
-                ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
-                ->where('corporation_id', $this->getCorporationId())
-                ->where('is_singleton', true)// only singleton items may have a specific location
-                // it seems only items from that categories can have a specific location
-                // 2  : Celestial
-                // 6  : Ship
-                // 22 : Deployable
-                // 23 : Starbase
-                // 65 : Structure
-                ->whereIn('categoryID', [2, 6, 22, 23, 65])
-                ->select('item_id')
-                ->chunk($this->item_id_limit, function ($item_ids) {
+                collect($locations)->each(function ($location) {
 
-                    $this->request_body = $item_ids->pluck('item_id')->all();
+                    // If we have a zero value for any of the coordinates,
+                    // continue to the next location as we can't calculate
+                    // anything
+                    if ($location->position->x === 0.0)
+                        return;
 
-                    $locations = $this->retrieve([
-                        'corporation_id' => $this->getCorporationId(),
-                    ]);
+                    $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
+                        ->where('item_id', $location->item_id)
+                        ->first();
 
-                    collect($locations)->each(function ($location) {
+                    $normalized_location = $this->find_nearest_celestial(
+                        $asset_data->location_id,
+                        $location->position->x, $location->position->y, $location->position->z);
 
-                        // If we have a zero value for any of the coordinates,
-                        // continue to the next location as we can't calculate
-                        // anything
-                        if ($location->position->x === 0.0)
-                            return;
-
-                        $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
-                            ->where('item_id', $location->item_id)
-                            ->first();
-
-                        $normalized_location = $this->find_nearest_celestial(
-                            $asset_data->location_id,
-                            $location->position->x, $location->position->y, $location->position->z);
-
-                        // Update the assets location information
-                        $asset_data->fill([
-                            'x' => $location->position->x,
-                            'y' => $location->position->y,
-                            'z' => $location->position->z,
-                            'map_id' => $normalized_location['map_id'],
-                            'map_name' => $normalized_location['map_name'],
-                        ])->save();
-                    });
+                    // Update the assets location information
+                    $asset_data->fill([
+                        'x' => $location->position->x,
+                        'y' => $location->position->y,
+                        'z' => $location->position->z,
+                        'map_id' => $normalized_location['map_id'],
+                        'map_name' => $normalized_location['map_name'],
+                    ])->save();
                 });
+            });
 
-            // items which may not be singleton
+        // items which may not be singleton
 
-            // Get the assets for this character, chunked in a number of blocks
-            // that the endpoint will accept.
-            CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
-                ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
-                ->where('corporation_id', $this->getCorporationId())
-                // it seems only items from that categories can have a specific location
-                // 46 : Orbitals
-                ->whereIn('categoryID', [46])
-                ->select('item_id')
-                ->chunk($this->item_id_limit, function ($item_ids) {
+        // Get the assets for this character, chunked in a number of blocks
+        // that the endpoint will accept.
+        CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
+            ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
+            ->where('corporation_id', $this->getCorporationId())
+            // it seems only items from that categories can have a specific location
+            // 46 : Orbitals
+            ->whereIn('categoryID', [46])
+            ->select('item_id')
+            ->chunk($this->item_id_limit, function ($item_ids) {
 
-                    $this->request_body = $item_ids->pluck('item_id')->all();
+                $this->request_body = $item_ids->pluck('item_id')->all();
 
-                    $locations = $this->retrieve([
-                        'corporation_id' => $this->getCorporationId(),
-                    ]);
+                $locations = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                ]);
 
-                    collect($locations)->each(function ($location) {
+                collect($locations)->each(function ($location) {
 
-                        // If we have a zero value for any of the coordinates,
-                        // continue to the next location as we can't calculate
-                        // anything
-                        if ($location->position->x === 0.0)
-                            return;
+                    // If we have a zero value for any of the coordinates,
+                    // continue to the next location as we can't calculate
+                    // anything
+                    if ($location->position->x === 0.0)
+                        return;
 
-                        $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
-                            ->where('item_id', $location->item_id)
-                            ->first();
+                    $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
+                        ->where('item_id', $location->item_id)
+                        ->first();
 
-                        $normalized_location = $this->find_nearest_celestial(
-                            $asset_data->location_id,
-                            $location->position->x, $location->position->y, $location->position->z);
+                    $normalized_location = $this->find_nearest_celestial(
+                        $asset_data->location_id,
+                        $location->position->x, $location->position->y, $location->position->z);
 
-                        // Update the assets location information
-                        $asset_data->fill([
-                            'x' => $location->position->x,
-                            'y' => $location->position->y,
-                            'z' => $location->position->z,
-                            'map_id' => $normalized_location['map_id'],
-                            'map_name' => $normalized_location['map_name'],
-                        ])->save();
-                    });
+                    // Update the assets location information
+                    $asset_data->fill([
+                        'x' => $location->position->x,
+                        'y' => $location->position->y,
+                        'z' => $location->position->z,
+                        'map_id' => $normalized_location['map_id'],
+                        'map_name' => $normalized_location['map_name'],
+                    ])->save();
                 });
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+            });
     }
 }

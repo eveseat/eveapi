@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationRoleHistory;
 
 /**
  * Class RoleHistories.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class RoleHistories extends EsiBase
+class RoleHistories extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -68,67 +67,57 @@ class RoleHistories extends EsiBase
     protected $page = 1;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $roles = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($roles->isCachedLoad()) return;
 
-            while (true) {
+            collect($roles)->each(function ($role) {
 
-                $roles = $this->retrieve([
-                    'corporation_id' => $this->getCorporationId(),
-                ]);
+                collect($role->old_roles)->each(function ($role_id) use ($role) {
 
-                if ($roles->isCachedLoad()) return;
-
-                collect($roles)->each(function ($role) {
-
-                    collect($role->old_roles)->each(function ($role_id) use ($role) {
-
-                        CorporationRoleHistory::firstOrNew([
-                            'corporation_id' => $this->getCorporationId(),
-                            'character_id' => $role->character_id,
-                            'changed_at' => carbon($role->changed_at),
-                            'role_type' => $role->role_type,
-                            'state' => 'old',
-                            'role' => $role_id,
-                        ])->fill([
-                            'issuer_id' => $role->issuer_id,
-                        ])->save();
-
-                    });
-
-                    collect($role->new_roles)->each(function ($role_id) use ($role) {
-
-                        CorporationRoleHistory::firstOrNew([
-                            'corporation_id' => $this->getCorporationId(),
-                            'character_id' => $role->character_id,
-                            'changed_at' => carbon($role->changed_at),
-                            'role_type' => $role->role_type,
-                            'state' => 'new',
-                            'role' => $role_id,
-                        ])->fill([
-                            'issuer_id' => $role->issuer_id,
-                        ])->save();
-
-                    });
+                    CorporationRoleHistory::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'character_id' => $role->character_id,
+                        'changed_at' => carbon($role->changed_at),
+                        'role_type' => $role->role_type,
+                        'state' => 'old',
+                        'role' => $role_id,
+                    ])->fill([
+                        'issuer_id' => $role->issuer_id,
+                    ])->save();
 
                 });
 
-                if (! $this->nextPage($roles->pages))
-                    break;
-            }
+                collect($role->new_roles)->each(function ($role_id) use ($role) {
 
-        }, function () {
+                    CorporationRoleHistory::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'character_id' => $role->character_id,
+                        'changed_at' => carbon($role->changed_at),
+                        'role_type' => $role->role_type,
+                        'state' => 'new',
+                        'role' => $role_id,
+                    ])->fill([
+                        'issuer_id' => $role->issuer_id,
+                    ])->save();
 
-            return $this->delete();
+                });
 
-        });
+            });
+
+            if (! $this->nextPage($roles->pages))
+                break;
+        }
     }
 }

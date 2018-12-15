@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 
 /**
  * Class Balances.
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
-class Balances extends EsiBase
+class Balances extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -63,37 +62,27 @@ class Balances extends EsiBase
     protected $tags = ['corporation', 'wallet', 'balance'];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $balances = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($balances->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        collect($balances)->each(function ($balance) {
 
-            $balances = $this->retrieve([
+            CorporationWalletBalance::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-            ]);
-
-            if ($balances->isCachedLoad()) return;
-
-            collect($balances)->each(function ($balance) {
-
-                CorporationWalletBalance::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'division' => $balance->division,
-                ])->fill([
-                    'balance' => $balance->balance,
-                ])->save();
-
-            });
-
-        }, function () {
-
-            return $this->delete();
+                'division' => $balance->division,
+            ])->fill([
+                'balance' => $balance->balance,
+            ])->save();
 
         });
     }

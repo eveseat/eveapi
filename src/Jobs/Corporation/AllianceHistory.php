@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationAllianceHistory;
 
 /**
  * Class AllianceHistory.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class AllianceHistory extends EsiBase
+class AllianceHistory extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -53,39 +52,29 @@ class AllianceHistory extends EsiBase
     protected $tags = ['corporation', 'alliance_history'];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $history = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($history->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        collect($history)->each(function ($alliance) {
 
-            $history = $this->retrieve([
+            CorporationAllianceHistory::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-            ]);
-
-            if ($history->isCachedLoad()) return;
-
-            collect($history)->each(function ($alliance) {
-
-                CorporationAllianceHistory::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'record_id' => $alliance->record_id,
-                ])->fill([
-                    'start_date' => carbon($alliance->start_date),
-                    'alliance_id' => $alliance->alliance_id ?? null,
-                    'is_deleted' => $alliance->is_deleted ?? false,
-                ])->save();
-
-            });
-
-        }, function () {
-
-            return $this->delete();
+                'record_id' => $alliance->record_id,
+            ])->fill([
+                'start_date' => carbon($alliance->start_date),
+                'alliance_id' => $alliance->alliance_id ?? null,
+                'is_deleted' => $alliance->is_deleted ?? false,
+            ])->save();
 
         });
     }

@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationMedal;
 
 /**
  * Class Medals.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Medals extends EsiBase
+class Medals extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -66,48 +65,37 @@ class Medals extends EsiBase
     protected $page = 1;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $medals = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($medals->isCachedLoad()) return;
 
-            while (true) {
+            collect($medals)->each(function ($medal) {
 
-                $medals = $this->retrieve([
+                CorporationMedal::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                ]);
+                    'medal_id' => $medal->medal_id,
+                ])->fill([
+                    'title' => $medal->title,
+                    'description' => $medal->description,
+                    'creator_id' => $medal->creator_id,
+                    'created_at' => carbon($medal->created_at),
+                ])->save();
 
-                if ($medals->isCachedLoad()) return;
+            });
 
-                collect($medals)->each(function ($medal) {
-
-                    CorporationMedal::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'medal_id' => $medal->medal_id,
-                    ])->fill([
-                        'title' => $medal->title,
-                        'description' => $medal->description,
-                        'creator_id' => $medal->creator_id,
-                        'created_at' => carbon($medal->created_at),
-                    ])->save();
-
-                });
-
-                if (! $this->nextPage($medals->pages))
-                    break;
-            }
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+            if (! $this->nextPage($medals->pages))
+                break;
+        }
     }
 }

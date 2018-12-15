@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 
 /**
  * Class Names.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
-class Names extends EsiBase
+class Names extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -71,57 +70,46 @@ class Names extends EsiBase
     protected $item_id_limit = 1000;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        // Get the assets for this character, chunked in a number of blocks
+        // that the endpoint will accept.
+        CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
+            ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
+            ->where('corporation_id', $this->getCorporationId())
+            ->where('is_singleton', true)// only singleton items may be named
+            // it seems only items from that categories can be named
+            // 2  : Celestial
+            // 6  : Ship
+            // 22 : Deployable
+            // 23 : Starbase
+            // 46 : Orbitals
+            // 65 : Structure
+            ->whereIn('categoryID', [2, 6, 22, 23, 46, 65])// it seems only items from that categories can be named
+            ->select('item_id')
+            ->chunk($this->item_id_limit, function ($item_ids) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+                $this->request_body = $item_ids->pluck('item_id')->all();
 
-            if (! $this->preflighted()) return;
+                $names = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                ]);
 
-            // Get the assets for this character, chunked in a number of blocks
-            // that the endpoint will accept.
-            CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
-                ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
-                ->where('corporation_id', $this->getCorporationId())
-                ->where('is_singleton', true)// only singleton items may be named
-                // it seems only items from that categories can be named
-                // 2  : Celestial
-                // 6  : Ship
-                // 22 : Deployable
-                // 23 : Starbase
-                // 46 : Orbitals
-                // 65 : Structure
-                ->whereIn('categoryID', [2, 6, 22, 23, 46, 65])// it seems only items from that categories can be named
-                ->select('item_id')
-                ->chunk($this->item_id_limit, function ($item_ids) {
+                collect($names)->each(function ($name) {
 
-                    $this->request_body = $item_ids->pluck('item_id')->all();
+                    // "None" seems to indidate that no name is set.
+                    if ($name->name === 'None')
+                        return;
 
-                    $names = $this->retrieve([
-                        'corporation_id' => $this->getCorporationId(),
-                    ]);
-
-                    collect($names)->each(function ($name) {
-
-                        // "None" seems to indidate that no name is set.
-                        if ($name->name === 'None')
-                            return;
-
-                        CorporationAsset::where('corporation_id', $this->getCorporationId())
-                            ->where('item_id', $name->item_id)
-                            ->update(['name' => $name->name]);
-                    });
+                    CorporationAsset::where('corporation_id', $this->getCorporationId())
+                        ->where('item_id', $name->item_id)
+                        ->update(['name' => $name->name]);
                 });
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+            });
     }
 }

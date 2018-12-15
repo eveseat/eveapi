@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationRole;
 
 /**
  * Class Roles.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Roles extends EsiBase
+class Roles extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -77,53 +76,43 @@ class Roles extends EsiBase
     ];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $roles = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($roles->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        collect($roles)->each(function ($role) {
 
-            $roles = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            collect($this->types)->each(function ($type) use ($role) {
 
-            if ($roles->isCachedLoad()) return;
+                if (! property_exists($role, $type))
+                    return;
 
-            collect($roles)->each(function ($role) {
+                collect($role->{$type})->each(function ($name) use ($role, $type) {
 
-                collect($this->types)->each(function ($type) use ($role) {
+                    CorporationRole::firstOrCreate([
+                        'corporation_id' => $this->getCorporationId(),
+                        'character_id' => $role->character_id,
+                        'type' => $type,
+                        'role' => $name,
+                    ]);
 
-                    if (! property_exists($role, $type))
-                        return;
-
-                    collect($role->{$type})->each(function ($name) use ($role, $type) {
-
-                        CorporationRole::firstOrCreate([
-                            'corporation_id' => $this->getCorporationId(),
-                            'character_id' => $role->character_id,
-                            'type' => $type,
-                            'role' => $name,
-                        ]);
-
-                    });
-
-                    CorporationRole::where('corporation_id', $this->getCorporationId())
-                        ->where('character_id', $role->character_id)
-                        ->where('type', $type)
-                        ->whereNotIn('role', collect($role->{$type})->flatten()->all())
-                        ->delete();
                 });
+
+                CorporationRole::where('corporation_id', $this->getCorporationId())
+                    ->where('character_id', $role->character_id)
+                    ->where('type', $type)
+                    ->whereNotIn('role', collect($role->{$type})->flatten()->all())
+                    ->delete();
             });
-
-        }, function () {
-
-            return $this->delete();
-
         });
     }
 }

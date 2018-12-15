@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -31,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Contacts.
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
-class Contacts extends EsiBase
+class Contacts extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -82,56 +81,44 @@ class Contacts extends EsiBase
     }
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
-     * @throws \Exception
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $contacts = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($contacts->isCachedLoad()) return;
 
-            while (true) {
+            collect($contacts)->each(function ($contact) {
 
-                $contacts = $this->retrieve([
+                CorporationContact::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                ]);
+                    'contact_id' => $contact->contact_id,
+                ])->fill([
+                    'standing' => $contact->standing,
+                    'contact_type' => $contact->contact_type,
+                    'is_watched' => $contact->is_watched ?? false,
+                    'label_ids' => $contact->label_ids ?? null,
+                ])->save();
+            });
 
-                if ($contacts->isCachedLoad()) return;
+            $this->known_contact_ids->push(collect($contacts)
+                ->pluck('contact_id')->flatten()->all());
 
-                collect($contacts)->each(function ($contact) {
+            if (! $this->nextPage($contacts->pages))
+                break;
+        }
 
-                    CorporationContact::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'contact_id' => $contact->contact_id,
-                    ])->fill([
-                        'standing' => $contact->standing,
-                        'contact_type' => $contact->contact_type,
-                        'is_watched' => $contact->is_watched ?? false,
-                        'label_ids' => $contact->label_ids ?? null,
-                    ])->save();
-                });
-
-                $this->known_contact_ids->push(collect($contacts)
-                    ->pluck('contact_id')->flatten()->all());
-
-                if (! $this->nextPage($contacts->pages))
-                    break;
-            }
-
-            // Cleanup old contacts
-            CorporationContact::where('corporation_id', $this->getCorporationId())
-                ->whereNotIn('contact_id', $this->known_contact_ids->flatten()->all())
-                ->delete();
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+        // Cleanup old contacts
+        CorporationContact::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('contact_id', $this->known_contact_ids->flatten()->all())
+            ->delete();
     }
 }

@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 
 /**
  * Class Observers.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
-class Observers extends EsiBase
+class Observers extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -70,43 +69,33 @@ class Observers extends EsiBase
     protected $page = 1;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $mining_observers = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($mining_observers->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        collect($mining_observers)->each(function ($observer) {
 
-            $mining_observers = $this->retrieve([
+            CorporationIndustryMiningObserver::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-            ]);
-
-            if ($mining_observers->isCachedLoad()) return;
-
-            collect($mining_observers)->each(function ($observer) {
-
-                CorporationIndustryMiningObserver::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'observer_id' => $observer->observer_id,
-                ])->fill([
-                    'last_updated' => carbon($observer->last_updated),
-                    'observer_type' => $observer->observer_type,
-                ])->save();
-            });
-
-            CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
-                ->whereNotIn('observer_id', collect($mining_observers)
-                    ->pluck('observer_id')->flatten()->all())
-                ->delete();
-
-        }, function () {
-
-            return $this->delete();
-
+                'observer_id' => $observer->observer_id,
+            ])->fill([
+                'last_updated' => carbon($observer->last_updated),
+                'observer_type' => $observer->observer_type,
+            ])->save();
         });
+
+        CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('observer_id', collect($mining_observers)
+                ->pluck('observer_id')->flatten()->all())
+            ->delete();
     }
 }

@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationMemberLimits;
 
 /**
  * Class MembersLimit.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class MembersLimit extends EsiBase
+class MembersLimit extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -63,37 +62,26 @@ class MembersLimit extends EsiBase
     protected $tags = ['corporation', 'members', 'limit'];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $limit = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($limit->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        if (! property_exists($limit, 'scalar'))
+            return;
 
-            $limit = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
-
-            if ($limit->isCachedLoad()) return;
-
-            if (! property_exists($limit, 'scalar'))
-                return;
-
-            CorporationMemberLimits::firstOrNew([
-                'corporation_id' => $this->getCorporationId(),
-            ])->fill([
-                'limit' => $limit->scalar,
-            ])->save();
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+        CorporationMemberLimits::firstOrNew([
+            'corporation_id' => $this->getCorporationId(),
+        ])->fill([
+            'limit' => $limit->scalar,
+        ])->save();
     }
 }

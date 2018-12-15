@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationStarbase;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -31,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Starbases.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Starbases extends EsiBase
+class Starbases extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -87,59 +86,49 @@ class Starbases extends EsiBase
     }
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $starbases = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($starbases->isCachedLoad()) return;
 
-            while (true) {
+            collect($starbases)->each(function ($starbase) {
 
-                $starbases = $this->retrieve([
+                CorporationStarbase::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                ]);
+                    'starbase_id' => $starbase->starbase_id,
+                ])->fill([
+                    'moon_id' => $starbase->moon_id ?? null,
+                    'onlined_since' => property_exists($starbase, 'onlined_since') ?
+                        carbon($starbase->onlined_since) : null,
+                    'reinforced_until' => property_exists($starbase, 'reinforced_until') ?
+                        carbon($starbase->reinforced_until) : null,
+                    'state' => $starbase->state ?? null,
+                    'type_id' => $starbase->type_id,
+                    'system_id' => $starbase->system_id,
+                    'unanchor_at' => property_exists($starbase, 'unanchor_at') ?
+                        carbon($starbase->unanchor_at) : null,
+                ])->save();
 
-                if ($starbases->isCachedLoad()) return;
+                $this->known_starbases->push($starbase->starbase_id);
 
-                collect($starbases)->each(function ($starbase) {
+            });
 
-                    CorporationStarbase::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'starbase_id' => $starbase->starbase_id,
-                    ])->fill([
-                        'moon_id' => $starbase->moon_id ?? null,
-                        'onlined_since' => property_exists($starbase, 'onlined_since') ?
-                            carbon($starbase->onlined_since) : null,
-                        'reinforced_until' => property_exists($starbase, 'reinforced_until') ?
-                            carbon($starbase->reinforced_until) : null,
-                        'state' => $starbase->state ?? null,
-                        'type_id' => $starbase->type_id,
-                        'system_id' => $starbase->system_id,
-                        'unanchor_at' => property_exists($starbase, 'unanchor_at') ?
-                            carbon($starbase->unanchor_at) : null,
-                    ])->save();
+            if (! $this->nextPage($starbases->pages))
+                break;
+        }
 
-                    $this->known_starbases->push($starbase->starbase_id);
-
-                });
-
-                if (! $this->nextPage($starbases->pages))
-                    break;
-            }
-
-            CorporationStarbase::where('corporation_id', $this->getCorporationId())
-                ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
-                ->delete();
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+        CorporationStarbase::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())
+            ->delete();
     }
 }

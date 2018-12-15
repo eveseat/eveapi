@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationFacility;
 
 /**
  * Class Facilities.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Facilities extends EsiBase
+class Facilities extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -63,43 +62,32 @@ class Facilities extends EsiBase
     protected $tags = ['corporation', 'facilities'];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $facilities = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($facilities->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        collect($facilities)->each(function ($facility) {
 
-            $facilities = $this->retrieve([
+            CorporationFacility::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-            ]);
-
-            if ($facilities->isCachedLoad()) return;
-
-            collect($facilities)->each(function ($facility) {
-
-                CorporationFacility::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'facility_id' => $facility->facility_id,
-                ])->fill([
-                    'type_id' => $facility->type_id,
-                    'system_id' => $facility->system_id,
-                ])->save();
-            });
-
-            CorporationFacility::where('corporation_id', $this->getCorporationId())
-                ->whereNotIn('facility_id', collect($facilities)->pluck('facility_id')->all())
-                ->delete();
-
-        }, function () {
-
-            return $this->delete();
-
+                'facility_id' => $facility->facility_id,
+            ])->fill([
+                'type_id' => $facility->type_id,
+                'system_id' => $facility->system_id,
+            ])->save();
         });
+
+        CorporationFacility::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('facility_id', collect($facilities)->pluck('facility_id')->all())
+            ->delete();
     }
 }

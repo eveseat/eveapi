@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserverData;
 
@@ -31,7 +30,7 @@ use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserverData;
  * Class ObserverDetails.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
-class ObserverDetails extends EsiBase
+class ObserverDetails extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -71,56 +70,46 @@ class ObserverDetails extends EsiBase
     protected $page = 1;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
+            ->get()->each(function ($observer) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+                while (true) {
 
-            if (! $this->preflighted()) return;
+                    $detail = $this->retrieve([
+                        'corporation_id' => $this->getCorporationId(),
+                        'observer_id'    => $observer->observer_id,
+                    ]);
 
-            CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
-                ->get()->each(function ($observer) {
+                    if ($detail->isCachedLoad()) return;
 
-                    while (true) {
+                    collect($detail)->each(function ($data) use ($observer) {
 
-                        $detail = $this->retrieve([
-                            'corporation_id' => $this->getCorporationId(),
-                            'observer_id'    => $observer->observer_id,
-                        ]);
+                        CorporationIndustryMiningObserverData::firstOrNew([
+                            'corporation_id'          => $this->getCorporationId(),
+                            'observer_id'             => $observer->observer_id,
+                            'recorded_corporation_id' => $data->recorded_corporation_id,
+                            'character_id'            => $data->character_id,
+                            'type_id'                 => $data->type_id,
+                            'last_updated'            => $data->last_updated,
+                        ])->fill([
+                            'quantity' => $data->quantity,
+                        ])->save();
 
-                        if ($detail->isCachedLoad()) return;
+                    });
 
-                        collect($detail)->each(function ($data) use ($observer) {
+                    if (! $this->nextPage($detail->pages))
+                        break;
 
-                            CorporationIndustryMiningObserverData::firstOrNew([
-                                'corporation_id'          => $this->getCorporationId(),
-                                'observer_id'             => $observer->observer_id,
-                                'recorded_corporation_id' => $data->recorded_corporation_id,
-                                'character_id'            => $data->character_id,
-                                'type_id'                 => $data->type_id,
-                                'last_updated'            => $data->last_updated,
-                            ])->fill([
-                                'quantity' => $data->quantity,
-                            ])->save();
+                }
 
-                        });
-
-                        if (! $this->nextPage($detail->pages))
-                            break;
-
-                    }
-
-                    $this->page = 1;
-                });
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+                $this->page = 1;
+            });
     }
 }

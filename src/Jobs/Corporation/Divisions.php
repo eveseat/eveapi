@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 
 /**
  * Class Divisions.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Divisions extends EsiBase
+class Divisions extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -63,54 +62,43 @@ class Divisions extends EsiBase
     protected $tags = ['corporation', 'divisions'];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $divisions = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($divisions->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        if (property_exists($divisions, 'hangar'))
 
-            $divisions = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
+            collect($divisions->hangar)->each(function ($hangar) {
 
-            if ($divisions->isCachedLoad()) return;
+                CorporationDivision::firstOrNew([
+                    'corporation_id' => $this->getCorporationId(),
+                    'type' => 'hangar',
+                    'division' => $hangar->division,
+                ])->fill([
+                    'name' => $hangar->name ?? null,
+                ])->save();
+            });
 
-            if (property_exists($divisions, 'hangar'))
+        if (property_exists($divisions, 'wallet'))
 
-                collect($divisions->hangar)->each(function ($hangar) {
+            collect($divisions->wallet)->each(function ($wallet) {
 
-                    CorporationDivision::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'type' => 'hangar',
-                        'division' => $hangar->division,
-                    ])->fill([
-                        'name' => $hangar->name ?? null,
-                    ])->save();
-                });
-
-            if (property_exists($divisions, 'wallet'))
-
-                collect($divisions->wallet)->each(function ($wallet) {
-
-                    CorporationDivision::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'type' => 'wallet',
-                        'division' => $wallet->division,
-                    ])->fill([
-                        'name' => $wallet->name ?? null,
-                    ])->save();
-                });
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+                CorporationDivision::firstOrNew([
+                    'corporation_id' => $this->getCorporationId(),
+                    'type' => 'wallet',
+                    'division' => $wallet->division,
+                ])->fill([
+                    'name' => $wallet->name ?? null,
+                ])->save();
+            });
     }
 }

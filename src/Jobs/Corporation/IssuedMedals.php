@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationIssuedMedal;
 
 /**
  * Class IssuedMedals.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class IssuedMedals extends EsiBase
+class IssuedMedals extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -68,49 +67,38 @@ class IssuedMedals extends EsiBase
     protected $page = 1;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $medals = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($medals->isCachedLoad()) return;
 
-            while (true) {
+            collect($medals)->each(function ($medal) {
 
-                $medals = $this->retrieve([
+                CorporationIssuedMedal::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                ]);
+                    'medal_id' => $medal->medal_id,
+                    'character_id' => $medal->character_id,
+                ])->fill([
+                    'reason' => $medal->reason,
+                    'status' => $medal->status,
+                    'issuer_id' => $medal->issuer_id,
+                    'issued_at' => carbon($medal->issued_at),
+                ])->save();
 
-                if ($medals->isCachedLoad()) return;
+            });
 
-                collect($medals)->each(function ($medal) {
-
-                    CorporationIssuedMedal::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'medal_id' => $medal->medal_id,
-                        'character_id' => $medal->character_id,
-                    ])->fill([
-                        'reason' => $medal->reason,
-                        'status' => $medal->status,
-                        'issuer_id' => $medal->issuer_id,
-                        'issued_at' => carbon($medal->issued_at),
-                    ])->save();
-
-                });
-
-                if (! $this->nextPage($medals->pages))
-                    break;
-            }
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+            if (! $this->nextPage($medals->pages))
+                break;
+        }
     }
 }

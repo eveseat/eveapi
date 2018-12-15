@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
  * Class Info.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Info extends EsiBase
+class Info extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -53,47 +52,36 @@ class Info extends EsiBase
     protected $tags = ['corporation', 'info'];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $corporation = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($corporation->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
-
-            $corporation = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-            ]);
-
-            if ($corporation->isCachedLoad()) return;
-
-            CorporationInfo::firstOrNew([
-                'corporation_id' => $this->getCorporationId(),
-            ])->fill([
-                'name' => $corporation->name,
-                'ticker' => $corporation->ticker,
-                'member_count' => $corporation->member_count,
-                'ceo_id' => $corporation->ceo_id,
-                'alliance_id' => $corporation->alliance_id ?? null,
-                'description' => $corporation->description ?? null,
-                'tax_rate' => $corporation->tax_rate,
-                'date_founded' => property_exists($corporation, 'date_founded') ?
-                    carbon($corporation->date_founded) : null,
-                'creator_id' => $corporation->creator_id,
-                'url' => $corporation->url ?? null,
-                'faction_id' => $corporation->faction_id ?? null,
-                'home_station_id' => $corporation->home_station_id ?? null,
-                'shares' => $corporation->shares ?? null,
-            ])->save();
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+        CorporationInfo::firstOrNew([
+            'corporation_id' => $this->getCorporationId(),
+        ])->fill([
+            'name' => $corporation->name,
+            'ticker' => $corporation->ticker,
+            'member_count' => $corporation->member_count,
+            'ceo_id' => $corporation->ceo_id,
+            'alliance_id' => $corporation->alliance_id ?? null,
+            'description' => $corporation->description ?? null,
+            'tax_rate' => $corporation->tax_rate,
+            'date_founded' => property_exists($corporation, 'date_founded') ?
+                carbon($corporation->date_founded) : null,
+            'creator_id' => $corporation->creator_id,
+            'url' => $corporation->url ?? null,
+            'faction_id' => $corporation->faction_id ?? null,
+            'home_station_id' => $corporation->home_station_id ?? null,
+            'shares' => $corporation->shares ?? null,
+        ])->save();
     }
 }

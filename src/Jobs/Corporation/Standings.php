@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationStanding;
 
 /**
  * Class Standings.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Standings extends EsiBase
+class Standings extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -63,55 +62,45 @@ class Standings extends EsiBase
     protected $page = 1;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $standings = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($standings->isCachedLoad()) return;
 
-            while (true) {
+            collect($standings)->chunk(100)->each(function ($chunk) {
 
-                $standings = $this->retrieve([
-                    'corporation_id' => $this->getCorporationId(),
-                ]);
-
-                if ($standings->isCachedLoad()) return;
-
-                collect($standings)->chunk(100)->each(function ($chunk) {
-
-                    $records = $chunk->map(function ($standing, $key) {
-                        return [
-                            'corporation_id' => $this->getCorporationId(),
-                            'from_type' => $standing->from_type,
-                            'from_id' => $standing->from_id,
-                            'standing' => $standing->standing,
-                            'created_at' => carbon(),
-                            'updated_at' => carbon(),
-                        ];
-                    });
-
-                    CorporationStanding::upsert($records->toArray(), [
-                        'corporation_id',
-                        'from_type',
-                        'from_id',
-                        'standing',
-                        'updated_at',
-                    ]);
+                $records = $chunk->map(function ($standing, $key) {
+                    return [
+                        'corporation_id' => $this->getCorporationId(),
+                        'from_type' => $standing->from_type,
+                        'from_id' => $standing->from_id,
+                        'standing' => $standing->standing,
+                        'created_at' => carbon(),
+                        'updated_at' => carbon(),
+                    ];
                 });
 
-                if (! $this->nextPage($standings->pages))
-                    break;
-            }
+                CorporationStanding::upsert($records->toArray(), [
+                    'corporation_id',
+                    'from_type',
+                    'from_id',
+                    'standing',
+                    'updated_at',
+                ]);
+            });
 
-        }, function () {
-
-            return $this->delete();
-
-        });
+            if (! $this->nextPage($standings->pages))
+                break;
+        }
     }
 }

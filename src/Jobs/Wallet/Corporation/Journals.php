@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
 
@@ -31,7 +30,7 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
  * Class Journals.
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
-class Journals extends EsiBase
+class Journals extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -76,86 +75,76 @@ class Journals extends EsiBase
     protected $from_id = PHP_INT_MAX;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
+            ->each(function ($division) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+                // Perform a journal walk backwards to get all of the
+                // entries as far back as possible. When the response from
+                // ESI is empty, we can assume we have everything.
+                while (true) {
 
-            if (! $this->preflighted()) return;
+                    $this->query_string = ['from_id' => $this->from_id];
 
-            CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
-                ->each(function ($division) {
+                    $journal = $this->retrieve([
+                        'corporation_id' => $this->getCorporationId(),
+                        'division' => $division->division,
+                    ]);
 
-                    // Perform a journal walk backwards to get all of the
-                    // entries as far back as possible. When the response from
-                    // ESI is empty, we can assume we have everything.
-                    while (true) {
+                    if ($journal->isCachedLoad()) return;
 
-                        $this->query_string = ['from_id' => $this->from_id];
+                    // If we have no more entries, break the loop.
+                    if (collect($journal)->count() === 0)
+                        break;
 
-                        $journal = $this->retrieve([
-                            'corporation_id' => $this->getCorporationId(),
-                            'division' => $division->division,
-                        ]);
+                    collect($journal)->chunk(1000)->each(function ($chunk) use ($division) {
 
-                        if ($journal->isCachedLoad()) return;
+                        $records = $chunk->map(function ($entry, $key) use ($division) {
 
-                        // If we have no more entries, break the loop.
-                        if (collect($journal)->count() === 0)
-                            break;
-
-                        collect($journal)->chunk(1000)->each(function ($chunk) use ($division) {
-
-                            $records = $chunk->map(function ($entry, $key) use ($division) {
-
-                                return [
-                                    'corporation_id' => $this->getCorporationId(),
-                                    'division' => $division->division,
-                                    'id' => $entry->id,
-                                    'date' => carbon($entry->date),
-                                    'ref_type' => $entry->ref_type,
-                                    'first_party_id' => $entry->first_party_id ?? null,
-                                    'second_party_id' => $entry->second_party_id ?? null,
-                                    'amount' => $entry->amount ?? null,
-                                    'balance' => $entry->balance ?? null,
-                                    'reason' => $entry->reason ?? null,
-                                    'tax_receiver_id' => $entry->tax_receiver_id ?? null,
-                                    'tax' => $entry->tax ?? null,
-                                    // introduced in v4
-                                    'description' => $entry->description,
-                                    'context_id' => $entry->context_id ?? null,
-                                    'context_id_type' => $entry->context_id_type ?? null,
-                                    'created_at' => carbon(),
-                                    'updated_at' => carbon(),
-                                ];
-                            });
-
-                            CorporationWalletJournal::insertIgnore($records->toArray());
+                            return [
+                                'corporation_id' => $this->getCorporationId(),
+                                'division' => $division->division,
+                                'id' => $entry->id,
+                                'date' => carbon($entry->date),
+                                'ref_type' => $entry->ref_type,
+                                'first_party_id' => $entry->first_party_id ?? null,
+                                'second_party_id' => $entry->second_party_id ?? null,
+                                'amount' => $entry->amount ?? null,
+                                'balance' => $entry->balance ?? null,
+                                'reason' => $entry->reason ?? null,
+                                'tax_receiver_id' => $entry->tax_receiver_id ?? null,
+                                'tax' => $entry->tax ?? null,
+                                // introduced in v4
+                                'description' => $entry->description,
+                                'context_id' => $entry->context_id ?? null,
+                                'context_id_type' => $entry->context_id_type ?? null,
+                                'created_at' => carbon(),
+                                'updated_at' => carbon(),
+                            ];
                         });
 
-                        // Update the from_id to be the new lowest ref_id we
-                        // know of. The next call will use this.
-                        $this->from_id = collect($journal)->min('id') - 1;
+                        CorporationWalletJournal::insertIgnore($records->toArray());
+                    });
 
-                        if (! $this->nextPage($journal->pages))
-                            break;
-                    }
+                    // Update the from_id to be the new lowest ref_id we
+                    // know of. The next call will use this.
+                    $this->from_id = collect($journal)->min('id') - 1;
 
-                    // Reset the from_id for the next wallet division
-                    $this->from_id = PHP_INT_MAX;
+                    if (! $this->nextPage($journal->pages))
+                        break;
+                }
 
-                    // Reset the page for the next wallet division
-                    $this->page = 1;
-                });
+                // Reset the from_id for the next wallet division
+                $this->from_id = PHP_INT_MAX;
 
-        }, function () {
-
-            return $this->delete();
-
-        });
+                // Reset the page for the next wallet division
+                $this->page = 1;
+            });
     }
 }

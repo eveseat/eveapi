@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Market\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 
 /**
  * Class Orders.
  * @package Seat\Eveapi\Jobs\Market\Corporation
  */
-class Orders extends EsiBase
+class Orders extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -68,56 +67,46 @@ class Orders extends EsiBase
     protected $page = 1;
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        while (true) {
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+            $orders = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
+            ]);
 
-            if (! $this->preflighted()) return;
+            if ($orders->isCachedLoad()) return;
 
-            while (true) {
+            collect($orders)->each(function ($order) {
 
-                $orders = $this->retrieve([
+                CorporationOrder::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                ]);
+                    'order_id' => $order->order_id,
+                ])->fill([
+                    'type_id' => $order->type_id,
+                    'region_id' => $order->region_id,
+                    'location_id' => $order->location_id,
+                    'range' => $order->range,
+                    'is_buy_order' => $order->is_buy_order ?? null,
+                    'price' => $order->price,
+                    'volume_total' => $order->volume_total,
+                    'volume_remain' => $order->volume_remain,
+                    'issued' => carbon($order->issued),
+                    'issued_by' => $order->issued_by,
+                    'min_volume' => $order->min_volume ?? null,
+                    'wallet_division' => $order->wallet_division ?? null,
+                    'duration' => $order->duration ?? null,
+                    'escrow' => $order->escrow ?? null,
+                ])->save();
+            });
 
-                if ($orders->isCachedLoad()) return;
-
-                collect($orders)->each(function ($order) {
-
-                    CorporationOrder::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
-                        'order_id' => $order->order_id,
-                    ])->fill([
-                        'type_id' => $order->type_id,
-                        'region_id' => $order->region_id,
-                        'location_id' => $order->location_id,
-                        'range' => $order->range,
-                        'is_buy_order' => $order->is_buy_order ?? null,
-                        'price' => $order->price,
-                        'volume_total' => $order->volume_total,
-                        'volume_remain' => $order->volume_remain,
-                        'issued' => carbon($order->issued),
-                        'issued_by' => $order->issued_by,
-                        'min_volume' => $order->min_volume ?? null,
-                        'wallet_division' => $order->wallet_division ?? null,
-                        'duration' => $order->duration ?? null,
-                        'escrow' => $order->escrow ?? null,
-                    ])->save();
-                });
-
-                if (! $this->nextPage($orders->pages))
-                    return;
-            }
-
-        }, function () {
-
-            return $this->delete();
-
-        });
+            if (! $this->nextPage($orders->pages))
+                return;
+        }
     }
 }

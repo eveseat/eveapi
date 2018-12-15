@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Contacts\CorporationContactLabel;
 
 /**
  * Class Labels.
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
-class Labels extends EsiBase
+class Labels extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -58,43 +57,31 @@ class Labels extends EsiBase
     protected $tags = ['corporation', 'contacts', 'labels'];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
-     * @throws \Exception
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $labels = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($labels->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        collect($labels)->each(function ($label) {
 
-            $labels = $this->retrieve([
+            CorporationContactLabel::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-            ]);
-
-            if ($labels->isCachedLoad()) return;
-
-            collect($labels)->each(function ($label) {
-
-                CorporationContactLabel::firstOrNew([
-                    'corporation_id' => $this->getCorporationId(),
-                    'label_id' => $label->label_id,
-                ])->fill([
-                    'label_name' => $label->label_name,
-                ])->save();
-            });
-
-            CorporationContactLabel::where('corporation_id', $this->getCorporationId())
-                ->whereNotIn('label_id', collect($labels)->pluck('label_id')->flatten()->all())
-                ->delete();
-
-        }, function () {
-
-            return $this->delete();
-
+                'label_id' => $label->label_id,
+            ])->fill([
+                'label_name' => $label->label_name,
+            ])->save();
         });
+
+        CorporationContactLabel::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('label_id', collect($labels)->pluck('label_id')->flatten()->all())
+            ->delete();
     }
 }

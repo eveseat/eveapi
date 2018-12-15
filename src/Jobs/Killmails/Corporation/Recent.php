@@ -22,15 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Corporation;
 
-use Illuminate\Support\Facades\Redis;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Killmails\CorporationKillmail;
 
 /**
  * Class Recent.
  * @package Seat\Eveapi\Jobs\Killmails\Corporation
  */
-class Recent extends EsiBase
+class Recent extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -63,38 +62,27 @@ class Recent extends EsiBase
     protected $tags = ['corporation', 'killmails'];
 
     /**
-     * Execute the job.
+     * Contains the job process.
      *
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
+        $killmails = $this->retrieve([
+            'corporation_id' => $this->getCorporationId(),
+        ]);
 
-        Redis::funnel(implode(':', array_merge($this->tags, [$this->getCorporationId()])))->limit(1)->then(function () {
+        if ($killmails->isCachedLoad()) return;
 
-            if (! $this->preflighted()) return;
+        collect($killmails)->each(function ($killmail) {
 
-            $killmails = $this->retrieve([
+            CorporationKillmail::firstOrCreate([
                 'corporation_id' => $this->getCorporationId(),
+                'killmail_id' => $killmail->killmail_id,
+            ], [
+                'killmail_hash' => $killmail->killmail_hash,
             ]);
-
-            if ($killmails->isCachedLoad()) return;
-
-            collect($killmails)->each(function ($killmail) {
-
-                CorporationKillmail::firstOrCreate([
-                    'corporation_id' => $this->getCorporationId(),
-                    'killmail_id' => $killmail->killmail_id,
-                ], [
-                    'killmail_hash' => $killmail->killmail_hash,
-                ]);
-            });
-
-        }, function () {
-
-            return $this->delete();
-
         });
     }
 }
