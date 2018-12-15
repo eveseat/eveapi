@@ -81,8 +81,8 @@ class Divisions extends AbstractCorporationJob
 
                 CorporationDivision::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'type' => 'hangar',
-                    'division' => $hangar->division,
+                    'type'           => 'hangar',
+                    'division'       => $hangar->division,
                 ])->fill([
                     'name' => $hangar->name ?? null,
                 ])->save();
@@ -94,8 +94,8 @@ class Divisions extends AbstractCorporationJob
 
                 CorporationDivision::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'type' => 'wallet',
-                    'division' => $wallet->division,
+                    'type'           => 'wallet',
+                    'division'       => $wallet->division,
                 ])->fill([
                     'name' => $wallet->name ?? null,
                 ])->save();

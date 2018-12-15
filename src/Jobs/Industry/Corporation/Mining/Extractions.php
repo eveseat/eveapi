@@ -79,12 +79,12 @@ class Extractions extends AbstractCorporationJob
 
             CorporationIndustryMiningExtraction::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'structure_id' => $extraction->structure_id,
+                'structure_id'   => $extraction->structure_id,
             ])->fill([
                 'extraction_start_time' => carbon($extraction->extraction_start_time),
-                'moon_id' => $extraction->moon_id,
-                'chunk_arrival_time' => carbon($extraction->chunk_arrival_time),
-                'natural_decay_time' => carbon($extraction->natural_decay_time),
+                'moon_id'               => $extraction->moon_id,
+                'chunk_arrival_time'    => carbon($extraction->chunk_arrival_time),
+                'natural_decay_time'    => carbon($extraction->natural_decay_time),
             ])->save();
         });
     }

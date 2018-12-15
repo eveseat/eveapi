@@ -89,7 +89,7 @@ class Transactions extends AbstractCorporationJob
 
                     $transactions = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
-                        'division' => $division->division,
+                        'division'       => $division->division,
                     ]);
 
                     if ($transactions->isCachedLoad()) return;
@@ -102,7 +102,7 @@ class Transactions extends AbstractCorporationJob
 
                         $transaction_entry = CorporationWalletTransaction::firstOrNew([
                             'corporation_id' => $this->getCorporationId(),
-                            'division' => $division->division,
+                            'division'       => $division->division,
                             'transaction_id' => $transaction->transaction_id,
                         ]);
 
@@ -112,13 +112,13 @@ class Transactions extends AbstractCorporationJob
                             return;
 
                         $transaction_entry->fill([
-                            'date' => carbon($transaction->date),
-                            'type_id' => $transaction->type_id,
-                            'location_id' => $transaction->location_id,
-                            'unit_price' => $transaction->unit_price,
-                            'quantity' => $transaction->quantity,
-                            'client_id' => $transaction->client_id,
-                            'is_buy' => $transaction->is_buy,
+                            'date'           => carbon($transaction->date),
+                            'type_id'        => $transaction->type_id,
+                            'location_id'    => $transaction->location_id,
+                            'unit_price'     => $transaction->unit_price,
+                            'quantity'       => $transaction->quantity,
+                            'client_id'      => $transaction->client_id,
+                            'is_buy'         => $transaction->is_buy,
                             'journal_ref_id' => $transaction->journal_ref_id,
                         ])->save();
                     });

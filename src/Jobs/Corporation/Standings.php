@@ -82,11 +82,11 @@ class Standings extends AbstractCorporationJob
                 $records = $chunk->map(function ($standing, $key) {
                     return [
                         'corporation_id' => $this->getCorporationId(),
-                        'from_type' => $standing->from_type,
-                        'from_id' => $standing->from_id,
-                        'standing' => $standing->standing,
-                        'created_at' => carbon(),
-                        'updated_at' => carbon(),
+                        'from_type'      => $standing->from_type,
+                        'from_id'        => $standing->from_id,
+                        'standing'       => $standing->standing,
+                        'created_at'     => carbon(),
+                        'updated_at'     => carbon(),
                     ];
                 });
 

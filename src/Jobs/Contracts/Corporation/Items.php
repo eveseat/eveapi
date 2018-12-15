@@ -153,7 +153,7 @@ class Items extends AbstractCorporationJob
 
             $items = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
-                'contract_id' => $contract_id,
+                'contract_id'    => $contract_id,
             ]);
 
             if ($items->isCachedLoad()) return;
@@ -161,13 +161,13 @@ class Items extends AbstractCorporationJob
             collect($items)->each(function ($item) use ($contract_id) {
 
                 ContractItem::upsert([
-                    'contract_id' => $contract_id,
-                    'record_id' => $item->record_id,
-                    'type_id' => $item->type_id,
-                    'quantity' => $item->quantity,
+                    'contract_id'  => $contract_id,
+                    'record_id'    => $item->record_id,
+                    'type_id'      => $item->type_id,
+                    'quantity'     => $item->quantity,
                     'raw_quantity' => $item->raw_quantity ?? null,
                     'is_singleton' => $item->is_singleton,
-                    'is_included' => $item->is_included,
+                    'is_included'  => $item->is_included,
                 ], [
                     'contract_id', 'record_id',
                 ]);

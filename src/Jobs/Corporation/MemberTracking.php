@@ -79,16 +79,16 @@ class MemberTracking extends AbstractCorporationJob
 
             CorporationMemberTracking::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'character_id' => $member->character_id,
+                'character_id'   => $member->character_id,
             ])->fill([
-                'start_date' => property_exists($member, 'start_date') ?
+                'start_date'   => property_exists($member, 'start_date') ?
                     carbon($member->start_date) : null,
-                'base_id' => $member->base_id ?? null,
-                'logon_date' => property_exists($member, 'logon_date') ?
+                'base_id'      => $member->base_id ?? null,
+                'logon_date'   => property_exists($member, 'logon_date') ?
                     carbon($member->logon_date) : null,
-                'logoff_date' => property_exists($member, 'logoff_date') ?
+                'logoff_date'  => property_exists($member, 'logoff_date') ?
                     carbon($member->logoff_date) : null,
-                'location_id' => $member->location_id ?? null,
+                'location_id'  => $member->location_id ?? null,
                 'ship_type_id' => $member->ship_type_id ?? null,
             ])->save();
         });

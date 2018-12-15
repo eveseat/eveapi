@@ -94,7 +94,7 @@ class Journals extends AbstractCorporationJob
 
                     $journal = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
-                        'division' => $division->division,
+                        'division'       => $division->division,
                     ]);
 
                     if ($journal->isCachedLoad()) return;
@@ -108,24 +108,24 @@ class Journals extends AbstractCorporationJob
                         $records = $chunk->map(function ($entry, $key) use ($division) {
 
                             return [
-                                'corporation_id' => $this->getCorporationId(),
-                                'division' => $division->division,
-                                'id' => $entry->id,
-                                'date' => carbon($entry->date),
-                                'ref_type' => $entry->ref_type,
-                                'first_party_id' => $entry->first_party_id ?? null,
+                                'corporation_id'  => $this->getCorporationId(),
+                                'division'        => $division->division,
+                                'id'              => $entry->id,
+                                'date'            => carbon($entry->date),
+                                'ref_type'        => $entry->ref_type,
+                                'first_party_id'  => $entry->first_party_id ?? null,
                                 'second_party_id' => $entry->second_party_id ?? null,
-                                'amount' => $entry->amount ?? null,
-                                'balance' => $entry->balance ?? null,
-                                'reason' => $entry->reason ?? null,
+                                'amount'          => $entry->amount ?? null,
+                                'balance'         => $entry->balance ?? null,
+                                'reason'          => $entry->reason ?? null,
                                 'tax_receiver_id' => $entry->tax_receiver_id ?? null,
-                                'tax' => $entry->tax ?? null,
+                                'tax'             => $entry->tax ?? null,
                                 // introduced in v4
-                                'description' => $entry->description,
-                                'context_id' => $entry->context_id ?? null,
+                                'description'     => $entry->description,
+                                'context_id'      => $entry->context_id ?? null,
                                 'context_id_type' => $entry->context_id_type ?? null,
-                                'created_at' => carbon(),
-                                'updated_at' => carbon(),
+                                'created_at'      => carbon(),
+                                'updated_at'      => carbon(),
                             ];
                         });
 

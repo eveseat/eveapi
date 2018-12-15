@@ -79,7 +79,7 @@ class Balances extends AbstractCorporationJob
 
             CorporationWalletBalance::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'division' => $balance->division,
+                'division'       => $balance->division,
             ])->fill([
                 'balance' => $balance->balance,
             ])->save();

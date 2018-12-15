@@ -68,20 +68,20 @@ class Info extends AbstractCorporationJob
         CorporationInfo::firstOrNew([
             'corporation_id' => $this->getCorporationId(),
         ])->fill([
-            'name' => $corporation->name,
-            'ticker' => $corporation->ticker,
-            'member_count' => $corporation->member_count,
-            'ceo_id' => $corporation->ceo_id,
-            'alliance_id' => $corporation->alliance_id ?? null,
-            'description' => $corporation->description ?? null,
-            'tax_rate' => $corporation->tax_rate,
-            'date_founded' => property_exists($corporation, 'date_founded') ?
+            'name'            => $corporation->name,
+            'ticker'          => $corporation->ticker,
+            'member_count'    => $corporation->member_count,
+            'ceo_id'          => $corporation->ceo_id,
+            'alliance_id'     => $corporation->alliance_id ?? null,
+            'description'     => $corporation->description ?? null,
+            'tax_rate'        => $corporation->tax_rate,
+            'date_founded'    => property_exists($corporation, 'date_founded') ?
                 carbon($corporation->date_founded) : null,
-            'creator_id' => $corporation->creator_id,
-            'url' => $corporation->url ?? null,
-            'faction_id' => $corporation->faction_id ?? null,
+            'creator_id'      => $corporation->creator_id,
+            'url'             => $corporation->url ?? null,
+            'faction_id'      => $corporation->faction_id ?? null,
             'home_station_id' => $corporation->home_station_id ?? null,
-            'shares' => $corporation->shares ?? null,
+            'shares'          => $corporation->shares ?? null,
         ])->save();
     }
 }

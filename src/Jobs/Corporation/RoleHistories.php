@@ -88,11 +88,11 @@ class RoleHistories extends AbstractCorporationJob
 
                     CorporationRoleHistory::firstOrNew([
                         'corporation_id' => $this->getCorporationId(),
-                        'character_id' => $role->character_id,
-                        'changed_at' => carbon($role->changed_at),
-                        'role_type' => $role->role_type,
-                        'state' => 'old',
-                        'role' => $role_id,
+                        'character_id'   => $role->character_id,
+                        'changed_at'     => carbon($role->changed_at),
+                        'role_type'      => $role->role_type,
+                        'state'          => 'old',
+                        'role'           => $role_id,
                     ])->fill([
                         'issuer_id' => $role->issuer_id,
                     ])->save();
@@ -103,11 +103,11 @@ class RoleHistories extends AbstractCorporationJob
 
                     CorporationRoleHistory::firstOrNew([
                         'corporation_id' => $this->getCorporationId(),
-                        'character_id' => $role->character_id,
-                        'changed_at' => carbon($role->changed_at),
-                        'role_type' => $role->role_type,
-                        'state' => 'new',
-                        'role' => $role_id,
+                        'character_id'   => $role->character_id,
+                        'changed_at'     => carbon($role->changed_at),
+                        'role_type'      => $role->role_type,
+                        'state'          => 'new',
+                        'role'           => $role_id,
                     ])->fill([
                         'issuer_id' => $role->issuer_id,
                     ])->save();

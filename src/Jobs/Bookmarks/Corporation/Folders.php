@@ -100,9 +100,9 @@ class Folders extends AbstractCorporationJob
 
                 CorporationBookmarkFolder::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'folder_id' => $folder->folder_id,
+                    'folder_id'      => $folder->folder_id,
                 ])->fill([
-                    'name' => $folder->name,
+                    'name'       => $folder->name,
                     'creator_id' => $folder->creator_id ?? null,
                 ])->save();
             });

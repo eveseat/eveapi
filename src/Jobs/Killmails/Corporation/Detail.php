@@ -88,39 +88,39 @@ class Detail extends AbstractCorporationJob
             KillmailDetail::firstOrCreate([
                 'killmail_id' => $killmail_id,
             ], [
-                'killmail_time' => carbon($detail->killmail_time),
+                'killmail_time'   => carbon($detail->killmail_time),
                 'solar_system_id' => $detail->solar_system_id,
-                'moon_id' => $detail->moon_id ?? null,
-                'war_id' => $detail->war_id ?? null,
+                'moon_id'         => $detail->moon_id ?? null,
+                'war_id'          => $detail->war_id ?? null,
             ]);
 
             KillmailVictim::firstOrCreate([
                 'killmail_id' => $killmail_id,
             ], [
-                'character_id' => $detail->victim->character_id ?? null,
+                'character_id'   => $detail->victim->character_id ?? null,
                 'corporation_id' => $detail->victim->corporation_id ?? null,
-                'alliance_id' => $detail->victim->alliance_id ?? null,
-                'faction_id' => $detail->victim->faction_id ?? null,
-                'damage_taken' => $detail->victim->damage_taken,
-                'ship_type_id' => $detail->victim->ship_type_id,
-                'x' => $detail->victim->position->x ?? null,
-                'y' => $detail->victim->position->y ?? null,
-                'z' => $detail->victim->position->z ?? null,
+                'alliance_id'    => $detail->victim->alliance_id ?? null,
+                'faction_id'     => $detail->victim->faction_id ?? null,
+                'damage_taken'   => $detail->victim->damage_taken,
+                'ship_type_id'   => $detail->victim->ship_type_id,
+                'x'              => $detail->victim->position->x ?? null,
+                'y'              => $detail->victim->position->y ?? null,
+                'z'              => $detail->victim->position->z ?? null,
             ]);
 
             collect($detail->attackers)->each(function ($attacker) use ($killmail_id) {
 
                 KillmailAttacker::firstOrCreate([
-                    'killmail_id' => $killmail_id,
-                    'character_id' => $attacker->character_id ?? null,
-                    'corporation_id' => $attacker->corporation_id ?? null,
-                    'alliance_id' => $attacker->alliance_id ?? null,
-                    'faction_id' => $attacker->faction_id ?? null,
+                    'killmail_id'     => $killmail_id,
+                    'character_id'    => $attacker->character_id ?? null,
+                    'corporation_id'  => $attacker->corporation_id ?? null,
+                    'alliance_id'     => $attacker->alliance_id ?? null,
+                    'faction_id'      => $attacker->faction_id ?? null,
                     'security_status' => $attacker->security_status,
-                    'final_blow' => $attacker->final_blow,
-                    'damage_done' => $attacker->damage_done,
-                    'ship_type_id' => $attacker->ship_type_id ?? null,
-                    'weapon_type_id' => $attacker->weapon_type_id ?? null,
+                    'final_blow'      => $attacker->final_blow,
+                    'damage_done'     => $attacker->damage_done,
+                    'ship_type_id'    => $attacker->ship_type_id ?? null,
+                    'weapon_type_id'  => $attacker->weapon_type_id ?? null,
                 ]);
             });
 
@@ -129,13 +129,13 @@ class Detail extends AbstractCorporationJob
                 collect($detail->victim->items)->each(function ($item) use ($killmail_id) {
 
                     KillmailVictimItem::firstOrNew([
-                        'killmail_id' => $killmail_id,
+                        'killmail_id'  => $killmail_id,
                         'item_type_id' => $item->item_type_id,
                     ])->fill([
                         'quantity_destroyed' => $item->quantity_destroyed ?? null,
-                        'quantity_dropped' => $item->quantity_dropped ?? null,
-                        'singleton' => $item->singleton,
-                        'flag' => $item->flag,
+                        'quantity_dropped'   => $item->quantity_dropped ?? null,
+                        'singleton'          => $item->singleton,
+                        'flag'               => $item->flag,
                     ])->save();
 
                     // TODO: Process $item->items as a nested model.

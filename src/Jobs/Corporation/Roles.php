@@ -100,9 +100,9 @@ class Roles extends AbstractCorporationJob
 
                     CorporationRole::firstOrCreate([
                         'corporation_id' => $this->getCorporationId(),
-                        'character_id' => $role->character_id,
-                        'type' => $type,
-                        'role' => $name,
+                        'character_id'   => $role->character_id,
+                        'type'           => $type,
+                        'role'           => $name,
                     ]);
 
                 });

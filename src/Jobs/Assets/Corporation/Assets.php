@@ -106,16 +106,16 @@ class Assets extends AbstractCorporationJob
                 $records = $chunk->map(function ($asset, $key) {
 
                     return [
-                        'item_id' => $asset->item_id,
+                        'item_id'        => $asset->item_id,
                         'corporation_id' => $this->getCorporationId(),
-                        'type_id' => $asset->type_id,
-                        'quantity' => $asset->quantity,
-                        'location_id' => $asset->location_id,
-                        'location_type' => $asset->location_type,
-                        'location_flag' => $asset->location_flag,
-                        'is_singleton' => $asset->is_singleton,
-                        'created_at' => carbon(),
-                        'updated_at' => carbon(),
+                        'type_id'        => $asset->type_id,
+                        'quantity'       => $asset->quantity,
+                        'location_id'    => $asset->location_id,
+                        'location_type'  => $asset->location_type,
+                        'location_flag'  => $asset->location_flag,
+                        'is_singleton'   => $asset->is_singleton,
+                        'created_at'     => carbon(),
+                        'updated_at'     => carbon(),
                     ];
                 });
 

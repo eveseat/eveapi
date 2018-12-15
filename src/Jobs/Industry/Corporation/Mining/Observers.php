@@ -86,9 +86,9 @@ class Observers extends AbstractCorporationJob
 
             CorporationIndustryMiningObserver::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'observer_id' => $observer->observer_id,
+                'observer_id'    => $observer->observer_id,
             ])->fill([
-                'last_updated' => carbon($observer->last_updated),
+                'last_updated'  => carbon($observer->last_updated),
                 'observer_type' => $observer->observer_type,
             ])->save();
         });

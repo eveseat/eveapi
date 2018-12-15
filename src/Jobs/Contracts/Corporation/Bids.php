@@ -84,7 +84,7 @@ class Bids extends AbstractCorporationJob
 
                 $bids = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'contract_id' => $contract_id,
+                    'contract_id'    => $contract_id,
                 ]);
 
                 if ($bids->isCachedLoad()) return;
@@ -95,9 +95,9 @@ class Bids extends AbstractCorporationJob
                         'bid_id' => $bid->bid_id,
                     ], [
                         'contract_id' => $contract_id,
-                        'bidder_id' => $bid->bidder_id,
-                        'date_bid' => carbon($bid->date_bid),
-                        'amount' => $bid->amount,
+                        'bidder_id'   => $bid->bidder_id,
+                        'date_bid'    => carbon($bid->date_bid),
+                        'amount'      => $bid->amount,
                     ]);
                 });
 

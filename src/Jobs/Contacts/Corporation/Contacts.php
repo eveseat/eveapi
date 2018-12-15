@@ -100,12 +100,12 @@ class Contacts extends AbstractCorporationJob
 
                 CorporationContact::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'contact_id' => $contact->contact_id,
+                    'contact_id'     => $contact->contact_id,
                 ])->fill([
-                    'standing' => $contact->standing,
+                    'standing'     => $contact->standing,
                     'contact_type' => $contact->contact_type,
-                    'is_watched' => $contact->is_watched ?? false,
-                    'label_ids' => $contact->label_ids ?? null,
+                    'is_watched'   => $contact->is_watched ?? false,
+                    'label_ids'    => $contact->label_ids ?? null,
                 ])->save();
             });
 

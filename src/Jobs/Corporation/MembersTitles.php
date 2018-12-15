@@ -87,8 +87,8 @@ class MembersTitles extends AbstractCorporationJob
 
                 CorporationMemberTitle::firstOrCreate([
                     'corporation_id' => $this->getCorporationId(),
-                    'character_id' => $member->character_id,
-                    'title_id' => $title,
+                    'character_id'   => $member->character_id,
+                    'title_id'       => $title,
                 ]);
             });
         });

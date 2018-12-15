@@ -86,17 +86,17 @@ class ContainerLogs extends AbstractCorporationJob
 
                 CorporationContainerLog::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'container_id' => $log->container_id,
-                    'logged_at' => carbon($log->logged_at),
+                    'container_id'   => $log->container_id,
+                    'logged_at'      => carbon($log->logged_at),
                 ])->fill([
-                    'container_type_id' => $log->container_type_id,
-                    'character_id' => $log->character_id,
-                    'location_id' => $log->location_id,
-                    'action' => $log->action,
-                    'location_flag' => $log->location_flag,
-                    'password_type' => $log->password_type ?? null,
-                    'type_id' => $log->type_id ?? null,
-                    'quantity' => $log->quantity ?? null,
+                    'container_type_id'  => $log->container_type_id,
+                    'character_id'       => $log->character_id,
+                    'location_id'        => $log->location_id,
+                    'action'             => $log->action,
+                    'location_flag'      => $log->location_flag,
+                    'password_type'      => $log->password_type ?? null,
+                    'type_id'            => $log->type_id ?? null,
+                    'quantity'           => $log->quantity ?? null,
                     'old_config_bitmask' => $log->old_config_bitmask ?? null,
                     'new_config_bitmask' => $log->new_config_bitmask ?? null,
                 ])->save();

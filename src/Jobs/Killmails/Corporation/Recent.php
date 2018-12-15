@@ -79,7 +79,7 @@ class Recent extends AbstractCorporationJob
 
             CorporationKillmail::firstOrCreate([
                 'corporation_id' => $this->getCorporationId(),
-                'killmail_id' => $killmail->killmail_id,
+                'killmail_id'    => $killmail->killmail_id,
             ], [
                 'killmail_hash' => $killmail->killmail_hash,
             ]);

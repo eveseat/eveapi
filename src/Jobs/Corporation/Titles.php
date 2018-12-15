@@ -113,7 +113,7 @@ class Titles extends AbstractCorporationJob
 
             CorporationTitle::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'title_id' => $title->title_id,
+                'title_id'       => $title->title_id,
             ])->fill([
                 'name' => $title->name ?? sprintf('Untitled %d', (int) sqrt($title->title_id - 1)),
             ])->save();
@@ -127,9 +127,9 @@ class Titles extends AbstractCorporationJob
 
                     CorporationTitleRole::firstOrCreate([
                         'corporation_id' => $this->getCorporationId(),
-                        'title_id' => $title->title_id,
-                        'type' => $type,
-                        'role' => $name,
+                        'title_id'       => $title->title_id,
+                        'type'           => $type,
+                        'role'           => $name,
                     ]);
                 });
 

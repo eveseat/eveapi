@@ -105,17 +105,17 @@ class Starbases extends AbstractCorporationJob
 
                 CorporationStarbase::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'starbase_id' => $starbase->starbase_id,
+                    'starbase_id'    => $starbase->starbase_id,
                 ])->fill([
-                    'moon_id' => $starbase->moon_id ?? null,
-                    'onlined_since' => property_exists($starbase, 'onlined_since') ?
+                    'moon_id'          => $starbase->moon_id ?? null,
+                    'onlined_since'    => property_exists($starbase, 'onlined_since') ?
                         carbon($starbase->onlined_since) : null,
                     'reinforced_until' => property_exists($starbase, 'reinforced_until') ?
                         carbon($starbase->reinforced_until) : null,
-                    'state' => $starbase->state ?? null,
-                    'type_id' => $starbase->type_id,
-                    'system_id' => $starbase->system_id,
-                    'unanchor_at' => property_exists($starbase, 'unanchor_at') ?
+                    'state'            => $starbase->state ?? null,
+                    'type_id'          => $starbase->type_id,
+                    'system_id'        => $starbase->system_id,
+                    'unanchor_at'      => property_exists($starbase, 'unanchor_at') ?
                         carbon($starbase->unanchor_at) : null,
                 ])->save();
 

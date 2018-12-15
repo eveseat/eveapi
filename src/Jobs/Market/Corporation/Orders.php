@@ -86,22 +86,22 @@ class Orders extends AbstractCorporationJob
 
                 CorporationOrder::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'order_id' => $order->order_id,
+                    'order_id'       => $order->order_id,
                 ])->fill([
-                    'type_id' => $order->type_id,
-                    'region_id' => $order->region_id,
-                    'location_id' => $order->location_id,
-                    'range' => $order->range,
-                    'is_buy_order' => $order->is_buy_order ?? null,
-                    'price' => $order->price,
-                    'volume_total' => $order->volume_total,
-                    'volume_remain' => $order->volume_remain,
-                    'issued' => carbon($order->issued),
-                    'issued_by' => $order->issued_by,
-                    'min_volume' => $order->min_volume ?? null,
+                    'type_id'         => $order->type_id,
+                    'region_id'       => $order->region_id,
+                    'location_id'     => $order->location_id,
+                    'range'           => $order->range,
+                    'is_buy_order'    => $order->is_buy_order ?? null,
+                    'price'           => $order->price,
+                    'volume_total'    => $order->volume_total,
+                    'volume_remain'   => $order->volume_remain,
+                    'issued'          => carbon($order->issued),
+                    'issued_by'       => $order->issued_by,
+                    'min_volume'      => $order->min_volume ?? null,
                     'wallet_division' => $order->wallet_division ?? null,
-                    'duration' => $order->duration ?? null,
-                    'escrow' => $order->escrow ?? null,
+                    'duration'        => $order->duration ?? null,
+                    'escrow'          => $order->escrow ?? null,
                 ])->save();
             });
 

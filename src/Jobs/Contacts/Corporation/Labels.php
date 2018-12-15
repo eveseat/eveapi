@@ -74,7 +74,7 @@ class Labels extends AbstractCorporationJob
 
             CorporationContactLabel::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'label_id' => $label->label_id,
+                'label_id'       => $label->label_id,
             ])->fill([
                 'label_name' => $label->label_name,
             ])->save();

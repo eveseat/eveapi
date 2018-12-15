@@ -122,10 +122,10 @@ class Locations extends AbstractCorporationJob
 
                     // Update the assets location information
                     $asset_data->fill([
-                        'x' => $location->position->x,
-                        'y' => $location->position->y,
-                        'z' => $location->position->z,
-                        'map_id' => $normalized_location['map_id'],
+                        'x'        => $location->position->x,
+                        'y'        => $location->position->y,
+                        'z'        => $location->position->z,
+                        'map_id'   => $normalized_location['map_id'],
                         'map_name' => $normalized_location['map_name'],
                     ])->save();
                 });
@@ -168,10 +168,10 @@ class Locations extends AbstractCorporationJob
 
                     // Update the assets location information
                     $asset_data->fill([
-                        'x' => $location->position->x,
-                        'y' => $location->position->y,
-                        'z' => $location->position->z,
-                        'map_id' => $normalized_location['map_id'],
+                        'x'        => $location->position->x,
+                        'y'        => $location->position->y,
+                        'z'        => $location->position->z,
+                        'map_id'   => $normalized_location['map_id'],
                         'map_name' => $normalized_location['map_name'],
                     ])->save();
                 });

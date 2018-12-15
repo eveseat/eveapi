@@ -109,21 +109,21 @@ class Bookmarks extends AbstractCorporationJob
 
                 CorporationBookmark::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'bookmark_id' => $bookmark->bookmark_id,
+                    'bookmark_id'    => $bookmark->bookmark_id,
                 ])->fill([
-                    'creator_id' => $bookmark->creator_id,
-                    'folder_id' => $bookmark->folder_id ?? null,
-                    'created' => carbon($bookmark->created),
-                    'label' => $bookmark->label,
-                    'notes' => $bookmark->notes,
+                    'creator_id'  => $bookmark->creator_id,
+                    'folder_id'   => $bookmark->folder_id ?? null,
+                    'created'     => carbon($bookmark->created),
+                    'label'       => $bookmark->label,
+                    'notes'       => $bookmark->notes,
                     'location_id' => $bookmark->location_id,
-                    'item_id' => $bookmark->item->item_id ?? null,
-                    'type_id' => $bookmark->item->type_id ?? null,
-                    'x' => $bookmark->coordinates->x ?? null,
-                    'y' => $bookmark->coordinates->y ?? null,
-                    'z' => $bookmark->coordinates->z ?? null,
-                    'map_id' => $normalized_location['map_id'],
-                    'map_name' => $normalized_location['map_name'],
+                    'item_id'     => $bookmark->item->item_id ?? null,
+                    'type_id'     => $bookmark->item->type_id ?? null,
+                    'x'           => $bookmark->coordinates->x ?? null,
+                    'y'           => $bookmark->coordinates->y ?? null,
+                    'z'           => $bookmark->coordinates->z ?? null,
+                    'map_id'      => $normalized_location['map_id'],
+                    'map_name'    => $normalized_location['map_name'],
                 ])->save();
             });
 
