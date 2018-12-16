@@ -62,7 +62,7 @@ class Extractions extends AbstractCorporationJob
     protected $tags = ['corporation', 'mining', 'extractions'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

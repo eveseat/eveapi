@@ -62,7 +62,7 @@ class Balances extends AbstractCorporationJob
     protected $tags = ['corporation', 'wallet', 'balance'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

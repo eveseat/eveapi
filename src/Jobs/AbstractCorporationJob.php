@@ -31,9 +31,19 @@ use Illuminate\Support\Facades\Redis;
 abstract class AbstractCorporationJob extends EsiBase
 {
     /**
+     * @var int
+     */
+    protected $max_concurrent_jobs = 1;
+
+    /**
      * @var array
      */
     protected $tags = ['corporation'];
+
+    /**
+     * @var int
+     */
+    protected $throttle_seconds = 600;
 
     /**
      * Execute the job.
@@ -43,19 +53,24 @@ abstract class AbstractCorporationJob extends EsiBase
      */
     public function handle()
     {
-        $unique_key = implode(':', array_merge($this->tags, [$this->getCorporationId()]));
-
-        Redis::throttle($unique_key)->allow(1)->every(600)->then(function () use ($unique_key) {
-            logger()->debug(sprintf('%s has been queued | tags: %s | owner: %s', get_class($this), $unique_key, $this->getCharacterId()));
+        Redis::throttle($this->getUniqueKey())->allow($this->max_concurrent_jobs)->every($this->throttle_seconds)->then(function () {
+            logger()->debug(sprintf('%s has been queued | tags: %s | owner: %s',
+                get_class($this), $this->getUniqueKey(), $this->getCharacterId()));
 
             if (! $this->preflighted()) return;
 
             $this->job();
-        }, function () use ($unique_key) {
-            logger()->debug(sprintf('%s has been dropped (throttler) | tags: %s | owner: %s', get_class($this), $unique_key, $this->getCharacterId()));
+        }, function () {
+            logger()->debug(sprintf('%s has been dropped (throttler) | tags: %s | owner: %s',
+                get_class($this), $this->getUniqueKey(), $this->getCharacterId()));
 
             return $this->delete();
         });
+    }
+
+    private function getUniqueKey(): string
+    {
+        return implode(':', array_merge($this->tags, [$this->getCorporationId()]));
     }
 
     /**

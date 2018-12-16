@@ -62,7 +62,7 @@ class MembersTitles extends AbstractCorporationJob
     protected $tags = ['corporation', 'member_titles'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

@@ -57,7 +57,7 @@ class Labels extends AbstractCorporationJob
     protected $tags = ['corporation', 'contacts', 'labels'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

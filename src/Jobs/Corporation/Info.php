@@ -52,7 +52,7 @@ class Info extends AbstractCorporationJob
     protected $tags = ['corporation', 'info'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

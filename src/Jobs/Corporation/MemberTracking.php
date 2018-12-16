@@ -62,7 +62,7 @@ class MemberTracking extends AbstractCorporationJob
     protected $tags = ['corporation', 'member_tracking'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

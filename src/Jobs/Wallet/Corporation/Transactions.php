@@ -70,7 +70,7 @@ class Transactions extends AbstractCorporationJob
     protected $from_id = PHP_INT_MAX;
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

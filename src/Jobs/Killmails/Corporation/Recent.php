@@ -62,7 +62,7 @@ class Recent extends AbstractCorporationJob
     protected $tags = ['corporation', 'killmails'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

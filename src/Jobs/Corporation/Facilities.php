@@ -62,7 +62,7 @@ class Facilities extends AbstractCorporationJob
     protected $tags = ['corporation', 'facilities'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

@@ -62,7 +62,7 @@ class Divisions extends AbstractCorporationJob
     protected $tags = ['corporation', 'divisions'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

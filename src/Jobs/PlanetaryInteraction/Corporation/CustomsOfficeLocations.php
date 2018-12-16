@@ -65,7 +65,7 @@ class CustomsOfficeLocations extends AbstractCorporationJob
     protected $tags = ['corporation', 'customs_offices', 'locations'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

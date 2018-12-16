@@ -70,7 +70,7 @@ class Names extends AbstractCorporationJob
     protected $item_id_limit = 1000;
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

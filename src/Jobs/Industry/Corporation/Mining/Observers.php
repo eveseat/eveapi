@@ -69,7 +69,7 @@ class Observers extends AbstractCorporationJob
     protected $page = 1;
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

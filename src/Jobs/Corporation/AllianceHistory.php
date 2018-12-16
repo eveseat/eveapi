@@ -52,7 +52,7 @@ class AllianceHistory extends AbstractCorporationJob
     protected $tags = ['corporation', 'alliance_history'];
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable

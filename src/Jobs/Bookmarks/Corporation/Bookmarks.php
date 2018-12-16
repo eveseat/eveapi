@@ -84,7 +84,7 @@ class Bookmarks extends AbstractCorporationJob
     }
 
     /**
-     * Contains the job process.
+     * Execute the job.
      *
      * @return void
      * @throws \Throwable
