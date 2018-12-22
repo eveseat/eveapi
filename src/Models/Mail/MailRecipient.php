@@ -80,4 +80,15 @@ class MailRecipient extends Model
     {
         return $this->hasOne(MailBody::class, 'mail_id', 'mail_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
+     */
+    public function mailing_list()
+    {
+        if ($this->recipient_type !== 'mailing_list')
+            return null;
+
+        return $this->belongsTo(MailMailingList::class, 'recipient_id', 'mailing_list_id');
+    }
 }
