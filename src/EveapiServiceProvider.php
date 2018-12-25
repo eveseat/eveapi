@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi;
 
-use Illuminate\Support\ServiceProvider;
 use Seat\Eveapi\Helpers\EseyeSetup;
+use Seat\Services\AbstractSeatPlugin;
 
 /**
  * Class EveapiServiceProvider.
  * @package Seat\Eveapi
  */
-class EveapiServiceProvider extends ServiceProvider
+class EveapiServiceProvider extends AbstractSeatPlugin
 {
     /**
      * Bootstrap the application services.
@@ -91,5 +91,95 @@ class EveapiServiceProvider extends ServiceProvider
                 __DIR__ . '/Models',
             ])),
         ]);
+    }
+
+    /**
+     * Return the plugin author EVE Character ID.
+     *
+     * @return int|null
+     */
+    public static function getAuthorEveCharacterID(): ?int
+    {
+        return 1477919642;
+    }
+
+    /**
+     * Return the plugin author name (or any public nickname).
+     *
+     * @return string
+     */
+    public static function getAuthorName(): string
+    {
+        return 'qu1ckkkk';
+    }
+
+    /**
+     * Return the plugin author e-mail address.
+     *
+     * @return string|null
+     */
+    public static function getAuthorMailAddress(): ?string
+    {
+        return 'theninjabag@gmail.com';
+    }
+
+    /**
+     * Return the plugin author slack nickname.
+     *
+     * @return string|null
+     */
+    public static function getAuthorSlackNickname(): ?string
+    {
+        return 'qu1ckkkk';
+    }
+
+    /**
+     * Return the plugin public name as it should be displayed into settings.
+     *
+     * @return string
+     */
+    public static function getName(): string
+    {
+        return 'SeAT Eve API';
+    }
+
+    /**
+     * Return the plugin repository address.
+     *
+     * @return string
+     */
+    public static function getPackageRepositoryUrl(): string
+    {
+        return 'https://github.com/eveseat/eveapi';
+    }
+
+    /**
+     * Return the plugin technical name as published on package manager.
+     *
+     * @return string
+     */
+    public static function getPackagistPackageName(): string
+    {
+        return 'eveapi';
+    }
+
+    /**
+     * Return the plugin vendor tag as published on package manager.
+     *
+     * @return string
+     */
+    public static function getPackagistVendorName(): string
+    {
+        return 'eveseat';
+    }
+
+    /**
+     * Return the plugin installed version.
+     *
+     * @return string
+     */
+    public static function getVersion(): string
+    {
+        return config('eveapi.config.version');
     }
 }
