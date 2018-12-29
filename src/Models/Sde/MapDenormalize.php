@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
+use Seat\Eveapi\Models\Universe\UniverseMoonContent;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
@@ -170,6 +171,14 @@ class MapDenormalize extends Model
     public function constellation()
     {
         return $this->belongsTo(MapDenormalize::class, 'constellationID', 'itemID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function moon_contents()
+    {
+        return $this->hasMany(UniverseMoonContent::class, 'moon_id', 'itemID');
     }
 
     /**
