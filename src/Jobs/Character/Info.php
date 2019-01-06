@@ -78,7 +78,7 @@ class Info extends EsiBase
             'gender'          => $character_info->gender,
             'race_id'         => $character_info->race_id,
             'bloodline_id'    => $character_info->bloodline_id,
-            'ancenstry_id'    => $character_info->optional('ancenstry_id'),
+            'ancestry_id'    => $character_info->optional('ancestry_id'),
             'security_status' => $character_info->optional('security_status'),
             'faction_id'      => $character_info->optional('faction_id'),
         ])->save();
