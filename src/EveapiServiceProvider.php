@@ -94,46 +94,6 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     }
 
     /**
-     * Return the plugin author EVE Character ID.
-     *
-     * @return int|null
-     */
-    public function getAuthorEveCharacterID(): ?int
-    {
-        return 1477919642;
-    }
-
-    /**
-     * Return the plugin author name (or any public nickname).
-     *
-     * @return string
-     */
-    public function getAuthorName(): string
-    {
-        return 'qu1ckkkk';
-    }
-
-    /**
-     * Return the plugin author e-mail address.
-     *
-     * @return string|null
-     */
-    public function getAuthorMailAddress(): ?string
-    {
-        return 'theninjabag@gmail.com';
-    }
-
-    /**
-     * Return the plugin author slack nickname.
-     *
-     * @return string|null
-     */
-    public function getAuthorSlackNickname(): ?string
-    {
-        return 'qu1ckkkk';
-    }
-
-    /**
      * Return the plugin public name as it should be displayed into settings.
      *
      * @return string
