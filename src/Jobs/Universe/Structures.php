@@ -26,6 +26,7 @@ use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
+use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\RateLimitsCalls;
 
@@ -99,11 +100,19 @@ class Structures extends EsiBase
         $character_asset_locations = $this->getCharacterAssetLocations();
 
         // retrieve unresolved location from corporation
-        $corporation_asset_locations = in_array('Director', $this->getCharacterRoles()) ?
-            $this->getCorporationAssetLocations($character_asset_locations) : [];
+        $corporation_asset_locations = [];
+        $corporation_owned_structures = [];
 
-        // merge both character and corporation arrays
-        $location_ids = array_merge($character_asset_locations, $corporation_asset_locations);
+        if (in_array('Director', $this->getCharacterRoles())) {
+            // retrieve location from corporation assets
+            $corporation_asset_locations = $this->getCorporationAssetLocations($character_asset_locations);
+
+            // retrieve location from corporation owned structures
+            $corporation_owned_structures = $this->getCorporationStructures($character_asset_locations);
+        }
+
+        // merge structure IDs
+        $location_ids = array_merge($character_asset_locations, $corporation_asset_locations, $corporation_owned_structures);
 
         logger()->debug('Structure resolver', ['location_ids' => $location_ids]);
 
@@ -121,7 +130,7 @@ class Structures extends EsiBase
                 // Increment the call count we have this far.
                 $this->incrementRateLimitCallCount(1);
 
-                UniverseStructure::firstOrNew([
+                UniverseStructure::updateOrCreate([
                     'structure_id' => $location_id,
                 ], [
                     'name'            => $structure->name,
@@ -131,7 +140,7 @@ class Structures extends EsiBase
                     'y'               => $structure->position->y,
                     'z'               => $structure->position->z,
                     'type_id'         => $structure->type_id ?? null,
-                ])->save();
+                ]);
 
             } catch (RequestFailedException $e) {
 
@@ -258,6 +267,24 @@ class Structures extends EsiBase
         return $assets->map(function ($asset) {
 
             return $asset->location_id;
+        })->all();
+    }
+
+    /**
+     * @param array $exclude_location_ids
+     * @return array
+     * @throws \Exception
+     */
+    private function getCorporationStructures(array $exclude_location_ids = []): array
+    {
+        $structures = CorporationStructure::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('structure_id', $exclude_location_ids)
+            ->select('structure_id')
+            ->get();
+
+        return $structures->map(function ($structure) {
+
+            return $structure->structure_id;
         })->all();
     }
 }
