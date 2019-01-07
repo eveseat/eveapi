@@ -20,65 +20,37 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Corporation;
+namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
-use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CorporationStructure.
- * @package Seat\Eveapi\Models\Corporation
+ * Class MoonContent.
+ * @package Seat\Eveapi\Models\Universe
  */
-class CorporationStructure extends Model
+class UniverseMoonContent extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var bool
      */
-    protected $primaryKey = ['corporation_id', 'structure_id'];
+    public $incrementing = false;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @var string
      */
-    public function info()
-    {
-
-        return $this->hasOne(UniverseStructure::class, 'structure_id', 'structure_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function services()
-    {
-
-        return $this->hasMany(CorporationStructureService::class, 'structure_id', 'structure_id');
-    }
+    protected $primaryKey = 'moon_id';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()
     {
-
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function system()
-    {
-
-        return $this->hasOne(MapDenormalize::class, 'itemID', 'system_id');
     }
 }

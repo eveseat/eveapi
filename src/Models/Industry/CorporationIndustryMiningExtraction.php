@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Corporation\CorporationStructure;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -34,6 +36,21 @@ class CorporationIndustryMiningExtraction extends Model
     use HasCompositePrimaryKey;
 
     /**
+     * Return the theoretical duration of a chunk once it reached its drilling cycle.
+     */
+    const THEORETICAL_DEPLETION_COUNTDOWN = 172800;
+
+    /**
+     * Return the minimum allowed drilling duration (base from Singularity : 6 days and 3 minutes).
+     */
+    const MINIMUM_DRILLING_DURATION = 518580;
+
+    /**
+     * Return the maximum allowed drilling duration (base from Singularity : 55 days, 23 hours and 24 minutes).
+     */
+    const MAXIMUM_DRILLING_DURATION = 4836240;
+
+    /**
      * @var bool
      */
     protected static $unguarded = true;
@@ -42,4 +59,38 @@ class CorporationIndustryMiningExtraction extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'structure_id'];
+
+    /**
+     * @return \Carbon\Carbon
+     */
+    public function getExpiresAtAttribute()
+    {
+        return carbon($this->chunk_arrival_time)->addSeconds(self::THEORETICAL_DEPLETION_COUNTDOWN);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function moon()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'moon_id', 'itemID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function structure()
+    {
+        return $this->belongsTo(CorporationStructure::class, 'structure_id', 'structure_id');
+    }
+
+    /**
+     * Determine if a chunk can be drill.
+     *
+     * @return bool
+     */
+    public function isReady()
+    {
+        return carbon()->gte(carbon($this->chunk_arrival_time));
+    }
 }
