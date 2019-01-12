@@ -54,8 +54,6 @@ abstract class AbstractCorporationJob extends EsiBase
     public function handle()
     {
         Redis::throttle($this->getUniqueKey())->allow($this->max_concurrent_jobs)->every($this->throttle_seconds)->then(function () {
-            logger()->debug(sprintf('%s has been queued | tags: %s | owner: %s',
-                get_class($this), $this->getUniqueKey(), $this->getCharacterId()));
 
             if (! $this->preflighted()) return;
 
@@ -68,6 +66,10 @@ abstract class AbstractCorporationJob extends EsiBase
         });
     }
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     private function getUniqueKey(): string
     {
         return implode(':', array_merge($this->tags, [$this->getCorporationId()]));
