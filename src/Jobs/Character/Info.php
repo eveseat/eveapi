@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Web\Models\User;
 
 /**
  * Class Info.
@@ -63,24 +64,33 @@ class Info extends EsiBase
 
         if (! $this->preflighted()) return;
 
-        $character_info = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
-        ]);
+        $character_ids = ! is_null($this->getCharacterId()) ? collect($this->getCharacterId()) :
+            User::doesntHave('refresh_token')
+                ->select('id')
+                ->where('id','<>', 1)
+                ->get()
+                ->pluck('id');
 
-        if ($character_info->isCachedLoad()) return;
+        $character_ids->each(function ($character_id) {
+            $character_info = $this->retrieve([
+                'character_id' => $character_id,
+            ]);
 
-        CharacterInfo::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
-            'name'            => $character_info->name,
-            'description'     => $character_info->optional('description'),
-            'corporation_id'  => $character_info->corporation_id,
-            'alliance_id'     => $character_info->optional('alliance_id'),
-            'birthday'        => $character_info->birthday,
-            'gender'          => $character_info->gender,
-            'race_id'         => $character_info->race_id,
-            'bloodline_id'    => $character_info->bloodline_id,
-            'ancestry_id'    => $character_info->optional('ancestry_id'),
-            'security_status' => $character_info->optional('security_status'),
-            'faction_id'      => $character_info->optional('faction_id'),
-        ])->save();
+            if ($character_info->isCachedLoad()) return;
+
+            CharacterInfo::firstOrNew(['character_id' => $character_id])->fill([
+                'name'            => $character_info->name,
+                'description'     => $character_info->optional('description'),
+                'corporation_id'  => $character_info->corporation_id,
+                'alliance_id'     => $character_info->optional('alliance_id'),
+                'birthday'        => $character_info->birthday,
+                'gender'          => $character_info->gender,
+                'race_id'         => $character_info->race_id,
+                'bloodline_id'    => $character_info->bloodline_id,
+                'ancestry_id'     => $character_info->optional('ancestry_id'),
+                'security_status' => $character_info->optional('security_status'),
+                'faction_id'      => $character_info->optional('faction_id'),
+            ])->save();
+        });
     }
 }
