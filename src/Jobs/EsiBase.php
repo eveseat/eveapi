@@ -179,14 +179,11 @@ abstract class EsiBase implements ShouldQueue
      * @return int
      * @throws \Exception
      */
-    public function getCharacterId(): ?int
+    public function getCharacterId(): int
     {
 
-        if (is_null($this->token) && !$this->public_call)
+        if (is_null($this->token))
             throw new Exception('No token specified');
-
-        if ($this->public_call)
-            return null;
 
         return $this->token->character_id;
     }
