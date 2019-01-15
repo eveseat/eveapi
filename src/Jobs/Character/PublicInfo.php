@@ -40,7 +40,7 @@ class PublicInfo extends Info
     }
 
     /**
-     * Execute the job
+     * Execute the job.
      *
      * @throws \Exception
      */
@@ -50,7 +50,7 @@ class PublicInfo extends Info
 
         $character_ids = User::doesntHave('refresh_token')
                 ->select('id')
-                ->where('id','<>', 1)
+                ->where('id', '<>', 1)
                 ->get()
                 ->pluck('id');
 
@@ -63,5 +63,4 @@ class PublicInfo extends Info
             $this->saveCharacterInfo($character_id, $character_info);
         });
     }
-
 }
