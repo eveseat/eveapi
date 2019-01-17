@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 
@@ -64,37 +63,13 @@ class Info extends EsiBase
 
         if (! $this->preflighted()) return;
 
-        $character_id = $this->getCharacterId();
-        $character_info = $this->getCharacterInfo($character_id);
+        $character_info = $this->retrieve([
+            'character_id' => $this->getCharacterId(),
+        ]);
 
         if ($character_info->isCachedLoad()) return;
 
-        $this->saveCharacterInfo($character_id, $character_info);
-
-    }
-
-    /**
-     * @param $character_id
-     *
-     * @return \Seat\Eseye\Containers\EsiResponse
-     * @throws \Throwable
-     */
-    public function getCharacterInfo(int $character_id) : EsiResponse
-    {
-        return $this->retrieve([
-            'character_id' => $character_id,
-        ]);
-    }
-
-    /**
-     * @param int                                $character_id
-     * @param \Seat\Eseye\Containers\EsiResponse $character_info
-     *
-     * @return bool
-     */
-    public function saveCharacterInfo(int $character_id, EsiResponse $character_info) : bool
-    {
-        return CharacterInfo::firstOrNew(['character_id' => $character_id])->fill([
+        CharacterInfo::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
             'name'            => $character_info->name,
             'description'     => $character_info->optional('description'),
             'corporation_id'  => $character_info->corporation_id,

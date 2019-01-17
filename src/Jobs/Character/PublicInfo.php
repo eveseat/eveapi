@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\Character\Info as Info;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Web\Models\User;
 
 /**
@@ -32,17 +33,31 @@ use Seat\Web\Models\User;
 class PublicInfo extends Info
 {
     /**
-     * PublicInfo constructor.
+     * @var string
      */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    protected $method = 'get';
+
+    /**
+     * @var string
+     */
+    protected $endpoint = '/characters/{character_id}/';
+
+    /**
+     * @var int
+     */
+    protected $version = 'v4';
+
+    /**
+     * @var array
+     */
+    protected $tags = ['character', 'info', 'public'];
 
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Exception
+     * @throws \Throwable
      */
     public function handle()
     {
@@ -56,11 +71,25 @@ class PublicInfo extends Info
 
         $character_ids->each(function ($character_id) {
 
-            $character_info = $this->getCharacterInfo($character_id);
+            $character_info = $this->retrieve([
+                'character_id' => $character_id,
+            ]);
 
             if ($character_info->isCachedLoad()) return;
 
-            $this->saveCharacterInfo($character_id, $character_info);
+            CharacterInfo::firstOrNew(['character_id' => $character_id])->fill([
+                'name'            => $character_info->name,
+                'description'     => $character_info->optional('description'),
+                'corporation_id'  => $character_info->corporation_id,
+                'alliance_id'     => $character_info->optional('alliance_id'),
+                'birthday'        => $character_info->birthday,
+                'gender'          => $character_info->gender,
+                'race_id'         => $character_info->race_id,
+                'bloodline_id'    => $character_info->bloodline_id,
+                'ancestry_id'    => $character_info->optional('ancestry_id'),
+                'security_status' => $character_info->optional('security_status'),
+                'faction_id'      => $character_info->optional('faction_id'),
+            ])->save();
         });
     }
 }
