@@ -50,7 +50,7 @@ class PublicInfo extends Info
     /**
      * @var array
      */
-    protected $tags = ['character', 'info', 'public'];
+    protected $tags = ['character', 'info'];
 
     /**
      * Execute the job.
