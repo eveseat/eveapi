@@ -87,6 +87,5 @@ class PublicCorporationHistory extends EsiBase
             });
         });
 
-
     }
 }
