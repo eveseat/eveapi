@@ -45,7 +45,7 @@ class Journals extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v3';
+    protected $version = 'v4';
 
     /**
      * @var string
@@ -68,13 +68,6 @@ class Journals extends EsiBase
     protected $page = 1;
 
     /**
-     * A counter used to walk the journal backwards.
-     *
-     * @var int
-     */
-    protected $from_id = PHP_INT_MAX;
-
-    /**
      * Execute the job.
      *
      * @throws \Throwable
@@ -92,8 +85,6 @@ class Journals extends EsiBase
                 // ESI is empty, we can assume we have everything.
                 while (true) {
 
-                    $this->query_string = ['from_id' => $this->from_id];
-
                     $journal = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
                         'division'       => $division->division,
@@ -110,9 +101,9 @@ class Journals extends EsiBase
                         $records = $chunk->map(function ($entry, $key) use ($division) {
 
                             return [
-                                'corporation_id' => $this->getCorporationId(),
-                                'division'       => $division->division,
-                                'id'             => $entry->id,
+                                'corporation_id'  => $this->getCorporationId(),
+                                'division'        => $division->division,
+                                'id'              => $entry->id,
                                 'date'            => carbon($entry->date),
                                 'ref_type'        => $entry->ref_type,
                                 'first_party_id'  => $entry->first_party_id ?? null,
@@ -134,16 +125,9 @@ class Journals extends EsiBase
                         CorporationWalletJournal::insertIgnore($records->toArray());
                     });
 
-                    // Update the from_id to be the new lowest ref_id we
-                    // know of. The next call will use this.
-                    $this->from_id = collect($journal)->min('id') - 1;
-
                     if (! $this->nextPage($journal->pages))
                         break;
                 }
-
-                // Reset the from_id for the next wallet division
-                $this->from_id = PHP_INT_MAX;
 
                 // Reset the page for the next wallet division
                 $this->page = 1;
