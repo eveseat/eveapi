@@ -44,7 +44,7 @@ class Journal extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v4';
+    protected $version = 'v5';
 
     /**
      * @var string
@@ -62,13 +62,6 @@ class Journal extends EsiBase
     protected $page = 1;
 
     /**
-     * A counter used to walk the journal backwards.
-     *
-     * @var int
-     */
-    protected $from_id = PHP_INT_MAX;
-
-    /**
      * Execute the job.
      *
      * @throws \Throwable
@@ -82,8 +75,6 @@ class Journal extends EsiBase
         // entries as far back as possible. When the response from
         // ESI is empty, we can assume we have everything.
         while (true) {
-
-            $this->query_string = ['from_id' => $this->from_id];
 
             $journal = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
@@ -126,10 +117,6 @@ class Journal extends EsiBase
                 ])->save();
 
             });
-
-            // Update the from_id to be the new lowest ref_id we
-            // know of. The next all will use this.
-            $this->from_id = collect($journal)->min('id') - 1;
 
             if (! $this->nextPage($journal->pages))
                 break;
