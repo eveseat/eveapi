@@ -23,6 +23,10 @@
 namespace Seat\Eveapi\Models\Location;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\StaStation;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class CharacterLocation.
@@ -44,4 +48,41 @@ class CharacterLocation extends Model
      * @var string
      */
     protected $primaryKey = 'character_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function character()
+    {
+
+        return $this->belongsTo(CharacterInfo::class,
+            'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function solar_system()
+    {
+
+        return $this->belongsTo(MapDenormalize::class,'solar_system_id','itemID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function station()
+    {
+
+        return $this->belongsTo(StaStation::class, 'station_id', 'stationID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function structure()
+    {
+
+        return $this->belongsTo(UniverseStructure::class, 'structure_id', 'structure_id');
+    }
 }

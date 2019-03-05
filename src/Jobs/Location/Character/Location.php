@@ -75,6 +75,7 @@ class Location extends EsiBase
         CharacterLocation::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
+            'solar_system_id' => $location->solar_system_id,
             'station_id'   => property_exists($location, 'station_id') ?
                 $location->station_id : null,
             'structure_id' => property_exists($location, 'structure_id') ?
