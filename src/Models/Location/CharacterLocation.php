@@ -65,7 +65,7 @@ class CharacterLocation extends Model
     public function solar_system()
     {
 
-        return $this->belongsTo(MapDenormalize::class,'solar_system_id','itemID');
+        return $this->belongsTo(MapDenormalize::class, 'solar_system_id', 'itemID');
     }
 
     /**
