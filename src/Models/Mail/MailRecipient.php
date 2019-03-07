@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\Mail;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
  * Class MailRecipient.
@@ -90,5 +92,35 @@ class MailRecipient extends Model
             return null;
 
         return $this->belongsTo(MailMailingList::class, 'recipient_id', 'mailing_list_id');
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|null
+     */
+    public function character_view()
+    {
+        if ($this->recipient_type !== 'character')
+            return null;
+
+        $character_id = $this->mail->character_id;
+
+        $character = CharacterInfo::find($this->recipient_id) ?: $this->recipient_id;
+
+        return view('web::partials.character', compact('character', 'character_id'));
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|null
+     */
+    public function corporation_view()
+    {
+        if ($this->recipient_type !== 'corporation')
+            return null;
+
+        $character_id = $this->mail->character_id;
+
+        $corporation = CorporationInfo::find($this->recipient_id) ?: $this->recipient_id;
+
+        return view('web::partials.corporation', compact('corporation', 'character_id'));
     }
 }

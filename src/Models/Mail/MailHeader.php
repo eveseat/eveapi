@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Mail;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
@@ -131,5 +132,31 @@ class MailHeader extends Model
     {
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'from');
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|null
+     */
+    public function from_view()
+    {
+
+        $character_id = $this->from;
+
+        $character = CharacterInfo::find($character_id) ?: $character_id;
+
+        return view('web::partials.character', compact('character', 'character_id'));
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|null
+     */
+    public function source_view()
+    {
+
+        $character_id = $this->character_id;
+
+        $character = CharacterInfo::find($character_id) ?: $character_id;
+
+        return view('web::partials.character', compact('character', 'character_id'));
     }
 }
