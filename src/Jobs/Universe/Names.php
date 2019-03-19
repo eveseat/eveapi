@@ -51,7 +51,7 @@ class Names extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v2';
+    protected $version = 'v3';
 
     /**
      * @var array
