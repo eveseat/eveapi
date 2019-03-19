@@ -68,6 +68,16 @@ class Journals extends EsiBase
     protected $page = 1;
 
     /**
+     * @var int
+     */
+    protected $last_known_entry_id = 0;
+
+    /**
+     * @var bool
+     */
+    protected $reach_last_known_entry = false;
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
@@ -79,6 +89,15 @@ class Journals extends EsiBase
 
         CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($division) {
+
+                // retrieve last known entry for the current division and active corporation
+                $last_known_entry = CorporationWalletJournal::where('corporation_id', $this->getCorporationId())
+                                                            ->where('division', $division->division)
+                                                            ->orderBy('date', 'desc')
+                                                            ->first();
+
+                if (! is_null($last_known_entry))
+                    $this->last_known_entry_id = $last_known_entry->id;
 
                 // Perform a journal walk backwards to get all of the
                 // entries as far back as possible. When the response from
@@ -92,11 +111,24 @@ class Journals extends EsiBase
 
                     if ($journal->isCachedLoad()) return;
 
+                    $entries = collect($journal);
+
                     // If we have no more entries, break the loop.
-                    if (collect($journal)->count() === 0)
+                    if ($entries->count() === 0)
                         break;
 
-                    collect($journal)->chunk(1000)->each(function ($chunk) use ($division) {
+                    $entries->chunk(1000)->each(function ($chunk) use ($division) {
+
+                        // if we've reached the last known entry - abort the process
+                        if ($this->reach_last_known_entry)
+                            return false;
+
+                        // if we have reached the last known entry, exclude all entries which are lower or equal to the
+                        // last known entry and flag the reached status.
+                        if ($chunk->where('id', $this->last_known_entry_id)->isNotEmpty()) {
+                            $chunk = $chunk->where('id', '>', $this->last_known_entry_id);
+                            $this->reach_last_known_entry = true;
+                        }
 
                         $records = $chunk->map(function ($entry, $key) use ($division) {
 
@@ -125,12 +157,19 @@ class Journals extends EsiBase
                         CorporationWalletJournal::insertIgnore($records->toArray());
                     });
 
-                    if (! $this->nextPage($journal->pages))
+                    // in case the last known entry has been reached or we non longer have pages, terminate the job.
+                    if (! $this->nextPage($journal->pages) || $this->reach_last_known_entry)
                         break;
                 }
 
-                // Reset the page for the next wallet division
+                // Reset the page for the next wallet division.
                 $this->page = 1;
+
+                // Reset the last known entry for the next wallet division.
+                $this->last_known_entry_id = 0;
+
+                // Reset the last known entry status for the next wallet division.
+                $this->reach_last_known_entry = false;
             });
     }
 }

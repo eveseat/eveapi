@@ -62,6 +62,16 @@ class Journal extends EsiBase
     protected $page = 1;
 
     /**
+     * @var int
+     */
+    protected $last_known_entry_id = 0;
+
+    /**
+     * @var bool
+     */
+    protected $reach_last_known_entry = false;
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
@@ -70,6 +80,14 @@ class Journal extends EsiBase
     {
 
         if (! $this->preflighted()) return;
+
+        // retrieve latest known journal entry for the active character.
+        $last_known_entry = CharacterWalletJournal::where('character_id', $this->getCharacterId())
+                                                  ->orderBy('date', 'desc')
+                                                  ->first();
+
+        if (! is_null($last_known_entry))
+            $this->last_known_entry_id = $last_known_entry->id;
 
         // Perform a journal walk backwards to get all of the
         // entries as far back as possible. When the response from
@@ -82,11 +100,19 @@ class Journal extends EsiBase
 
             if ($journal->isCachedLoad()) return;
 
+            $entries = collect($journal);
+
             // If we have no more entries, break the loop.
-            if (collect($journal)->count() === 0)
+            if ($entries->count() === 0)
                 break;
 
-            collect($journal)->each(function ($entry) {
+            $entries->each(function ($entry) {
+
+                // if we've reached the last known entry - abort the process
+                if ($entry->id == $this->last_known_entry_id) {
+                    $this->reach_last_known_entry = true;
+                    return false;
+                }
 
                 $journal_entry = CharacterWalletJournal::firstOrNew([
                     'character_id' => $this->getCharacterId(),
@@ -118,7 +144,8 @@ class Journal extends EsiBase
 
             });
 
-            if (! $this->nextPage($journal->pages))
+            // in case the last known entry has been reached or we non longer have pages, terminate the job.
+            if (! $this->nextPage($journal->pages) || $this->reach_last_known_entry)
                 break;
         }
     }
