@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ class Journal extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v4';
+    protected $version = 'v5';
 
     /**
      * @var string
@@ -62,11 +62,14 @@ class Journal extends EsiBase
     protected $page = 1;
 
     /**
-     * A counter used to walk the journal backwards.
-     *
      * @var int
      */
-    protected $from_id = PHP_INT_MAX;
+    protected $last_known_entry_id = 0;
+
+    /**
+     * @var bool
+     */
+    protected $at_last_entry = false;
 
     /**
      * Execute the job.
@@ -78,12 +81,17 @@ class Journal extends EsiBase
 
         if (! $this->preflighted()) return;
 
+        // retrieve latest known journal entry for the active character.
+        $last_known_entry = CharacterWalletJournal::where('character_id', $this->getCharacterId())
+                                                  ->orderBy('date', 'desc')
+                                                  ->first();
+
+        $this->last_known_entry_id = is_null($last_known_entry) ? 0 : $last_known_entry->id;
+
         // Perform a journal walk backwards to get all of the
         // entries as far back as possible. When the response from
         // ESI is empty, we can assume we have everything.
         while (true) {
-
-            $this->query_string = ['from_id' => $this->from_id];
 
             $journal = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
@@ -91,11 +99,20 @@ class Journal extends EsiBase
 
             if ($journal->isCachedLoad()) return;
 
+            $entries = collect($journal);
+
             // If we have no more entries, break the loop.
-            if (collect($journal)->count() === 0)
+            if ($entries->count() === 0)
                 break;
 
-            collect($journal)->each(function ($entry) {
+            $entries->each(function ($entry) {
+
+                // if we've reached the last known entry - abort the process
+                if ($entry->id == $this->last_known_entry_id) {
+                    $this->at_last_entry = true;
+
+                    return false;
+                }
 
                 $journal_entry = CharacterWalletJournal::firstOrNew([
                     'character_id' => $this->getCharacterId(),
@@ -127,11 +144,8 @@ class Journal extends EsiBase
 
             });
 
-            // Update the from_id to be the new lowest ref_id we
-            // know of. The next all will use this.
-            $this->from_id = collect($journal)->min('id') - 1;
-
-            if (! $this->nextPage($journal->pages))
+            // in case the last known entry has been reached or we non longer have pages, terminate the job.
+            if (! $this->nextPage($journal->pages) || $this->at_last_entry)
                 break;
         }
     }

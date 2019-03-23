@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ class Structures extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v2';
+    protected $version = 'v3';
 
     /**
      * @var string
@@ -140,7 +140,7 @@ class Structures extends EsiBase
                     'unanchors_at'           => property_exists($structure, 'unanchors_at') ?
                         carbon($structure->unanchors_at) : null,
                     'state'                  => $structure->state,
-                    'reinforce_weekday'      => $structure->reinforce_weekday,
+                    'reinforce_weekday'      => $structure->reinforce_weekday ?? null,
                     'reinforce_hour'         => $structure->reinforce_hour,
                     'next_reinforce_weekday' => $structure->next_reinforce_weekday ?? null,
                     'next_reinforce_hour'    => $structure->next_reinforce_hour ?? null,
