@@ -75,7 +75,7 @@ class Journals extends EsiBase
     /**
      * @var bool
      */
-    protected $reach_last_known_entry = false;
+    protected $at_last_entry = false;
 
     /**
      * Execute the job.
@@ -96,8 +96,7 @@ class Journals extends EsiBase
                                                             ->orderBy('date', 'desc')
                                                             ->first();
 
-                if (! is_null($last_known_entry))
-                    $this->last_known_entry_id = $last_known_entry->id;
+                $this->last_known_entry_id = is_null($last_known_entry) ? 0 : $last_known_entry->id;
 
                 // Perform a journal walk backwards to get all of the
                 // entries as far back as possible. When the response from
@@ -120,7 +119,7 @@ class Journals extends EsiBase
                     $entries->chunk(1000)->each(function ($chunk) use ($division) {
 
                         // if we've reached the last known entry - abort the process
-                        if ($this->reach_last_known_entry)
+                        if ($this->at_last_entry)
                             return false;
 
                         // if we have reached the last known entry, exclude all entries which are lower or equal to the
@@ -128,7 +127,7 @@ class Journals extends EsiBase
                         if ($chunk->where('id', $this->last_known_entry_id)->isNotEmpty()) {
                             $chunk = $chunk->where('id', '>', $this->last_known_entry_id);
 
-                            $this->reach_last_known_entry = true;
+                            $this->at_last_entry = true;
                         }
 
                         $records = $chunk->map(function ($entry, $key) use ($division) {
@@ -159,7 +158,7 @@ class Journals extends EsiBase
                     });
 
                     // in case the last known entry has been reached or we non longer have pages, terminate the job.
-                    if (! $this->nextPage($journal->pages) || $this->reach_last_known_entry)
+                    if (! $this->nextPage($journal->pages) || $this->at_last_entry)
                         break;
                 }
 
@@ -170,7 +169,7 @@ class Journals extends EsiBase
                 $this->last_known_entry_id = 0;
 
                 // Reset the last known entry status for the next wallet division.
-                $this->reach_last_known_entry = false;
+                $this->at_last_entry = false;
             });
     }
 }

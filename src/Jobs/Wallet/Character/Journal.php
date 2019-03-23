@@ -69,7 +69,7 @@ class Journal extends EsiBase
     /**
      * @var bool
      */
-    protected $reach_last_known_entry = false;
+    protected $at_last_entry = false;
 
     /**
      * Execute the job.
@@ -86,8 +86,7 @@ class Journal extends EsiBase
                                                   ->orderBy('date', 'desc')
                                                   ->first();
 
-        if (! is_null($last_known_entry))
-            $this->last_known_entry_id = $last_known_entry->id;
+        $this->last_known_entry_id = is_null($last_known_entry) ? 0 : $last_known_entry->id;
 
         // Perform a journal walk backwards to get all of the
         // entries as far back as possible. When the response from
@@ -110,7 +109,7 @@ class Journal extends EsiBase
 
                 // if we've reached the last known entry - abort the process
                 if ($entry->id == $this->last_known_entry_id) {
-                    $this->reach_last_known_entry = true;
+                    $this->at_last_entry = true;
 
                     return false;
                 }
@@ -146,7 +145,7 @@ class Journal extends EsiBase
             });
 
             // in case the last known entry has been reached or we non longer have pages, terminate the job.
-            if (! $this->nextPage($journal->pages) || $this->reach_last_known_entry)
+            if (! $this->nextPage($journal->pages) || $this->at_last_entry)
                 break;
         }
     }
