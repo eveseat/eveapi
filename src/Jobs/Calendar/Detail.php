@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Calendar;
 
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
@@ -78,22 +79,33 @@ class Detail extends EsiBase
 
         $event_ids->each(function ($event_id) {
 
-            $detail = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
-                'event_id'     => $event_id,
-            ]);
+            try {
+                $detail = $this->retrieve([
+                    'character_id' => $this->getCharacterId(),
+                    'event_id' => $event_id,
+                ]);
 
-            if ($detail->isCachedLoad()) return;
+                if ($detail->isCachedLoad()) return;
 
-            CharacterCalendarEventDetail::firstOrCreate([
-                'event_id'   => $event_id,
-            ], [
-                'owner_id'   => $detail->owner_id,
-                'owner_name' => $detail->owner_name,
-                'duration'   => $detail->duration,
-                'text'       => $detail->text,
-                'owner_type' => $detail->owner_type,
-            ]);
+                CharacterCalendarEventDetail::firstOrCreate([
+                    'event_id' => $event_id,
+                ], [
+                    'owner_id' => $detail->owner_id,
+                    'owner_name' => $detail->owner_name,
+                    'duration' => $detail->duration,
+                    'text' => $detail->text,
+                    'owner_type' => $detail->owner_type,
+                ]);
+            } catch (RequestFailedException $e ) {
+                if (strtolower($e->getError()) == 'event not found!') {
+                    CharacterCalendarEvent::where('character_id', $this->getCharacterId())
+                                          ->where('event_id', $event_id)
+                                          ->delete();
+                    return;
+                }
+
+                throw $e;
+            }
         });
     }
 }
