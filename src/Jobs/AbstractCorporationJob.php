@@ -59,8 +59,6 @@ abstract class AbstractCorporationJob extends EsiBase
 
             $this->job();
         }, function () {
-            logger()->debug(sprintf('%s has been dropped (throttler) | tags: %s | owner: %s',
-                get_class($this), $this->getUniqueKey(), $this->getCharacterId()));
 
             return $this->delete();
         });
