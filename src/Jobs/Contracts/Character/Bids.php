@@ -73,7 +73,7 @@ class Bids extends EsiBase
             'contract_details.contract_id')
             ->where('character_id', $this->getCharacterId())
             ->where('type', 'auction')
-            ->where('status', '<>', 'finished')
+            ->whereNotIn('status', ['finished', 'deleted'])
             ->pluck('character_contracts.contract_id');
 
         $unfinished_auctions->each(function ($contract_id) {
