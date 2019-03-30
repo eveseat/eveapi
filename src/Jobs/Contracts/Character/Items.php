@@ -22,8 +22,10 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Character;
 
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\ContractItem;
 
 /**
@@ -85,27 +87,39 @@ class Items extends EsiBase
 
         $empty_contracts->each(function ($contract_id) {
 
-            $items = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
-                'contract_id'  => $contract_id,
-            ]);
-
-            if ($items->isCachedLoad()) return;
-
-            collect($items)->each(function ($item) use ($contract_id) {
-
-                ContractItem::upsert([
-                    'contract_id'  => $contract_id,
-                    'record_id'    => $item->record_id,
-                    'type_id'      => $item->type_id,
-                    'quantity'     => $item->quantity,
-                    'raw_quantity' => $item->raw_quantity ?? null,
-                    'is_singleton' => $item->is_singleton,
-                    'is_included'  => $item->is_included,
-                ], [
-                    'contract_id', 'record_id',
+            try {
+                $items = $this->retrieve([
+                    'character_id' => $this->getCharacterId(),
+                    'contract_id' => $contract_id,
                 ]);
-            });
+
+                if ($items->isCachedLoad()) return;
+
+                collect($items)->each(function ($item) use ($contract_id) {
+
+                    ContractItem::upsert([
+                        'contract_id' => $contract_id,
+                        'record_id' => $item->record_id,
+                        'type_id' => $item->type_id,
+                        'quantity' => $item->quantity,
+                        'raw_quantity' => $item->raw_quantity ?? null,
+                        'is_singleton' => $item->is_singleton,
+                        'is_included' => $item->is_included,
+                    ], [
+                        'contract_id', 'record_id',
+                    ]);
+                });
+            } catch (RequestFailedException $e) {
+                if (strtolower($e->getError()) == 'contract not found!') {
+                    ContractDetail::where('contract_id', $contract_id)
+                        ->update([
+                            'status' => 'deleted',
+                        ]);
+                    return;
+                }
+
+                throw $e;
+            }
         });
     }
 }
