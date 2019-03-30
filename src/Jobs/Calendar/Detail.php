@@ -96,11 +96,12 @@ class Detail extends EsiBase
                     'text' => $detail->text,
                     'owner_type' => $detail->owner_type,
                 ]);
-            } catch (RequestFailedException $e ) {
+            } catch (RequestFailedException $e) {
                 if (strtolower($e->getError()) == 'event not found!') {
                     CharacterCalendarEvent::where('character_id', $this->getCharacterId())
                                           ->where('event_id', $event_id)
                                           ->delete();
+
                     return;
                 }
 

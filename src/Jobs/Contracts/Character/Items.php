@@ -115,6 +115,7 @@ class Items extends EsiBase
                         ->update([
                             'status' => 'deleted',
                         ]);
+
                     return;
                 }
 
