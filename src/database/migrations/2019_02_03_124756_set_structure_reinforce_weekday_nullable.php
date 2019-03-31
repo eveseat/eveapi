@@ -35,7 +35,6 @@ class SetStructureReinforceWeekdayNullable extends Migration
     {
         $driver = Schema::connection($this->getConnection())->getConnection()->getDriverName();
 
-
         if ($driver === 'sqlite') {
             Schema::table('corporation_structures', function (Blueprint $table) {
                 $table->bigInteger('reinforce_weekday')->change();

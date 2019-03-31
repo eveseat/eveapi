@@ -35,7 +35,6 @@ class UniverseNamesEndpointV3 extends Migration
     {
         $driver = Schema::connection($this->getConnection())->getConnection()->getDriverName();
 
-
         if ($driver === 'sqlite') {
             Schema::table('universe_names', function (Blueprint $table) {
                 $table->string('category')->change();
