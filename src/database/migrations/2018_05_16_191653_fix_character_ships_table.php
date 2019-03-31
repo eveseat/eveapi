@@ -36,7 +36,14 @@ class FixCharacterShipsTable extends Migration
 
         Schema::table('character_ships', function (Blueprint $table) {
 
-            $table->bigInteger('ship_type_id')->after('ship_name');
+            $driver = Schema::connection($this->getConnection())->getConnection()->getDriverName();
+
+            if ($driver === 'sqlite') {
+                $table->bigInteger('ship_type_id')->default(0);
+            } else {
+                $table->bigInteger('ship_type_id')->after('ship_name');
+            }
+
         });
     }
 

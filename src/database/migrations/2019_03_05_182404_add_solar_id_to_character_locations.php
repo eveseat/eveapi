@@ -34,7 +34,15 @@ class AddSolarIdToCharacterLocations extends Migration
     public function up()
     {
         Schema::table('character_locations', function (Blueprint $table) {
-            $table->integer('solar_system_id')->after('character_id');
+
+            $driver = Schema::connection($this->getConnection())->getConnection()->getDriverName();
+
+            if ($driver === 'sqlite') {
+                $table->integer('solar_system_id')->default(0);
+            } else {
+                $table->integer('solar_system_id')->after('character_id');
+            }
+
         });
     }
 
