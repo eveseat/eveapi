@@ -22,6 +22,12 @@
 
 namespace Seat\Eveapi;
 
+use ApplicationInsights\Telemetry_Client;
+use GuzzleHttp\Client;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Support\Facades\Queue;
+use Laravel\Horizon\Repositories\RedisMetricsRepository;
 use Seat\Eveapi\Helpers\EseyeSetup;
 use Seat\Services\AbstractSeatPlugin;
 
@@ -44,6 +50,51 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
         // Update api config
         $this->configure_api();
+
+        // Jobs Telemetry
+        Queue::before(function (JobProcessing $event) {
+
+            // retrieve server IP or init to localhost
+            $server_ip = array_key_exists('SERVER_ADDR', $_SERVER) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
+
+            // push a Telemetry Client into the Job
+            $event->job->telemetryClient = new Telemetry_Client();
+            $event->job->telemetryClient->getContext()->setInstrumentationKey(env('AZURE_APP_INSIGHT_KEY'));
+            $event->job->telemetryClient->getContext()->getLocationContext()->setIp($server_ip);
+            $event->job->telemetryClient->getChannel()->setClient(new Client());
+
+            // init the average time when the job start
+            $event->job->startTime = microtime(true);
+        });
+
+        Queue::after(function (JobProcessed $event) {
+
+            // if the job doesn't have any Telemetry Client, exit
+            if (! property_exists($event->job, 'telemetryClient')) {
+                logger()->debug(
+                    sprintf('No telemetry client is available for the job %s', $event->job->getName()));
+
+                return;
+            }
+
+            // use Horizon stats to retrieve job metric
+            $stats = new RedisMetricsRepository($this->app->get('redis'));
+
+            // build metadata
+            $job_name = $event->job->payload()['displayName'];
+            $job_class = $event->job->payload()['data']['commandName'];
+            $job_duration = $stats->runtimeForJob($job_class);
+
+            // if the job doesn't have any start time set, init it to now
+            if (! property_exists($event->job, 'startTime'))
+                $event->job->startTime = microtime(true);
+
+            // log and send the telemetry
+            $event->job->telemetryClient->trackDependency(
+                $job_name, 'ESI', 'handle', $event->job->startTime, $job_duration);
+
+            $event->job->telemetryClient->flush();
+        });
 
     }
 
