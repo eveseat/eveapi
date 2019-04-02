@@ -107,7 +107,7 @@ class Bids extends EsiBase
                         ]);
                     });
 
-                    if (!$this->nextPage($bids->pages))
+                    if (! $this->nextPage($bids->pages))
                         break;
                 } catch (RequestFailedException $e) {
                     if (strtolower($e->getError()) == 'contract not found') {
