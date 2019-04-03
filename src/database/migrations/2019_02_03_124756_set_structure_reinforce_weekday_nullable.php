@@ -37,7 +37,7 @@ class SetStructureReinforceWeekdayNullable extends Migration
 
         if ($driver === 'sqlite') {
             Schema::table('corporation_structures', function (Blueprint $table) {
-                $table->bigInteger('reinforce_weekday')->change();
+                $table->integer('reinforce_weekday')->change();
             });
 
         } else {
