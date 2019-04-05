@@ -40,11 +40,13 @@ class UniverseNamesEndpointV3 extends Migration
                 $table->string('category')->change();
             });
 
-        } else {
-            // use raw query since table using enum fields cannot be altered.
-            // https://stackoverflow.com/questions/33140860/laravel-5-1-unknown-database-type-enum-requested
-            DB::statement("ALTER TABLE universe_names MODIFY COLUMN category ENUM('alliance','character','constellation','corporation','inventory_type','region','solar_system','station','faction') NOT NULL");
+            return;
+
         }
+
+        // use raw query since table using enum fields cannot be altered.
+        // https://stackoverflow.com/questions/33140860/laravel-5-1-unknown-database-type-enum-requested
+        DB::statement("ALTER TABLE universe_names MODIFY COLUMN category ENUM('alliance','character','constellation','corporation','inventory_type','region','solar_system','station','faction') NOT NULL");
 
     }
 

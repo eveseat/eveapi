@@ -39,10 +39,11 @@ class FixCharacterShipsTable extends Migration
             $driver = Schema::connection($this->getConnection())->getConnection()->getDriverName();
 
             if ($driver === 'sqlite') {
-                $table->bigInteger('ship_type_id')->default(0);
-            } else {
-                $table->bigInteger('ship_type_id')->after('ship_name');
+                return $table->bigInteger('ship_type_id')->default(0);
             }
+
+            $table->bigInteger('ship_type_id')->after('ship_name');
+
 
         });
     }

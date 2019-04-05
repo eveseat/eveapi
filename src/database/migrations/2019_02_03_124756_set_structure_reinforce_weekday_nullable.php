@@ -36,16 +36,16 @@ class SetStructureReinforceWeekdayNullable extends Migration
         $driver = Schema::connection($this->getConnection())->getConnection()->getDriverName();
 
         if ($driver === 'sqlite') {
-            Schema::table('corporation_structures', function (Blueprint $table) {
+             Schema::table('corporation_structures', function (Blueprint $table) {
                 $table->integer('reinforce_weekday')->change();
             });
 
-        } else {
-            // use raw query since table using enum fields cannot be altered.
-            // https://stackoverflow.com/questions/33140860/laravel-5-1-unknown-database-type-enum-requested
-            DB::statement('ALTER TABLE corporation_structures CHANGE reinforce_weekday reinforce_weekday INTEGER NULL');
-
+            return;
         }
+
+        // use raw query since table using enum fields cannot be altered.
+        // https://stackoverflow.com/questions/33140860/laravel-5-1-unknown-database-type-enum-requested
+        DB::statement('ALTER TABLE corporation_structures CHANGE reinforce_weekday reinforce_weekday INTEGER NULL');
 
     }
 

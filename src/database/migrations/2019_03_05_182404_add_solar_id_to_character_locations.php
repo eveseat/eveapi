@@ -38,10 +38,10 @@ class AddSolarIdToCharacterLocations extends Migration
             $driver = Schema::connection($this->getConnection())->getConnection()->getDriverName();
 
             if ($driver === 'sqlite') {
-                $table->integer('solar_system_id')->default(0);
-            } else {
-                $table->integer('solar_system_id')->after('character_id');
+                return $table->integer('solar_system_id')->default(0);
             }
+
+            $table->integer('solar_system_id')->after('character_id');
 
         });
     }
