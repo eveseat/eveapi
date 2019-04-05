@@ -44,7 +44,6 @@ class FixCharacterShipsTable extends Migration
 
             $table->bigInteger('ship_type_id')->after('ship_name');
 
-
         });
     }
 
