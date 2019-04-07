@@ -44,6 +44,13 @@ class EseyeSetup
         $config->logfile_location = config('eveapi.config.eseye_logfile');
         $config->file_cache_location = config('eveapi.config.eseye_cache');
         $config->logger_level = config('eveapi.config.eseye_loglevel');
+        $config->esi_scheme = env('EVE_ESI_SCHEME', 'https');
+        $config->esi_host = env('EVE_ESI_HOST', 'esi.evetech.net');
+        $config->esi_port = env('EVE_ESI_PORT', 443);
+        $config->datasource = env('EVE_ESI_DATASOURCE', 'tranquility');
+        $config->sso_scheme = env('EVE_SSO_SCHEME', 'https');
+        $config->sso_host = env('EVE_SSO_HOST', 'login.eveonline.com');
+        $config->sso_port = env('EVE_SSO_PORT', 443);
     }
 
     /**
