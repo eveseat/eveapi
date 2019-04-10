@@ -52,49 +52,53 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         $this->configure_api();
 
         // Jobs Telemetry
-        Queue::before(function (JobProcessing $event) {
+        if (setting('allow_tracking', true)) {
 
-            // retrieve server IP or init to localhost
-            $server_ip = array_key_exists('SERVER_ADDR', $_SERVER) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
+            Queue::before(function (JobProcessing $event) {
 
-            // push a Telemetry Client into the Job
-            $event->job->telemetryClient = new Telemetry_Client();
-            $event->job->telemetryClient->getContext()->setInstrumentationKey(env('AZURE_APP_INSIGHT_KEY'));
-            $event->job->telemetryClient->getContext()->getLocationContext()->setIp($server_ip);
-            $event->job->telemetryClient->getChannel()->setClient(new Client());
+                // retrieve server IP or init to localhost
+                $server_ip = array_key_exists('SERVER_ADDR', $_SERVER) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
 
-            // init the average time when the job start
-            $event->job->startTime = microtime(true);
-        });
+                // push a Telemetry Client into the Job
+                $event->job->telemetryClient = new Telemetry_Client();
+                $event->job->telemetryClient->getContext()->setInstrumentationKey(env('AZURE_APP_INSIGHT_KEY'));
+                $event->job->telemetryClient->getContext()->getLocationContext()->setIp($server_ip);
+                $event->job->telemetryClient->getChannel()->setClient(new Client());
 
-        Queue::after(function (JobProcessed $event) {
-
-            // if the job doesn't have any Telemetry Client, exit
-            if (! property_exists($event->job, 'telemetryClient')) {
-                logger()->debug(
-                    sprintf('No telemetry client is available for the job %s', $event->job->getName()));
-
-                return;
-            }
-
-            // use Horizon stats to retrieve job metric
-            $stats = new RedisMetricsRepository($this->app->get('redis'));
-
-            // build metadata
-            $job_name = $event->job->payload()['displayName'];
-            $job_class = $event->job->payload()['data']['commandName'];
-            $job_duration = $stats->runtimeForJob($job_class);
-
-            // if the job doesn't have any start time set, init it to now
-            if (! property_exists($event->job, 'startTime'))
+                // init the average time when the job start
                 $event->job->startTime = microtime(true);
+            });
 
-            // log and send the telemetry
-            $event->job->telemetryClient->trackDependency(
-                $job_name, 'ESI', 'handle', $event->job->startTime, $job_duration);
+            Queue::after(function (JobProcessed $event) {
 
-            $event->job->telemetryClient->flush();
-        });
+                // if the job doesn't have any Telemetry Client, exit
+                if (!property_exists($event->job, 'telemetryClient')) {
+                    logger()->debug(
+                        sprintf('No telemetry client is available for the job %s', $event->job->getName()));
+
+                    return;
+                }
+
+                // use Horizon stats to retrieve job metric
+                $stats = new RedisMetricsRepository($this->app->get('redis'));
+
+                // build metadata
+                $job_name = $event->job->payload()['displayName'];
+                $job_class = $event->job->payload()['data']['commandName'];
+                $job_duration = $stats->runtimeForJob($job_class);
+
+                // if the job doesn't have any start time set, init it to now
+                if (!property_exists($event->job, 'startTime'))
+                    $event->job->startTime = microtime(true);
+
+                // log and send the telemetry
+                $event->job->telemetryClient->trackDependency(
+                    $job_name, 'ESI', 'handle', $event->job->startTime, $job_duration);
+
+                $event->job->telemetryClient->flush();
+            });
+
+        }
 
     }
 
