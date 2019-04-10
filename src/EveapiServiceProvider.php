@@ -72,7 +72,7 @@ class EveapiServiceProvider extends AbstractSeatPlugin
             Queue::after(function (JobProcessed $event) {
 
                 // if the job doesn't have any Telemetry Client, exit
-                if (!property_exists($event->job, 'telemetryClient')) {
+                if (! property_exists($event->job, 'telemetryClient')) {
                     logger()->debug(
                         sprintf('No telemetry client is available for the job %s', $event->job->getName()));
 
@@ -88,7 +88,7 @@ class EveapiServiceProvider extends AbstractSeatPlugin
                 $job_duration = $stats->runtimeForJob($job_class);
 
                 // if the job doesn't have any start time set, init it to now
-                if (!property_exists($event->job, 'startTime'))
+                if (! property_exists($event->job, 'startTime'))
                     $event->job->startTime = microtime(true);
 
                 // log and send the telemetry
