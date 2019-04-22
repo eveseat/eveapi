@@ -22,7 +22,9 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\ContractItem;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 use Seat\Eveapi\Models\RefreshToken;
@@ -154,58 +156,71 @@ class Items extends EsiBase
 
             $this->iteration_count++;
 
-            $items = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-                'contract_id'    => $contract_id,
-            ]);
-
-            if ($items->isCachedLoad()) return;
-
-            collect($items)->each(function ($item) use ($contract_id) {
-
-                ContractItem::upsert([
-                    'contract_id'  => $contract_id,
-                    'record_id'    => $item->record_id,
-                    'type_id'      => $item->type_id,
-                    'quantity'     => $item->quantity,
-                    'raw_quantity' => $item->raw_quantity ?? null,
-                    'is_singleton' => $item->is_singleton,
-                    'is_included'  => $item->is_included,
-                ], [
-                    'contract_id', 'record_id',
+            try {
+                $items = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                    'contract_id' => $contract_id,
                 ]);
-            });
 
-            // Check if we should be stopping this job all together.
-            // The next time a job is queued it will just continue
-            // where it left off.
-            if ($this->job_start_time->copy()->addSeconds($this->max_job_runtime) < carbon('now'))
-                return false;
+                if ($items->isCachedLoad()) return;
 
-            // Check if we should be sleeping. This should be true if we
-            // have made 20 requests in the last 10 seconds.
-            // If the time we started, plus 10 seconds is more than the current
-            // time, wait for the remainder of the time.
-            if ($this->iteration_count >= $this->max_cycle_requests &&
-                $this->cycle_start_time->copy()->addSeconds($this->cycle_duration) < carbon('now')) {
+                collect($items)->each(function ($item) use ($contract_id) {
 
-                $wait_duration = $this->cycle_start_time->copy()->addSeconds($this->cycle_duration)
-                    ->diffInSeconds(carbon('now'));
+                    ContractItem::upsert([
+                        'contract_id' => $contract_id,
+                        'record_id' => $item->record_id,
+                        'type_id' => $item->type_id,
+                        'quantity' => $item->quantity,
+                        'raw_quantity' => $item->raw_quantity ?? null,
+                        'is_singleton' => $item->is_singleton,
+                        'is_included' => $item->is_included,
+                    ], [
+                        'contract_id', 'record_id',
+                    ]);
+                });
 
-                sleep($wait_duration);
+                // Check if we should be stopping this job all together.
+                // The next time a job is queued it will just continue
+                // where it left off.
+                if ($this->job_start_time->copy()->addSeconds($this->max_job_runtime) < carbon('now'))
+                    return false;
 
-                // Reset the cycle start time as well as the iteration count.
-                $this->cycle_start_time = carbon('now');
-                $this->iteration_count = 0;
-            }
+                // Check if we should be sleeping. This should be true if we
+                // have made 20 requests in the last 10 seconds.
+                // If the time we started, plus 10 seconds is more than the current
+                // time, wait for the remainder of the time.
+                if ($this->iteration_count >= $this->max_cycle_requests &&
+                    $this->cycle_start_time->copy()->addSeconds($this->cycle_duration) < carbon('now')) {
 
-            // Check if we should just reset the iteration & cycle count as a result of
-            // us not using the full 20 requests in a 10 second window.
-            if ($this->cycle_start_time->copy()->addSeconds($this->cycle_duration) < carbon('now')) {
+                    $wait_duration = $this->cycle_start_time->copy()->addSeconds($this->cycle_duration)
+                        ->diffInSeconds(carbon('now'));
 
-                $this->cycle_start_time = carbon('now');
-                $this->iteration_count = 0;
+                    sleep($wait_duration);
 
+                    // Reset the cycle start time as well as the iteration count.
+                    $this->cycle_start_time = carbon('now');
+                    $this->iteration_count = 0;
+                }
+
+                // Check if we should just reset the iteration & cycle count as a result of
+                // us not using the full 20 requests in a 10 second window.
+                if ($this->cycle_start_time->copy()->addSeconds($this->cycle_duration) < carbon('now')) {
+
+                    $this->cycle_start_time = carbon('now');
+                    $this->iteration_count = 0;
+
+                }
+            } catch (RequestFailedException $e) {
+                if (strtolower($e->getError()) == 'contract not found!') {
+                    ContractDetail::where('contract_id', $contract_id)
+                                  ->update([
+                                      'status' => 'deleted',
+                                  ]);
+
+                    return;
+                }
+
+                throw $e;
             }
         });
     }

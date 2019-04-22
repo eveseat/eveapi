@@ -22,9 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Character;
 
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
 use Seat\Eveapi\Models\Contracts\ContractBid;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 
 /**
  * Class Bids.
@@ -73,29 +75,42 @@ class Bids extends EsiBase
             'contract_details.contract_id')
             ->where('character_id', $this->getCharacterId())
             ->where('type', 'auction')
-            ->where('status', '<>', 'finished')
+            ->whereNotIn('status', ['finished', 'deleted'])
             ->pluck('character_contracts.contract_id');
 
         $unfinished_auctions->each(function ($contract_id) {
 
-            $bids = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
-                'contract_id'  => $contract_id,
-            ]);
-
-            if ($bids->isCachedLoad()) return;
-
-            collect($bids)->each(function ($bid) use ($contract_id) {
-
-                ContractBid::firstOrCreate([
-                    'bid_id'      => $bid->bid_id,
-                ], [
+            try {
+                $bids = $this->retrieve([
+                    'character_id' => $this->getCharacterId(),
                     'contract_id' => $contract_id,
-                    'bidder_id'   => $bid->bidder_id,
-                    'date_bid'    => carbon($bid->date_bid),
-                    'amount'      => $bid->amount,
                 ]);
-            });
+
+                if ($bids->isCachedLoad()) return;
+
+                collect($bids)->each(function ($bid) use ($contract_id) {
+
+                    ContractBid::firstOrCreate([
+                        'bid_id' => $bid->bid_id,
+                    ], [
+                        'contract_id' => $contract_id,
+                        'bidder_id' => $bid->bidder_id,
+                        'date_bid' => carbon($bid->date_bid),
+                        'amount' => $bid->amount,
+                    ]);
+                });
+            } catch (RequestFailedException $e) {
+                if (strtolower($e->getError()) == 'contract not found') {
+                    ContractDetail::where('contract_id', $contract_id)
+                        ->update([
+                            'status' => 'finished',
+                        ]);
+
+                    return;
+                }
+
+                throw $e;
+            }
         });
     }
 }
