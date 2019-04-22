@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,28 +102,33 @@ class Locations extends EsiBase
 
                 collect($locations)->each(function ($location) {
 
-                    // If we have a zero value for any of the coordinates,
-                    // continue to the next location as we can't calculate
-                    // anything
-                    if ($location->position->x === 0.0)
-                        return;
-
                     $asset_data = CharacterAsset::where('character_id', $this->getCharacterId())
                         ->where('item_id', $location->item_id)
                         ->first();
 
-                    $normalized_location = $this->find_nearest_celestial(
-                        $asset_data->location_id,
-                        $location->position->x, $location->position->y, $location->position->z);
-
-                    // Update the assets location information
+                    // Location for items in either hangar or stations match to 0, 0, 0
                     $asset_data->fill([
                         'x'        => $location->position->x,
                         'y'        => $location->position->y,
                         'z'        => $location->position->z,
-                        'map_id'   => $normalized_location['map_id'],
-                        'map_name' => $normalized_location['map_name'],
-                    ])->save();
+                        'map_id'   => 0,
+                        'map_name' => '',
+                    ]);
+
+                    // If we have a non zero value for coordinates, attempt to identify a celestial.
+                    if (($location->position->x + $location->position->y + $location->position->y) !== 0) {
+                        $normalized_location = $this->find_nearest_celestial(
+                            $asset_data->location_id,
+                            $location->position->x, $location->position->y, $location->position->z);
+
+                        // Update the assets location information
+                        $asset_data->fill([
+                            'map_id'   => $normalized_location['map_id'],
+                            'map_name' => $normalized_location['map_name'],
+                        ]);
+                    }
+
+                    $asset_data->save();
                 });
             });
 
@@ -148,28 +153,33 @@ class Locations extends EsiBase
 
                 collect($locations)->each(function ($location) {
 
-                    // If we have a zero value for any of the coordinates,
-                    // continue to the next location as we can't calculate
-                    // anything
-                    if ($location->position->x === 0.0)
-                        return;
-
                     $asset_data = CharacterAsset::where('character_id', $this->getCharacterId())
                         ->where('item_id', $location->item_id)
                         ->first();
 
-                    $normalized_location = $this->find_nearest_celestial(
-                        $asset_data->location_id,
-                        $location->position->x, $location->position->y, $location->position->z);
-
-                    // Update the assets location information
+                    // Location for items in either hangar or stations match to 0, 0, 0
                     $asset_data->fill([
                         'x'        => $location->position->x,
                         'y'        => $location->position->y,
                         'z'        => $location->position->z,
-                        'map_id'   => $normalized_location['map_id'],
-                        'map_name' => $normalized_location['map_name'],
-                    ])->save();
+                        'map_id'   => 0,
+                        'map_name' => '',
+                    ]);
+
+                    // If we have a non zero value for coordinates, attempt to identify a celestial.
+                    if (($location->position->x + $location->position->y + $location->position->y) !== 0) {
+                        $normalized_location = $this->find_nearest_celestial(
+                            $asset_data->location_id,
+                            $location->position->x, $location->position->y, $location->position->z);
+
+                        // Update the assets location information
+                        $asset_data->fill([
+                            'map_id' => $normalized_location['map_id'],
+                            'map_name' => $normalized_location['map_name'],
+                        ]);
+                    }
+
+                    $asset_data->save();
                 });
             });
     }

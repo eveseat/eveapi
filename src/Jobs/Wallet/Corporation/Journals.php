@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ class Journals extends AbstractCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v3';
+    protected $version = 'v4';
 
     /**
      * @var string
@@ -68,11 +68,14 @@ class Journals extends AbstractCorporationJob
     protected $page = 1;
 
     /**
-     * A counter used to walk the journal backwards.
-     *
      * @var int
      */
-    protected $from_id = PHP_INT_MAX;
+    protected $last_known_entry_id = 0;
+
+    /**
+     * @var bool
+     */
+    protected $at_last_entry = false;
 
     /**
      * Execute the job.
@@ -85,12 +88,18 @@ class Journals extends AbstractCorporationJob
         CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($division) {
 
+                // retrieve last known entry for the current division and active corporation
+                $last_known_entry = CorporationWalletJournal::where('corporation_id', $this->getCorporationId())
+                                                            ->where('division', $division->division)
+                                                            ->orderBy('date', 'desc')
+                                                            ->first();
+
+                $this->last_known_entry_id = is_null($last_known_entry) ? 0 : $last_known_entry->id;
+
                 // Perform a journal walk backwards to get all of the
                 // entries as far back as possible. When the response from
                 // ESI is empty, we can assume we have everything.
                 while (true) {
-
-                    $this->query_string = ['from_id' => $this->from_id];
 
                     $journal = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
@@ -99,11 +108,25 @@ class Journals extends AbstractCorporationJob
 
                     if ($journal->isCachedLoad()) return;
 
+                    $entries = collect($journal);
+
                     // If we have no more entries, break the loop.
-                    if (collect($journal)->count() === 0)
+                    if ($entries->count() === 0)
                         break;
 
-                    collect($journal)->chunk(1000)->each(function ($chunk) use ($division) {
+                    $entries->chunk(1000)->each(function ($chunk) use ($division) {
+
+                        // if we've reached the last known entry - abort the process
+                        if ($this->at_last_entry)
+                            return false;
+
+                        // if we have reached the last known entry, exclude all entries which are lower or equal to the
+                        // last known entry and flag the reached status.
+                        if ($chunk->where('id', $this->last_known_entry_id)->isNotEmpty()) {
+                            $chunk = $chunk->where('id', '>', $this->last_known_entry_id);
+
+                            $this->at_last_entry = true;
+                        }
 
                         $records = $chunk->map(function ($entry, $key) use ($division) {
 
@@ -132,19 +155,19 @@ class Journals extends AbstractCorporationJob
                         CorporationWalletJournal::insertIgnore($records->toArray());
                     });
 
-                    // Update the from_id to be the new lowest ref_id we
-                    // know of. The next call will use this.
-                    $this->from_id = collect($journal)->min('id') - 1;
-
-                    if (! $this->nextPage($journal->pages))
+                    // in case the last known entry has been reached or we non longer have pages, terminate the job.
+                    if (! $this->nextPage($journal->pages) || $this->at_last_entry)
                         break;
                 }
 
-                // Reset the from_id for the next wallet division
-                $this->from_id = PHP_INT_MAX;
-
-                // Reset the page for the next wallet division
+                // Reset the page for the next wallet division.
                 $this->page = 1;
+
+                // Reset the last known entry for the next wallet division.
+                $this->last_known_entry_id = 0;
+
+                // Reset the last known entry status for the next wallet division.
+                $this->at_last_entry = false;
             });
     }
 }

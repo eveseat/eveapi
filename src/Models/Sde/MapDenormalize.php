@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
+use Seat\Eveapi\Models\Universe\UniverseMoonContent;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
@@ -133,6 +134,22 @@ class MapDenormalize extends Model
 {
     use IsReadOnly;
 
+    const BELT = 9;
+
+    const CONSTELLATION = 4;
+
+    const MOON = 8;
+
+    const PLANET = 7;
+
+    const REGION = 3;
+
+    const STATION = 15;
+
+    const SUN = 6;
+
+    const SYSTEM = 5;
+
     /**
      * @var bool
      */
@@ -149,12 +166,27 @@ class MapDenormalize extends Model
     protected $primaryKey = 'itemID';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
      */
-    public function type()
+    public function constellation()
     {
+        return $this->belongsTo(MapDenormalize::class, 'constellationID', 'itemID');
+    }
 
-        return $this->belongsTo(InvType::class, 'typeID', 'typeID');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function moon_contents()
+    {
+        return $this->hasMany(UniverseMoonContent::class, 'moon_id', 'itemID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
+     */
+    public function region()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'regionID', 'itemID');
     }
 
     /**
@@ -167,6 +199,24 @@ class MapDenormalize extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
+     */
+    public function system()
+    {
+
+        return $this->belongsTo(MapDenormalize::class, 'solarSystemID', 'itemID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type()
+    {
+
+        return $this->belongsTo(InvType::class, 'typeID', 'typeID');
+    }
+
+    /**
      * @return int
      */
     public function getStructureIdAttribute()
@@ -175,21 +225,58 @@ class MapDenormalize extends Model
     }
 
     /**
-     * @return int
-     */
-    public function getSolarSystemIdAttribute()
-    {
-        if (! is_null($this->solarSystemID))
-            return $this->solarSystemID;
-
-        return $this->itemID;
-    }
-
-    /**
      * @return string
      */
     public function getNameAttribute()
     {
         return $this->itemName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConstellation(): bool
+    {
+        return $this->groupID === self::CONSTELLATION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRegion(): bool
+    {
+        return $this->groupID === self::REGION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSystem(): bool
+    {
+        return $this->groupID === self::SYSTEM;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSun(): bool
+    {
+        return $this->groupID === self::SUN;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPlanet(): bool
+    {
+        return $this->groupID === self::PLANET;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMoon(): bool
+    {
+        return $this->groupID === self::MOON;
     }
 }

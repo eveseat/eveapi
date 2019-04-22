@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,7 @@ class Location extends EsiBase
         CharacterLocation::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
+            'solar_system_id' => $location->solar_system_id,
             'station_id'   => property_exists($location, 'station_id') ?
                 $location->station_id : null,
             'structure_id' => property_exists($location, 'structure_id') ?

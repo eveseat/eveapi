@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Corporation;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -44,6 +45,15 @@ class CorporationStructure extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'structure_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function info()
+    {
+
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'structure_id');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

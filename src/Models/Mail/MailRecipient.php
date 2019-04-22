@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,5 +79,16 @@ class MailRecipient extends Model
     public function body()
     {
         return $this->hasOne(MailBody::class, 'mail_id', 'mail_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
+     */
+    public function mailing_list()
+    {
+        if ($this->recipient_type !== 'mailing_list')
+            return null;
+
+        return $this->belongsTo(MailMailingList::class, 'recipient_id', 'mailing_list_id');
     }
 }

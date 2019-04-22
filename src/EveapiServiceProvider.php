@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi;
 
-use Illuminate\Support\ServiceProvider;
 use Seat\Eveapi\Helpers\EseyeSetup;
+use Seat\Services\AbstractSeatPlugin;
 
 /**
  * Class EveapiServiceProvider.
  * @package Seat\Eveapi
  */
-class EveapiServiceProvider extends ServiceProvider
+class EveapiServiceProvider extends AbstractSeatPlugin
 {
     /**
      * Bootstrap the application services.
@@ -91,5 +91,55 @@ class EveapiServiceProvider extends ServiceProvider
                 __DIR__ . '/Models',
             ])),
         ]);
+    }
+
+    /**
+     * Return the plugin public name as it should be displayed into settings.
+     *
+     * @return string
+     */
+    public function getName(): string
+    {
+        return 'SeAT Eve API';
+    }
+
+    /**
+     * Return the plugin repository address.
+     *
+     * @return string
+     */
+    public function getPackageRepositoryUrl(): string
+    {
+        return 'https://github.com/eveseat/eveapi';
+    }
+
+    /**
+     * Return the plugin technical name as published on package manager.
+     *
+     * @return string
+     */
+    public function getPackagistPackageName(): string
+    {
+        return 'eveapi';
+    }
+
+    /**
+     * Return the plugin vendor tag as published on package manager.
+     *
+     * @return string
+     */
+    public function getPackagistVendorName(): string
+    {
+        return 'eveseat';
+    }
+
+    /**
+     * Return the plugin installed version.
+     *
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return config('eveapi.config.version');
     }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\ContractBid;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 
 /**
@@ -82,27 +85,41 @@ class Bids extends AbstractCorporationJob
 
             while (true) {
 
-                $bids = $this->retrieve([
-                    'corporation_id' => $this->getCorporationId(),
-                    'contract_id'    => $contract_id,
-                ]);
-
-                if ($bids->isCachedLoad()) return;
-
-                collect($bids)->each(function ($bid) use ($contract_id) {
-
-                    ContractBid::firstOrCreate([
-                        'bid_id' => $bid->bid_id,
-                    ], [
-                        'contract_id' => $contract_id,
-                        'bidder_id'   => $bid->bidder_id,
-                        'date_bid'    => carbon($bid->date_bid),
-                        'amount'      => $bid->amount,
+                try {
+                    $bids = $this->retrieve([
+                        'corporation_id' => $this->getCorporationId(),
+                        'contract_id'    => $contract_id,
                     ]);
-                });
 
-                if (! $this->nextPage($bids->pages))
-                    break;
+                    if ($bids->isCachedLoad()) return;
+
+                    collect($bids)->each(function ($bid) use ($contract_id) {
+
+                        ContractBid::firstOrCreate([
+                            'bid_id' => $bid->bid_id,
+                        ], [
+                            'contract_id' => $contract_id,
+                            'bidder_id' => $bid->bidder_id,
+                            'date_bid' => carbon($bid->date_bid),
+                            'amount' => $bid->amount,
+                        ]);
+                    });
+
+                    if (! $this->nextPage($bids->pages))
+                        break;
+                  
+                } catch (RequestFailedException $e) {
+                    if (strtolower($e->getError()) == 'contract not found') {
+                        ContractDetail::where('contract_id', $contract_id)
+                            ->update([
+                                'status' => 'deleted',
+                            ]);
+
+                        break;
+                    }
+
+                    throw $e;
+                }
             }
 
             // reset the page back to page one for the next contract
