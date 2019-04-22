@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractCorporationJob;
-use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\ContractItem;
 use Seat\Eveapi\Models\Contracts\CorporationContract;

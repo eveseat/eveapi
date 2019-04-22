@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractCorporationJob;
-use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Contracts\ContractBid;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
@@ -107,7 +106,7 @@ class Bids extends AbstractCorporationJob
 
                     if (! $this->nextPage($bids->pages))
                         break;
-                  
+
                 } catch (RequestFailedException $e) {
                     if (strtolower($e->getError()) == 'contract not found') {
                         ContractDetail::where('contract_id', $contract_id)
