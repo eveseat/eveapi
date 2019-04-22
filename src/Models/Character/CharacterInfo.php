@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Models\Character;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Bookmarks\CharacterBookmark;
@@ -579,5 +580,98 @@ class CharacterInfo extends Model
         return CharacterCorporationHistory::where('character_id', $this->character_id)
             ->orderBy('record_id', 'desc')
             ->first();
+    }
+
+    /**
+     * Apply a query scope which will return only character owned by authenticated user.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOwned(Builder $query)
+    {
+
+        $user = auth()->user();
+
+        if ($user)
+            $character_ids = $user->associatedCharacterIds();
+
+        if (! $character_ids)
+            $character_ids = [0];
+
+        return $query->whereIn('character_infos.character_id', $character_ids);
+    }
+
+    /**
+     * Apply a query scope which will return only character attached to corporations sent in parameter.
+     * In case the parameter is null, corporations from which the user is part of will be used.
+     *
+     * @param Builder $query
+     * @param null $corporation_ids
+     * @return Builder
+     */
+    public function scopeSameCorporation(Builder $query, $corporation_ids = [])
+    {
+
+        $user = auth()->user();
+
+        // in case no corporations are provided, retrieve corporations from the authenticated user
+        if (! $corporation_ids) {
+
+            $corporation_ids = [0];
+
+            if ($user) {
+                $character_ids = $user->associatedCharacterIds();
+
+                $corporation_ids = CharacterInfo::where('character_id', $character_ids)
+                    ->pluck('corporation_id')
+                    ->flatten();
+            }
+        }
+
+        // ensure corporation_ids is an array or cast it
+        if (! is_array($corporation_ids))
+            $corporation_ids = [$corporation_ids];
+
+        return $query->whereIn('character_infos.corporation_id', $corporation_ids);
+    }
+
+    /**
+     * Apply a query scope which will return only character attached to alliances sent in parameter.
+     * In case the parameter is null, alliances from which the user is part of will be used.
+     *
+     * @param Builder $query
+     * @param null $alliance_ids
+     * @return Builder
+     */
+    public function scopeSameAlliance(Builder $query, $alliance_ids = [])
+    {
+
+        $user = auth()->user();
+
+        // in case no alliances are provided, retrieve alliances from the authenticated user
+        if (! $alliance_ids) {
+
+            $alliance_ids = [0];
+
+            if ($user) {
+                $character_ids = $user->associatedCharacterIds();
+
+                $alliance_ids = CharacterInfo::where('character_id', $character_ids)
+                    ->whereNotNull('alliance_id')
+                    ->pluck('alliance_id')
+                    ->flatten();
+            }
+        }
+
+        // if we still have no alliance, return only character with no alliance
+        if (! $alliance_ids)
+            return $query->whereNull('character_infos.alliance_id');
+
+        // ensure alliance_ids is an array or cast it
+        if (! is_array($alliance_ids))
+            $alliance_ids = [$alliance_ids];
+
+        return $query->whereIn('character_infos.alliance_id', $alliance_ids);
     }
 }
