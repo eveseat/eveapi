@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationRole;
 
 /**
  * Class Roles.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Roles extends EsiBase
+class Roles extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -78,13 +78,11 @@ class Roles extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $roles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

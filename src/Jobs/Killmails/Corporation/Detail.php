@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Killmails\CorporationKillmail;
 use Seat\Eveapi\Models\Killmails\KillmailAttacker;
 use Seat\Eveapi\Models\Killmails\KillmailDetail;
@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\Killmails\KillmailVictimItem;
  * Class Detail.
  * @package Seat\Eveapi\Jobs\Killmails\Corporation
  */
-class Detail extends EsiBase
+class Detail extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -64,13 +64,10 @@ class Detail extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $killmails = CorporationKillmail::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('killmail_id', function ($query) {
 
@@ -82,14 +79,14 @@ class Detail extends EsiBase
         $killmails->each(function ($killmail_id, $killmail_hash) {
 
             $detail = $this->retrieve([
-                'killmail_id'   => $killmail_id,
+                'killmail_id' => $killmail_id,
                 'killmail_hash' => $killmail_hash,
             ]);
 
             if ($detail->isCachedLoad()) return;
 
             KillmailDetail::firstOrCreate([
-                'killmail_id'     => $killmail_id,
+                'killmail_id' => $killmail_id,
             ], [
                 'killmail_time'   => carbon($detail->killmail_time),
                 'solar_system_id' => $detail->solar_system_id,
@@ -98,7 +95,7 @@ class Detail extends EsiBase
             ]);
 
             KillmailVictim::firstOrCreate([
-                'killmail_id'    => $killmail_id,
+                'killmail_id' => $killmail_id,
             ], [
                 'character_id'   => $detail->victim->character_id ?? null,
                 'corporation_id' => $detail->victim->corporation_id ?? null,

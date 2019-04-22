@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Contacts\CorporationContactLabel;
 
 /**
  * Class Labels.
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
-class Labels extends EsiBase
+class Labels extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -60,14 +60,10 @@ class Labels extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $labels = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
@@ -78,7 +74,7 @@ class Labels extends EsiBase
 
             CorporationContactLabel::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'label_id'     => $label->label_id,
+                'label_id'       => $label->label_id,
             ])->fill([
                 'label_name' => $label->label_name,
             ])->save();

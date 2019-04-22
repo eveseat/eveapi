@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\ContractItem;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Items.
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
-class Items extends EsiBase
+class Items extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -129,13 +129,10 @@ class Items extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $empty_contracts = CorporationContract::join('contract_details',
             'corporation_contracts.contract_id', '=',
             'contract_details.contract_id')

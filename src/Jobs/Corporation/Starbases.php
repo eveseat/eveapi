@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationStarbase;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Starbases.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Starbases extends EsiBase
+class Starbases extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -88,13 +88,11 @@ class Starbases extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $starbases = $this->retrieve([

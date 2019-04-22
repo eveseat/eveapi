@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserverData;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserverData;
  * Class ObserverDetails.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
-class ObserverDetails extends EsiBase
+class ObserverDetails extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -72,13 +72,11 @@ class ObserverDetails extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
             ->get()->each(function ($observer) {
 
@@ -101,7 +99,7 @@ class ObserverDetails extends EsiBase
                             'type_id'                 => $data->type_id,
                             'last_updated'            => $data->last_updated,
                         ])->fill([
-                            'quantity'     => $data->quantity,
+                            'quantity' => $data->quantity,
                         ])->save();
 
                     });

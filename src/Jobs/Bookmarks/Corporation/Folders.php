@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Bookmarks\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Folders.
  * @package Seat\Eveapi\Jobs\Bookmarks\Corporation
  */
-class Folders extends EsiBase
+class Folders extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -83,14 +83,11 @@ class Folders extends EsiBase
     /**
      * Execute the job.
      *
-     * @throws \Exception
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $folders = $this->retrieve([

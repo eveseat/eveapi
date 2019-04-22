@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
 use Seat\Eveapi\Traits\Utils;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Traits\Utils;
  * Class CustomsOffices.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class CustomsOfficeLocations extends EsiBase
+class CustomsOfficeLocations extends AbstractCorporationJob
 {
     use Utils;
 
@@ -67,13 +67,11 @@ class CustomsOfficeLocations extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $customs_offices = CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->get();
 
         collect($customs_offices)->chunk(1000)->each(function ($chunk) {

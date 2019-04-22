@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationAllianceHistory;
 
 /**
  * Class AllianceHistory.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class AllianceHistory extends EsiBase
+class AllianceHistory extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -54,13 +54,11 @@ class AllianceHistory extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $history = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

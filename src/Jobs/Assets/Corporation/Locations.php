@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Traits\Utils;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Traits\Utils;
  * Class Locations.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
-class Locations extends EsiBase
+class Locations extends AbstractCorporationJob
 {
     use Utils;
 
@@ -76,13 +76,10 @@ class Locations extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         // all items which need to be singleton
 
         // Get the assets for this character, chunked in a number of blocks

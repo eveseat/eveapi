@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 
 /**
  * Class Balances.
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
-class Balances extends EsiBase
+class Balances extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -64,13 +64,11 @@ class Balances extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $balances = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

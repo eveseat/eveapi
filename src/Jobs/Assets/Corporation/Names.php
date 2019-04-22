@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 
 /**
  * Class Names.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
-class Names extends EsiBase
+class Names extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -73,13 +73,10 @@ class Names extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.
         CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')

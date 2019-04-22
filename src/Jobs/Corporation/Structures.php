@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Corporation\CorporationStructureService;
 use Seat\Eveapi\Models\RefreshToken;
@@ -32,7 +32,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class Structures.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Structures extends EsiBase
+class Structures extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -90,13 +90,11 @@ class Structures extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $structures = $this->retrieve([

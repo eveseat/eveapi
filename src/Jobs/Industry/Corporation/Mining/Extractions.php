@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
 /**
  * Class Extractions.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
-class Extractions extends EsiBase
+class Extractions extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -64,13 +64,11 @@ class Extractions extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $mining_extractions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
@@ -80,15 +78,14 @@ class Extractions extends EsiBase
         collect($mining_extractions)->each(function ($extraction) {
 
             CorporationIndustryMiningExtraction::firstOrNew([
-                'corporation_id'        => $this->getCorporationId(),
-                'structure_id'          => $extraction->structure_id,
+                'corporation_id' => $this->getCorporationId(),
+                'structure_id'   => $extraction->structure_id,
             ])->fill([
                 'extraction_start_time' => carbon($extraction->extraction_start_time),
-                'moon_id'            => $extraction->moon_id,
-                'chunk_arrival_time' => carbon($extraction->chunk_arrival_time),
-                'natural_decay_time' => carbon($extraction->natural_decay_time),
+                'moon_id'               => $extraction->moon_id,
+                'chunk_arrival_time'    => carbon($extraction->chunk_arrival_time),
+                'natural_decay_time'    => carbon($extraction->natural_decay_time),
             ])->save();
         });
-
     }
 }

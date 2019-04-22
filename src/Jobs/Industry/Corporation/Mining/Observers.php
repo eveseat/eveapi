@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 
 /**
  * Class Observers.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
-class Observers extends EsiBase
+class Observers extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -71,13 +71,11 @@ class Observers extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $mining_observers = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationFacility;
 
 /**
  * Class Facilities.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Facilities extends EsiBase
+class Facilities extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -67,11 +67,8 @@ class Facilities extends EsiBase
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $facilities = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

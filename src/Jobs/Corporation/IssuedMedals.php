@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationIssuedMedal;
 
 /**
  * Class IssuedMedals.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class IssuedMedals extends EsiBase
+class IssuedMedals extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -72,11 +72,8 @@ class IssuedMedals extends EsiBase
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $medals = $this->retrieve([

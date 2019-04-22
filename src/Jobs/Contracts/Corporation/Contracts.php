@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Contracts\CorporationContract;
  * Class Contracts.
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
-class Contracts extends EsiBase
+class Contracts extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -66,14 +66,10 @@ class Contracts extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $contracts = $this->retrieve([

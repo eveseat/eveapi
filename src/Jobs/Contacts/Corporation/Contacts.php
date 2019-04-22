@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Contacts.
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
-class Contacts extends EsiBase
+class Contacts extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -84,14 +84,10 @@ class Contacts extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $contacts = $this->retrieve([

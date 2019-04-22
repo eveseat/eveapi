@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationStanding;
 
 /**
  * Class Standings.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Standings extends EsiBase
+class Standings extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -64,13 +64,11 @@ class Standings extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $standings = $this->retrieve([

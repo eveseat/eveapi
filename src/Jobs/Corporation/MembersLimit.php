@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationMemberLimits;
 
 /**
  * Class MembersLimit.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class MembersLimit extends EsiBase
+class MembersLimit extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -67,11 +67,8 @@ class MembersLimit extends EsiBase
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $limit = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
@@ -86,6 +83,5 @@ class MembersLimit extends EsiBase
         ])->fill([
             'limit' => $limit->scalar,
         ])->save();
-
     }
 }

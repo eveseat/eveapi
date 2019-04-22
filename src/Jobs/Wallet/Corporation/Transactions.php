@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
  * Class Transactions.
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
-class Transactions extends EsiBase
+class Transactions extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -72,14 +72,12 @@ class Transactions extends EsiBase
     /**
      * Execute the job.
      *
-     * @throws \Exception
+     * @return void
+     * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
-        CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
+       CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($division) {
 
                 // Perform a journal walk backwards to get all of the

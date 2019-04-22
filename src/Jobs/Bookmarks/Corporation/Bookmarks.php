@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Bookmarks\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmark;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Traits\Utils;
@@ -31,7 +31,7 @@ use Seat\Eveapi\Traits\Utils;
  * Class Bookmarks.
  * @package Seat\Eveapi\Jobs\Bookmarks\Corporation
  */
-class Bookmarks extends EsiBase
+class Bookmarks extends AbstractCorporationJob
 {
     use Utils;
 
@@ -87,14 +87,10 @@ class Bookmarks extends EsiBase
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $bookmarks = $this->retrieve([

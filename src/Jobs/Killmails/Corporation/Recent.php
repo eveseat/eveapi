@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Killmails\CorporationKillmail;
 
 /**
  * Class Recent.
  * @package Seat\Eveapi\Jobs\Killmails\Corporation
  */
-class Recent extends EsiBase
+class Recent extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -67,11 +67,8 @@ class Recent extends EsiBase
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $killmails = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
@@ -84,7 +81,7 @@ class Recent extends EsiBase
                 'corporation_id' => $this->getCorporationId(),
                 'killmail_id'    => $killmail->killmail_id,
             ], [
-                'killmail_hash'  => $killmail->killmail_hash,
+                'killmail_hash' => $killmail->killmail_hash,
             ]);
         });
     }

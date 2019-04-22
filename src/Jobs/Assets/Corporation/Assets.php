@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Assets.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
-class Assets extends EsiBase
+class Assets extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -91,11 +91,8 @@ class Assets extends EsiBase
      * @return void
      * @throws \Throwable
      */
-    public function handle(): void
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $assets = $this->retrieve([

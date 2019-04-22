@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Blueprints.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Blueprints extends EsiBase
+class Blueprints extends AbstractCorporationJob
 {
 
     /**
@@ -92,11 +92,8 @@ class Blueprints extends EsiBase
      * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $blueprints = $this->retrieve([
@@ -109,8 +106,8 @@ class Blueprints extends EsiBase
 
                 $records = $chunk->map(function ($blueprint, $key) {
                     return [
-                        'corporation_id' => $this->getCorporationId(),
-                        'item_id'        => $blueprint->item_id,
+                        'corporation_id'      => $this->getCorporationId(),
+                        'item_id'             => $blueprint->item_id,
                         'type_id'             => $blueprint->type_id,
                         'location_id'         => $blueprint->location_id,
                         'location_flag'       => $blueprint->location_flag,

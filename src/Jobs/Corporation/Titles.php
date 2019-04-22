@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationTitle;
 use Seat\Eveapi\Models\Corporation\CorporationTitleRole;
 use Seat\Eveapi\Models\RefreshToken;
@@ -31,7 +31,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Titles.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Titles extends EsiBase
+class Titles extends AbstractCorporationJob
 {
     /**
      * @var string
@@ -98,13 +98,11 @@ class Titles extends EsiBase
     /**
      * Execute the job.
      *
+     * @return void
      * @throws \Throwable
      */
-    public function handle()
+    protected function job(): void
     {
-
-        if (! $this->preflighted()) return;
-
         $titles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
