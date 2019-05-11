@@ -514,12 +514,12 @@ class CorporationInfo extends Model
         return $this->belongsTo(UniverseStation::class,
             'home_station_id', 'station_id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function characters()
- 	{
+    {
         return $this->hasMany(CharacterInfo::class,
             'corporation_id', 'corporation_id');
     }
