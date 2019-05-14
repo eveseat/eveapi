@@ -44,7 +44,7 @@ class Journal extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v5';
+    protected $version = 'v6';
 
     /**
      * @var string
