@@ -44,13 +44,13 @@ class EseyeSetup
         $config->logfile_location = config('eveapi.config.eseye_logfile');
         $config->file_cache_location = config('eveapi.config.eseye_cache');
         $config->logger_level = config('eveapi.config.eseye_loglevel');
-        $config->esi_scheme = env('EVE_ESI_SCHEME', 'https');
-        $config->esi_host = env('EVE_ESI_HOST', 'esi.evetech.net');
-        $config->esi_port = env('EVE_ESI_PORT', 443);
-        $config->datasource = env('EVE_ESI_DATASOURCE', 'tranquility');
-        $config->sso_scheme = env('EVE_SSO_SCHEME', 'https');
-        $config->sso_host = env('EVE_SSO_HOST', 'login.eveonline.com');
-        $config->sso_port = env('EVE_SSO_PORT', 443);
+        $config->esi_scheme = config('eveapi.config.eseye_esi_scheme');
+        $config->esi_host = config('eveapi.config.eseye_esi_host');
+        $config->esi_port = config('eveapi.config.eseye_esi_port');
+        $config->datasource = config('eveapi.config.eseye_esi_datasource');
+        $config->sso_scheme = config('eveapi.config.eseye_sso_scheme');
+        $config->sso_host = config('eveapi.config.eseye_sso_host');
+        $config->sso_port = config('eveapi.config.eseye_sso_port');
     }
 
     /**
@@ -71,8 +71,8 @@ class EseyeSetup
 
             tap($authentication, function ($auth) {
 
-                $auth->client_id = env('EVE_CLIENT_ID');
-                $auth->secret = env('EVE_CLIENT_SECRET');
+                $auth->client_id = config('eveapi.config.eseye_client_id');
+                $auth->secret = config('eveapi.config.eseye_client_secret');
             });
 
             return new Eseye($authentication);
