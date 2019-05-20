@@ -23,9 +23,11 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmark;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\Contacts\CorporationContactLabel;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
