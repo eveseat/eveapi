@@ -314,7 +314,7 @@ abstract class EsiBase implements ShouldQueue
             return $this->client = $this->client->get();
 
         // retrieve up-to-date token
-        $this->token = RefreshToken::findOrFail($this->token->character_id);
+        $this->token = $this->token->fresh();
 
         return $this->client = $this->client->get(new EsiAuthentication([
             'refresh_token' => $this->token->refresh_token,
