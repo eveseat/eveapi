@@ -22,8 +22,6 @@
 
 namespace Seat\Eveapi\Jobs;
 
-use Illuminate\Support\Facades\Redis;
-
 /**
  * Class AbstractCorporationJob.
  * @package Seat\Eveapi\Jobs
@@ -31,19 +29,9 @@ use Illuminate\Support\Facades\Redis;
 abstract class AbstractCorporationJob extends EsiBase
 {
     /**
-     * @var int
-     */
-    protected $max_concurrent_jobs = 1;
-
-    /**
      * @var array
      */
     protected $tags = ['corporation'];
-
-    /**
-     * @var int
-     */
-    protected $throttle_seconds = 600;
 
     /**
      * Execute the job.
@@ -53,15 +41,9 @@ abstract class AbstractCorporationJob extends EsiBase
      */
     public function handle()
     {
-        Redis::throttle($this->getUniqueKey())->allow($this->max_concurrent_jobs)->every($this->throttle_seconds)->then(function () {
+        if (! $this->preflighted()) return;
 
-            if (! $this->preflighted()) return;
-
-            $this->job();
-        }, function () {
-
-            return $this->delete();
-        });
+        $this->job();
     }
 
     /**
