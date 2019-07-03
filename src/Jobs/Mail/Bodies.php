@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Mail;
 
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Mail\MailBody;
 use Seat\Eveapi\Models\Mail\MailHeader;
@@ -79,18 +80,28 @@ class Bodies extends EsiBase
         // Process the mailid's that are missing their bodies.
         $mail_ids->each(function ($mail_id) {
 
-            $body = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
-                'mail_id'      => $mail_id,
-            ]);
+            try {
+                $body = $this->retrieve([
+                    'character_id' => $this->getCharacterId(),
+                    'mail_id' => $mail_id,
+                ]);
 
-            if ($body->isCachedLoad()) return;
+                if ($body->isCachedLoad()) return;
 
-            MailBody::firstOrCreate([
-                'mail_id' => $mail_id,
-            ], [
-                'body'    => $body->body,
-            ]);
+                MailBody::firstOrCreate([
+                    'mail_id' => $mail_id,
+                ], [
+                    'body' => $body->body,
+                ]);
+            } catch (RequestFailedException $e) {
+                if (strtolower($e->getMessage()) != 'requested mail not found!')
+                    throw $e;
+
+                // drop mail entry if it's unknown
+                MailHeader::where('character_id', $this->getCharacterId())
+                    ->where('mail_id', $mail_id)
+                    ->delete();
+            }
         });
     }
 }
