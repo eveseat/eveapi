@@ -37,16 +37,6 @@ class UniverseMoonContent extends Model
     protected static $unguarded = true;
 
     /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'moon_id';
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()
