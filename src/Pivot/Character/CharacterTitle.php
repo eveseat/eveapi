@@ -20,28 +20,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
+namespace Seat\Eveapi\Pivot\Character;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * Class CharacterTitle.
- * @package Seat\Eveapi\Models\Character
+ *
+ * @package Seat\Eveapi\Pivot\Character
  */
-class CharacterTitle extends Model
+class CharacterTitle extends Pivot
 {
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
 
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var null
-     */
-    protected $primaryKey = null;
 }
