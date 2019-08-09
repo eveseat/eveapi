@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Pivot\Character\CharacterTitle;
 
 /**
  * Class CorporationTitle.
@@ -35,4 +37,11 @@ class CorporationTitle extends Model
      */
     protected static $unguarded = true;
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function characters()
+    {
+        return $this->belongsToMany(CharacterInfo::class)->using(CharacterTitle::class);
+    }
 }

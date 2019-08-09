@@ -34,6 +34,7 @@ use Seat\Eveapi\Models\Contacts\CharacterContact;
 use Seat\Eveapi\Models\Contacts\CharacterContactLabel;
 use Seat\Eveapi\Models\Contacts\CharacterFitting;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
+use Seat\Eveapi\Models\Corporation\CorporationTitle;
 use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
 use Seat\Eveapi\Models\Industry\CharacterMining;
 use Seat\Eveapi\Models\Killmails\CharacterKillmail;
@@ -45,6 +46,7 @@ use Seat\Eveapi\Models\Skills\CharacterAttribute;
 use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
+use Seat\Eveapi\Pivot\Character\CharacterTitle;
 use Seat\Services\Traits\NotableTrait;
 
 /**
@@ -492,13 +494,12 @@ class CharacterInfo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function titles()
     {
 
-        return $this->hasMany(CharacterTitle::class,
-            'character_id', 'character_id');
+        return $this->belongsToMany(CorporationTitle::class)->using(CharacterTitle::class);
     }
 
     /**
