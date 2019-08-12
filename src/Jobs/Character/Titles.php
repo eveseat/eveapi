@@ -23,7 +23,8 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Character\CharacterTitle;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Corporation\CorporationTitle;
 
 /**
  * Class Title.
@@ -57,6 +58,11 @@ class Titles extends EsiBase
     protected $tags = ['character', 'titles'];
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $active_titles;
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -74,18 +80,29 @@ class Titles extends EsiBase
 
         if ($titles->isCachedLoad()) return;
 
-        // This is a small enough list to just wipe and add
-        CharacterTitle::where('character_id', $this->getCharacterId())
-            ->delete();
+        $character = CharacterInfo::find($this->getCharacterId());
+
+        if (is_null($character))
+            return;
+
+        $this->active_titles = collect();
 
         // Re-add the updated titles for this character
         collect($titles)->each(function ($title) {
 
-            CharacterTitle::create([
-                'character_id' => $this->getCharacterId(),
-                'title_id'     => $title->title_id,
-                'name'         => $title->name,
+            // retrieve or create title
+            $corporation_title = CorporationTitle::firstOrCreate([
+                'corporation_id' => $this->getCorporationId(),
+                'title_id'       => $title->title_id,
+            ], [
+                'name' => $title->name,
             ]);
+
+            // seed titles buffer
+            $this->active_titles->push($corporation_title->id);
         });
+
+        // update character/titles relations
+        $character->titles()->sync($this->active_titles->toArray());
     }
 }
