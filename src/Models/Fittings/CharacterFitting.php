@@ -20,7 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Contacts;
+namespace Seat\Eveapi\Models\Fittings;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
@@ -28,7 +28,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterFitting.
- * @package Seat\Eveapi\Models\Contacts
+ * @package Seat\Eveapi\Models\Fittings
  */
 class CharacterFitting extends Model
 {
