@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Eveapi\Pivot\Character\CharacterContactLabel;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -119,7 +121,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterContact extends Model
 {
-    use HasCompositePrimaryKey;
 
     /**
      * @var array
@@ -134,7 +135,23 @@ class CharacterContact extends Model
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    protected $primaryKey = ['character_id', 'contact_id'];
+    public function entity()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'contact_id')
+            ->withDefault([
+                'entity_id'   => 0,
+                'entity_name' => trans('web::seat.unknown'),
+                'category'    => $this->contact_type,
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function labels()
+    {
+        return $this->belongsToMany(CharacterLabel::class);
+    }
 }

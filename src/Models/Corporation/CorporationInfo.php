@@ -29,7 +29,7 @@ use Seat\Eveapi\Models\Bookmarks\CorporationBookmark;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
-use Seat\Eveapi\Models\Contacts\CorporationContactLabel;
+use Seat\Eveapi\Models\Contacts\CorporationLabel;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
 use Seat\Eveapi\Models\Killmails\CorporationKillmail;
@@ -273,7 +273,7 @@ class CorporationInfo extends Model
     public function contact_labels()
     {
 
-        return $this->hasMany(CorporationContactLabel::class,
+        return $this->hasMany(CorporationLabel::class,
             'corporation_id', 'corporation_id');
     }
 

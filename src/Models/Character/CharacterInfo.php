@@ -31,7 +31,7 @@ use Seat\Eveapi\Models\Clones\CharacterClone;
 use Seat\Eveapi\Models\Clones\CharacterImplant;
 use Seat\Eveapi\Models\Clones\CharacterJumpClone;
 use Seat\Eveapi\Models\Contacts\CharacterContact;
-use Seat\Eveapi\Models\Contacts\CharacterContactLabel;
+use Seat\Eveapi\Models\Contacts\CharacterLabel;
 use Seat\Eveapi\Models\Contacts\CharacterFitting;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
 use Seat\Eveapi\Models\Corporation\CorporationTitle;
@@ -319,7 +319,7 @@ class CharacterInfo extends Model
     public function contact_labels()
     {
 
-        return $this->hasMany(CharacterContactLabel::class,
+        return $this->hasMany(CharacterLabel::class,
             'character_id', 'character_id');
     }
 
