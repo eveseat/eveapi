@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Wallet;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -139,15 +140,35 @@ class CharacterWalletTransaction extends Model
     public function type()
     {
 
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+        return $this->hasOne(InvType::class, 'typeID', 'type_id')
+            ->withDefault([
+                'typeID'   => 0,
+                'typeName' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function client()
+    public function party()
     {
 
-        return $this->hasOne(UniverseName::class, 'entity_id', 'client_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'client_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'character',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function location()
+    {
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'location_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
     }
 }
