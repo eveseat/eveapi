@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class InvName.
@@ -31,6 +32,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class InvName extends Model
 {
+    use IsReadOnly;
+
     /**
      * @var string
      */

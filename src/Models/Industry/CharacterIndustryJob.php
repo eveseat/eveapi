@@ -23,6 +23,9 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\RamActivity;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -231,4 +234,51 @@ class CharacterIndustryJob extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'job_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function activity()
+    {
+        return $this->hasOne(RamActivity::class, 'activityID', 'activity_id')
+            ->withDefault([
+                'activityID' => 0,
+                'typeName'   => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function blueprint()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'blueprint_type_id')
+            ->withDefault([
+                'typeID'   => 0,
+                'typeName' => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function location()
+    {
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'facility_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function product()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'product_type_id')
+            ->withDefault([
+                'typeID'   => 0,
+                'typeName' => trans('web::seat.unknown'),
+            ]);
+    }
 }
