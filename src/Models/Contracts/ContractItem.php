@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
@@ -48,4 +49,24 @@ class ContractItem extends Model
      * @var array
      */
     protected $primaryKey = ['contract_id', 'record_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function contract()
+    {
+        return $this->belongsTo(ContractDetail::class, 'contract_id', 'contract_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function type()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'type_id')
+            ->withDefault([
+                'typeID'   => 0,
+                'typeName' => trans('web::seat.unknown'),
+            ]);
+    }
 }
