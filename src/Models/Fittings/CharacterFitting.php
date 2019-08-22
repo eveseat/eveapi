@@ -54,9 +54,22 @@ class CharacterFitting extends Model
             'fitting_id', 'fitting_id');
     }
 
-    public function shiptype()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function ship()
     {
 
         return $this->hasOne(InvType::class, 'typeID', 'ship_type_id');
+    }
+
+    /**
+     * @return float
+     */
+    public function getEstimatedPriceAttribute()
+    {
+        return $this->ship->price->adjusted_price + $this->items->sum(function ($item) {
+            return $item->type->price->adjusted_price;
+        });
     }
 }

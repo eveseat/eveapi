@@ -176,7 +176,7 @@ class InvType extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function prices()
+    public function price()
     {
 
         return $this->hasOne(Price::class, 'type_id', 'typeID');
