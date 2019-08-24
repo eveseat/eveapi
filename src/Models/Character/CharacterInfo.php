@@ -43,6 +43,7 @@ use Seat\Eveapi\Models\Location\CharacterOnline;
 use Seat\Eveapi\Models\Location\CharacterShip;
 use Seat\Eveapi\Models\Market\CharacterOrder;
 use Seat\Eveapi\Models\Skills\CharacterAttribute;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
@@ -572,9 +573,35 @@ class CharacterInfo extends Model
     }
 
     /**
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function corporation()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'category'  => 'corporation',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function alliance()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'category'  => 'corporation',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Seat\Eveapi\Models\Character\CharacterCorporationHistory
+     */
+    public function getCurrentCorporationAttribute()
     {
 
         return CharacterCorporationHistory::where('character_id', $this->character_id)
