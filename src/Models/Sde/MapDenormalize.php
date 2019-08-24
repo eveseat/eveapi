@@ -170,7 +170,11 @@ class MapDenormalize extends Model
      */
     public function constellation()
     {
-        return $this->belongsTo(MapDenormalize::class, 'constellationID', 'itemID');
+        return $this->belongsTo(MapDenormalize::class, 'constellationID', 'itemID')
+            ->withDefault([
+                'itemID'   => 0,
+                'itemName' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
@@ -186,7 +190,11 @@ class MapDenormalize extends Model
      */
     public function region()
     {
-        return $this->belongsTo(MapDenormalize::class, 'regionID', 'itemID');
+        return $this->belongsTo(MapDenormalize::class, 'regionID', 'itemID')
+            ->withDefault([
+                'itemID'   => 0,
+                'itemName' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
@@ -204,7 +212,11 @@ class MapDenormalize extends Model
     public function system()
     {
 
-        return $this->belongsTo(MapDenormalize::class, 'solarSystemID', 'itemID');
+        return $this->belongsTo(MapDenormalize::class, 'solarSystemID', 'itemID')
+            ->withDefault([
+                'itemID'   => 0,
+                'itemName' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
