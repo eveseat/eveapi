@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Mail;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class MailRecipient.
@@ -82,13 +83,18 @@ class MailRecipient extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function mailing_list()
     {
-        if ($this->recipient_type !== 'mailing_list')
-            return null;
+        return $this->hasOne(MailMailingList::class, 'mailing_list_id', 'recipient_id');
+    }
 
-        return $this->belongsTo(MailMailingList::class, 'recipient_id', 'mailing_list_id');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function entity()
+    {
+        return $this->belongsTo(UniverseName::class, 'recipient_id', 'entity_id');
     }
 }

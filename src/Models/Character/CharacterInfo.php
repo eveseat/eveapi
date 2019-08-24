@@ -49,6 +49,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
 use Seat\Services\Traits\NotableTrait;
+use Seat\Web\Models\User;
 
 /**
  * Class CharacterInfo.
@@ -596,6 +597,14 @@ class CharacterInfo extends Model
                 'category'  => 'corporation',
                 'name'      => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'character_id', 'id');
     }
 
     /**
