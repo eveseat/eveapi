@@ -35,6 +35,7 @@ use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
 use Seat\Eveapi\Models\Killmails\CorporationKillmail;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
@@ -374,7 +375,10 @@ class CorporationInfo extends Model
     {
 
         return $this->hasOne(CorporationMemberLimits::class,
-            'corporation_id', 'corporation_id');
+            'corporation_id', 'corporation_id')
+            ->withDefault([
+                'limit' => 0
+            ]);
     }
 
     /**
@@ -531,6 +535,23 @@ class CorporationInfo extends Model
      */
     public function alliance()
     {
-        return $this->hasOne(Alliance::class, 'alliance_id', 'alliance_id');
+        return $this->hasOne(Alliance::class, 'alliance_id', 'alliance_id')
+            ->withDefault([
+                'alliance_id' => 0,
+                'name'        => '',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function ceo()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'ceo_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'category'  => 'character',
+                'name'      => trans('web::seat.unknown'),
+            ]);
     }
 }
