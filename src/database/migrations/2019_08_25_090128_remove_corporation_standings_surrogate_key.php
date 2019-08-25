@@ -25,21 +25,21 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class RemoveCharacterBookmarkSurrogateKey.
+ * Class RemoveCorporationStandingsSurrogateKey.
  */
-class RemoveCorporationBookmarksSurrogateKey extends Migration
+class RemoveCorporationStandingsSurrogateKey extends Migration
 {
     public function up()
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::table('corporation_bookmarks', function (Blueprint $table) {
+        Schema::table('corporation_standings', function (Blueprint $table) {
             $table->dropPrimary();
         });
 
-        Schema::table('corporation_bookmarks', function (Blueprint $table) {
-            $table->primary('bookmark_id');
-            $table->index('corporation_id');
+        Schema::table('corporation_standings', function (Blueprint $table) {
+            $table->bigIncrements('id')->first();
+            $table->unique(['corporation_id', 'from_id']);
         });
 
         Schema::enableForeignKeyConstraints();
@@ -49,13 +49,13 @@ class RemoveCorporationBookmarksSurrogateKey extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::table('corporation_bookmarks', function (Blueprint $table) {
+        Schema::table('corporation_standings', function (Blueprint $table) {
             $table->dropPrimary();
-            $table->dropIndex('corporation_id');
+            $table->dropUnique(['corporation_id', 'from_id']);
         });
 
-        Schema::table('corporation_bookmarks', function (Blueprint $table) {
-            $table->primary(['corporation_id', 'bookmark_id']);
+        Schema::table('corporation_standings', function (Blueprint $table) {
+            $table->primary(['corporation_id', 'from_type', 'from_id']);
         });
 
         Schema::enableForeignKeyConstraints();
