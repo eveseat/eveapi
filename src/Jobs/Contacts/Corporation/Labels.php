@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractCorporationJob;
-use Seat\Eveapi\Models\Contacts\CorporationContactLabel;
+use Seat\Eveapi\Models\Contacts\CorporationLabel;
 
 /**
  * Class Labels.
@@ -72,7 +72,7 @@ class Labels extends AbstractCorporationJob
 
         collect($labels)->each(function ($label) {
 
-            CorporationContactLabel::firstOrNew([
+            CorporationLabel::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
                 'label_id'       => $label->label_id,
             ])->fill([
@@ -80,7 +80,7 @@ class Labels extends AbstractCorporationJob
             ])->save();
         });
 
-        CorporationContactLabel::where('corporation_id', $this->getCorporationId())
+        CorporationLabel::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('label_id', collect($labels)->pluck('label_id')->flatten()->all())
             ->delete();
     }

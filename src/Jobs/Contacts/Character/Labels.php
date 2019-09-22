@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Contacts\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Contacts\CharacterContactLabel;
+use Seat\Eveapi\Models\Contacts\CharacterLabel;
 
 /**
  * Class Labels.
@@ -76,7 +76,7 @@ class Labels extends EsiBase
 
         collect($labels)->each(function ($label) {
 
-            CharacterContactLabel::firstOrNew([
+            CharacterLabel::firstOrNew([
                 'character_id' => $this->getCharacterId(),
                 'label_id'     => $label->label_id,
             ])->fill([
@@ -84,7 +84,7 @@ class Labels extends EsiBase
             ])->save();
         });
 
-        CharacterContactLabel::where('character_id', $this->getCharacterId())
+        CharacterLabel::where('character_id', $this->getCharacterId())
             ->whereNotIn('label_id', collect($labels)->pluck('label_id')->flatten()->all())
             ->delete();
     }

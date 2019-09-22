@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Bookmarks\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Bookmarks\CharacterBookmarkFolder;
+use Seat\Eveapi\Models\Bookmarks\CharacterFolder;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -101,7 +101,7 @@ class Folders extends EsiBase
 
             collect($folders)->each(function ($folder) {
 
-                CharacterBookmarkFolder::firstOrNew([
+                CharacterFolder::firstOrNew([
                     'character_id' => $this->getCharacterId(),
                     'folder_id'    => $folder->folder_id,
                 ])->fill([
@@ -117,7 +117,7 @@ class Folders extends EsiBase
         }
 
         // Cleanup removed folders
-        CharacterBookmarkFolder::where('character_id', $this->getCharacterId())
+        CharacterFolder::where('character_id', $this->getCharacterId())
             ->whereNotIn('folder_id', $this->known_folder_ids->flatten()->all())
             ->delete();
     }
