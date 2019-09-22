@@ -23,8 +23,6 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Pivot\Character\CharacterContactLabel;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterLabel.

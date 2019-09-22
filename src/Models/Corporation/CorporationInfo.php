@@ -377,7 +377,7 @@ class CorporationInfo extends Model
         return $this->hasOne(CorporationMemberLimits::class,
             'corporation_id', 'corporation_id')
             ->withDefault([
-                'limit' => 0
+                'limit' => 0,
             ]);
     }
 
