@@ -20,38 +20,31 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Fittings;
-
-use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CharacterFittingItem.
- * @package Seat\Eveapi\Models\Fittings
+ * Class AddCorporationContactLabelPivot.
  */
-class CharacterFittingItem extends Model
+class CreateInsurancesTable extends Migration
 {
-    use HasCompositePrimaryKey;
-
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['fitting_id', 'type_id', 'flag'];
-
-    public function type()
+    public function up()
     {
+        Schema::create('insurances', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('type_id');
+            $table->string('name');
+            $table->double('cost');
+            $table->double('payout');
 
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+            $table->unique(['type_id', 'name']);
+            $table->index('type_id');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('insurances');
     }
 }

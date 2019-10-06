@@ -23,8 +23,8 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationStanding.
@@ -33,7 +33,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 class CorporationStanding extends Model
 {
     use CanUpsertIgnoreReplace;
-    use HasCompositePrimaryKey;
 
     /**
      * @var bool
@@ -41,8 +40,15 @@ class CorporationStanding extends Model
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    protected $primaryKey = ['corporation_id', 'from_type', 'from_id'];
-
+    public function from()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'from_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'category'  => 'character',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
 }

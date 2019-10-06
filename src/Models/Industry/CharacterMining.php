@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
@@ -45,6 +46,14 @@ class CharacterMining extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'date', 'time', 'solar_system_id', 'type_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function character()
+    {
+        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Bookmarks;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterBookmark.
@@ -138,7 +137,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 class CharacterBookmark extends Model
 {
     use CanUpsertIgnoreReplace;
-    use HasCompositePrimaryKey;
 
     /**
      * @var bool
@@ -146,9 +144,9 @@ class CharacterBookmark extends Model
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $primaryKey = ['character_id', 'bookmark_id'];
+    protected $primaryKey = 'bookmark_id';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -156,11 +154,10 @@ class CharacterBookmark extends Model
     public function folder()
     {
 
-        return $this->belongsTo(CharacterBookmarkFolder::class, 'folder_id', 'folder_id')
+        return $this->belongsTo(CharacterBookmarkFolder::class, 'folder_id')
             ->withDefault([
-                'character_id' => $this->character_id,
-                'folder_id'    => 0,
-                'name'         => 'None',
+                'folder_id' => 0,
+                'name'      => 'None',
             ]);
     }
 

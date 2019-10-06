@@ -23,25 +23,35 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Seat\Eveapi\Models\Contacts\CorporationContact;
+use Seat\Eveapi\Models\Contacts\CorporationLabel;
 
 /**
- * Class TransformCharacterTitleIntoPivot.
+ * Class AddCorporationContactLabelPivot.
  */
-class TransformCharacterTitleIntoPivot extends Migration
+class AddCorporationContactLabelPivot extends Migration
 {
     public function up()
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::rename('character_titles', 'character_info_corporation_title');
-
-        Schema::table('character_info_corporation_title', function (Blueprint $table) {
-            $table->renameColumn('character_id', 'character_info_character_id');
-            $table->renameColumn('title_id', 'corporation_title_id');
-            $table->dropColumn('name');
-            $table->dropTimestamps();
-            $table->unique(['character_info_character_id', 'corporation_title_id'], 'character_corporation_title');
+        Schema::create('corporation_contact_corporation_label', function (Blueprint $table) {
+            $table->bigInteger('corporation_contact_id');
+            $table->integer('corporation_label_id');
+            $table->primary(['corporation_contact_id', 'corporation_label_id'], 'corporation_contact_label_pk');
         });
+
+        // collecting all contact with a label set
+        $contacts = CorporationContact::whereNotNull('label_ids')->get();
+
+        // seeding pivot table
+        foreach ($contacts as $contact) {
+            $contact->labels()
+                ->sync(CorporationLabel::where('corporation_id', $contact->corporation_id)
+                    ->whereIn('label_id', $contact->label_ids)
+                    ->select('id')
+                    ->get());
+        }
 
         Schema::enableForeignKeyConstraints();
     }
@@ -50,15 +60,7 @@ class TransformCharacterTitleIntoPivot extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::rename('character_info_corporation_title', 'character_titles');
-
-        Schema::table('character_titles', function (Blueprint $table) {
-            $table->string('name')->after('corporation_title_id')->nullable();
-            $table->timestamps();
-            $table->renameColumn('character_info_character_id', 'character_id');
-            $table->renameColumn('corporation_title_id', 'title_id');
-            $table->dropUnique('character_corporation_title');
-        });
+        Schema::drop('corporation_contact_corporation_label');
 
         Schema::enableForeignKeyConstraints();
     }

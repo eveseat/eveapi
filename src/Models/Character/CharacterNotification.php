@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterNotification.
@@ -99,4 +100,12 @@ class CharacterNotification extends Model
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function sender()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'sender_id');
+    }
 }

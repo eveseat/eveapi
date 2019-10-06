@@ -23,15 +23,14 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterContactLabel.
+ * Class CorporationLabel.
+ *
  * @package Seat\Eveapi\Models\Contacts
  */
-class CharacterContactLabel extends Model
+class CorporationLabel extends Model
 {
-    use HasCompositePrimaryKey;
 
     /**
      * @var bool
@@ -39,7 +38,10 @@ class CharacterContactLabel extends Model
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    protected $primaryKey = ['character_id', 'label_id'];
+    public function contacts()
+    {
+        return $this->belongsToMany(CorporationContact::class);
+    }
 }

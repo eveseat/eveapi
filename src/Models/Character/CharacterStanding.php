@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterStanding.
@@ -34,4 +35,17 @@ class CharacterStanding extends Model
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function from()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'from_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'category'  => 'character',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
 }

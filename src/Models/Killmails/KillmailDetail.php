@@ -103,16 +103,21 @@ class KillmailDetail extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function victims()
+    public function victim()
     {
 
-        return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id');
+        return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id')
+            ->withDefault([
+                'character_id'   => 0,
+                'corporation_id' => 0,
+                'ship_type_id'   => 0,
+            ]);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function solar_system()
+    public function system()
     {
 
         return $this->hasOne(MapDenormalize::class, 'itemID', 'solar_system_id');

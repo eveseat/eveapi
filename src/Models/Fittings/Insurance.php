@@ -23,35 +23,21 @@
 namespace Seat\Eveapi\Models\Fittings;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterFittingItem.
+ * Class Insurance.
+ *
  * @package Seat\Eveapi\Models\Fittings
  */
-class CharacterFittingItem extends Model
+class Insurance extends Model
 {
-    use HasCompositePrimaryKey;
+    /**
+     * @var string
+     */
+    protected $table = 'insurances';
 
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['fitting_id', 'type_id', 'flag'];
-
-    public function type()
-    {
-
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
-    }
 }

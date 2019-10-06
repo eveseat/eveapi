@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class KillmailAttacker.
@@ -129,4 +130,46 @@ class KillmailAttacker extends Model
      * @var null
      */
     protected $primaryKey = null;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function character()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'character',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function corporation()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'corporation',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function alliance()
+    {
+
+        return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'alliance',
+            ]);
+    }
 }

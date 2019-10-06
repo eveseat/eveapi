@@ -20,38 +20,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Fittings;
+namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class CharacterFittingItem.
- * @package Seat\Eveapi\Models\Fittings
+ * Class RamActivity.
+ *
+ * @package Seat\Eveapi\Models\Sde
  */
-class CharacterFittingItem extends Model
+class RamActivity extends Model
 {
-    use HasCompositePrimaryKey;
+    use IsReadOnly;
 
     /**
-     * @var bool
+     * @var string
      */
-    protected static $unguarded = true;
+    protected $table = 'ramActivities';
 
     /**
-     * @var bool
+     * @var string
      */
-    public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['fitting_id', 'type_id', 'flag'];
-
-    public function type()
-    {
-
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
-    }
+    protected $primaryKey = 'activityID';
 }

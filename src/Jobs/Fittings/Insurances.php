@@ -20,16 +20,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Contacts\Character;
+namespace Seat\Eveapi\Jobs\Fittings\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Contacts\CharacterLabel;
+use Seat\Eveapi\Models\Fittings\Insurance;
 
 /**
- * Class Labels.
- * @package Seat\Eveapi\Jobs\Contacts\Character
+ * Class Fittings.
+ * @package Seat\Eveapi\Jobs\FIttings\Character
  */
-class Labels extends EsiBase
+class Insurances extends EsiBase
 {
     /**
      * @var string
@@ -39,7 +39,7 @@ class Labels extends EsiBase
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/contacts/labels/';
+    protected $endpoint = '/insurance/prices/';
 
     /**
      * @var string
@@ -47,20 +47,13 @@ class Labels extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var string
-     */
-    protected $scope = 'esi-characters.read_contacts.v1';
-
-    /**
      * @var array
      */
-    protected $tags = ['character', 'contacts', 'labels'];
+    protected $tags = ['insurances', 'fittings'];
 
     /**
      * Execute the job.
      *
-     * @return void
-     * @throws \Exception
      * @throws \Throwable
      */
     public function handle()
@@ -68,24 +61,23 @@ class Labels extends EsiBase
 
         if (! $this->preflighted()) return;
 
-        $labels = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
-        ]);
+        $insurances = $this->retrieve();
 
-        if ($labels->isCachedLoad()) return;
+        if ($insurances->isCachedLoad()) return;
 
-        collect($labels)->each(function ($label) {
+        collect($insurances)->each(function ($insurance) {
 
-            CharacterLabel::firstOrNew([
-                'character_id' => $this->getCharacterId(),
-                'label_id'     => $label->label_id,
-            ])->fill([
-                'label_name' => $label->label_name,
-            ])->save();
+            collect($insurance->levels)->each(function ($level) use ($insurance) {
+
+                Insurance::firstOrNew([
+                    'type_id' => $insurance->type_id,
+                    'name'    => $level->name,
+                ], [
+                    'cost'    => $level->cost,
+                    'payout'  => $level->payout,
+                ])->save();
+
+            });
         });
-
-        CharacterLabel::where('character_id', $this->getCharacterId())
-            ->whereNotIn('label_id', collect($labels)->pluck('label_id')->flatten()->all())
-            ->delete();
     }
 }

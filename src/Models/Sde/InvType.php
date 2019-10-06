@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Fittings\Insurance;
 use Seat\Eveapi\Models\Market\Price;
 use Seat\Eveapi\Traits\IsReadOnly;
 
@@ -176,9 +177,17 @@ class InvType extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function prices()
+    public function price()
     {
 
         return $this->hasOne(Price::class, 'type_id', 'typeID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function insurances()
+    {
+        return $this->hasMany(Insurance::class, 'type_id', 'typeID');
     }
 }

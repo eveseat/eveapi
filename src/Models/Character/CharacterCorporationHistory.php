@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -89,4 +90,17 @@ class CharacterCorporationHistory extends Model
      * @var string
      */
     protected $primaryKey = ['character_id', 'record_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function corporation()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'category'  => 'corporation',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
 }

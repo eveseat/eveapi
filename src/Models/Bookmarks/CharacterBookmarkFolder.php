@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Bookmarks;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterBookmarkFolder.
@@ -31,8 +30,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterBookmarkFolder extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
@@ -41,5 +38,13 @@ class CharacterBookmarkFolder extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['character_id', 'folder_id'];
+    protected $primaryKey = 'folder_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bookmarks()
+    {
+        return $this->hasMany(CharacterBookmark::class, 'folder_id');
+    }
 }

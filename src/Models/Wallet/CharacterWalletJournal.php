@@ -163,7 +163,12 @@ class CharacterWalletJournal extends Model
     public function first_party()
     {
 
-        return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id')
+            ->withDefault([
+                'entity_id'   => 0,
+                'entity_name' => trans('web::seat.unknown'),
+                'category'    => 'character',
+            ]);
     }
 
     /**
@@ -172,6 +177,11 @@ class CharacterWalletJournal extends Model
     public function second_party()
     {
 
-        return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id')
+            ->withDefault([
+                'entity_id'   => 0,
+                'entity_name' => trans('web::seat.unknown'),
+                'category'    => 'character',
+            ]);
     }
 }

@@ -20,26 +20,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Contacts;
+namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class CorporationContactLabel.
- * @package Seat\Eveapi\Models\Contacts
+ * Class InvName.
+ *
+ * @package Seat\Eveapi\Models\Sde
  */
-class CorporationContactLabel extends Model
+class InvName extends Model
 {
-    use HasCompositePrimaryKey;
+    use IsReadOnly;
 
     /**
-     * @var bool
+     * @var string
      */
-    protected static $unguarded = true;
+    protected $table = 'invNames';
 
     /**
-     * @var array
+     * @var string
      */
-    protected $primaryKey = ['corporation_id', 'label_id'];
+    protected $primaryKey = 'itemID';
 }

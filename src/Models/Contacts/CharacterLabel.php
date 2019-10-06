@@ -20,20 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Contracts;
+namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class ContractItem.
+ * Class CharacterLabel.
+ *
  * @package Seat\Eveapi\Models\Contacts
  */
-class ContractItem extends Model
+class CharacterLabel extends Model
 {
-    use HasCompositePrimaryKey, CanUpsertIgnoreReplace;
 
     /**
      * @var bool
@@ -41,32 +38,10 @@ class ContractItem extends Model
     protected static $unguarded = true;
 
     /**
-     * @var bool
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['contract_id', 'record_id'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function contract()
+    public function contacts()
     {
-        return $this->belongsTo(ContractDetail::class, 'contract_id', 'contract_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function type()
-    {
-        return $this->hasOne(InvType::class, 'typeID', 'type_id')
-            ->withDefault([
-                'typeID'   => 0,
-                'typeName' => trans('web::seat.unknown'),
-            ]);
+        return $this->belongsToMany(CharacterLabel::class);
     }
 }

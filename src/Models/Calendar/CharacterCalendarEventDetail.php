@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Calendar;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterCalendarEventDetail.
@@ -44,4 +45,17 @@ class CharacterCalendarEventDetail extends Model
      * @var string
      */
     protected $primaryKey = 'event_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function owner()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'owner_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'category'  => 'character',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
 }

@@ -137,36 +137,55 @@ class KillmailVictim extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function ship_type()
+    public function ship()
     {
 
-        return $this->hasOne(InvType::class, 'typeID', 'ship_type_id');
+        return $this->hasOne(InvType::class, 'typeID', 'ship_type_id')
+            ->withDefault([
+                'typeID'   => 0,
+                'typeName' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function victim_character()
+    public function character()
     {
 
-        return $this->hasOne(UniverseName::class, 'entity_id', 'character_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'character',
+            ]);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function victim_corporation()
+    public function corporation()
     {
 
-        return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'corporation',
+            ]);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function victim_alliance()
+    public function alliance()
     {
 
-        return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'alliance',
+            ]);
     }
 }

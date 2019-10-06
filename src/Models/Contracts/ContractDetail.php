@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class ContractDetail.
@@ -215,4 +217,81 @@ class ContractDetail extends Model
      * @var string
      */
     protected $primaryKey = 'contract_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function acceptor()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'acceptor_id')
+            ->withDefault([
+                'entity_id'   => 0,
+                'entity_name' => trans('web::seat.unknown'),
+                'category'    => 'character',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function assignee()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'assignee_id')
+            ->withDefault([
+                'entity_id'   => 0,
+                'entity_name' => trans('web::seat.unknown'),
+                'category'    => 'character',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function issuer()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'issuer_id')
+            ->withDefault([
+                'entity_id'   => 0,
+                'entity_name' => trans('web::seat.unknown'),
+                'category'    => 'character',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bids()
+    {
+        return $this->hasMany(ContractBid::class, 'contract_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function lines()
+    {
+        return $this->hasMany(ContractItem::class, 'contract_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function start_location()
+    {
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'start_location_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function end_location()
+    {
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'end_location_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
+    }
 }

@@ -79,18 +79,34 @@ class CharacterKillmail extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function killmail_detail()
+    public function detail()
     {
 
-        return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id');
+        return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id')->withDefault([
+            'killmail_time'   => '1970-01-01 00:00:01',
+            'solar_system_id' => 30000380,
+        ]);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function killmail_victim()
+    public function victim()
     {
 
-        return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id');
+        return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id')->withDefault([
+            'character_id'   => 0,
+            'corporation_id' => 0,
+            'ship_type_id'   => 0,
+        ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attackers()
+    {
+
+        return $this->hasMany(KillmailAttacker::class, 'killmail_id', 'killmail_id');
     }
 }
