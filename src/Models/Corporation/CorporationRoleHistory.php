@@ -70,5 +70,4 @@ class CorporationRoleHistory extends Model
                 'category'    => 'character',
             ]);
     }
-
 }
