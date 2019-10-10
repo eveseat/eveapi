@@ -20,7 +20,8 @@
     "laravel/framework": "^6.2",
     "eveseat/eseye": "~1",
     "eveseat/services": "4.0.x-dev",
-    "doctrine/dbal": "^2.9"
+    "doctrine/dbal": "^2.9",
+    "ext-redis": "*"
   },
   "extra": {
     "laravel": {
