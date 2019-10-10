@@ -130,6 +130,11 @@ class MailHeader extends Model
     public function sender()
     {
 
-        return $this->hasOne(UniverseName::class, 'entity_id', 'from');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'from')
+            ->withDefault([
+                'entity_id' => $this->from,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'character',
+            ]);
     }
 }
