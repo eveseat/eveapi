@@ -39,7 +39,6 @@ class RemoveCorporationBookmarkFoldersSurrogateKey extends Migration
 
         Schema::table('corporation_bookmark_folders', function (Blueprint $table) {
             $table->primary('folder_id');
-            $table->index('corporation_id');
         });
 
         Schema::enableForeignKeyConstraints();
@@ -51,7 +50,6 @@ class RemoveCorporationBookmarkFoldersSurrogateKey extends Migration
 
         Schema::table('corporation_bookmark_folders', function (Blueprint $table) {
             $table->dropPrimary();
-            $table->dropIndex('corporation_id');
         });
 
         Schema::table('corporation_bookmark_folders', function (Blueprint $table) {
