@@ -36,7 +36,6 @@ class RemoveCharacterBookmarkFoldersSurrogateKey extends Migration
         Schema::table('character_bookmark_folders', function (Blueprint $table) {
             $table->dropPrimary();
             $table->primary('folder_id');
-            $table->index('character_id');
         });
 
         Schema::enableForeignKeyConstraints();
@@ -49,7 +48,6 @@ class RemoveCharacterBookmarkFoldersSurrogateKey extends Migration
         Schema::table('character_bookmark_folders', function (Blueprint $table) {
             $table->dropPrimary();
             $table->primary(['character_id', 'folder_id']);
-            $table->dropIndex('character_id');
         });
 
         Schema::enableForeignKeyConstraints();
