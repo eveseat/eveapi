@@ -16,11 +16,11 @@
   "minimum-stability": "alpha",
   "prefer-stable": true,
   "require": {
-    "php": ">=7.1",
-    "laravel/framework": "5.5.*",
+    "php": "^7.2",
+    "laravel/framework": "^6.2",
     "eveseat/eseye": "~1",
-    "eveseat/services": "~3",
-    "doctrine/dbal": "^2.6"
+    "eveseat/services": "dev-4.0.x",
+    "doctrine/dbal": "^2.9"
   },
   "extra": {
     "laravel": {
