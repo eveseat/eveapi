@@ -19,7 +19,7 @@
     "php": "^7.2",
     "laravel/framework": "^6.2",
     "eveseat/eseye": "~1",
-    "eveseat/services": "dev-4.0.x",
+    "eveseat/services": "4.0.x-dev",
     "doctrine/dbal": "^2.9"
   },
   "extra": {
