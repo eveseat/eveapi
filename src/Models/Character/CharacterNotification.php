@@ -106,6 +106,11 @@ class CharacterNotification extends Model
      */
     public function sender()
     {
-        return $this->hasOne(UniverseName::class, 'entity_id', 'sender_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'sender_id')
+            ->withDefault([
+                'entity_id' => 0,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'character',
+            ]);
     }
 }
