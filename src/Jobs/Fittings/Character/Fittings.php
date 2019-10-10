@@ -23,8 +23,8 @@
 namespace Seat\Eveapi\Jobs\Fittings\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Contacts\CharacterFitting;
-use Seat\Eveapi\Models\Contacts\CharacterFittingItem;
+use Seat\Eveapi\Models\Fittings\CharacterFitting;
+use Seat\Eveapi\Models\Fittings\CharacterFittingItem;
 
 /**
  * Class Fittings.

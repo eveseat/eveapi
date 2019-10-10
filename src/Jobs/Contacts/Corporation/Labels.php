@@ -76,7 +76,7 @@ class Labels extends AbstractCorporationJob
                 'corporation_id' => $this->getCorporationId(),
                 'label_id'       => $label->label_id,
             ])->fill([
-                'label_name' => $label->label_name,
+                'name'           => $label->label_name,
             ])->save();
         });
 
