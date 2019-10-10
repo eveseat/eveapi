@@ -22,10 +22,9 @@
 
 namespace Seat\Eveapi\Traits;
 
-use Illuminate\Support\Facades\Redis;
-
 /**
  * Trait RateLimitsEsiCalls.
+ *
  * @package Seat\Eveapi\Traits
  */
 trait RateLimitsEsiCalls
@@ -87,6 +86,6 @@ trait RateLimitsEsiCalls
     public function getRateLimitKeyTtl()
     {
 
-        return Redis::ttl('seat:' . $this->ratelimit_key);
+        return \Illuminate\Support\Facades\Redis::ttl('seat:' . $this->ratelimit_key);
     }
 }
