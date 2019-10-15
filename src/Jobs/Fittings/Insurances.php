@@ -20,7 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Fittings\Character;
+namespace Seat\Eveapi\Jobs\Fittings;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Fittings\Insurance;
