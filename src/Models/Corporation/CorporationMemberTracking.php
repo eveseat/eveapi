@@ -202,6 +202,7 @@ class CorporationMemberTracking extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @deprecated
      */
     public function user()
     {
