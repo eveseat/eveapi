@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Models\Sde\StaStation;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Web\Models\User;
@@ -222,5 +223,21 @@ class CorporationMemberTracking extends Model
             return $this->belongsTo(StaStation::class, 'location_id', 'stationID');
 
         return $this->belongsTo(UniverseStructure::class, 'location_id', 'structure_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function roles()
+    {
+        return $this->hasMany(CorporationRole::class, 'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function character()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'character_id');
     }
 }
