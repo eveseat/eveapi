@@ -104,7 +104,16 @@ class CorporationStarbase extends Model
     public function detail()
     {
 
-        return $this->hasOne(CorporationStarbaseDetail::class, 'starbase_id', 'starbase_id');
+        return $this->hasOne(CorporationStarbaseDetail::class, 'starbase_id', 'starbase_id')
+            ->withDefault([
+                'allow_corporation_members'                => 0,
+                'allow_alliance_members'                   => 0,
+                'use_alliance_standings'                   => 0,
+                'attack_standing_threshold'                => 0,
+                'attack_security_status_threshold'         => 0,
+                'attack_if_other_security_status_dropping' => 0,
+                'attack_if_at_war'                         => 0,
+            ]);
     }
 
     /**
@@ -122,7 +131,11 @@ class CorporationStarbase extends Model
     public function item()
     {
 
-        return $this->belongsTo(CorporationAsset::class, 'starbase_id', 'item_id');
+        return $this->belongsTo(CorporationAsset::class, 'starbase_id', 'item_id')
+            ->withDefault([
+                'type_id' => 0,
+                'name' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
