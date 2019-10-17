@@ -25,31 +25,21 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class RemoveCharacterBookmarkFoldersSurrogateKey.
+ * Class RemoveCorporationStandingsSurrogateKey.
  */
-class RemoveCharacterBookmarkFoldersSurrogateKey extends Migration
+class AddTimestampsToInsurancesTable extends Migration
 {
     public function up()
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::table('character_bookmark_folders', function (Blueprint $table) {
-            $table->dropPrimary();
-            $table->primary('folder_id');
+        Schema::table('insurances', function (Blueprint $table) {
+            $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     public function down()
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::table('character_bookmark_folders', function (Blueprint $table) {
-            $table->dropPrimary();
-            $table->primary(['character_id', 'folder_id']);
+        Schema::table('insurances', function (Blueprint $table) {
+            $table->dropTimestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 }

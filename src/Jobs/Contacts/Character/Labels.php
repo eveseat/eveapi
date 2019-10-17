@@ -80,7 +80,7 @@ class Labels extends EsiBase
                 'character_id' => $this->getCharacterId(),
                 'label_id'     => $label->label_id,
             ])->fill([
-                'label_name' => $label->label_name,
+                'name'         => $label->label_name,
             ])->save();
         });
 
