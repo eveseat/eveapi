@@ -20,41 +20,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
-
-use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CharacterBluePrints.
- * @package App
+ * Class AddLocationIdToCharacterBlueprintsTable.
  */
-class CharacterBlueprint extends Model
+class AddLocationIdToCharacterBlueprintsTable extends Migration
 {
-    use CanUpsertIgnoreReplace;
-    use HasCompositePrimaryKey;
-
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = ['character_id', 'item_id'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function type()
+    public function up()
     {
-        return $this->hasOne(InvType::class, 'typeID', 'type_id')
-            ->withDefault([
-                'typeID'   => $this->type_id,
-                'typeName' => trans('web::seat.unknown'),
-            ]);
+        Schema::table('character_blueprints', function (Blueprint $table) {
+            $table->bigInteger('location_id')->after('location_flag');
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('character_blueprints', function (Blueprint $table) {
+            $table->dropColumn('location_id');
+        });
     }
 }
