@@ -239,6 +239,11 @@ class CorporationMemberTracking extends Model
      */
     public function character()
     {
-        return $this->hasOne(UniverseName::class, 'entity_id', 'character_id');
+        return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
+            ->withDefault([
+                'entity_id' => $this->character_id,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'character',
+            ]);
     }
 }
