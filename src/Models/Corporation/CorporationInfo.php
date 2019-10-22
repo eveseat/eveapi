@@ -549,7 +549,7 @@ class CorporationInfo extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'ceo_id')
             ->withDefault([
-                'entity_id' => 0,
+                'entity_id' => $this->ceo_id,
                 'category'  => 'character',
                 'name'      => trans('web::seat.unknown'),
             ]);

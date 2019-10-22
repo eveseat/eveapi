@@ -95,6 +95,11 @@ class MailRecipient extends Model
      */
     public function entity()
     {
-        return $this->belongsTo(UniverseName::class, 'recipient_id', 'entity_id');
+        return $this->belongsTo(UniverseName::class, 'recipient_id', 'entity_id')
+            ->withDefault([
+                'entity_id' => $this->recipient_id,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'character',
+            ]);
     }
 }

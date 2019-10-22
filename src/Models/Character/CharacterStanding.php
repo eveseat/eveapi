@@ -43,7 +43,7 @@ class CharacterStanding extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'from_id')
             ->withDefault([
-                'entity_id' => 0,
+                'entity_id' => $this->from_id,
                 'category'  => 'character',
                 'name'      => trans('web::seat.unknown'),
             ]);
