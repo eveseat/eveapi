@@ -22,8 +22,8 @@
 
 namespace Seat\Eveapi;
 
+use App\Providers\AbstractSeatPlugin;
 use Seat\Eveapi\Helpers\EseyeSetup;
-use Seat\Services\AbstractSeatPlugin;
 
 /**
  * Class EveapiServiceProvider.
