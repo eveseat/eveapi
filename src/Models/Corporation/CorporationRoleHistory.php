@@ -52,9 +52,9 @@ class CorporationRoleHistory extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'issuer_id')
             ->withDefault([
-                'character_id' => $this->issuer_id,
-                'entity_name' => trans('web::seat.unknown'),
-                'category'    => 'character',
+                'entity_id' => $this->issuer_id,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'character',
             ]);
     }
 
@@ -65,9 +65,9 @@ class CorporationRoleHistory extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
             ->withDefault([
-                'character_id' => $this->character_id,
-                'entity_name' => trans('web::seat.unknown'),
-                'category'    => 'character',
+                'entity_id' => $this->character_id,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => 'character',
             ]);
     }
 }

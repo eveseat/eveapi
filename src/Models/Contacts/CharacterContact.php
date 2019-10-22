@@ -139,9 +139,9 @@ class CharacterContact extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'contact_id')
             ->withDefault([
-                'entity_id'   => 0,
-                'entity_name' => trans('web::seat.unknown'),
-                'category'    => $this->contact_type,
+                'entity_id' => $this->contact_id,
+                'name'      => trans('web::seat.unknown'),
+                'category'  => $this->contact_type,
             ]);
     }
 
