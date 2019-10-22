@@ -139,7 +139,7 @@ class KillmailAttacker extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
             ->withDefault([
-                'entity_id' => 0,
+                'entity_id' => $this->character_id,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
             ]);
@@ -153,7 +153,7 @@ class KillmailAttacker extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
             ->withDefault([
-                'entity_id' => 0,
+                'entity_id' => $this->corporation_id,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'corporation',
             ]);
@@ -167,7 +167,7 @@ class KillmailAttacker extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
             ->withDefault([
-                'entity_id' => 0,
+                'entity_id' => $this->alliance_id,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'alliance',
             ]);
