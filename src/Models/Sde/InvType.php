@@ -195,4 +195,12 @@ class InvType extends Model
     {
         return $this->hasMany(Insurance::class, 'type_id', 'typeID');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function dogma_attributes()
+    {
+        return $this->hasMany(DgmTypeAttribute::class, 'typeID', 'typeID');
+    }
 }
