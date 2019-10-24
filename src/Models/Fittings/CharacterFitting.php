@@ -162,56 +162,54 @@ class CharacterFitting extends Model
      */
     public function toEve()
     {
-        $sheet = sprintf('[%s, %s]', $this->ship->typeName, $this->name);
-        $low_slots = [];
-        $med_slots = [];
-        $high_slots = [];
-        $sub_systems = [];
-        $rigs_slots = [];
-        $drones = [];
-        $fighters = [];
-        $cargo = [];
+        return sprintf('[%s, %s]', $this->ship->typeName, $this->name) . PHP_EOL .
 
-        foreach ($this->low_slots as $slot) {
-            $low_slots[] = $slot->type->typeName;
-        }
+        $this->low_slots->map(function ($slot) {
+            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+        })->implode(PHP_EOL) .
 
-        foreach ($this->medium_slots as $slot) {
-            $med_slots[] = $slot->type->typeName;
-        }
+        PHP_EOL . PHP_EOL .
 
-        foreach ($this->high_slots as $slot) {
-            $high_slots[] = $slot->type->typeName;
-        }
+        $this->medium_slots->map(function ($slot) {
+            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+        })->implode(PHP_EOL) .
 
-        foreach ($this->sub_systems as $slot) {
-            $sub_systems[] = $slot->type->typeName;
-        }
+        PHP_EOL . PHP_EOL .
 
-        foreach ($this->rig_slots as $slot) {
-            $rigs_slots[] = $slot->type->typeName;
-        }
+        $this->high_slots->map(function ($slot) {
+            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+        })->implode(PHP_EOL) .
 
-        foreach ($this->drones_bay as $slot) {
-            $drones[] = sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-        }
+        PHP_EOL . PHP_EOL .
 
-        foreach ($this->cargo as $slot) {
-            $cargo[] = sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-        }
+        $this->sub_systems->map(function ($slot) {
+            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+        })->implode(PHP_EOL) .
 
-        foreach ($this->fighters_bay as $slot) {
-            $fighters[] = sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-        }
+        PHP_EOL . PHP_EOL .
 
-        return $sheet . PHP_EOL .
-            implode(PHP_EOL, $low_slots) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $med_slots) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $high_slots) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $rigs_slots) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $sub_systems) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $drones) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $cargo) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $fighters) . PHP_EOL . PHP_EOL;
+        $this->rig_slots->map(function ($slot) {
+            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+        })->implode(PHP_EOL) .
+
+        PHP_EOL . PHP_EOL .
+
+        $this->drones_bay->map(function ($slot) {
+            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+        })->implode(PHP_EOL) .
+
+        PHP_EOL . PHP_EOL .
+
+        $this->cargo->map(function ($slot) {
+            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+        })->implode(PHP_EOL) .
+
+        PHP_EOL . PHP_EOL .
+
+        $this->fighters_bay->map(function ($slot) {
+            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+        })->implode(PHP_EOL) .
+
+        PHP_EOL . PHP_EOL;
     }
 }
