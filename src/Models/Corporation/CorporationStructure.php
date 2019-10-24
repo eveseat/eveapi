@@ -228,50 +228,48 @@ class CorporationStructure extends Model
      */
     public function toEve()
     {
-        $sheet = sprintf('[%s, %s]', $this->type->typeName, $this->name);
-        $low_slots = [];
-        $med_slots = [];
-        $high_slots = [];
-        $services_slots = [];
-        $rigs_slots = [];
-        $fighters = [];
-        $ammo_hold = [];
+        return sprintf('[%s, %s]', $this->type->typeName, $this->info->name) . PHP_EOL .
 
-        foreach ($this->low_slots as $slot) {
-            $low_slots[] = $slot->type->typeName;
-        }
+            $this->low_slots->map(function ($slot) {
+                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            })->implode(PHP_EOL) .
 
-        foreach ($this->medium_slots as $slot) {
-            $med_slots[] = $slot->type->typeName;
-        }
+            PHP_EOL . PHP_EOL .
 
-        foreach ($this->high_slots as $slot) {
-            $high_slots[] = $slot->type->typeName;
-        }
+            $this->medium_slots->map(function ($slot) {
+                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            })->implode(PHP_EOL) .
 
-        foreach ($this->services_slots as $slot) {
-            $services_slots[] = $slot->type->typeName;
-        }
+            PHP_EOL . PHP_EOL .
 
-        foreach ($this->rig_slots as $slot) {
-            $rigs_slots[] = $slot->type->typeName;
-        }
+            $this->high_slots->map(function ($slot) {
+                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            })->implode(PHP_EOL) .
 
-        foreach ($this->ammo_hold as $slot) {
-            $ammo_hold[] = sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-        }
+            PHP_EOL . PHP_EOL .
 
-        foreach ($this->fighters_bay as $slot) {
-            $fighters[] = sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
-        }
+            $this->services_slots->map(function ($slot) {
+                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            })->implode(PHP_EOL) .
 
-        return $sheet . PHP_EOL .
-            implode(PHP_EOL, $low_slots) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $med_slots) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $high_slots) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $rigs_slots) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $services_slots) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $ammo_hold) . PHP_EOL . PHP_EOL .
-            implode(PHP_EOL, $fighters) . PHP_EOL . PHP_EOL;
+            PHP_EOL . PHP_EOL .
+
+            $this->rig_slots->map(function ($slot) {
+                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            })->implode(PHP_EOL) .
+
+            PHP_EOL . PHP_EOL .
+
+            $this->ammo_hold->map(function ($slot) {
+                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            })->implode(PHP_EOL) .
+
+            PHP_EOL . PHP_EOL .
+
+            $this->fighters_bay->map(function ($slot) {
+                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            })->implode(PHP_EOL) .
+
+            PHP_EOL . PHP_EOL;
     }
 }
