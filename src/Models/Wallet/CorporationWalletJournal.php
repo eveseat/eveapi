@@ -168,7 +168,6 @@ class CorporationWalletJournal extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id')
             ->withDefault([
-                'entity_id' => $this->first_party_id,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
             ]);
@@ -182,7 +181,6 @@ class CorporationWalletJournal extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id')
             ->withDefault([
-                'entity_id' => $this->second_party_id,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
             ]);

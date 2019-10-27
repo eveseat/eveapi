@@ -225,7 +225,6 @@ class ContractDetail extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'acceptor_id')
             ->withDefault([
-                'entity_id' => $this->acceptor_id,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
             ]);
@@ -238,7 +237,6 @@ class ContractDetail extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'assignee_id')
             ->withDefault([
-                'entity_id' => $this->assignee_id,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
             ]);
@@ -251,7 +249,6 @@ class ContractDetail extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'issuer_id')
             ->withDefault([
-                'entity_id' => $this->issuer_id,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
             ]);

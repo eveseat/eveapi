@@ -142,7 +142,6 @@ class CharacterWalletTransaction extends Model
 
         return $this->hasOne(InvType::class, 'typeID', 'type_id')
             ->withDefault([
-                'typeID'   => 0,
                 'typeName' => trans('web::seat.unknown'),
             ]);
     }
@@ -155,7 +154,6 @@ class CharacterWalletTransaction extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'client_id')
             ->withDefault([
-                'entity_id' => $this->client_id,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
             ]);

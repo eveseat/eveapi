@@ -153,7 +153,6 @@ class CorporationBookmark extends Model
 
         return $this->belongsTo(CorporationBookmarkFolder::class, 'folder_id')
             ->withDefault([
-                'folder_id' => 0,
                 'name'      => 'None',
             ]);
     }

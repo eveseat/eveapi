@@ -53,7 +53,6 @@ class CharacterBlueprint extends Model
     {
         return $this->hasOne(InvType::class, 'typeID', 'type_id')
             ->withDefault([
-                'typeID'   => $this->type_id,
                 'typeName' => trans('web::seat.unknown'),
             ]);
     }
