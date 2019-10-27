@@ -55,8 +55,7 @@ class CharacterLocation extends Model
     public function character()
     {
 
-        return $this->belongsTo(CharacterInfo::class,
-            'character_id', 'character_id');
+        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id');
     }
 
     /**

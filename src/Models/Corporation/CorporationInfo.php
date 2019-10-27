@@ -537,7 +537,6 @@ class CorporationInfo extends Model
     {
         return $this->hasOne(Alliance::class, 'alliance_id', 'alliance_id')
             ->withDefault([
-                'alliance_id' => 0,
                 'name'        => '',
             ]);
     }
@@ -549,7 +548,6 @@ class CorporationInfo extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'ceo_id')
             ->withDefault([
-                'entity_id' => $this->ceo_id,
                 'category'  => 'character',
                 'name'      => trans('web::seat.unknown'),
             ]);

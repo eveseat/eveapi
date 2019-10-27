@@ -569,7 +569,6 @@ class CharacterInfo extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
             ->withDefault([
-                'entity_id' => $this->corporation_id,
                 'category'  => 'corporation',
                 'name'      => trans('web::seat.unknown'),
             ]);
@@ -582,7 +581,6 @@ class CharacterInfo extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
             ->withDefault([
-                'entity_id' => $this->alliance_id,
                 'category'  => 'corporation',
                 'name'      => trans('web::seat.unknown'),
             ]);

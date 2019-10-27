@@ -63,7 +63,6 @@ class CharacterAgentResearch extends Model
     {
         return $this->hasOne(InvType::class, 'typeID', 'skill_type_id')
             ->withDefault([
-                'typeID'   => 0,
                 'typeName' => trans('web::seat.unknown'),
             ]);
     }
