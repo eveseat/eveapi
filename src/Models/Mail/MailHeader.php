@@ -132,7 +132,6 @@ class MailHeader extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'from')
             ->withDefault([
-                'entity_id' => $this->from,
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
             ]);

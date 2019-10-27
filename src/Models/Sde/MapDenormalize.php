@@ -172,7 +172,6 @@ class MapDenormalize extends Model
     {
         return $this->belongsTo(MapDenormalize::class, 'constellationID', 'itemID')
             ->withDefault([
-                'itemID'   => 0,
                 'itemName' => trans('web::seat.unknown'),
             ]);
     }
@@ -192,7 +191,6 @@ class MapDenormalize extends Model
     {
         return $this->belongsTo(MapDenormalize::class, 'regionID', 'itemID')
             ->withDefault([
-                'itemID'   => 0,
                 'itemName' => trans('web::seat.unknown'),
             ]);
     }
@@ -214,7 +212,6 @@ class MapDenormalize extends Model
 
         return $this->belongsTo(MapDenormalize::class, 'solarSystemID', 'itemID')
             ->withDefault([
-                'itemID'   => 0,
                 'itemName' => trans('web::seat.unknown'),
             ]);
     }

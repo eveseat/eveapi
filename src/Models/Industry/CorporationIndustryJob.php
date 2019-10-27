@@ -242,8 +242,7 @@ class CorporationIndustryJob extends Model
     {
         return $this->hasOne(RamActivity::class, 'activityID', 'activity_id')
             ->withDefault([
-                'activityID' => 0,
-                'typeName'   => trans('web::seat.unknown'),
+                'activityName' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -254,7 +253,6 @@ class CorporationIndustryJob extends Model
     {
         return $this->hasOne(InvType::class, 'typeID', 'blueprint_type_id')
             ->withDefault([
-                'typeID'   => 0,
                 'typeName' => trans('web::seat.unknown'),
             ]);
     }
@@ -277,7 +275,6 @@ class CorporationIndustryJob extends Model
     {
         return $this->hasOne(InvType::class, 'typeID', 'product_type_id')
             ->withDefault([
-                'typeID'   => 0,
                 'typeName' => trans('web::seat.unknown'),
             ]);
     }
