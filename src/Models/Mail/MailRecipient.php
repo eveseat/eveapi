@@ -62,6 +62,11 @@ class MailRecipient extends Model
     public $incrementing = false;
 
     /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * @var null
      */
     protected $primaryKey = null;
