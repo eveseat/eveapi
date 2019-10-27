@@ -53,7 +53,6 @@ class CharacterCalendarEventDetail extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'owner_id')
             ->withDefault([
-                'entity_id' => $this->owner_id,
                 'category'  => 'character',
                 'name'      => trans('web::seat.unknown'),
             ]);

@@ -55,7 +55,6 @@ class UniverseStructure extends Model
     {
         return $this->hasOne(MapDenormalize::class, 'itemID', 'solar_system_id')
             ->withDefault([
-                'itemID' => 0,
                 'itemName' => trans('web::seat.unknown'),
             ]);
     }
@@ -67,7 +66,6 @@ class UniverseStructure extends Model
     {
         return $this->hasOne(InvType::class, 'typeID', 'type_id')
             ->withDefault([
-                'typeID'   => 0,
                 'typeName' => trans('web::seat.unknown'),
             ]);
     }

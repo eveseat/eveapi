@@ -65,7 +65,6 @@ class ContractItem extends Model
     {
         return $this->hasOne(InvType::class, 'typeID', 'type_id')
             ->withDefault([
-                'typeID'   => 0,
                 'typeName' => trans('web::seat.unknown'),
             ]);
     }
