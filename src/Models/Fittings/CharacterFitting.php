@@ -142,8 +142,8 @@ class CharacterFitting extends Model
      */
     public function getEstimatedPriceAttribute()
     {
-        return $this->ship->price->adjusted_price + $this->items->sum(function ($item) {
-            return $item->type->price->adjusted_price * $item->quantity;
+        return $this->ship->price->average_price + $this->items->sum(function ($item) {
+            return $item->type->price->average_price * $item->quantity;
         });
     }
 
@@ -153,7 +153,7 @@ class CharacterFitting extends Model
     public function getFittingEstimatedPriceAttribute()
     {
         return $this->items->sum(function ($item) {
-            return $item->type->price->adjusted_price * $item->quantity;
+            return $item->type->price->average_price * $item->quantity;
         });
     }
 
