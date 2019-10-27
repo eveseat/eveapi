@@ -23,8 +23,8 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\InvName;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -50,9 +50,9 @@ class CharacterAgentResearch extends Model
      */
     public function agent()
     {
-        return $this->hasOne(InvName::class, 'itemID', 'agent_id')
+        return $this->hasOne(UniverseName::class, 'entity_id', 'agent_id')
             ->withDefault([
-                'itemName' => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
