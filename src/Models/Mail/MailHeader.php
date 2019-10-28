@@ -112,7 +112,10 @@ class MailHeader extends Model
     public function body()
     {
 
-        return $this->hasOne(MailBody::class, 'mail_id', 'mail_id');
+        return $this->hasOne(MailBody::class, 'mail_id', 'mail_id')
+            ->withDefault([
+                'body' => '',
+            ]);
     }
 
     /**
@@ -134,6 +137,18 @@ class MailHeader extends Model
             ->withDefault([
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function character()
+    {
+        return $this->belongsTo(UniverseName::class, 'character_id', 'entity_id')
+            ->withDefault([
+                'name'     => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 }
