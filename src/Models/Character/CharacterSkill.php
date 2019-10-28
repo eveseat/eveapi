@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Traits\AuthorizedScope;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -69,6 +70,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 class CharacterSkill extends Model
 {
     use HasCompositePrimaryKey;
+    use AuthorizedScope;
 
     /**
      * @var bool
@@ -84,6 +86,17 @@ class CharacterSkill extends Model
      * @var array
      */
     protected $primaryKey = ['character_id', 'skill_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function character()
+    {
+        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
