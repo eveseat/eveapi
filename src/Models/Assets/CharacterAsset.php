@@ -23,7 +23,12 @@
 namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\StaStation;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Eveapi\Traits\AuthorizedScope;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
@@ -123,6 +128,7 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 class CharacterAsset extends Model
 {
     use CanUpsertIgnoreReplace;
+    use AuthorizedScope;
 
     /**
      * @var bool
@@ -138,25 +144,6 @@ class CharacterAsset extends Model
      * @var
      */
     protected $primaryKey = 'item_id';
-
-    /**
-     * Allow us to call CharacterAsset->name.
-     *
-     * @param $value
-     *
-     * @return string
-     */
-    public function getNameAttribute($value)
-    {
-
-        if (! $this->type)
-            return null;
-
-        if (is_null($value) || $value == '')
-            return $this->type->typeName;
-
-        return $value;
-    }
 
     /**
      * Provide a rate of the used space based on item capacity and stored item volume.
@@ -193,12 +180,40 @@ class CharacterAsset extends Model
     }
 
     /**
+     * @return mixed
+     * @see https://github.com/esi/esi-docs/blob/master/docs/asset_location_id.md
+     */
+    public function getLocationAttribute()
+    {
+        switch (true) {
+            // asset safety range
+            case $this->location_id == 2004:
+                return $this->asset_safety;
+            // solar system range (including abyssal)
+            case $this->location_id >= 30000000 && $this->location_id <= 33000000:
+                return $this->system;
+            // station range
+            case $this->location_id >= 60000000 && $this->location_id <= 64000000:
+                return $this->station;
+            // citadels range
+            case in_array($this->location_flag, ['Hangar', 'AssetSafety']):
+                return $this->structure;
+            // everything else is an asset
+            default:
+                return $this->asset;
+        }
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()
     {
 
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+        return $this->hasOne(InvType::class, 'typeID', 'type_id')
+            ->withDefault([
+                'typeName' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
@@ -217,5 +232,71 @@ class CharacterAsset extends Model
     {
 
         return $this->hasMany(CharacterAsset::class, 'location_id', 'item_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function character()
+    {
+        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function asset_safety()
+    {
+        return $this->hasOne(MapDenormalize::class, 'itemID', 'location_id')
+            ->withDefault([
+                'itemName' => 'Asset Safety',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function system()
+    {
+        return $this->hasOne(MapDenormalize::class, 'itemID', 'location_id')
+            ->withDefault([
+                'itemName' => 'no system',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function station()
+    {
+        return $this->hasOne(StaStation::class, 'stationID', 'location_id')
+            ->withDefault([
+                'stationName' => 'fucking SDE',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function structure()
+    {
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'location_id')
+            ->withDefault([
+                'name' => 'unknown structure',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function asset()
+    {
+        return $this->hasOne(CharacterAsset::class, 'item_id', 'location_id')
+            ->withDefault([
+                'name' => 'unknown asset',
+            ]);
     }
 }

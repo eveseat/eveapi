@@ -40,6 +40,7 @@ use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
+use Seat\Eveapi\Traits\AuthorizedScope;
 
 /**
  * Class CorporationInfo.
@@ -143,6 +144,8 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
  */
 class CorporationInfo extends Model
 {
+    use AuthorizedScope;
+
     /**
      * @var bool
      */

@@ -48,6 +48,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
+use Seat\Eveapi\Traits\AuthorizedScope;
 use Seat\Services\Traits\NotableTrait;
 use Seat\Web\Models\User;
 
@@ -173,6 +174,7 @@ use Seat\Web\Models\User;
  */
 class CharacterInfo extends Model
 {
+    use AuthorizedScope;
     use NotableTrait;
 
     /**
