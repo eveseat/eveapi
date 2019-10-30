@@ -188,6 +188,11 @@ class CharacterInfo extends Model
     protected $primaryKey = 'character_id';
 
     /**
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
      * Make sure we cleanup on delete.
      *
      * @return bool|null

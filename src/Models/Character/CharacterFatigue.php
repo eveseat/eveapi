@@ -39,4 +39,9 @@ class CharacterFatigue extends Model
      * @var string
      */
     protected $primaryKey = 'character_id';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 }
