@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
@@ -47,4 +48,52 @@ class CharacterAffiliation extends Model
      * @var string
      */
     protected $primaryKey = 'character_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function character()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
+            ->withDefault([
+                'name'     => trans('web::seat.unknown'),
+                'category' => 'character',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function corporation()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
+            ->withDefault([
+                'name'     => trans('web::seat.unknown'),
+                'category' => 'corporation',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function alliance()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
+            ->withDefault([
+                'name'     => trans('web::seat.unknown'),
+                'category' => 'alliance',
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function faction()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
+            ->withDefault([
+                'name'     => trans('web::seat.unknown'),
+                'category' => 'faction',
+            ]);
+    }
 }
