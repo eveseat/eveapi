@@ -119,6 +119,11 @@ class RefreshToken extends Model
     protected $fillable = ['character_id', 'refresh_token', 'scopes', 'expires_on', 'token'];
 
     /**
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
      * Only return a token value if it is not already
      * considered expired.
      *

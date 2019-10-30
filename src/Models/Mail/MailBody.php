@@ -39,4 +39,9 @@ class MailBody extends Model
      * @var string
      */
     protected $primaryKey = 'mail_id';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 }

@@ -149,6 +149,11 @@ class CharacterBookmark extends Model
     protected $primaryKey = 'bookmark_id';
 
     /**
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function folder()

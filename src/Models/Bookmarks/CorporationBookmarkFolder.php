@@ -41,6 +41,11 @@ class CorporationBookmarkFolder extends Model
     protected $primaryKey = 'folder_id';
 
     /**
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function bookmarks()

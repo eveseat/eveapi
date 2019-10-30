@@ -43,4 +43,9 @@ class RamActivity extends Model
      * @var string
      */
     protected $primaryKey = 'activityID';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 }
