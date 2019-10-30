@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
@@ -156,6 +157,19 @@ class CharacterWalletJournal extends Model
      * @var string
      */
     protected $primaryKey = ['character_id', 'ref_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function character()
+    {
+        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id')
+            ->withDefault([
+                'corporation_id' => 0,
+                'alliance_id'    => 0,
+                'faction_id'     => 0,
+            ]);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
