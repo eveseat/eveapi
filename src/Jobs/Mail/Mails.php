@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Mail;
 
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Models\Mail\MailBody;
 use Seat\Eveapi\Models\Mail\MailHeader;
 use Seat\Eveapi\Models\Mail\MailRecipient;
 
@@ -30,7 +31,7 @@ use Seat\Eveapi\Models\Mail\MailRecipient;
  * Class Headers.
  * @package Seat\Eveapi\Jobs\Mail
  */
-class Headers extends EsiBase
+class Mails extends EsiBase
 {
     /**
      * @var string
@@ -75,24 +76,26 @@ class Headers extends EsiBase
 
         collect($mail)->each(function ($header) {
 
-            MailHeader::firstOrCreate([
-                'character_id' => $this->getCharacterId(),
+            // seed mail header if not exists
+            $mail_header = MailHeader::firstOrCreate([
                 'mail_id'      => $header->mail_id,
             ], [
                 'subject'      => $header->subject,
                 'from'         => $header->from,
                 'timestamp'    => carbon($header->timestamp),
-                'labels'       => $header->labels,
             ]);
 
-            // Update the 'read' status
-            if (isset($header->is_read))
+            // seed recipient using requested character
+            MailRecipient::updateOrCreate([
+                'mail_id' => $header->mail_id,
+                'recipient_id' => $this->getCharacterId(),
+                'recipient_type' => 'character',
+            ], [
+                'is_read' => property_exists($header, 'is_read') ? $header->is_read : false,
+                'labels' => $header->labels,
+            ]);
 
-                MailHeader::where('character_id', $this->getCharacterId())
-                    ->where('mail_id', $header->mail_id)
-                    ->update(['is_read' => $header->is_read]);
-
-            // Add mail recipients
+            // Add others mail recipients
             collect($header->recipients)->each(function ($recipient) use ($header) {
 
                 MailRecipient::firstOrCreate([
@@ -101,6 +104,20 @@ class Headers extends EsiBase
                     'recipient_type' => $recipient->recipient_type,
                 ]);
             });
+
+            // pull related body if header is new
+            if ($mail_header->wasRecentlyCreated) {
+                $body = $this->eseye()->setVersion('v1')->invoke('get', '/characters/{character_id}/mail/{mail_id}/', [
+                    'character_id' => $this->getCharacterId(),
+                    'mail_id'      => $header->mail_id,
+                ]);
+
+                MailBody::firstOrCreate([
+                    'mail_id' => $header->mail_id,
+                ], [
+                    'body'    => $body->body,
+                ]);
+            }
         });
     }
 }
