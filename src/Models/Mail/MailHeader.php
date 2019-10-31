@@ -95,16 +95,9 @@ class MailHeader extends Model
     public $incrementing = false;
 
     /**
-     * @var null
+     * @var string
      */
-    protected $primaryKey = null;
-
-    /**
-     * @var array
-     */
-    protected $casts = [
-        'labels' => 'array',
-    ];
+    protected $primaryKey = 'mail_id';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -137,18 +130,6 @@ class MailHeader extends Model
             ->withDefault([
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
-            ]);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function character()
-    {
-        return $this->belongsTo(UniverseName::class, 'character_id', 'entity_id')
-            ->withDefault([
-                'name'     => trans('web::seat.unknown'),
-                'category' => 'character',
             ]);
     }
 }
