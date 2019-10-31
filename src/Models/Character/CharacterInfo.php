@@ -41,6 +41,7 @@ use Seat\Eveapi\Models\Killmails\CharacterKillmail;
 use Seat\Eveapi\Models\Location\CharacterLocation;
 use Seat\Eveapi\Models\Location\CharacterOnline;
 use Seat\Eveapi\Models\Location\CharacterShip;
+use Seat\Eveapi\Models\Mail\MailHeader;
 use Seat\Eveapi\Models\Market\CharacterOrder;
 use Seat\Eveapi\Models\Skills\CharacterAttribute;
 use Seat\Eveapi\Models\Universe\UniverseName;
@@ -429,6 +430,15 @@ class CharacterInfo extends Model
 
         return $this->hasOne(CharacterLocation::class,
             'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function mails()
+    {
+        return $this->belongsToMany(MailHeader::class, 'mail_recipients', 'recipient_id', 'mail_id')
+            ->withPivot('is_read', 'labels');
     }
 
     /**

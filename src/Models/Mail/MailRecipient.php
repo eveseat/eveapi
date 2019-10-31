@@ -72,6 +72,13 @@ class MailRecipient extends Model
     protected $primaryKey = null;
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'labels' => 'array',
+    ];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function mail()
@@ -96,11 +103,11 @@ class MailRecipient extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function entity()
     {
-        return $this->belongsTo(UniverseName::class, 'recipient_id', 'entity_id')
+        return $this->hasOne(UniverseName::class, 'entity_id', 'recipient_id')
             ->withDefault([
                 'name'      => trans('web::seat.unknown'),
                 'category'  => 'character',
