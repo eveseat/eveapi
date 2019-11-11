@@ -41,7 +41,7 @@ class CharacterBookmarkFolder extends Model
     protected $primaryKey = 'folder_id';
 
     /**
-     * @var bool 
+     * @var bool
      */
     public $incrementing = false;
 
