@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Sovereignty;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
@@ -48,4 +49,39 @@ class SovereigntyMap extends Model
      */
     protected $primaryKey = 'system_id';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function alliance()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
+            ->withDefault([
+                'category' => 'alliance',
+                'name'     => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function corporation()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
+            ->withDefault([
+                'category' => 'corporation',
+                'name'     => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function faction()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
+            ->withDefault([
+                'category' => 'faction',
+                'name'     => trans('web::seat.unknown'),
+            ]);
+    }
 }
