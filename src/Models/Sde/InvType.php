@@ -193,4 +193,13 @@ class InvType extends Model
     {
         return $this->hasMany(DgmTypeAttribute::class, 'typeID', 'typeID');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function reactions()
+    {
+        return $this->belongsToMany(InvType::class, 'invTypeReactions', 'typeID', 'reactionTypeID')
+            ->withPivot('quantity');
+    }
 }
