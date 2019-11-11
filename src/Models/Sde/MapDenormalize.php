@@ -166,11 +166,19 @@ class MapDenormalize extends Model
     protected $primaryKey = 'itemID';
 
     /**
+     * @param $query
+     */
+    public function scopeMoons($query)
+    {
+        $query->where('groupID', self::MOON);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
      */
     public function constellation()
     {
-        return $this->belongsTo(MapDenormalize::class, 'constellationID', 'itemID')
+        return $this->belongsTo(MapDenormalize::class, 'constellationID', 'itemID', 'constellations')
             ->withDefault([
                 'itemName' => trans('web::seat.unknown'),
             ]);
@@ -185,11 +193,22 @@ class MapDenormalize extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function planet()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'orbitID', 'itemID', 'planets')
+            ->withDefault([
+                'itemName' => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
      */
     public function region()
     {
-        return $this->belongsTo(MapDenormalize::class, 'regionID', 'itemID')
+        return $this->belongsTo(MapDenormalize::class, 'regionID', 'itemID', 'regions')
             ->withDefault([
                 'itemName' => trans('web::seat.unknown'),
             ]);
@@ -201,7 +220,8 @@ class MapDenormalize extends Model
     public function sovereignty()
     {
 
-        return $this->hasOne(SovereigntyMap::class, 'system_id', 'itemID');
+        return $this->hasOne(SovereigntyMap::class, 'system_id', 'itemID')
+            ->withDefault();
     }
 
     /**
@@ -210,7 +230,7 @@ class MapDenormalize extends Model
     public function system()
     {
 
-        return $this->belongsTo(MapDenormalize::class, 'solarSystemID', 'itemID')
+        return $this->belongsTo(MapDenormalize::class, 'solarSystemID', 'itemID', 'systems')
             ->withDefault([
                 'itemName' => trans('web::seat.unknown'),
             ]);
