@@ -400,14 +400,14 @@ abstract class EsiBase implements ShouldQueue
      * based on the number of pages available and the
      * current page.
      *
-     * @param int $pages
+     * @param int|null $pages
      *
      * @return bool
      */
-    public function nextPage(int $pages): bool
+    public function nextPage(?int $pages): bool
     {
 
-        if ($this->page >= $pages)
+        if (is_null($pages) || $this->page >= $pages)
             return false;
 
         $this->page++;
