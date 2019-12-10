@@ -18,7 +18,7 @@
   "require": {
     "php": "^7.3",
     "laravel/framework": "^6.2",
-    "eveseat/eseye": "~1",
+    "eveseat/eseye": "4.0.x-dev",
     "eveseat/services": "4.0.x-dev",
     "doctrine/dbal": "^2.9"
   },
