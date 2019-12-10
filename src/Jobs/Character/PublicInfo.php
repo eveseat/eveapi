@@ -80,15 +80,12 @@ class PublicInfo extends Info
             CharacterInfo::firstOrNew(['character_id' => $character_id])->fill([
                 'name'            => $character_info->name,
                 'description'     => $character_info->optional('description'),
-                'corporation_id'  => $character_info->corporation_id,
-                'alliance_id'     => $character_info->optional('alliance_id'),
                 'birthday'        => $character_info->birthday,
                 'gender'          => $character_info->gender,
                 'race_id'         => $character_info->race_id,
                 'bloodline_id'    => $character_info->bloodline_id,
                 'ancestry_id'    => $character_info->optional('ancestry_id'),
                 'security_status' => $character_info->optional('security_status'),
-                'faction_id'      => $character_info->optional('faction_id'),
             ])->save();
         });
     }

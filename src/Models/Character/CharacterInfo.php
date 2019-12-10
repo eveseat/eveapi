@@ -31,10 +31,10 @@ use Seat\Eveapi\Models\Clones\CharacterClone;
 use Seat\Eveapi\Models\Clones\CharacterImplant;
 use Seat\Eveapi\Models\Clones\CharacterJumpClone;
 use Seat\Eveapi\Models\Contacts\CharacterContact;
-use Seat\Eveapi\Models\Contacts\CharacterFitting;
 use Seat\Eveapi\Models\Contacts\CharacterLabel;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
 use Seat\Eveapi\Models\Corporation\CorporationTitle;
+use Seat\Eveapi\Models\Fittings\CharacterFitting;
 use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
 use Seat\Eveapi\Models\Industry\CharacterMining;
 use Seat\Eveapi\Models\Killmails\CharacterKillmail;
@@ -251,6 +251,19 @@ class CharacterInfo extends Model
 
         return $this->hasMany(CharacterAgentResearch::class,
             'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function affiliation()
+    {
+        return $this->hasOne(CharacterAffiliation::class, 'character_id', 'character_id')
+            ->withDefault([
+                'corporation_id' => 0,
+                'alliance_id' => 0,
+                'faction_id' => 0,
+            ]);
     }
 
     /**
@@ -589,30 +602,6 @@ class CharacterInfo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function corporation()
-    {
-        return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
-            ->withDefault([
-                'category'  => 'corporation',
-                'name'      => trans('web::seat.unknown'),
-            ]);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function alliance()
-    {
-        return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
-            ->withDefault([
-                'category'  => 'corporation',
-                'name'      => trans('web::seat.unknown'),
-            ]);
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
@@ -622,6 +611,7 @@ class CharacterInfo extends Model
 
     /**
      * @return \Seat\Eveapi\Models\Character\CharacterCorporationHistory
+     * @deprecated 4.0.0
      */
     public function getCurrentCorporationAttribute()
     {
