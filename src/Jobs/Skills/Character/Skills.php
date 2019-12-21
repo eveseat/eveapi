@@ -84,14 +84,10 @@ class Skills extends EsiBase
 
         collect($character_skills->skills)->each(function ($character_skill) {
 
-            CharacterSkill::firstOrNew([
-                'character_id' => $this->getCharacterId(),
-                'skill_id'     => $character_skill->skill_id,
-            ])->fill([
-                'skillpoints_in_skill' => $character_skill->skillpoints_in_skill,
-                'trained_skill_level'  => $character_skill->trained_skill_level,
-                'active_skill_level'   => $character_skill->active_skill_level,
-            ])->save();
+            CharacterSkill::updateOrCreate(
+                ['character_id' => $this->getCharacterId(), 'skill_id' => $character_skill->skill_id],
+                ['skillpoints_in_skill' => $character_skill->skillpoints_in_skill, 'trained_skill_level' => $character_skill->trained_skill_level, 'active_skill_level' => $character_skill->active_skill_level]
+            );
         });
 
         // delete skills which have been removed
