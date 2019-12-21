@@ -133,26 +133,11 @@ class Affiliation extends EsiBase
             $this->request_body = $chunk->values()->all();
             $affiliations = $this->retrieve();
 
-            collect($affiliations)->chunk(1000)->each(function ($affiliation_chunk) {
-
-                $records = $affiliation_chunk->map(function ($affiliation) {
-                    return [
-                        'character_id'   => $affiliation->character_id,
-                        'corporation_id' => $affiliation->corporation_id,
-                        'alliance_id'    => $affiliation->alliance_id ?? null,
-                        'faction_id'     => $affiliation->faction_id ?? null,
-                        'created_at'     => carbon(),
-                        'updated_at'     => carbon(),
-                    ];
-                });
-
-                CharacterAffiliation::upsert($records->toArray(), [
-                    'character_id',
-                    'corporation_id',
-                    'alliance_id',
-                    'faction_id',
-                    'updated_at',
-                ]);
+            collect($affiliations)->each(function ($affiliation) {
+                CharacterAffiliation::updateOrCreate(
+                    ['character_id' => $affiliation->character_id],
+                    ['corporation_id' => $affiliation->corporation_id, 'alliance_id' => $affiliation->alliance_id ?? null, 'faction_id' => $affiliation->faction_id ?? null]
+                );
             });
         });
     }
