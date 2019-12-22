@@ -45,7 +45,6 @@ use Seat\Eveapi\Models\Mail\MailHeader;
 use Seat\Eveapi\Models\Market\CharacterOrder;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Skills\CharacterAttribute;
-use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
@@ -614,6 +613,7 @@ class CharacterInfo extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @deprecated 4.0.0
      */
     public function user()
     {

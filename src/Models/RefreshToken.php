@@ -144,6 +144,7 @@ class RefreshToken extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @deprecated 4.0.0
      */
     public function user()
     {
