@@ -78,7 +78,6 @@ class DropCharacterIdFromMailHeadersTable extends Migration
             $table->dropColumn('character_id');
             $table->dropColumn('labels');
             $table->dropColumn('is_read');
-            $table->dropIndex(['mail_id']);
             $table->dropIndex(['timestamp']);
             $table->primary('mail_id');
         });
