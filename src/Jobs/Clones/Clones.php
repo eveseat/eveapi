@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Clones;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Clones\CharacterClone;
 use Seat\Eveapi\Models\Clones\CharacterJumpClone;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Clones\CharacterJumpClone;
  * Class Clones.
  * @package Seat\Eveapi\Jobs\Clones
  */
-class Clones extends EsiBase
+class Clones extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Clones extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'clones'];
+    protected $tags = ['clones'];
 
     /**
      * Execute the job.

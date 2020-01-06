@@ -49,7 +49,7 @@ class AllianceHistory extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'alliance_history'];
+    protected $tags = ['alliance_history'];
 
     /**
      * Execute the job.
@@ -57,7 +57,7 @@ class AllianceHistory extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $history = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

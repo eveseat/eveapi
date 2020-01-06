@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Contacts\CorporationLabel;
 
 /**
  * Class Labels.
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
-class Labels extends AbstractCorporationJob
+class Labels extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class Labels extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'contacts', 'labels'];
+    protected $tags = ['contacts', 'labels'];
 
     /**
      * Execute the job.
@@ -62,7 +62,7 @@ class Labels extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $labels = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

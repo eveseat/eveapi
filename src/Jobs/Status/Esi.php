@@ -45,7 +45,7 @@ class Esi extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['ccp', 'meta', 'public'];
+    protected $tags = ['ccp', 'meta'];
 
     /**
      * Execute the job.

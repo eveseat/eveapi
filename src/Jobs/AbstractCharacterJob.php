@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,37 +25,37 @@ namespace Seat\Eveapi\Jobs;
 use Exception;
 
 /**
- * Class AbstractCorporationJob.
+ * Class AbstractCharacterJob.
  *
  * @package Seat\Eveapi\Jobs
  */
-abstract class AbstractCorporationJob extends EsiBase
+abstract class AbstractCharacterJob extends EsiBase
 {
     /**
-     * @var int The corporation ID to which the job is related.
+     * @var int The character ID to which this job is related.
      */
-    private $corporation_id;
+    private $character_id;
 
     /**
-     * AbstractCorporationJob constructor.
+     * AbstractCharacterJob constructor.
      *
-     * @param int $corporation_id
+     * @param int $character_id
      */
-    public function __construct(int $corporation_id)
+    public function __construct(int $character_id)
     {
-        $this->corporation_id = $corporation_id;
+        $this->character_id = $character_id;
 
         parent::__construct();
     }
 
     /**
-     * Get the corporation ID to which this job is related.
+     * Get the character ID to which this job is related.
      *
      * @return int
      */
-    public function getCorporationId(): int
+    public function getCharacterId(): int
     {
-        return $this->corporation_id;
+        return $this->character_id;
     }
 
     /**
@@ -65,12 +65,12 @@ abstract class AbstractCorporationJob extends EsiBase
     {
         $tags = parent::tags();
 
-        if (! in_array('corporation', $tags))
-            $tags[] = 'corporation';
+        if (! in_array('character', $tags))
+            $tags[] = 'character';
 
         try {
-            if (! in_array($this->getCorporationId(), $tags))
-                $tags[] = $this->getCorporationId();
+            if (! in_array($this->getCharacterId(), $tags))
+                $tags[] = $this->getCharacterId();
         } catch (Exception $e) {
             logger()->error($e->getMessage(), $e->getTrace());
         }

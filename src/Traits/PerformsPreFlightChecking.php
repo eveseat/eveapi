@@ -133,7 +133,7 @@ trait PerformsPreFlightChecking
     {
 
         // Public calls need no checking.
-        if ($this->public_call || is_null($this->token) || $this->scope === 'public')
+        if (is_null($this->token) || $this->scope === 'public')
             return true;
 
         return false;

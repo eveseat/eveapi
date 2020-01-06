@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Market\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 
 /**
  * Class Orders.
  * @package Seat\Eveapi\Jobs\Market\Corporation
  */
-class Orders extends AbstractCorporationJob
+class Orders extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ class Orders extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporations', 'market', 'orders'];
+    protected $tags = ['market', 'orders'];
 
     /**
      * @var int
@@ -72,7 +72,7 @@ class Orders extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         while (true) {
 

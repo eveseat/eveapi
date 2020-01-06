@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,16 +20,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Location\Character;
+namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
-use Seat\Eveapi\Models\Location\CharacterOnline;
+use Seat\Eveapi\Models\Character\CharacterStats;
 
 /**
- * Class Online.
- * @package Seat\Eveapi\Jobs\Location\Character
+ * Class Stats.
+ * @package Seat\Eveapi\Jobs\Character
  */
-class Online extends AbstractAuthCharacterJob
+class Stats extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -39,7 +39,7 @@ class Online extends AbstractAuthCharacterJob
     /**
      * @var string
      */
-    protected $endpoint = '/characters/{character_id}/online/';
+    protected $endpoint = '/characters/{character_id}/stats/';
 
     /**
      * @var int
@@ -49,16 +49,18 @@ class Online extends AbstractAuthCharacterJob
     /**
      * @var string
      */
-    protected $scope = 'esi-location.read_online.v1';
+    protected $scope = 'esi-characterstats.read.v1';
 
     /**
      * @var array
      */
-    protected $tags = ['online'];
+    protected $tags = ['stats'];
 
     /**
      * Execute the job.
      *
+     * @return void
+     * @throws \Exception
      * @throws \Throwable
      */
     public function handle()
@@ -66,22 +68,27 @@ class Online extends AbstractAuthCharacterJob
 
         if (! $this->preflighted()) return;
 
-        $online = $this->retrieve([
+        $stats = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($online->isCachedLoad()) return;
+        if ($stats->isCachedLoad()) return;
 
-        CharacterOnline::firstOrNew([
-            'character_id' => $this->getCharacterId(),
-        ])->fill([
-            'online'      => $online->online,
-            'last_login'  => property_exists($online, 'last_login') ?
-                carbon($online->last_login) : null,
-            'last_logout' => property_exists($online, 'last_logout') ?
-                carbon($online->last_logout) : null,
-            'logins'      => property_exists($online, 'logins') ?
-                $online->logins : null,
-        ])->save();
+        // Process each years aggregate
+        collect($stats)->each(function ($aggregate) {
+
+            // Separate stats by categories
+            foreach (['character', 'combat', 'industry', 'inventory', 'isk', 'market',
+                         'mining', 'module', 'orbital', 'pve', 'social', 'travel', ] as $category) {
+
+                CharacterStats::firstOrCreate([
+                    'character_id' => $this->getCharacterId(),
+                    'year'         => $aggregate->year,
+                    'category'     => $category,
+                    'stats'        => isset($aggregate->$category) ?
+                        json_encode($aggregate->$category) : null,
+                ]);
+            }
+        });
     }
 }

@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Skills\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Character\CharacterInfoSkill;
 use Seat\Eveapi\Models\Character\CharacterSkill;
@@ -31,7 +31,7 @@ use Seat\Eveapi\Models\Character\CharacterSkill;
  * Class Skills.
  * @package Seat\Eveapi\Jobs\Character
  */
-class Skills extends EsiBase
+class Skills extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -56,7 +56,7 @@ class Skills extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'skills'];
+    protected $tags = ['skills'];
 
     /**
      * Execute the job.

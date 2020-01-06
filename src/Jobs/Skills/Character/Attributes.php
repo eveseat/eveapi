@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Skills\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Skills\CharacterAttribute;
 
 /**
  * Class Attributes.
  * @package Seat\Eveapi\Jobs\Skills\Character
  */
-class Attributes extends EsiBase
+class Attributes extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class Attributes extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'skills', 'attributes'];
+    protected $tags = ['skills', 'attributes'];
 
     /**
      * Execute the job.

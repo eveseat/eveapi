@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Blueprints.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Blueprints extends AbstractCorporationJob
+class Blueprints extends AbstractAuthCorporationJob
 {
 
     /**
@@ -61,7 +61,7 @@ class Blueprints extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'blueprints'];
+    protected $tags = ['blueprints'];
 
     /**
      * @var int
@@ -76,14 +76,14 @@ class Blueprints extends AbstractCorporationJob
     /**
      * Blueprints constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param int $corporation_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(int $corporation_id, RefreshToken $token)
     {
-
         $this->known_blueprints = collect();
 
-        parent::__construct($token);
+        parent::__construct($corporation_id, $token);
     }
 
     /**
@@ -92,7 +92,7 @@ class Blueprints extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle(): void
     {
         while (true) {
 

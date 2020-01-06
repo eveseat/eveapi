@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Mail;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Mail\MailMailingList;
 
 /**
  * Class MailingLists.
  * @package Seat\Eveapi\Jobs\Mail
  */
-class MailingLists extends EsiBase
+class MailingLists extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class MailingLists extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'mails'];
+    protected $tags = ['mails', 'mailing_lists'];
 
     /**
      * Execute the job.

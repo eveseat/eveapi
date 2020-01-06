@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Market\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Market\CharacterOrder;
 
 /**
  * Class Orders.
  * @package Seat\Eveapi\Jobs\Market\Character
  */
-class Orders extends EsiBase
+class Orders extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class Orders extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'market', 'orders'];
+    protected $tags = ['market'];
 
     /**
      * Execute the job.

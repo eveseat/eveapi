@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Bookmarks\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Bookmarks\CharacterBookmark;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Traits\Utils;
@@ -31,7 +31,7 @@ use Seat\Eveapi\Traits\Utils;
  * Class Bookmarks.
  * @package Seat\Eveapi\Jobs\Bookmarks\Characters
  */
-class Bookmarks extends EsiBase
+class Bookmarks extends AbstractAuthCharacterJob
 {
     use Utils;
 
@@ -58,7 +58,7 @@ class Bookmarks extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'bookmarks'];
+    protected $tags = ['bookmarks', 'details'];
 
     /**
      * @var int
@@ -73,9 +73,9 @@ class Bookmarks extends EsiBase
     /**
      * Bookmarks constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(RefreshToken $token)
     {
 
         $this->known_bookmarks = collect();
