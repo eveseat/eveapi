@@ -22,19 +22,30 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\ContractItem;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
-use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Items.
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
-class Items extends AbstractCorporationJob
+class Items extends AbstractAuthCorporationJob
 {
+    /**
+     * The number of seconds for a single throttle cycle.
+     */
+    const DELAY = 12;
+
+    /**
+     * The maximum number of requests that can be made per
+     * throttling cycle.
+     */
+    const REQUESTS_LIMIT = 15;
+
     /**
      * @var string
      */
@@ -58,72 +69,12 @@ class Items extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'contracts', 'items'];
+    protected $tags = ['contracts', 'items'];
 
     /**
-     * The number of requests made in the current throttle cycle.
-     *
-     * https://github.com/ccpgames/esi-issues/issues/636
-     *
-     * > The way it works is you can make 20 requests per 10 seconds
-     * > for a contract tied to a specific character ID.
-     *
      * @var int
      */
-    protected $iteration_count = 0;
-
-    /**
-     * The time when the current throttle iteration cycle started.
-     *
-     * @var \Carbon\Carbon
-     */
-    protected $cycle_start_time;
-
-    /**
-     * The number of seconds for a single throttle cycle.
-     *
-     * @var int
-     */
-    protected $cycle_duration = 10;
-
-    /**
-     * The maximum number of requests that can be made per
-     * throttling cycle.
-     *
-     * @var int
-     */
-    protected $max_cycle_requests = 20;
-
-    /**
-     * The maximum runtime for this job before Horizon
-     * comes along and kills the fun.
-     *
-     * @var \Illuminate\Config\Repository|mixed
-     */
-    protected $max_job_runtime = 240;
-
-    /**
-     * When did this job start.
-     *
-     * Used when calculating when we should stop.
-     *
-     * @var \Carbon\Carbon
-     */
-    protected $job_start_time;
-
-    /**
-     * Items constructor.
-     *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
-     */
-    public function __construct(RefreshToken $token = null)
-    {
-
-        $this->cycle_start_time = carbon('now');
-        $this->job_start_time = carbon('now');
-
-        parent::__construct($token);
-    }
+    public $tries = 60;
 
     /**
      * Execute the job.
@@ -131,7 +82,7 @@ class Items extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $empty_contracts = CorporationContract::join('contract_details',
             'corporation_contracts.contract_id', '=',
@@ -151,74 +102,52 @@ class Items extends AbstractCorporationJob
 
         $empty_contracts->each(function ($contract_id) {
 
-            $this->iteration_count++;
+             // The number of requests made in the current throttle cycle.
+             // https://github.com/ccpgames/esi-issues/issues/636
+             // > The way it works is you can make 20 requests per 10 seconds
+             // > for a contract tied to a specific character ID.
 
-            try {
-                $items = $this->retrieve([
-                    'corporation_id' => $this->getCorporationId(),
-                    'contract_id' => $contract_id,
-                ]);
+            Redis::throttle(implode(':', $this->tags()))->allow(self::REQUESTS_LIMIT)
+                ->every(self::DELAY)->then(function () use ($contract_id) {
 
-                if ($items->isCachedLoad()) return;
-
-                collect($items)->each(function ($item) use ($contract_id) {
-
-                    ContractItem::upsert([
+                try {
+                    $items = $this->retrieve([
+                        'corporation_id' => $this->getCorporationId(),
                         'contract_id' => $contract_id,
-                        'record_id' => $item->record_id,
-                        'type_id' => $item->type_id,
-                        'quantity' => $item->quantity,
-                        'raw_quantity' => $item->raw_quantity ?? null,
-                        'is_singleton' => $item->is_singleton,
-                        'is_included' => $item->is_included,
-                    ], [
-                        'contract_id', 'record_id',
                     ]);
-                });
 
-                // Check if we should be stopping this job all together.
-                // The next time a job is queued it will just continue
-                // where it left off.
-                if ($this->job_start_time->copy()->addSeconds($this->max_job_runtime) < carbon('now'))
-                    return false;
+                    if ($items->isCachedLoad()) return;
 
-                // Check if we should be sleeping. This should be true if we
-                // have made 20 requests in the last 10 seconds.
-                // If the time we started, plus 10 seconds is more than the current
-                // time, wait for the remainder of the time.
-                if ($this->iteration_count >= $this->max_cycle_requests &&
-                    $this->cycle_start_time->copy()->addSeconds($this->cycle_duration) < carbon('now')) {
+                    collect($items)->each(function ($item) use ($contract_id) {
 
-                    $wait_duration = $this->cycle_start_time->copy()->addSeconds($this->cycle_duration)
-                        ->diffInSeconds(carbon('now'));
+                        ContractItem::updateOrCreate([
+                            'record_id' => $item->record_id,
+                        ], [
+                            'contract_id' => $contract_id,
+                            'type_id' => $item->type_id,
+                            'quantity' => $item->quantity,
+                            'raw_quantity' => $item->raw_quantity ?? null,
+                            'is_singleton' => $item->is_singleton,
+                            'is_included' => $item->is_included,
+                        ]);
+                    });
 
-                    sleep($wait_duration);
+                } catch (RequestFailedException $e) {
+                    if (strtolower($e->getError()) == 'contract not found!') {
+                        ContractDetail::where('contract_id', $contract_id)
+                            ->update([
+                                'status' => 'deleted',
+                            ]);
 
-                    // Reset the cycle start time as well as the iteration count.
-                    $this->cycle_start_time = carbon('now');
-                    $this->iteration_count = 0;
+                        return;
+                    }
+
+                    throw $e;
                 }
+            }, function () {
 
-                // Check if we should just reset the iteration & cycle count as a result of
-                // us not using the full 20 requests in a 10 second window.
-                if ($this->cycle_start_time->copy()->addSeconds($this->cycle_duration) < carbon('now')) {
-
-                    $this->cycle_start_time = carbon('now');
-                    $this->iteration_count = 0;
-
-                }
-            } catch (RequestFailedException $e) {
-                if (strtolower($e->getError()) == 'contract not found!') {
-                    ContractDetail::where('contract_id', $contract_id)
-                                  ->update([
-                                      'status' => 'deleted',
-                                  ]);
-
-                    return;
-                }
-
-                throw $e;
-            }
+                return $this->release(self::DELAY);
+            });
         });
     }
 }
