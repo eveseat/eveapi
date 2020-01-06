@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,67 +23,29 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
- * Class CharacterKillmail.
+ * Class Killmail.
+ *
  * @package Seat\Eveapi\Models\Killmails
- *
- * @SWG\Definition(
- *     description="Character Killmail",
- *     title="CharacterKillmail",
- *     type="object"
- * )
- *
- * @SWG\Property(
- *     type="integer",
- *     format="int64",
- *     property="killmail_id",
- *     description="The killmail identifier"
- * )
- *
- * @SWG\Property(
- *     type="string",
- *     property="killmail_hash",
- *     description="The killmail hash"
- * )
- *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="created_at",
- *     description="The date-time when record has been created into SeAT"
- * )
- *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="updated_at",
- *     description="The date-time when record has been updated into SeAT"
- * )
- *
- * @deprecated 4.0.0
  */
-class CharacterKillmail extends Model
+class Killmail extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $primaryKey = ['character_id', 'killmail_id'];
+    protected $primaryKey = 'killmail_id';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function detail()
     {
-
         return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id')->withDefault([
             'killmail_time'   => '1970-01-01 00:00:01',
             'solar_system_id' => 30000380,
@@ -95,7 +57,6 @@ class CharacterKillmail extends Model
      */
     public function victim()
     {
-
         return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id')->withDefault([
             'character_id'   => 0,
             'corporation_id' => 0,
@@ -108,7 +69,6 @@ class CharacterKillmail extends Model
      */
     public function attackers()
     {
-
         return $this->hasMany(KillmailAttacker::class, 'killmail_id', 'killmail_id');
     }
 }
