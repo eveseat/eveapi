@@ -47,14 +47,9 @@ class Prices extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var bool
-     */
-    protected $public_call = true;
-
-    /**
      * @var array
      */
-    protected $tags = ['public', 'market', 'prices'];
+    protected $tags = ['market', 'prices'];
 
     /**
      * Execute the job.

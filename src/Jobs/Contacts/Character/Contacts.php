@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Contacts\CharacterContact;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Contacts.
  * @package Seat\Eveapi\Jobs\Contacts\Character
  */
-class Contacts extends EsiBase
+class Contacts extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Contacts extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'contacts'];
+    protected $tags = ['contacts'];
 
     /**
      * @var int
@@ -70,9 +70,9 @@ class Contacts extends EsiBase
     /**
      * Contacts constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(RefreshToken $token)
     {
 
         $this->known_contact_ids = collect();

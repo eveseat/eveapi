@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Assets.
  * @package Seat\Eveapi\Jobs\Assets\Character
  */
-class Assets extends EsiBase
+class Assets extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Assets extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'assets'];
+    protected $tags = ['assets'];
 
     /**
      * @var int
@@ -70,11 +70,11 @@ class Assets extends EsiBase
     /**
      * Assets constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param int $character_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(int $character_id, RefreshToken $token)
     {
-
         $this->known_assets = collect();
 
         parent::__construct($token);

@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationTitle;
 use Seat\Eveapi\Models\Corporation\CorporationTitleRole;
 use Seat\Eveapi\Models\RefreshToken;
@@ -31,7 +31,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Titles.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Titles extends AbstractCorporationJob
+class Titles extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -61,7 +61,7 @@ class Titles extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'titles'];
+    protected $tags = ['titles'];
 
     /**
      * @var \Illuminate\Support\Collection
@@ -85,14 +85,14 @@ class Titles extends AbstractCorporationJob
     /**
      * Titles constructor.
      *
-     * @param RefreshToken|null $token
+     * @param int $corporation_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(int $corporation_id, RefreshToken $token)
     {
-
         $this->known_titles = collect();
 
-        parent::__construct($token);
+        parent::__construct($corporation_id, $token);
     }
 
     /**
@@ -101,7 +101,7 @@ class Titles extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $titles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

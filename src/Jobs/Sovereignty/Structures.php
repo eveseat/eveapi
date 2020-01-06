@@ -49,7 +49,7 @@ class Structures extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['public', 'sovereignty', 'structures'];
+    protected $tags = ['sovereignty', 'structures'];
 
     /**
      * Execute the job.

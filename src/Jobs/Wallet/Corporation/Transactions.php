@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationDivision;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
  * Class Transactions.
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
-class Transactions extends AbstractCorporationJob
+class Transactions extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -60,7 +60,7 @@ class Transactions extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'wallets'];
+    protected $tags = ['wallets'];
 
     /**
      * A counter used to walk the transactions backwards.
@@ -75,7 +75,7 @@ class Transactions extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
        CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($division) {

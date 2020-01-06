@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 
 /**
  * Class Names.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
-class Names extends AbstractCorporationJob
+class Names extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ class Names extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'assets', 'names'];
+    protected $tags = ['assets', 'names'];
 
     /**
      * The maximum number of itemids we can request name
@@ -75,7 +75,7 @@ class Names extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.

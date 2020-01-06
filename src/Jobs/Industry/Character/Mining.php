@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Industry\Character;
 
 use Illuminate\Support\Facades\DB;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Industry\CharacterMining;
 use Seat\Services\Repositories\Eve\EvePrices;
 
@@ -31,7 +31,7 @@ use Seat\Services\Repositories\Eve\EvePrices;
  * Class Mining.
  * @package Seat\Eveapi\Jobs\Industry\Character
  */
-class Mining extends EsiBase
+class Mining extends AbstractAuthCharacterJob
 {
     use EvePrices;
 
@@ -58,7 +58,7 @@ class Mining extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'industry', 'mining'];
+    protected $tags = ['industry', 'mining'];
 
     /**
      * @var int

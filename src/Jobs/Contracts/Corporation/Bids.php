@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Contracts\ContractBid;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
@@ -32,7 +32,7 @@ use Seat\Eveapi\Models\Contracts\CorporationContract;
  * Class Bids.
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
-class Bids extends AbstractCorporationJob
+class Bids extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -57,7 +57,7 @@ class Bids extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'contracts', 'bids'];
+    protected $tags = ['contracts', 'bids'];
 
     /**
      * @var int
@@ -70,7 +70,7 @@ class Bids extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $unfinished_auctions = CorporationContract::join('contract_details',
             'corporation_contracts.contract_id', '=',

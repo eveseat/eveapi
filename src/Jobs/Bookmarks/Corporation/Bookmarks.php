@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Bookmarks\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmark;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Traits\Utils;
@@ -31,7 +31,7 @@ use Seat\Eveapi\Traits\Utils;
  * Class Bookmarks.
  * @package Seat\Eveapi\Jobs\Bookmarks\Corporation
  */
-class Bookmarks extends AbstractCorporationJob
+class Bookmarks extends AbstractAuthCorporationJob
 {
     use Utils;
 
@@ -58,7 +58,7 @@ class Bookmarks extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'bookmarks'];
+    protected $tags = ['bookmarks'];
 
     /**
      * @var int
@@ -73,14 +73,14 @@ class Bookmarks extends AbstractCorporationJob
     /**
      * Bookmarks constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param int $corporation_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(int $corporation_id, RefreshToken $token)
     {
-
         $this->known_bookmarks = collect();
 
-        parent::__construct($token);
+        parent::__construct($corporation_id, $token);
     }
 
     /**
@@ -89,7 +89,7 @@ class Bookmarks extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         while (true) {
 

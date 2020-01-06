@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Contacts\CharacterLabel;
 
 /**
  * Class Labels.
  * @package Seat\Eveapi\Jobs\Contacts\Character
  */
-class Labels extends EsiBase
+class Labels extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class Labels extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'contacts', 'labels'];
+    protected $tags = ['contacts', 'labels'];
 
     /**
      * Execute the job.

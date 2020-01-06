@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Universe;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
@@ -34,7 +34,7 @@ use Seat\Eveapi\Traits\RateLimitsCalls;
  * Class Structures.
  * @package Seat\Eveapi\Jobs\Universe
  */
-class Structures extends EsiBase
+class Structures extends AbstractAuthCharacterJob
 {
     use RateLimitsCalls;
 
@@ -77,7 +77,7 @@ class Structures extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'universe', 'structures'];
+    protected $tags = ['universe', 'structures'];
 
     /**
      * @var string

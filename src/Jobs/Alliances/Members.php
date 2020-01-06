@@ -50,7 +50,7 @@ class Members extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['public', 'alliances', 'members'];
+    protected $tags = ['alliances', 'members'];
 
     /**
      * @throws \Exception

@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Calendar;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarAttendee;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
  * Class Attendees.
  * @package Seat\Eveapi\Jobs\Calendar
  */
-class Attendees extends EsiBase
+class Attendees extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Attendees extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'calendar', 'attendees'];
+    protected $tags = ['calendar', 'attendees'];
 
     /**
      * Execute the job.

@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
 /**
  * Class Extractions.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
-class Extractions extends AbstractCorporationJob
+class Extractions extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ class Extractions extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'mining', 'extractions'];
+    protected $tags = ['mining', 'extractions'];
 
     /**
      * Execute the job.
@@ -67,7 +67,7 @@ class Extractions extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $mining_extractions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

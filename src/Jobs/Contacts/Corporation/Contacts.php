@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contacts\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Contacts.
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
-class Contacts extends AbstractCorporationJob
+class Contacts extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Contacts extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'contacts'];
+    protected $tags = ['contacts'];
 
     /**
      * @var int
@@ -70,14 +70,14 @@ class Contacts extends AbstractCorporationJob
     /**
      * Contacts constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param int $corporation_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(int $corporation_id, RefreshToken $token)
     {
-
         $this->known_contact_ids = collect();
 
-        parent::__construct($token);
+        parent::__construct($corporation_id, $token);
     }
 
     /**
@@ -86,7 +86,7 @@ class Contacts extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         while (true) {
 

@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 
 /**
  * Class Balance.
  * @package Seat\Eveapi\Jobs\Wallet\Character
  */
-class Balance extends EsiBase
+class Balance extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class Balance extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'wallet', 'balance'];
+    protected $tags = ['wallet', 'balance'];
 
     /**
      * Execute the job.

@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Corporation\CorporationTitle;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Corporation\CorporationTitle;
  * Class Title.
  * @package Seat\Eveapi\Jobs\Character
  */
-class Titles extends EsiBase
+class Titles extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Titles extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'titles'];
+    protected $tags = ['titles'];
 
     /**
      * @var \Illuminate\Support\Collection

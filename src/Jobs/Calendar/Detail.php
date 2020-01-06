@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Calendar;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
 
@@ -31,7 +31,7 @@ use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
  * Class Detail.
  * @package Seat\Eveapi\Jobs\Calendar
  */
-class Detail extends EsiBase
+class Detail extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -56,7 +56,7 @@ class Detail extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'calendar', 'detail'];
+    protected $tags = ['calendar', 'detail'];
 
     /**
      * Execute the job.

@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationMemberLimits;
 
 /**
  * Class MembersLimit.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class MembersLimit extends AbstractCorporationJob
+class MembersLimit extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ class MembersLimit extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'members', 'limit'];
+    protected $tags = ['members', 'limit'];
 
     /**
      * Execute the job.
@@ -67,7 +67,7 @@ class MembersLimit extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $limit = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

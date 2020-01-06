@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Character\CharacterBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Blueprints.
  * @package Seat\Eveapi\Jobs\Character
  */
-class Blueprints extends EsiBase
+class Blueprints extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Blueprints extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'blueprints'];
+    protected $tags = ['blueprints'];
 
     /**
      * @var int
@@ -73,9 +73,10 @@ class Blueprints extends EsiBase
     /**
      * Blueprints constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param int $character_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(int $character_id, RefreshToken $token)
     {
 
         $this->cleanup_ids = collect();
