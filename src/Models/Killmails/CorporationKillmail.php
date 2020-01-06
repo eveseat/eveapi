@@ -61,6 +61,8 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  *     property="updated_at",
  *     description="The date-time when record has been updated into SeAT"
  * )
+ *
+ * @deprecated 4.0.0
  */
 class CorporationKillmail extends Model
 {

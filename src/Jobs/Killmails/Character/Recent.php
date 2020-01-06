@@ -22,14 +22,15 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Killmails\CharacterKillmail;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Killmails\Detail;
+use Seat\Eveapi\Models\Killmails\Killmail;
 
 /**
  * Class Recent.
  * @package Seat\Eveapi\Jobs\Killmails\Character
  */
-class Recent extends EsiBase
+class Recent extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +55,7 @@ class Recent extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'killmails'];
+    protected $tags = ['killmails', 'latest'];
 
     /**
      * Execute the job.
@@ -74,12 +75,13 @@ class Recent extends EsiBase
 
         collect($killmails)->each(function ($killmail) {
 
-            CharacterKillmail::firstOrCreate([
-                'character_id'  => $this->getCharacterId(),
+            Killmail::firstOrCreate([
                 'killmail_id'   => $killmail->killmail_id,
             ], [
                 'killmail_hash' => $killmail->killmail_hash,
             ]);
+
+            dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
         });
     }
 }

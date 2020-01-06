@@ -22,14 +22,15 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
-use Seat\Eveapi\Models\Killmails\CorporationKillmail;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Killmails\Detail;
+use Seat\Eveapi\Models\Killmails\Killmail;
 
 /**
  * Class Recent.
  * @package Seat\Eveapi\Jobs\Killmails\Corporation
  */
-class Recent extends AbstractCorporationJob
+class Recent extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -59,7 +60,7 @@ class Recent extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'killmails'];
+    protected $tags = ['killmails'];
 
     /**
      * Execute the job.
@@ -67,7 +68,7 @@ class Recent extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $killmails = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
@@ -77,12 +78,13 @@ class Recent extends AbstractCorporationJob
 
         collect($killmails)->each(function ($killmail) {
 
-            CorporationKillmail::firstOrCreate([
-                'corporation_id' => $this->getCorporationId(),
-                'killmail_id'    => $killmail->killmail_id,
+            Killmail::firstOrCreate([
+                'killmail_id'   => $killmail->killmail_id,
             ], [
                 'killmail_hash' => $killmail->killmail_hash,
             ]);
+
+            dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
         });
     }
 }
