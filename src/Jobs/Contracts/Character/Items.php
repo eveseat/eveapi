@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Character;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
@@ -34,6 +35,17 @@ use Seat\Eveapi\Models\Contracts\ContractItem;
  */
 class Items extends AbstractAuthCharacterJob
 {
+    /**
+     * The number of seconds for a single throttle cycle.
+     */
+    const DELAY = 12;
+
+    /**
+     * The maximum number of requests that can be made per
+     * throttling cycle.
+     */
+    const REQUESTS_LIMIT = 15;
+
     /**
      * @var string
      */
@@ -58,6 +70,11 @@ class Items extends AbstractAuthCharacterJob
      * @var array
      */
     protected $tags = ['contracts', 'items'];
+
+    /**
+     * @var int
+     */
+    public $tries = 60;
 
     /**
      * Execute the job.
@@ -87,40 +104,51 @@ class Items extends AbstractAuthCharacterJob
 
         $empty_contracts->each(function ($contract_id) {
 
-            try {
-                $items = $this->retrieve([
-                    'character_id' => $this->getCharacterId(),
-                    'contract_id' => $contract_id,
-                ]);
+            // The number of requests made in the current throttle cycle.
+            // https://github.com/ccpgames/esi-issues/issues/636
+            // > The way it works is you can make 20 requests per 10 seconds
+            // > for a contract tied to a specific character ID.
 
-                if ($items->isCachedLoad()) return;
+            Redis::throttle(implode(':', $this->tags()))->allow(self::REQUESTS_LIMIT)
+                ->every(self::DELAY)->then(function () use ($contract_id) {
 
-                collect($items)->each(function ($item) use ($contract_id) {
-
-                    ContractItem::upsert([
+                try {
+                    $items = $this->retrieve([
+                        'character_id' => $this->getCharacterId(),
                         'contract_id' => $contract_id,
-                        'record_id' => $item->record_id,
-                        'type_id' => $item->type_id,
-                        'quantity' => $item->quantity,
-                        'raw_quantity' => $item->raw_quantity ?? null,
-                        'is_singleton' => $item->is_singleton,
-                        'is_included' => $item->is_included,
-                    ], [
-                        'contract_id', 'record_id',
                     ]);
-                });
-            } catch (RequestFailedException $e) {
-                if (strtolower($e->getError()) == 'contract not found!') {
-                    ContractDetail::where('contract_id', $contract_id)
-                        ->update([
-                            'status' => 'deleted',
+
+                    if ($items->isCachedLoad()) return;
+
+                    collect($items)->each(function ($item) use ($contract_id) {
+
+                        ContractItem::updateOrCreate([
+                            'record_id' => $item->record_id,
+                        ], [
+                            'contract_id' => $contract_id,
+                            'type_id' => $item->type_id,
+                            'quantity' => $item->quantity,
+                            'raw_quantity' => $item->raw_quantity ?? null,
+                            'is_singleton' => $item->is_singleton,
+                            'is_included' => $item->is_included,
                         ]);
+                    });
+                } catch (RequestFailedException $e) {
+                    if (strtolower($e->getError()) == 'contract not found!') {
+                        ContractDetail::where('contract_id', $contract_id)
+                            ->update([
+                                'status' => 'deleted',
+                            ]);
 
-                    return;
+                        return;
+                    }
+
+                    throw $e;
                 }
+            }, function () {
 
-                throw $e;
-            }
+                return $this->release(self::DELAY);
+            });
         });
     }
 }

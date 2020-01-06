@@ -33,8 +33,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class ContractItem extends Model
 {
-    use HasCompositePrimaryKey, CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */
@@ -46,9 +44,9 @@ class ContractItem extends Model
     public $incrementing = false;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $primaryKey = ['contract_id', 'record_id'];
+    protected $primaryKey = 'record_id';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
