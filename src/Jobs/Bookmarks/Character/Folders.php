@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Bookmarks\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Bookmarks\CharacterBookmarkFolder;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Folders.
  * @package Seat\Eveapi\Jobs\Bookmarks\Characters
  */
-class Folders extends EsiBase
+class Folders extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Folders extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'bookmarks', 'folders'];
+    protected $tags = ['bookmarks', 'folders'];
 
     /**
      * @var int
@@ -70,9 +70,9 @@ class Folders extends EsiBase
     /**
      * Folders constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(RefreshToken $token)
     {
 
         $this->known_folder_ids = collect();

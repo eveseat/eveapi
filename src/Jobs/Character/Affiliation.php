@@ -57,7 +57,7 @@ class Affiliation extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'affiliations'];
+    protected $tags = ['affiliations'];
 
     /**
      * The maximum number of itemids we can request affiliation

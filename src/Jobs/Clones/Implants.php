@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Clones;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Clones\CharacterImplant;
 
 /**
  * Class Implants.
  * @package Seat\Eveapi\Jobs\Clones
  */
-class Implants extends EsiBase
+class Implants extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class Implants extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'implants'];
+    protected $tags = ['implants'];
 
     /**
      * Execute the job.

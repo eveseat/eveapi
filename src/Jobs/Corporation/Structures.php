@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Corporation\CorporationStructureService;
 use Seat\Eveapi\Models\RefreshToken;
@@ -32,7 +32,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class Structures.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Structures extends AbstractCorporationJob
+class Structures extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -62,7 +62,7 @@ class Structures extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'structures'];
+    protected $tags = ['structures'];
 
     /**
      * @var int
@@ -77,14 +77,14 @@ class Structures extends AbstractCorporationJob
     /**
      * Structures constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param int $corporation_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(int $corporation_id, RefreshToken $token)
     {
-
         $this->known_structures = collect();
 
-        parent::__construct($token);
+        parent::__construct($corporation_id, $token);
     }
 
     /**
@@ -93,7 +93,7 @@ class Structures extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         while (true) {
 

@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationRole;
 
 /**
  * Class Roles.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Roles extends AbstractCorporationJob
+class Roles extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ class Roles extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'roles'];
+    protected $tags = ['roles'];
 
     /**
      * @var array
@@ -81,7 +81,7 @@ class Roles extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $roles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

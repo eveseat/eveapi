@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Bookmarks\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Folders.
  * @package Seat\Eveapi\Jobs\Bookmarks\Corporation
  */
-class Folders extends AbstractCorporationJob
+class Folders extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Folders extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'bookmarks', 'folders'];
+    protected $tags = ['bookmarks', 'folders'];
 
     /**
      * @var int
@@ -70,14 +70,14 @@ class Folders extends AbstractCorporationJob
     /**
      * Folders constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param int $corporation_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(int $corporation_id, RefreshToken $token)
     {
-
         $this->known_folder_ids = collect();
 
-        parent::__construct($token);
+        parent::__construct($corporation_id, $token);
     }
 
     /**
@@ -86,7 +86,7 @@ class Folders extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         while (true) {
 

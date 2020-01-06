@@ -49,7 +49,7 @@ class Info extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['public', 'alliances', 'info'];
+    protected $tags = ['alliances', 'info'];
 
     /**
      * @var \Seat\Eveapi\Models\Alliances\Alliance

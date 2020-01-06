@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 
 /**
  * Class MemberTracking.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class MemberTracking extends AbstractCorporationJob
+class MemberTracking extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ class MemberTracking extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'member_tracking'];
+    protected $tags = ['member_tracking'];
 
     /**
      * Execute the job.
@@ -67,7 +67,7 @@ class MemberTracking extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $members = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

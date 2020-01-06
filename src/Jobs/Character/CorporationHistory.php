@@ -22,10 +22,10 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCharacterJob;
 use Seat\Eveapi\Models\Character\CharacterCorporationHistory;
 
-class CorporationHistory extends EsiBase
+class CorporationHistory extends AbstractCharacterJob
 {
     /**
      * @var string
@@ -45,7 +45,7 @@ class CorporationHistory extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'corporation_history'];
+    protected $tags = ['corporation_history'];
 
     /**
      * Execute the job.

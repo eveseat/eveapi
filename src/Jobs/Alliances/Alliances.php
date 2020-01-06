@@ -49,7 +49,7 @@ class Alliances extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['public', 'alliances'];
+    protected $tags = ['alliances'];
 
     /**
      * @throws \Exception

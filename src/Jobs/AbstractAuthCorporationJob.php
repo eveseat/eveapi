@@ -20,59 +20,39 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Status;
+namespace Seat\Eveapi\Jobs;
 
-use Exception;
-use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Status\EsiStatus;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Status.
- * @package Seat\Eveapi\Jobs\Status
+ * Class AbstractAuthenticatedCorporationJob.
+ *
+ * @package Seat\Eveapi\Jobs
  */
-class Esi extends EsiBase
+abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
 {
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    protected $method = 'get';
+    public $queue = 'corporations';
 
     /**
-     * @var string
-     */
-    protected $endpoint = '/ping';
-
-    /**
+     * The roles which are required in order to get access to an endpoint; in addition of a scope.
+     *
      * @var array
      */
-    protected $tags = ['ccp', 'meta'];
+    protected $roles = [];
 
     /**
-     * Execute the job.
+     * AbstractCorporationJob constructor.
      *
-     * @return void
-     * @throws \Exception
-     * @throws \Throwable
+     * @param int $corporation_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function handle()
+    public function __construct(int $corporation_id, RefreshToken $token)
     {
+        $this->token = $token;
 
-        $start = microtime(true);
-
-        try {
-
-            $status = $this->retrieve()->raw;
-
-        } catch (Exception $exception) {
-
-            $status = 'Request failed with: ' . $exception->getMessage();
-        }
-
-        $end = microtime(true) - $start;
-
-        EsiStatus::create([
-            'status'       => $status,
-            'request_time' => $end,
-        ]);
+        parent::__construct($corporation_id);
     }
 }

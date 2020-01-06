@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationContainerLog;
 
 /**
  * Class ContainerLogs.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class ContainerLogs extends AbstractCorporationJob
+class ContainerLogs extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ class ContainerLogs extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'container_logs'];
+    protected $tags = ['container_logs'];
 
     /**
      * @var int
@@ -72,7 +72,7 @@ class ContainerLogs extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         while (true) {
 

@@ -23,17 +23,10 @@
 namespace Seat\Eveapi\Jobs;
 
 use Exception;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Character\CharacterRole;
-use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Traits\PerformsPreFlightChecking;
 use Seat\Eveapi\Traits\RateLimitsEsiCalls;
 use Seat\Services\Helpers\AnalyticsContainer;
@@ -43,17 +36,14 @@ use Seat\Services\Jobs\Analytics;
  * Class EsiBase.
  * @package Seat\Eveapi\Jobs
  */
-abstract class EsiBase implements ShouldQueue
+abstract class EsiBase extends AbstractJob
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,
-        PerformsPreFlightChecking, RateLimitsEsiCalls;
+    use PerformsPreFlightChecking, RateLimitsEsiCalls;
 
     /**
-     * The number of times the job may be attempted.
-     *
-     * @var int
+     * {@inheritdoc}
      */
-    public $tries = 1;
+    public $queue = 'public';
 
     /**
      * The HTTP method used for the API Call.
@@ -90,13 +80,6 @@ abstract class EsiBase implements ShouldQueue
     protected $scope = 'public';
 
     /**
-     * The roles which are required in order to get access to an endpoint; in addition of a scope.
-     *
-     * @var array
-     */
-    protected $roles = [];
-
-    /**
      * The page to retrieve.
      *
      * Jobs that expect paged responses should have
@@ -127,31 +110,31 @@ abstract class EsiBase implements ShouldQueue
     protected $token;
 
     /**
-     * @var mixed
+     * @var \Seat\Eseye\Eseye|null
      */
     protected $client;
 
     /**
-     * @var bool
+     * {@inheritdoc}
      */
-    protected $public_call;
+    public function tags(): array
+    {
+        $tags = parent::tags();
+
+        if (is_null($this->token))
+            $tags[] = 'public';
+
+        return $tags;
+    }
 
     /**
-     * Create a new job instance.
-     *
-     * If a null refresh token is provided, it is assumed that the
-     * call that should be made is a public one.
-     *
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * {@inheritdoc}
      */
-    public function __construct(RefreshToken $token = null)
+    public function failed(Exception $exception)
     {
+        $this->incrementEsiRateLimit();
 
-        if (is_null($token))
-            $this->public_call = true;
-
-        else
-            $this->token = $token;
+        parent::failed($exception);
     }
 
     /**
@@ -159,33 +142,20 @@ abstract class EsiBase implements ShouldQueue
      *
      * @return array
      * @throws \Exception
+     *
+     * TODO : must be switched to AbstractCorporationJob
      */
     public function getCharacterRoles(): array
     {
+        if (is_null($this->token))
+            return [];
 
-        return CharacterRole::where('character_id', $this->getCharacterId())
+        return CharacterRole::where('character_id', $this->token->character_id)
             // https://eve-seat.slack.com/archives/C0H3VGH4H/p1515081536000720
             // > @ccp_snowden: most things will require `roles`, most things are
             // > not contextually aware enough to make hq/base decisions
             ->where('scope', 'roles')
             ->pluck('role')->all();
-    }
-
-    /**
-     * Get the character_id we have for the token in this job.
-     *
-     * An exception will be thrown if an empty token is set.
-     *
-     * @return int
-     * @throws \Exception
-     */
-    public function getCharacterId(): int
-    {
-
-        if (is_null($this->token))
-            throw new Exception('No token specified');
-
-        return $this->token->character_id;
     }
 
     /**
@@ -241,7 +211,7 @@ abstract class EsiBase implements ShouldQueue
             return $result;
 
         // Perform error checking
-        $this->logWarnings($result);
+        $this->warning($result);
 
         // Update the refresh token we have stored in the database.
         $this->updateRefreshToken();
@@ -268,32 +238,6 @@ abstract class EsiBase implements ShouldQueue
         // Enfore a version specification unless this is a 'meta' call.
         if (trim($this->version) === '' && ! (in_array('meta', $this->tags())))
             throw new Exception('Version is empty');
-    }
-
-    /**
-     * Assign this job a tag so that Horizon can categorize and allow
-     * for specific tags to be monitored.
-     *
-     * If a job specifies the tags property, that is added to the
-     * character_id tag that automatically gets appended.
-     *
-     * @return array
-     * @throws \Exception
-     */
-    public function tags(): array
-    {
-
-        if (property_exists($this, 'tags')) {
-            if (is_null($this->token))
-                return array_merge($this->tags, ['public']);
-
-            return array_merge($this->tags, ['character_id:' . $this->getCharacterId()]);
-        }
-
-        if (is_null($this->token))
-            return ['unknown_tag', 'public'];
-
-        return ['unknown_tag', 'character_id:' . $this->getCharacterId()];
     }
 
     /**
@@ -334,7 +278,7 @@ abstract class EsiBase implements ShouldQueue
      *
      * @throws \Throwable
      */
-    public function logWarnings(EsiResponse $response): void
+    public function warning(EsiResponse $response): void
     {
 
         if (! is_null($response->pages) && $this->page === null) {
@@ -383,7 +327,7 @@ abstract class EsiBase implements ShouldQueue
 
             // If no API call was made, the client would never have
             // been instantiated and auth information never updated.
-            if (is_null($this->client) || $this->public_call)
+            if (is_null($this->client) || is_null($token))
                 return;
 
             $last_auth = $this->client->getAuthentication();
@@ -413,58 +357,5 @@ abstract class EsiBase implements ShouldQueue
         $this->page++;
 
         return true;
-    }
-
-    /**
-     * When a job fails, grab some information and send a
-     * GA event about the exception. The Analytics job
-     * does the work of checking if analytics is disabled
-     * or not, so we don't have to care about that here.
-     *
-     * On top of that, we also increment the error rate
-     * limiter. This is checked as part of the preflight
-     * checks when API calls are made.
-     *
-     * @param \Exception $exception
-     *
-     * @throws \Exception
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     */
-    public function failed(Exception $exception)
-    {
-
-        $this->incrementEsiRateLimit();
-
-        // Analytics. Report only the Exception class and message.
-        dispatch((new Analytics((new AnalyticsContainer)
-            ->set('type', 'exception')
-            ->set('exd', get_class($exception) . ':' . $exception->getMessage())
-            ->set('exf', 1))));
-
-        // Rethrow the original exception for Horizon
-        throw $exception;
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    abstract public function handle();
-
-    /**
-     * Get the corporation a refresh_token is associated with.
-     *
-     * This is based on the character's token we have corporation
-     * membership.
-     *
-     * @return int
-     * @throws \Exception
-     */
-    public function getCorporationId(): int
-    {
-
-        return CharacterInfo::where('character_id', $this->getCharacterId())
-            ->first()->corporation_id;
     }
 }

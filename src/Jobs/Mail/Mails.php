@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Mail;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Mail\MailBody;
 use Seat\Eveapi\Models\Mail\MailHeader;
 use Seat\Eveapi\Models\Mail\MailRecipient;
@@ -31,7 +31,7 @@ use Seat\Eveapi\Models\Mail\MailRecipient;
  * Class Headers.
  * @package Seat\Eveapi\Jobs\Mail
  */
-class Mails extends EsiBase
+class Mails extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -56,7 +56,7 @@ class Mails extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'mail', 'headers'];
+    protected $tags = ['mail', 'headers'];
 
     /**
      * Execute the job.

@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationMedal;
 
 /**
  * Class Medals.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class Medals extends AbstractCorporationJob
+class Medals extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -57,7 +57,7 @@ class Medals extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'medals'];
+    protected $tags = ['medals'];
 
     /**
      * @var int
@@ -70,7 +70,7 @@ class Medals extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         while (true) {
 
