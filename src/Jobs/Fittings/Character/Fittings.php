@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Fittings\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Fittings\CharacterFitting;
 use Seat\Eveapi\Models\Fittings\CharacterFittingItem;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Fittings\CharacterFittingItem;
  * Class Fittings.
  * @package Seat\Eveapi\Jobs\FIttings\Character
  */
-class Fittings extends EsiBase
+class Fittings extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Fittings extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'fittings'];
+    protected $tags = ['fittings'];
 
     /**
      * Execute the job.

@@ -22,15 +22,22 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 
 /**
  * Class Names.
  * @package Seat\Eveapi\Jobs\Assets\Character
  */
-class Names extends EsiBase
+class Names extends AbstractAuthCharacterJob
 {
+    const CELESTIAL_CATEGORY = 2;
+    const SHIP_CATEGORY = 6;
+    const DEPLOYABLE_CATEGORY = 22;
+    const STARBASE_CATEGORY = 23;
+    const ORBITALS_CATEGORY = 46;
+    const STRUCTURE_CATEGORY = 65;
+
     /**
      * @var string
      */
@@ -54,7 +61,7 @@ class Names extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'assets', 'names'];
+    protected $tags = ['assets', 'names'];
 
     /**
      * The maximum number of itemids we can request name
@@ -80,15 +87,11 @@ class Names extends EsiBase
         CharacterAsset::join('invTypes', 'type_id', '=', 'typeID')
             ->join('invGroups', 'invGroups.groupID', '=', 'invTypes.groupID')
             ->where('character_id', $this->getCharacterId())
-            ->where('is_singleton', true)// only singleton items may be named
-            // It seems like only items from these categories can be named
-            // 2  : Celestial
-            // 6  : Ship
-            // 22 : Deployable
-            // 23 : Starbase
-            // 46 : Orbitals
-            // 65 : Structure
-            ->whereIn('categoryID', [2, 6, 22, 23, 46, 65])
+            ->where('is_singleton', true) // only singleton items may be named
+            ->whereIn('categoryID', [ // It seems like only items from these categories can be named
+                self::CELESTIAL_CATEGORY, self::SHIP_CATEGORY, self::DEPLOYABLE_CATEGORY,
+                self::STARBASE_CATEGORY, self::ORBITALS_CATEGORY, self::STRUCTURE_CATEGORY,
+            ])
             ->select('item_id')
             ->chunk($this->item_id_limit, function ($item_ids) {
 
@@ -100,7 +103,7 @@ class Names extends EsiBase
 
                 collect($names)->each(function ($name) {
 
-                    // "None" seems to indidate that no name is set.
+                    // "None" seems to indicate that no name is set.
                     if ($name->name === 'None')
                         return;
 

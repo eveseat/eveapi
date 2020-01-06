@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 
 /**
  * Class Observers.
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
-class Observers extends AbstractCorporationJob
+class Observers extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -61,7 +61,7 @@ class Observers extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'mining', 'observers'];
+    protected $tags = ['mining', 'observers'];
 
     /**
      * @var int
@@ -74,7 +74,7 @@ class Observers extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $mining_observers = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Traits\Utils;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Traits\Utils;
  * Class Locations.
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
-class Locations extends AbstractCorporationJob
+class Locations extends AbstractAuthCorporationJob
 {
     use Utils;
 
@@ -62,7 +62,7 @@ class Locations extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'assets', 'locations'];
+    protected $tags = ['assets', 'locations'];
 
     /**
      * The maximum number of itemids we can request location
@@ -78,7 +78,7 @@ class Locations extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         // all items which need to be singleton
 

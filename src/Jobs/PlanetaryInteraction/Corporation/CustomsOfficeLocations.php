@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
 use Seat\Eveapi\Traits\Utils;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Traits\Utils;
  * Class CustomsOffices.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class CustomsOfficeLocations extends AbstractCorporationJob
+class CustomsOfficeLocations extends AbstractAuthCorporationJob
 {
     use Utils;
 
@@ -62,7 +62,7 @@ class CustomsOfficeLocations extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'customs_offices', 'locations'];
+    protected $tags = ['customs_offices', 'locations'];
 
     /**
      * Execute the job.
@@ -70,7 +70,7 @@ class CustomsOfficeLocations extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $customs_offices = CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->get();
 

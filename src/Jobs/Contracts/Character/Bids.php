@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Contracts\Character;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
 use Seat\Eveapi\Models\Contracts\ContractBid;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
@@ -32,7 +32,7 @@ use Seat\Eveapi\Models\Contracts\ContractDetail;
  * Class Bids.
  * @package Seat\Eveapi\Jobs\Contracts\Character
  */
-class Bids extends EsiBase
+class Bids extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -57,7 +57,7 @@ class Bids extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'contracts', 'bids'];
+    protected $tags = ['contracts', 'bids'];
 
     /**
      * Execute the job.

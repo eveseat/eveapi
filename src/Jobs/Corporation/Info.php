@@ -49,7 +49,7 @@ class Info extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'info'];
+    protected $tags = ['info'];
 
     /**
      * Execute the job.
@@ -57,7 +57,7 @@ class Info extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $corporation = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

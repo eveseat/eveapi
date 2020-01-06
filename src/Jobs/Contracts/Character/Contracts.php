@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Contracts\ContractDetail;
  * Class Contracts.
  * @package Seat\Eveapi\Jobs\Contracts\Character
  */
-class Contracts extends EsiBase
+class Contracts extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Contracts extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'contracts'];
+    protected $tags = ['contracts'];
 
     /**
      * @var int

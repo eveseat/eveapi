@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractCharacterJob;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 
 /**
  * Class Info.
  * @package Seat\Eveapi\Jobs\Character
  */
-class Info extends EsiBase
+class Info extends AbstractCharacterJob
 {
     /**
      * @var string
@@ -49,7 +49,7 @@ class Info extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'info'];
+    protected $tags = ['info'];
 
     /**
      * Execute the job.

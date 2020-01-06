@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
 use Illuminate\Support\Facades\DB;
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetContent;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetExtractor;
@@ -39,7 +39,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class PlanetDetail.
  * @package Seat\Eveapi\Jobs\PlanetaryInteraction\Character
  */
-class PlanetDetail extends EsiBase
+class PlanetDetail extends AbstractAuthCharacterJob
 {
 
     /**
@@ -65,12 +65,7 @@ class PlanetDetail extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'pi', 'planets', 'detail'];
-
-    /**
-     * @var int
-     */
-    protected $planet_limit = 1000;
+    protected $tags = ['pi', 'detail'];
 
     /**
      * @var \Illuminate\Support\Collection
@@ -115,9 +110,9 @@ class PlanetDetail extends EsiBase
     /**
      * PlanetDetail constructor.
      *
-     * @param RefreshToken|null $token
+     * @param RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(RefreshToken $token)
     {
 
         $this->resetCollections();

@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Traits\Utils;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Traits\Utils;
  * Class Locations.
  * @package Seat\Eveapi\Jobs\Assets\Character
  */
-class Locations extends EsiBase
+class Locations extends AbstractAuthCharacterJob
 {
     use Utils;
 
@@ -57,7 +57,7 @@ class Locations extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'assets', 'locations'];
+    protected $tags = ['assets', 'locations'];
 
     /**
      * The maximum number of itemids we can request location

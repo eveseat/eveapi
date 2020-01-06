@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 
@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Contracts\CorporationContract;
  * Class Contracts.
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
-class Contracts extends AbstractCorporationJob
+class Contracts extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -55,7 +55,7 @@ class Contracts extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'contracts'];
+    protected $tags = ['contracts'];
 
     /**
      * @var int
@@ -68,7 +68,7 @@ class Contracts extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         while (true) {
 

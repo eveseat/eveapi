@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 
 /**
  * Class Balances.
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
-class Balances extends AbstractCorporationJob
+class Balances extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ class Balances extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'wallet', 'balance'];
+    protected $tags = ['wallet', 'balance'];
 
     /**
      * Execute the job.
@@ -67,7 +67,7 @@ class Balances extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         $balances = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),

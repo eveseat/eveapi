@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Corporation;
 
-use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Corporation\CorporationStarbase;
 use Seat\Eveapi\Models\Corporation\CorporationStarbaseDetail;
 use Seat\Eveapi\Models\Corporation\CorporationStarbaseFuel;
@@ -32,7 +32,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Starbase.
  * @package Seat\Eveapi\Jobs\Corporation
  */
-class StarbaseDetails extends AbstractCorporationJob
+class StarbaseDetails extends AbstractAuthCorporationJob
 {
     /**
      * @var string
@@ -62,7 +62,7 @@ class StarbaseDetails extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['corporation', 'starbases', 'details'];
+    protected $tags = ['starbases', 'details'];
 
     /**
      * @var
@@ -70,16 +70,16 @@ class StarbaseDetails extends AbstractCorporationJob
     protected $known_starbases;
 
     /**
-     * Starbase constructor.
+     * StarbaseDetails constructor.
      *
-     * @param RefreshToken|null $token
+     * @param int $corporation_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct(int $corporation_id, RefreshToken $token)
     {
-
         $this->known_starbases = collect();
 
-        parent::__construct($token);
+        parent::__construct($corporation_id, $token);
     }
 
     /**
@@ -88,7 +88,7 @@ class StarbaseDetails extends AbstractCorporationJob
      * @return void
      * @throws \Throwable
      */
-    protected function job(): void
+    public function handle()
     {
         CorporationStarbase::where('corporation_id', $this->getCorporationId())
             ->get()->each(function ($starbase) {

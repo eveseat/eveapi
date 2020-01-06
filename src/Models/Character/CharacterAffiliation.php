@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CharacterAffiliation.
@@ -32,8 +31,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  */
 class CharacterAffiliation extends Model
 {
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */

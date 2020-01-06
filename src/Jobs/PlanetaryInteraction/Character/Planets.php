@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 
 /**
  * Class Planet.
  * @package Seat\Eveapi\Jobs\PlanetaryInteraction\Character
  */
-class Planets extends EsiBase
+class Planets extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class Planets extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'pi', 'planets'];
+    protected $tags = ['pi', 'planets'];
 
     /**
      * Execute the job.

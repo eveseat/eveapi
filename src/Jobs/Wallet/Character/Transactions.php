@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Wallet\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
 /**
  * Class Transactions.
  * @package Seat\Eveapi\Jobs\Wallet\Character
  */
-class Transactions extends EsiBase
+class Transactions extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class Transactions extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'wallet', 'transactions'];
+    protected $tags = ['wallet', 'transactions'];
 
     /**
      * A counter used to walk the transactions backwards.

@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Character\CharacterNotification;
 
 /**
  * Class Notifications.
  * @package Seat\Eveapi\Jobs\Character
  */
-class Notifications extends EsiBase
+class Notifications extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -54,7 +54,7 @@ class Notifications extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['character', 'notifications'];
+    protected $tags = ['notifications'];
 
     /**
      * Execute the job.
