@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Jobs\Alliances;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Alliances\Alliance;
 
 /**
  * Class Alliances.
@@ -52,7 +51,6 @@ class Alliances extends EsiBase
     protected $tags = ['alliances'];
 
     /**
-     * @throws \Exception
      * @throws \Throwable
      */
     public function handle()
@@ -64,32 +62,15 @@ class Alliances extends EsiBase
 
         if ($alliances->isCachedLoad()) return;
 
-        collect($alliances)->chunk(1000)->each(function ($chunk) {
+        collect($alliances)->each(function ($alliance_id) {
 
-            $records = $chunk->map(function ($alliance_id) {
+            // queue another job which will be
+            // responsible to collect alliance details.
+            dispatch(new Info($alliance_id));
 
-                return [
-                    'alliance_id' => $alliance_id,
-                    'created_at'  => carbon(),
-                    'updated_at'  => carbon(),
-                ];
-            });
-
-            Alliance::upsert($records->toArray(), [
-                'alliance_id',
-                'updated_at',
-            ]);
-        });
-
-        // Remove alliances that are closed / no longer listen in the API.
-        Alliance::whereNotIn('alliance_id', collect($alliances)->flatten()->all())
-            ->delete();
-
-        // For each retrieved alliance ID, queue a dedicated job which will retrieve alliance information
-        Alliance::all()->each(function ($alliance) {
-            $job = new Info();
-            $job->setAlliance($alliance);
-            dispatch($job);
+            // queue another job which will be
+            // responsible to collect alliance members.
+            dispatch(new Members($alliance_id));
         });
     }
 }
