@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Alliances;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -32,7 +31,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class AllianceMember extends Model
 {
-    use HasCompositePrimaryKey, CanUpsertIgnoreReplace;
+    use HasCompositePrimaryKey;
 
     /**
      * @var bool

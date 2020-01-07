@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Alliances;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class Alliance.
@@ -31,8 +30,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  */
 class Alliance extends Model
 {
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */
