@@ -32,6 +32,11 @@ use Seat\Eveapi\Models\Alliances\Alliance;
 class Info extends EsiBase
 {
     /**
+     * @var int
+     */
+    private $alliance_id;
+
+    /**
      * @var string
      */
     protected $method = 'get';
@@ -52,9 +57,16 @@ class Info extends EsiBase
     protected $tags = ['alliances', 'info'];
 
     /**
-     * @var \Seat\Eveapi\Models\Alliances\Alliance
+     * Info constructor.
+     *
+     * @param int $alliance_id
      */
-    private $alliance;
+    public function __construct(int $alliance_id)
+    {
+        $this->alliance_id = $alliance_id;
+
+        array_push($this->tags, $alliance_id);
+    }
 
     /**
      * Handle the job.
@@ -66,19 +78,15 @@ class Info extends EsiBase
 
         if (! $this->preflighted()) return;
 
-        // Without an alliance set, we won't know which Alliance
-        // we need to get information for.
-        if (! $this->alliance) return;
-
-        array_push($this->tags, 'alliance_id:' . $this->alliance->alliance_id);
-
         $info = $this->retrieve([
-            'alliance_id' => $this->alliance->alliance_id,
+            'alliance_id' => $this->alliance_id,
         ]);
 
         if ($info->isCachedLoad()) return;
 
-        $this->alliance->fill([
+        Alliance::updateOrCreate([
+            'alliance_id' => $this->alliance_id,
+        ], [
             'name'                    => $info->name,
             'creator_id'              => $info->creator_id,
             'creator_corporation_id'  => $info->creator_corporation_id,
@@ -86,17 +94,6 @@ class Info extends EsiBase
             'executor_corporation_id' => $info->executor_corporation_id ?? null,
             'date_founded'            => carbon($info->date_founded),
             'faction_id'              => $info->faction_id ?? null,
-        ])->save();
-    }
-
-    /**
-     * Set the alliance context for this job.
-     *
-     * @param Alliance $alliance
-     */
-    public function setAlliance(Alliance $alliance)
-    {
-
-        $this->alliance = $alliance;
+        ]);
     }
 }

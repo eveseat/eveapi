@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Jobs\Alliances;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Alliances\AllianceMember;
 
 /**
@@ -32,6 +31,11 @@ use Seat\Eveapi\Models\Alliances\AllianceMember;
  */
 class Members extends EsiBase
 {
+    /**
+     * @var int
+     */
+    protected $alliance_id;
+
     /**
      * @var string
      */
@@ -53,44 +57,43 @@ class Members extends EsiBase
     protected $tags = ['alliances', 'members'];
 
     /**
-     * @throws \Exception
+     * Members constructor.
+     *
+     * @param int $alliance_id
+     */
+    public function __construct(int $alliance_id)
+    {
+        $this->alliance_id = $alliance_id;
+
+        array_push($this->tags, $alliance_id);
+    }
+
+    /**
+     * @throws \Throwable
      */
     public function handle()
     {
 
         if (! $this->preflighted()) return;
 
-        Alliance::all()->each(function ($alliance) {
+        $corporations = $this->retrieve([
+            'alliance_id' => $this->alliance_id,
+        ]);
 
-            $corporations = $this->retrieve([
-                'alliance_id' => $alliance->alliance_id,
+        if ($corporations->isCachedLoad()) return;
+
+        $corporation_ids = collect($corporations);
+
+        $corporation_ids->each(function ($corporation_id) {
+
+            AllianceMember::firstOrCreate([
+                'alliance_id' => $this->alliance_id,
+                'corporation_id' => $corporation_id,
             ]);
-
-            if ($corporations->isCachedLoad()) return;
-
-            collect($corporations)->chunk(1000)->each(function ($chunk) use ($alliance) {
-
-                $records = $chunk->map(function ($corporation_id) use ($alliance) {
-
-                    return [
-                        'alliance_id'    => $alliance->alliance_id,
-                        'corporation_id' => $corporation_id,
-                        'created_at'     => carbon(),
-                        'updated_at'     => carbon(),
-                    ];
-                });
-
-                AllianceMember::upsert($records->toArray(), [
-                    'alliance_id',
-                    'corporation_id',
-                    'updated_at',
-                ]);
-            });
-
-            AllianceMember::where('alliance_id', $alliance->alliance_id)
-                ->whereNotIn('corporation_id', collect($corporations)->flatten()->all())
-                ->delete();
-
         });
+
+        AllianceMember::where('alliance_id', $this->alliance_id)
+            ->whereNotIn('corporation_id', $corporation_ids->flatten()->all())
+            ->delete();
     }
 }
