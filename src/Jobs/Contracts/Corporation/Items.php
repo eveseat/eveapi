@@ -24,10 +24,13 @@ namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
 use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Exception\DeletedContractException;
+use Seat\Eveapi\Exception\EmptyContractException;
+use Seat\Eveapi\Exception\InvalidContractTypeException;
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\ContractItem;
-use Seat\Eveapi\Models\Contracts\CorporationContract;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Items.
@@ -45,6 +48,11 @@ class Items extends AbstractAuthCorporationJob
      * throttling cycle.
      */
     const REQUESTS_LIMIT = 15;
+
+    /**
+     * @var int
+     */
+    protected $contract_id;
 
     /**
      * @var string
@@ -77,6 +85,22 @@ class Items extends AbstractAuthCorporationJob
     public $tries = 60;
 
     /**
+     * Items constructor.
+     *
+     * @param int $corporation_id
+     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param int $contract_id
+     */
+    public function __construct(int $corporation_id, RefreshToken $token, int $contract_id)
+    {
+        $this->contract_id = $contract_id;
+
+        array_push($this->tags, $contract_id);
+
+        parent::__construct($corporation_id, $token);
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -84,70 +108,66 @@ class Items extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $empty_contracts = CorporationContract::join('contract_details',
-            'corporation_contracts.contract_id', '=',
-            'contract_details.contract_id')
-            ->where('corporation_id', $this->getCorporationId())
-            ->where('type', '<>', 'courier')
-            ->where('status', '<>', 'deleted')
-            ->where('volume', '>', 0)
-            ->whereNotIn('corporation_contracts.contract_id', function ($query) {
+        if (! $this->preflighted()) return;
 
-                $query->select('contract_id')
-                    ->distinct()
-                    ->from((new ContractItem)->getTable());
+        $contract = ContractDetail::find($this->contract_id);
 
-            })
-            ->pluck('corporation_contracts.contract_id');
+        if ($contract->type == 'courier')
+            throw new InvalidContractTypeException();
 
-        $empty_contracts->each(function ($contract_id) {
+        if ($contract->status == 'deleted')
+            throw new DeletedContractException();
 
-             // The number of requests made in the current throttle cycle.
-             // https://github.com/ccpgames/esi-issues/issues/636
-             // > The way it works is you can make 20 requests per 10 seconds
-             // > for a contract tied to a specific character ID.
+        if ($contract->volume <= 0)
+            throw new EmptyContractException();
 
-            Redis::throttle(implode(':', $this->tags()))->allow(self::REQUESTS_LIMIT)
-                ->every(self::DELAY)->then(function () use ($contract_id) {
+         // The number of requests made in the current throttle cycle.
+         // https://github.com/ccpgames/esi-issues/issues/636
+         // > The way it works is you can make 20 requests per 10 seconds
+         // > for a contract tied to a specific character ID.
 
-                try {
-                    $items = $this->retrieve([
-                        'corporation_id' => $this->getCorporationId(),
-                        'contract_id' => $contract_id,
+        Redis::throttle(implode(':', ['corporations', $this->getCorporationId(), 'contracts']))
+            ->allow(self::REQUESTS_LIMIT)
+            ->every(self::DELAY)
+            ->then(function () {
+
+            try {
+                $items = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                    'contract_id' => $this->contract_id,
+                ]);
+
+                if ($items->isCachedLoad()) return;
+
+                collect($items)->each(function ($item) {
+
+                    ContractItem::updateOrCreate([
+                        'record_id' => $item->record_id,
+                    ], [
+                        'contract_id' => $this->contract_id,
+                        'type_id' => $item->type_id,
+                        'quantity' => $item->quantity,
+                        'raw_quantity' => $item->raw_quantity ?? null,
+                        'is_singleton' => $item->is_singleton,
+                        'is_included' => $item->is_included,
                     ]);
+                });
 
-                    if ($items->isCachedLoad()) return;
-
-                    collect($items)->each(function ($item) use ($contract_id) {
-
-                        ContractItem::updateOrCreate([
-                            'record_id' => $item->record_id,
-                        ], [
-                            'contract_id' => $contract_id,
-                            'type_id' => $item->type_id,
-                            'quantity' => $item->quantity,
-                            'raw_quantity' => $item->raw_quantity ?? null,
-                            'is_singleton' => $item->is_singleton,
-                            'is_included' => $item->is_included,
+            } catch (RequestFailedException $e) {
+                if (strtolower($e->getError()) == 'contract not found!') {
+                    ContractDetail::where('contract_id', $this->contract_id)
+                        ->update([
+                            'status' => 'deleted',
                         ]);
-                    });
 
-                } catch (RequestFailedException $e) {
-                    if (strtolower($e->getError()) == 'contract not found!') {
-                        ContractDetail::where('contract_id', $contract_id)
-                            ->update([
-                                'status' => 'deleted',
-                            ]);
-
-                        return;
-                    }
-
-                    throw $e;
+                    return;
                 }
-            }, function () {
 
-                return $this->release(self::DELAY);
-            });
+                throw $e;
+            }
+        }, function () {
+
+            return $this->release(self::DELAY);
         });
     }
 }
