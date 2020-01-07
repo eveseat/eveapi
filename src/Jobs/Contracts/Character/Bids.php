@@ -22,11 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Contracts\Character;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Exception\DeletedContractException;
+use Seat\Eveapi\Exception\InvalidContractTypeException;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
-use Seat\Eveapi\Models\Contracts\CharacterContract;
 use Seat\Eveapi\Models\Contracts\ContractBid;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Bids.
@@ -34,6 +37,22 @@ use Seat\Eveapi\Models\Contracts\ContractDetail;
  */
 class Bids extends AbstractAuthCharacterJob
 {
+    /**
+     * The number of seconds for a single throttle cycle.
+     */
+    const DELAY = 12;
+
+    /**
+     * The maximum number of requests that can be made per
+     * throttling cycle.
+     */
+    const REQUESTS_LIMIT = 15;
+
+    /**
+     * @var int
+     */
+    protected $contract_id;
+
     /**
      * @var string
      */
@@ -60,6 +79,21 @@ class Bids extends AbstractAuthCharacterJob
     protected $tags = ['contracts', 'bids'];
 
     /**
+     * Bids constructor.
+     *
+     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param int $contract_id
+     */
+    public function __construct(RefreshToken $token, int $contract_id)
+    {
+        $this->contract_id = $contract_id;
+
+        array_push($this->tags, $contract_id);
+
+        parent::__construct($token);
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -70,47 +104,55 @@ class Bids extends AbstractAuthCharacterJob
 
         if (! $this->preflighted()) return;
 
-        $unfinished_auctions = CharacterContract::join('contract_details',
-            'character_contracts.contract_id', '=',
-            'contract_details.contract_id')
-            ->where('character_id', $this->getCharacterId())
-            ->where('type', 'auction')
-            ->whereNotIn('status', ['finished', 'deleted'])
-            ->pluck('character_contracts.contract_id');
+        $contract = ContractDetail::find($this->contract_id);
 
-        $unfinished_auctions->each(function ($contract_id) {
+        // this job can only work with auction contracts
+        if ($contract->type !== 'auction')
+            throw new InvalidContractTypeException();
 
-            try {
-                $bids = $this->retrieve([
-                    'character_id' => $this->getCharacterId(),
-                    'contract_id' => $contract_id,
-                ]);
+        // this job can only work with un-deleted contracts
+        if ($contract->status == 'deleted')
+            throw new DeletedContractException();
 
-                if ($bids->isCachedLoad()) return;
+        Redis::throttle(implode(':', ['characters', $this->getCharacterId(), 'contracts']))
+            ->allow(self::REQUESTS_LIMIT)
+            ->every(self::DELAY)
+            ->then(function () {
 
-                collect($bids)->each(function ($bid) use ($contract_id) {
-
-                    ContractBid::firstOrCreate([
-                        'bid_id' => $bid->bid_id,
-                    ], [
-                        'contract_id' => $contract_id,
-                        'bidder_id' => $bid->bidder_id,
-                        'date_bid' => carbon($bid->date_bid),
-                        'amount' => $bid->amount,
+                try {
+                    $bids = $this->retrieve([
+                        'character_id' => $this->getCharacterId(),
+                        'contract_id' => $this->contract_id,
                     ]);
-                });
-            } catch (RequestFailedException $e) {
-                if (strtolower($e->getError()) == 'contract not found') {
-                    ContractDetail::where('contract_id', $contract_id)
-                        ->update([
-                            'status' => 'finished',
+
+                    if ($bids->isCachedLoad()) return;
+
+                    collect($bids)->each(function ($bid) {
+
+                        ContractBid::firstOrCreate([
+                            'bid_id' => $bid->bid_id,
+                        ], [
+                            'contract_id' => $this->contract_id,
+                            'bidder_id' => $bid->bidder_id,
+                            'date_bid' => carbon($bid->date_bid),
+                            'amount' => $bid->amount,
                         ]);
+                    });
+                } catch (RequestFailedException $e) {
+                    if (strtolower($e->getError()) == 'contract not found') {
+                        ContractDetail::where('contract_id', $this->contract_id)
+                            ->update([
+                                'status' => 'deleted',
+                            ]);
 
-                    return;
+                        return;
+                    }
+
+                    throw $e;
                 }
+            }, function () {
 
-                throw $e;
-            }
-        });
+                return $this->release(self::DELAY);
+            });
     }
 }
