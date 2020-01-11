@@ -63,9 +63,6 @@ class Orders extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $orders = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

@@ -63,9 +63,6 @@ class Planets extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $planets = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

@@ -62,9 +62,6 @@ class Stations extends EsiBase
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         // filtering public structures on outpost typeID
         $structure_filter = [
             12242, 12294, 12295, // conquerable outpost

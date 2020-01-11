@@ -66,8 +66,6 @@ class Events extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $events = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

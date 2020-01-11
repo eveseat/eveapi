@@ -23,12 +23,14 @@
 namespace Seat\Eveapi\Jobs;
 
 use Exception;
+use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Jobs\Middleware\CheckEsiRateLimit;
+use Seat\Eveapi\Jobs\Middleware\CheckEsiStatus;
 use Seat\Eveapi\Models\Character\CharacterRole;
-use Seat\Eveapi\Traits\PerformsPreFlightChecking;
-use Seat\Eveapi\Traits\RateLimitsEsiCalls;
+use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 
@@ -38,7 +40,11 @@ use Seat\Services\Jobs\Analytics;
  */
 abstract class EsiBase extends AbstractJob
 {
-    use PerformsPreFlightChecking, RateLimitsEsiCalls;
+    const RATE_LIMIT = 80;
+
+    const RATE_LIMIT_DURATION = 300;
+
+    const RATE_LIMIT_KEY = 'esiratelimit';
 
     /**
      * {@inheritdoc}
@@ -115,6 +121,17 @@ abstract class EsiBase extends AbstractJob
     protected $client;
 
     /**
+     * @return array
+     */
+    public function middleware()
+    {
+        return [
+            new CheckEsiStatus,
+            new CheckEsiRateLimit,
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function tags(): array
@@ -156,6 +173,34 @@ abstract class EsiBase extends AbstractJob
             // > not contextually aware enough to make hq/base decisions
             ->where('scope', 'roles')
             ->pluck('role')->all();
+    }
+
+    /**
+     * @param int $amount
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function incrementEsiRateLimit(int $amount = 1)
+    {
+
+        if ($this->getRateLimitKeyTtl() > 3) {
+
+            cache()->increment(self::RATE_LIMIT_KEY, $amount);
+
+        } else {
+
+            cache()->set(self::RATE_LIMIT_KEY, $amount, carbon('now')
+                ->addSeconds(self::RATE_LIMIT_DURATION));
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRateLimitKeyTtl()
+    {
+
+        return Redis::ttl('seat:' . self::RATE_LIMIT_KEY);
     }
 
     /**
@@ -289,7 +334,7 @@ abstract class EsiBase extends AbstractJob
                 ->set('type', 'endpoint_warning')
                 ->set('ec', 'unexpected_page')
                 ->set('el', $this->version)
-                ->set('ev', $this->endpoint))));
+                ->set('ev', $this->endpoint))))->onQueue('default');
         }
 
         if (! is_null($this->page) && $response->pages === null) {
@@ -300,7 +345,7 @@ abstract class EsiBase extends AbstractJob
                 ->set('type', 'endpoint_warning')
                 ->set('ec', 'missing_pages')
                 ->set('el', $this->version)
-                ->set('ev', $this->endpoint))));
+                ->set('ev', $this->endpoint))))->onQueue('default');
         }
 
         if (array_key_exists('Warning', $response->headers)) {
@@ -312,8 +357,32 @@ abstract class EsiBase extends AbstractJob
                 ->set('type', 'generic_warning')
                 ->set('ec', 'missing_pages')
                 ->set('el', $this->endpoint)
-                ->set('ev', $response->headers['Warning']))));
+                ->set('ev', $response->headers['Warning']))))->onQueue('default');
         }
+    }
+
+    /**
+     * @return \Seat\Eveapi\Models\RefreshToken|null
+     */
+    public function getToken(): ?RefreshToken
+    {
+        return $this->token;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles(): array
+    {
+        return $this->roles ?: [];
+    }
+
+    /**
+     * @return string
+     */
+    public function getScope(): string
+    {
+        return $this->scope ?: '';
     }
 
     /**

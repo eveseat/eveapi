@@ -70,10 +70,9 @@ class Assets extends AbstractAuthCharacterJob
     /**
      * Assets constructor.
      *
-     * @param int $character_id
      * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(int $character_id, RefreshToken $token)
+    public function __construct(RefreshToken $token)
     {
         $this->known_assets = collect();
 
@@ -88,8 +87,6 @@ class Assets extends AbstractAuthCharacterJob
      */
     public function handle(): void
     {
-
-        if (! $this->preflighted()) return;
 
         while (true) {
 

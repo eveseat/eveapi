@@ -34,7 +34,7 @@ abstract class AbstractCharacterJob extends EsiBase
     /**
      * @var int The character ID to which this job is related.
      */
-    private $character_id;
+    protected $character_id;
 
     /**
      * AbstractCharacterJob constructor.
@@ -44,8 +44,6 @@ abstract class AbstractCharacterJob extends EsiBase
     public function __construct(int $character_id)
     {
         $this->character_id = $character_id;
-
-        parent::__construct();
     }
 
     /**

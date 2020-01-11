@@ -56,8 +56,6 @@ class Alliances extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $alliances = $this->retrieve();
 
         if ($alliances->isCachedLoad()) return;
