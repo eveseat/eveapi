@@ -70,9 +70,6 @@ class Jobs extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $industry_jobs = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

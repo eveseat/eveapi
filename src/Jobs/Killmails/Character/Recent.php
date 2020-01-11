@@ -64,9 +64,6 @@ class Recent extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $killmails = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

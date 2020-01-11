@@ -93,9 +93,6 @@ class Structures extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         // retrieve unresolved location from character
         $character_asset_locations = $this->getCharacterAssetLocations();
 

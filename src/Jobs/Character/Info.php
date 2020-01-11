@@ -61,8 +61,6 @@ class Info extends AbstractCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $character_info = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

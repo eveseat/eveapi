@@ -74,8 +74,6 @@ class Members extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $corporations = $this->retrieve([
             'alliance_id' => $this->alliance_id,
         ]);

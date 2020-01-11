@@ -48,6 +48,14 @@ class Esi extends EsiBase
     protected $tags = ['ccp', 'meta'];
 
     /**
+     * @return array
+     */
+    public function middleware()
+    {
+        return [];
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

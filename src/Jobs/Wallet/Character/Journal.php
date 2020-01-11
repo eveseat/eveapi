@@ -78,9 +78,6 @@ class Journal extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         // retrieve latest known journal entry for the active character.
         $last_known_entry = CharacterWalletJournal::where('character_id', $this->getCharacterId())
                                                   ->orderBy('date', 'desc')

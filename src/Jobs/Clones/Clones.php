@@ -67,8 +67,6 @@ class Clones extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $clone = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

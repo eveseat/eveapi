@@ -66,8 +66,6 @@ class AgentsResearch extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $agents_research = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

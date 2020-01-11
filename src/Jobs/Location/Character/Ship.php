@@ -63,9 +63,6 @@ class Ship extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $ship = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

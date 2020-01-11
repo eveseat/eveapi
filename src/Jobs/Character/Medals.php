@@ -66,8 +66,6 @@ class Medals extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $medals = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

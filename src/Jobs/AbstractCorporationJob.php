@@ -34,7 +34,7 @@ abstract class AbstractCorporationJob extends EsiBase
     /**
      * @var int The corporation ID to which the job is related.
      */
-    private $corporation_id;
+    protected $corporation_id;
 
     /**
      * AbstractCorporationJob constructor.
@@ -44,8 +44,6 @@ abstract class AbstractCorporationJob extends EsiBase
     public function __construct(int $corporation_id)
     {
         $this->corporation_id = $corporation_id;
-
-        parent::__construct();
     }
 
     /**
