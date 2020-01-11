@@ -70,8 +70,6 @@ class Queue extends AbstractAuthCharacterJob
     {
         $this->greatest_position = -1;
 
-        if (! $this->preflighted()) return;
-
         $skill_queue = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

@@ -94,8 +94,6 @@ class Affiliation extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         // A list of column => query to retrieve character_ids for
         // affiliation lookup. If no constraint is needed to get
         // only character_ids, new instances of the model classes

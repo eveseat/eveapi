@@ -57,8 +57,6 @@ class CorporationHistory extends AbstractCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $corporation_history = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

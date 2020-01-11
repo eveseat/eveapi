@@ -66,8 +66,6 @@ class Standings extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $standings = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

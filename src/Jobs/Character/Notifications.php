@@ -66,8 +66,6 @@ class Notifications extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $notifications = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

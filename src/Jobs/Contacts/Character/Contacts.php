@@ -90,8 +90,6 @@ class Contacts extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $contacts = $this->retrieve([

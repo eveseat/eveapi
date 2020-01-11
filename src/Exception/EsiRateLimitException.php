@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019, 2020  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,42 +20,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs;
+namespace Seat\Eveapi\Exception;
 
-use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
-use Seat\Eveapi\Models\RefreshToken;
+use Exception;
+use Throwable;
 
-/**
- * Class AbstractAuthenticatedCharacterJob.
+/***
+ * Class EsiRateLimitException.
  *
- * @package Seat\Eveapi\Jobs
+ * @package Seat\Eveapi\Exception
  */
-abstract class AbstractAuthCharacterJob extends AbstractCharacterJob
+class EsiRateLimitException extends Exception
 {
     /**
-     * {@inheritdoc}
-     */
-    public $queue = 'characters';
-
-    /**
-     * AbstractCharacterJob constructor.
+     * EsiRateLimitException constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param int $code
+     * @param \Throwable|null $previous
      */
-    public function __construct(RefreshToken $token)
+    public function __construct($code = 0, Throwable $previous = null)
     {
-        $this->token = $token;
+        $message = 'ESI Error Rate Limit has been exceeded. All ESI jobs are locked until release.';
 
-        parent::__construct($token->character_id);
-    }
-
-    /**
-     * @return array
-     */
-    public function middleware()
-    {
-        return array_merge(parent::middleware(), [
-            new CheckTokenScope,
-        ]);
+        parent::__construct($message, $code, $previous);
     }
 }

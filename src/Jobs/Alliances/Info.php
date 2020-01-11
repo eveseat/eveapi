@@ -76,8 +76,6 @@ class Info extends EsiBase
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $info = $this->retrieve([
             'alliance_id' => $this->alliance_id,
         ]);

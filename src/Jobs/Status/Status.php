@@ -52,6 +52,14 @@ class Status extends EsiBase
     protected $tags = ['ccp'];
 
     /**
+     * @return array
+     */
+    public function middleware()
+    {
+        return [];
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

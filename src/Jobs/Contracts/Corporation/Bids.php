@@ -107,8 +107,6 @@ class Bids extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        if (! $this->preflighted()) return;
-
         $contract = ContractDetail::find($this->contract_id);
 
         // this job can only work with auction contracts

@@ -143,9 +143,6 @@ class PlanetDetail extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         CharacterPlanet::where('character_id', $this->getCharacterId())->get()->each(function ($planet) {
 
             $planet_detail = $this->retrieve([

@@ -89,8 +89,6 @@ class Folders extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $folders = $this->retrieve([

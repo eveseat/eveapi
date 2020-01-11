@@ -108,8 +108,6 @@ class Items extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $contract = ContractDetail::find($this->contract_id);
 
         if ($contract->type == 'courier')
@@ -120,6 +118,9 @@ class Items extends AbstractAuthCharacterJob
 
         if ($contract->volume <= 0)
             throw new EmptyContractException();
+
+        if ($contract->lines->isNotEmpty())
+            return;
 
         // The number of requests made in the current throttle cycle.
         // https://github.com/ccpgames/esi-issues/issues/636
