@@ -72,9 +72,6 @@ class Mining extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $mining = $this->retrieve([

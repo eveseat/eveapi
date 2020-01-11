@@ -76,6 +76,8 @@ class Detail extends EsiBase
     {
         $this->killmail_id = $killmail_id;
         $this->killmail_hash = $killmail_hash;
+
+        array_push($this->tags, $killmail_id);
     }
 
     /**
@@ -86,9 +88,6 @@ class Detail extends EsiBase
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $detail = $this->retrieve([
             'killmail_id'   => $this->killmail_id,
             'killmail_hash' => $this->killmail_hash,

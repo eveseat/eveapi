@@ -63,9 +63,6 @@ class Location extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $location = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

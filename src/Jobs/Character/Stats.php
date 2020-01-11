@@ -66,8 +66,6 @@ class Stats extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $stats = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

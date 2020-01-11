@@ -92,8 +92,6 @@ class Bookmarks extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         while (true) {
 
             $bookmarks = $this->retrieve([

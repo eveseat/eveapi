@@ -73,10 +73,9 @@ class Blueprints extends AbstractAuthCharacterJob
     /**
      * Blueprints constructor.
      *
-     * @param int $character_id
      * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(int $character_id, RefreshToken $token)
+    public function __construct(RefreshToken $token)
     {
 
         $this->cleanup_ids = collect();
@@ -93,8 +92,6 @@ class Blueprints extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
 
         // Start an infinite loop for the paged requests.
         while (true) {

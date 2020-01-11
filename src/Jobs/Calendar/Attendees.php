@@ -65,8 +65,6 @@ class Attendees extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $this->updateAttendees('character', $this->getCharacterId());
     }
 

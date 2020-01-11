@@ -65,9 +65,6 @@ class Mails extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $mail = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

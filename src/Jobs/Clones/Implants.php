@@ -66,8 +66,6 @@ class Implants extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $implants = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

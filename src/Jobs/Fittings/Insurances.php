@@ -58,9 +58,6 @@ class Insurances extends EsiBase
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $insurances = $this->retrieve();
 
         if ($insurances->isCachedLoad()) return;

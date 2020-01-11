@@ -66,8 +66,6 @@ class Roles extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        if (! $this->preflighted()) return;
-
         $roles = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

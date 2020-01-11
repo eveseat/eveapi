@@ -65,9 +65,6 @@ class Skills extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        if (! $this->preflighted()) return;
-
         $character_skills = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

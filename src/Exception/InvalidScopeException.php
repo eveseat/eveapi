@@ -22,10 +22,28 @@
 
 namespace Seat\Eveapi\Exception;
 
+use Exception;
+use Throwable;
+
 /**
  * Class InvalidScopeException.
  * @package Seat\Eveapi\Exception
  */
-class InvalidScopeException extends \Exception
+class InvalidScopeException extends Exception
 {
+    /**
+     * InvalidScopeException constructor.
+     *
+     * @param string $required_scope
+     * @param array $token_scopes
+     * @param int $code
+     * @param \Throwable|null $previous
+     */
+    public function __construct(string $required_scope, array $token_scopes, $code = 0, Throwable $previous = null)
+    {
+        $message = sprintf('The job require %s scope but provided token is only granting %s.',
+            $required_scope, implode(', ', $token_scopes));
+
+        parent::__construct($message, $code, $previous);
+    }
 }

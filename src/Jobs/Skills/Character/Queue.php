@@ -71,8 +71,6 @@ class Queue extends AbstractAuthCharacterJob
 
         $this->known_skills = collect();
 
-        if (! $this->preflighted()) return;
-
         $skill_queue = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
