@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Web\Models\User;
 
 /**
@@ -140,6 +141,15 @@ class RefreshToken extends Model
             return $value;
 
         return null;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function character()
+    {
+        return $this->hasOne(CharacterInfo::class, 'character_id', 'character_id')
+            ->withDefault();
     }
 
     /**
