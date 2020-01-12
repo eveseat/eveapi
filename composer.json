@@ -21,6 +21,7 @@
     "eveseat/eseye": "~2",
     "eveseat/services": "4.0.x-dev",
     "doctrine/dbal": "^2.9",
+    "ext-json": "*",
     "ext-redis": "*"
   },
   "extra": {
