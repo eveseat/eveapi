@@ -50,6 +50,11 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
     protected $scope = 'esi-universe.read_structures.v1';
 
     /**
+     * @var string
+     */
+    protected $version = 'v2';
+
+    /**
      * {@inheritdoc}
      */
     public function handle()
