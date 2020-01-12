@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,19 +153,6 @@ abstract class EsiBase extends AbstractJob
     {
         $this->incrementEsiRateLimit();
 
-        // in case the cause of failure has been an invalidated token,
-        // we have to mark the token as deleted.
-        if (strpos('Invalid refresh token. Character grant missing/expired.', $exception->getMessage()) && $this->token)
-            $this->token->delete();
-
-        // in case the cause of failure has been an EVE Online down server,
-        // we have to update cache with a null value - so it will trigger
-        // status middleware on other jobs.
-        if (strpos('The datasource tranquility is temporarily unavailable', $exception->getMessage()))
-            cache()->remember('eve_db_status', 60, function () {
-                return null;
-            });
-
         parent::failed($exception);
     }
 
@@ -253,12 +240,33 @@ abstract class EsiBase extends AbstractJob
             // and error message stating that this is an invalid_token, remove
             // the token from SeAT.
             if ($exception->getEsiResponse()->getErrorCode() == 400 && in_array($exception->getEsiResponse()->error(), [
-                'invalid_token: The refresh token is expired.',
-                'invalid_token: The refresh token does not match the client specified.',
-            ])) {
+                    'invalid_token: The refresh token is expired.',
+                    'invalid_token: The refresh token does not match the client specified.',
+                    'Invalid refresh token. Character grant missing/expired.',
+                ])) {
 
                 // Remove the invalid token
                 $this->token->delete();
+            }
+
+            if ($exception->getEsiResponse()->getErrorCode() == 503 && in_array($exception->getEsiResponse()->error(), [
+                    'The datasource tranquility is temporarily unavailable',
+                ])) {
+
+                // update server status cached entry
+                cache()->remember('eve_db_status', 60, function () {
+                    return null;
+                });
+            }
+
+            if ($exception->getEsiResponse()->getErrorCode() == 504 && in_array($exception->getEsiResponse()->error(), [
+                    'Timeout contacting tranquility',
+                ])) {
+
+                // update server status cached entry
+                cache()->remember('eve_db_status', 60, function () {
+                    return null;
+                });
             }
 
             // Rethrow the exception
