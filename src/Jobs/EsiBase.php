@@ -147,16 +147,6 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function failed(Exception $exception)
-    {
-        $this->incrementEsiRateLimit();
-
-        parent::failed($exception);
-    }
-
-    /**
      * Get the current characters roles.
      *
      * @return array
@@ -235,6 +225,9 @@ abstract class EsiBase extends AbstractJob
             $result = $client->invoke($this->method, $this->endpoint, $path_values);
 
         } catch (RequestFailedException $exception) {
+
+            // increment ESI rate limit
+            $this->incrementEsiRateLimit();
 
             // If the token can't login and we get an HTTP 400 together with
             // and error message stating that this is an invalid_token, remove
