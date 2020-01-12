@@ -151,6 +151,9 @@ abstract class EsiBase extends AbstractJob
     {
         $this->incrementEsiRateLimit();
 
+        if (strpos('Invalid refresh token. Character grant missing/expired.', $exception->getMessage()) && $this->token)
+            $this->token->delete();
+
         parent::failed($exception);
     }
 
