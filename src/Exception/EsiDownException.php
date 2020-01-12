@@ -40,7 +40,7 @@ class EsiDownException extends Exception
      */
     public function __construct($code = 0, Throwable $previous = null)
     {
-        $message = 'ESI seems to be down. If you think it is an error, ensure your workers are up and '.
+        $message = 'ESI seems to be down. If you think it is an error, ensure your workers are up and ' .
                    'the command esi:update:status is scheduled.';
 
         parent::__construct($message, $code, $previous);
