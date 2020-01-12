@@ -30,7 +30,6 @@ use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiRateLimit;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiStatus;
 use Seat\Eveapi\Jobs\Middleware\CheckServerStatus;
-use Seat\Eveapi\Models\Character\CharacterRole;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
@@ -144,27 +143,6 @@ abstract class EsiBase extends AbstractJob
             $tags[] = 'public';
 
         return $tags;
-    }
-
-    /**
-     * Get the current characters roles.
-     *
-     * @return array
-     * @throws \Exception
-     *
-     * TODO : must be switched to AbstractCorporationJob
-     */
-    public function getCharacterRoles(): array
-    {
-        if (is_null($this->token))
-            return [];
-
-        return CharacterRole::where('character_id', $this->token->character_id)
-            // https://eve-seat.slack.com/archives/C0H3VGH4H/p1515081536000720
-            // > @ccp_snowden: most things will require `roles`, most things are
-            // > not contextually aware enough to make hq/base decisions
-            ->where('scope', 'roles')
-            ->pluck('role')->all();
     }
 
     /**
