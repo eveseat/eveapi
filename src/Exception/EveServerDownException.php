@@ -32,7 +32,6 @@ use Throwable;
  */
 class EveServerDownException extends Exception
 {
-
     /**
      * EveServerDownException constructor.
      *

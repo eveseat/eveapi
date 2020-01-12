@@ -240,18 +240,18 @@ abstract class EsiBase extends AbstractJob
             // and error message stating that this is an invalid_token, remove
             // the token from SeAT.
             if ($exception->getEsiResponse()->getErrorCode() == 400 && in_array($exception->getEsiResponse()->error(), [
-                    'invalid_token: The refresh token is expired.',
-                    'invalid_token: The refresh token does not match the client specified.',
-                    'Invalid refresh token. Character grant missing/expired.',
-                ])) {
+                'invalid_token: The refresh token is expired.',
+                'invalid_token: The refresh token does not match the client specified.',
+                'Invalid refresh token. Character grant missing/expired.',
+            ])) {
 
                 // Remove the invalid token
                 $this->token->delete();
             }
 
             if ($exception->getEsiResponse()->getErrorCode() == 503 && in_array($exception->getEsiResponse()->error(), [
-                    'The datasource tranquility is temporarily unavailable',
-                ])) {
+                'The datasource tranquility is temporarily unavailable',
+            ])) {
 
                 // update server status cached entry
                 cache()->remember('eve_db_status', 60, function () {
@@ -260,8 +260,8 @@ abstract class EsiBase extends AbstractJob
             }
 
             if ($exception->getEsiResponse()->getErrorCode() == 504 && in_array($exception->getEsiResponse()->error(), [
-                    'Timeout contacting tranquility',
-                ])) {
+                'Timeout contacting tranquility',
+            ])) {
 
                 // update server status cached entry
                 cache()->remember('eve_db_status', 60, function () {

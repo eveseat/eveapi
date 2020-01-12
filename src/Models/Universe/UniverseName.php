@@ -54,5 +54,4 @@ class UniverseName extends Model
         return $this->hasOne(CharacterAffiliation::class, 'character_id', 'entity_id')
             ->withDefault();
     }
-
 }
