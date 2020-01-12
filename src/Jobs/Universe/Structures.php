@@ -141,24 +141,13 @@ class Structures extends AbstractAuthCharacterJob
 
             } catch (RequestFailedException $e) {
 
-                // Failure to grab the structure should result in us creating an
-                // empty entry in the database for this structure.
+                // since the made query resulted in a failure, increment ESI counter
+                $this->incrementEsiRateLimit();
 
-                $model = UniverseStructure::firstOrNew([
-                    'structure_id' => $location_id,
-                ])->fill([
-                    'name'            => 'Unknown Structure',
-                    'owner_id'        => null,
-                    'solar_system_id' => 0,
-                    'x'               => 0.0,
-                    'y'               => 0.0,
-                    'z'               => 0.0,
-                    'type_id'         => null,
+                logger()->error('Unable to retrieve structure information with provided information.', [
+                    'structure ID' => $location_id,
+                    'token owner ID' => $this->getCharacterId(),
                 ]);
-
-                // persist the structure only if it doesn't already exist
-                if (! $model->exists)
-                    $model->save();
             }
         }
     }
