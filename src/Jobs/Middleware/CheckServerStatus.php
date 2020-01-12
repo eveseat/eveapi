@@ -38,11 +38,13 @@ class CheckServerStatus
         // in case the job is not ESI related, bypass this check
         if (! is_subclass_of($job, EsiBase::class)) {
             $next($job);
+
             return;
         }
 
         if ($this->isEveOnline()) {
             $next($job);
+
             return;
         }
 
