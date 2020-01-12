@@ -41,7 +41,7 @@ class CheckEsiStatus
     public function handle($job, $next)
     {
         // bypass control if the class is not related to ESI
-        if (! is_subclass_of($job,EsiBase::class)) {
+        if (! is_subclass_of($job, EsiBase::class)) {
             $next($job);
             return;
         }
