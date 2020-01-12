@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Universe;
 
 /**
- * Interface Structures
+ * Interface Structures.
  *
  * @package Seat\Eveapi\Jobs\Universe
  */
