@@ -29,6 +29,7 @@ use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiRateLimit;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiStatus;
+use Seat\Eveapi\Jobs\Middleware\CheckServerStatus;
 use Seat\Eveapi\Models\Character\CharacterRole;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\Helpers\AnalyticsContainer;
@@ -128,6 +129,7 @@ abstract class EsiBase extends AbstractJob
         return [
             new CheckEsiStatus,
             new CheckEsiRateLimit,
+            new CheckServerStatus,
         ];
     }
 
@@ -153,6 +155,14 @@ abstract class EsiBase extends AbstractJob
 
         if (strpos('Invalid refresh token. Character grant missing/expired.', $exception->getMessage()) && $this->token)
             $this->token->delete();
+
+        // in case the cause of failure has been an EVE Online down server,
+        // we have to update cache with a null value - so it will trigger
+        // status middleware on other jobs.
+        if (strpos('The datasource tranquility is temporarily unavailable', $exception->getMessage()))
+            cache()->remember('eve_db_status', 60, function () {
+                return null;
+            });
 
         parent::failed($exception);
     }
