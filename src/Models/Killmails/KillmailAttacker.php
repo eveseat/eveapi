@@ -169,4 +169,16 @@ class KillmailAttacker extends Model
                 'category'  => 'alliance',
             ]);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function faction()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
+            ->withDefault([
+                'name'     => trans('web::seat.unknown'),
+                'category' => 'faction',
+            ]);
+    }
 }
