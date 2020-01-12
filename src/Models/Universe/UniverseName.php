@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterAffiliation;
 
 /**
  * Class UniverseName.
@@ -44,5 +45,14 @@ class UniverseName extends Model
      * @var string
      */
     protected $primaryKey = 'entity_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function affiliation()
+    {
+        return $this->hasOne(CharacterAffiliation::class, 'character_id', 'entity_id')
+            ->withDefault();
+    }
 
 }
