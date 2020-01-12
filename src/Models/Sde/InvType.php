@@ -162,7 +162,10 @@ class InvType extends Model
     public function group()
     {
 
-        return $this->belongsTo(InvGroup::class, 'groupID', 'groupID');
+        return $this->belongsTo(InvGroup::class, 'groupID', 'groupID')
+            ->withDefault([
+                'groupName' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
