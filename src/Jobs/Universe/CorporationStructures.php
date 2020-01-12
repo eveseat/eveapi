@@ -56,6 +56,11 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
     protected $roles = ['Director'];
 
     /**
+     * @var string
+     */
+    protected $version = 'v2';
+
+    /**
      * {@inheritdoc}
      */
     public function handle()
