@@ -43,6 +43,11 @@ class Esi extends EsiBase
     protected $endpoint = '/ping';
 
     /**
+     * @var string
+     */
+    public $queue = 'high';
+
+    /**
      * @var array
      */
     protected $tags = ['ccp', 'meta'];

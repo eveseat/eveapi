@@ -42,6 +42,11 @@ class Status extends EsiBase
     protected $endpoint = '/status/';
 
     /**
+     * @var string
+     */
+    public $queue = 'high';
+
+    /**
      * @var int
      */
     protected $version = 'v1';
