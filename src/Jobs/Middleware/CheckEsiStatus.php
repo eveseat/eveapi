@@ -66,15 +66,13 @@ class CheckEsiStatus
             return EsiStatus::latest()->first();
         });
 
-        logger()->debug('isEsiOnline', ['status' => $status]);
-
         // If we don't have a status yet, assume everything is ok.
         if (! $status) return true;
 
         // If the data is too old, return false by default.
         // Not being able to ping ESI could be indicative
         // of many other problems.
-        if ($status->created_at->lte(carbon('now')->subHours(2)))
+        if ($status->created_at->lte(carbon('now')->subMinutes(30)))
             return false;
 
         // If the status is OK, yay.

@@ -153,6 +153,8 @@ abstract class EsiBase extends AbstractJob
     {
         $this->incrementEsiRateLimit();
 
+        // in case the cause of failure has been an invalidated token,
+        // we have to mark the token as deleted.
         if (strpos('Invalid refresh token. Character grant missing/expired.', $exception->getMessage()) && $this->token)
             $this->token->delete();
 
