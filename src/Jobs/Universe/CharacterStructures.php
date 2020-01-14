@@ -67,7 +67,7 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
 
                 // attempt to resolve the structure
                 $structure = $this->retrieve([
-                    'structured_id' => $structure_id,
+                    'structure_id' => $structure_id,
                 ]);
 
                 UniverseStructure::updateOrCreate([
