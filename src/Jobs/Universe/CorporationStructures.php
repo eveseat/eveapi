@@ -73,7 +73,7 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
 
                 // attempt to resolve the structure
                 $structure = $this->retrieve([
-                    'structured_id' => $structure_id,
+                    'structure_id' => $structure_id,
                 ]);
 
                 UniverseStructure::updateOrCreate([
