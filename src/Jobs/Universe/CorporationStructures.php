@@ -91,7 +91,7 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
             } catch (RequestFailedException $e) {
                 logger()->error('Unable to retrieve structure information.', [
                     'structure ID'   => $structure_id,
-                    'token owner ID' => $this->getCharacterId(),
+                    'token owner ID' => $this->token->character_id,
                     'corporation ID' => $this->getCorporationId(),
                 ]);
             }
@@ -103,7 +103,7 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
      */
     public function getStructuresIdToResolve(): array
     {
-        $assets = CorporationAsset::where('character_id', $this->getCharacterId())
+        $assets = CorporationAsset::where('corporation_id', $this->getCorporationId())
             ->where('location_flag', 'Hangar')
             ->where('location_type', 'other')
             // according to ESI - structure ID has to start at a certain range
@@ -120,7 +120,7 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
             ->whereNotIn('location_id', function ($query) {
                 $query->select('item_id')
                     ->from((new CorporationAsset)->getTable())
-                    ->where('character_id', $this->getCharacterId())
+                    ->where('corporation_id', $this->getCorporationId())
                     ->distinct();
             })
             // exclude already resolved structures
