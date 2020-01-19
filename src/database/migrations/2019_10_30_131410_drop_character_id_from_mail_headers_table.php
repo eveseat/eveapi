@@ -94,7 +94,7 @@ class DropCharacterIdFromMailHeadersTable extends Migration
         // update mail recipients table
         Schema::table('mail_recipients', function (Blueprint $table) {
             $table->boolean('is_read')->default(false)->after('recipient_type');
-            $table->json('labels')->default('[]')->after('is_read');
+            $table->json('labels')->nullable()->after('is_read');
         });
 
         // seed mail recipients table using migration table
