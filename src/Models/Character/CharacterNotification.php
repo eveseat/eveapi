@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class CharacterNotification.
@@ -100,6 +101,44 @@ class CharacterNotification extends Model
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @var mixed
+     */
+    private $parsed_text;
+
+    /**
+     * Return YAML parsed value of the notification content.
+     *
+     * @param $value
+     * @return mixed
+     */
+    public function getTextAttribute($value)
+    {
+        if (is_null($this->parsed_text) && ! is_null($value))
+            $this->parsed_text = Yaml::parse($value);
+
+        return $this->parsed_text;
+    }
+
+    /**
+     * Reset parsed value of notification content and update raw value.
+     *
+     * @param $value
+     */
+    public function setTextAttribute($value)
+    {
+        $this->parsed_text = null;
+        $this->attributes['text'] = $value;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function recipient()
+    {
+        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
