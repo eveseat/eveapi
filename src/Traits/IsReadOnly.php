@@ -53,17 +53,6 @@ trait IsReadOnly
     }
 
     /**
-     * @param array $arr
-     *
-     * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
-     */
-    public static function firstOrNew(array $arr)
-    {
-
-        throw new ReadOnlyModelException;
-    }
-
-    /**
      * @param array $options
      *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
