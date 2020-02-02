@@ -89,7 +89,7 @@ class Contracts extends AbstractAuthCharacterJob
             collect($contracts)->each(function ($contract) {
 
                 // Update or create the contract details.
-                ContractDetail::firstOrNew([
+                $model = ContractDetail::firstOrNew([
                     'contract_id' => $contract->contract_id,
                 ])->fill([
                     'issuer_id'             => $contract->issuer_id,
@@ -115,7 +115,9 @@ class Contracts extends AbstractAuthCharacterJob
                     'collateral'            => isset($contract->collateral) ? $contract->collateral : null,
                     'buyout'                => isset($contract->buyout) ? $contract->buyout : null,
                     'volume'                => isset($contract->volume) ? $contract->volume : null,
-                ])->save();
+                ]);
+
+                $model->save();
 
                 // Ensure the character is associated to this contract
                 CharacterContract::firstOrCreate([
@@ -128,7 +130,8 @@ class Contracts extends AbstractAuthCharacterJob
                     dispatch(new Bids($this->token, $contract->contract_id));
 
                 // dispatch a job which will collect items related to this contract
-                if ($contract->type != 'courier' && $contract->status != 'deleted' && $contract->volume > 0)
+                if ($contract->type != 'courier' && $contract->status != 'deleted' &&
+                    $contract->volume > 0 && $model->lines->isEmpty())
                     dispatch(new Items($this->token, $contract->contract_id));
             });
 
