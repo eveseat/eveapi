@@ -179,17 +179,10 @@ use Seat\Web\Models\User;
  */
 class CorporationMemberTracking extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['corporation_id', 'character_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
