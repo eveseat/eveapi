@@ -28,7 +28,6 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Web\Models\User;
 
 /**
