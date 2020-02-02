@@ -187,7 +187,7 @@ class CorporationMemberTracking extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function type()
+    public function ship()
     {
 
         return $this->belongsTo(InvType::class, 'ship_type_id', 'typeID');
