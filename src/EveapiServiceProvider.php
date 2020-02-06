@@ -24,6 +24,10 @@ namespace Seat\Eveapi;
 
 use App\Providers\AbstractSeatPlugin;
 use Seat\Eveapi\Helpers\EseyeSetup;
+use Seat\Eveapi\Models\Character\CharacterAffiliation;
+use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Observers\CharacterAffiliationObserver;
+use Seat\Eveapi\Observers\RefreshTokenObserver;
 
 /**
  * Class EveapiServiceProvider.
@@ -45,6 +49,8 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         // Update api config
         $this->configure_api();
 
+        // Register events observers
+        $this->add_events();
     }
 
     /**
@@ -91,6 +97,15 @@ class EveapiServiceProvider extends AbstractSeatPlugin
                 __DIR__ . '/Models',
             ])),
         ]);
+    }
+
+    /**
+     * Register the custom events that may fore for this package.
+     */
+    private function add_events()
+    {
+        CharacterAffiliation::observe(CharacterAffiliationObserver::class);
+        RefreshToken::observe(RefreshTokenObserver::class);
     }
 
     /**
