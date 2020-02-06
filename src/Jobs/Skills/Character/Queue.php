@@ -82,12 +82,12 @@ class Queue extends AbstractAuthCharacterJob
             CharacterSkillQueue::firstOrNew([
                 'character_id' => $this->getCharacterId(),
                 'skill_id'     => $skill->skill_id,
+                'finished_level'    => $skill->finished_level,
             ])->fill([
                 'finish_date'       => property_exists($skill, 'finish_date') ?
                     carbon($skill->finish_date) : null,
                 'start_date'        => property_exists($skill, 'start_date') ?
                     carbon($skill->start_date) : null,
-                'finished_level'    => $skill->finished_level,
                 'queue_position'    => $skill->queue_position,
                 'training_start_sp' => property_exists($skill, 'training_start_sp') ?
                     $skill->training_start_sp : null,
