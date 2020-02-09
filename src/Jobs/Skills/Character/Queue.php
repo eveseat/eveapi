@@ -57,9 +57,9 @@ class Queue extends AbstractAuthCharacterJob
     protected $tags = ['skills', 'queue'];
 
     /**
-     * @var \Illuminate\Support\Collection
+     * @var int
      */
-    private $known_skills;
+    protected $greatest_position;
 
     /**
      * Execute the job.
@@ -68,8 +68,7 @@ class Queue extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-
-        $this->known_skills = collect();
+        $this->greatest_position = -1;
 
         $skill_queue = $this->retrieve([
             'character_id' => $this->getCharacterId(),
@@ -81,14 +80,14 @@ class Queue extends AbstractAuthCharacterJob
 
             CharacterSkillQueue::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'skill_id'     => $skill->skill_id,
-                'finished_level'    => $skill->finished_level,
+                'queue_position'    => $skill->queue_position,
             ])->fill([
+                'skill_id'     => $skill->skill_id,
                 'finish_date'       => property_exists($skill, 'finish_date') ?
                     carbon($skill->finish_date) : null,
                 'start_date'        => property_exists($skill, 'start_date') ?
                     carbon($skill->start_date) : null,
-                'queue_position'    => $skill->queue_position,
+                'finished_level'    => $skill->finished_level,
                 'training_start_sp' => property_exists($skill, 'training_start_sp') ?
                     $skill->training_start_sp : null,
                 'level_end_sp'      => property_exists($skill, 'level_end_sp') ?
@@ -97,12 +96,13 @@ class Queue extends AbstractAuthCharacterJob
                     $skill->level_start_sp : null,
             ])->save();
 
-            $this->known_skills->push($skill->skill_id);
+            if ($skill->queue_position > $this->greatest_position)
+                $this->greatest_position = $skill->queue_position;
         });
 
         // dropping outdated skills
         CharacterSkillQueue::where('character_id', $this->getCharacterId())
-            ->whereNotIn('skill_id', $this->known_skills->toArray())
+            ->where('queue_position', '>', $this->greatest_position)
             ->delete();
     }
 }
