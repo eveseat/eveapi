@@ -45,7 +45,7 @@ class Assets extends AbstractCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v3';
+    protected $version = 'v4';
 
     /**
      * @var string
