@@ -29,7 +29,6 @@ use Seat\Eveapi\Models\Contacts\CharacterContact;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Mail\MailHeader;
 use Seat\Eveapi\Models\Mail\MailRecipient;
-use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
@@ -74,15 +73,10 @@ class Affiliation extends EsiBase
 
     /**
      * Affiliation constructor.
-     *
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
      */
-    public function __construct(RefreshToken $token = null)
+    public function __construct()
     {
-
         $this->character_ids = collect();
-
-        parent::__construct($token);
     }
 
     /**
