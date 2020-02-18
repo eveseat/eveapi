@@ -395,6 +395,9 @@ abstract class EsiBase extends AbstractJob
 
             $last_auth = $this->client->getAuthentication();
 
+            if (! empty($last_auth->refresh_token))
+                $token->refresh_token = $last_auth->refresh_token;
+
             $token->token = $last_auth->access_token ?? '-';
             $token->expires_on = $last_auth->token_expires;
 
