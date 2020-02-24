@@ -43,7 +43,7 @@ class CharacterAffiliationObserver
         if (! CorporationInfo::find($affiliation->corporation_id))
             dispatch(new CorporationInfoJob($affiliation->corporation_id))->onQueue('high');
 
-        if (! Alliance::find($affiliation->alliance_id))
+        if (! empty($affiliation->alliance_id) && ! Alliance::find($affiliation->alliance_id))
             dispatch(new AllianceInfoJob($affiliation->alliance_id))->onQueue('high');
     }
 }
