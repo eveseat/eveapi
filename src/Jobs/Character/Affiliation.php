@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Character\CharacterNotification;
 use Seat\Eveapi\Models\Contacts\CharacterContact;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
@@ -102,7 +103,7 @@ class Affiliation extends EsiBase
                 ->select('client_id'),
             'contact_id'      => CharacterContact::where('contact_type', 'character'),
             'issuer_id'       => (new ContractDetail),
-            'character_id'    => (new MailHeader),
+            'character_id'    => (new CharacterInfo),
             'from'            => MailHeader::whereBetween('from', [3000000, 4000000])
                 ->orWhereBetween('from', [90000000, 98000000])
                 ->select('from'),
