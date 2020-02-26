@@ -23,12 +23,12 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Web\Models\User;
 
 /**
  * Class CorporationMemberTracking.
@@ -196,10 +196,10 @@ class CorporationMemberTracking extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      * @deprecated
      */
-    public function user()
+    public function refresh_token()
     {
 
-        return $this->belongsTo(User::class, 'character_id', 'id');
+        return $this->belongsTo(RefreshToken::class, 'character_id', 'character_id');
     }
 
     /**
