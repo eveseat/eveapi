@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Jobs\Universe;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
+use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
 /**
  * Class Names.
@@ -64,16 +65,26 @@ class Names extends EsiBase
     protected $entity_ids;
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    protected $existing_entity_ids;
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
      */
     public function handle()
     {
+
+        $this->existing_entity_ids = UniverseName::select('entity_id')
+            ->distinct()
+            ->get()
+            ->pluck('entity_id');
+
         $this->entity_ids = collect();
 
         $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')
-            ->whereNotIn('first_party_id', UniverseName::select('entity_id')->distinct()->get())
             ->whereNotNull('first_party_id')
             ->distinct()
             ->get()
@@ -81,14 +92,20 @@ class Names extends EsiBase
             ->toArray());
 
         $this->entity_ids->push(CharacterWalletJournal::select('second_party_id')
-            ->whereNotIn('second_party_id', UniverseName::select('entity_id')->distinct()->get())
             ->whereNotNull('second_party_id')
             ->distinct()
             ->get()
             ->pluck('second_party_id')
             ->toArray());
 
-        $this->entity_ids->flatten()->chunk($this->items_id_limit)->each(function ($chunk) {
+        $this->entity_ids->push(CharacterWalletTransaction::select('client_id')
+            ->whereNotNull('client_id')
+            ->distinct()
+            ->get()
+            ->pluck('client_id')
+            ->toArray());
+
+        $this->entity_ids->flatten()->diff($this->existing_entity_ids)->values()->chunk($this->items_id_limit)->each(function ($chunk) {
 
             $this->request_body = collect($chunk->values()->all())->unique()->values()->all();
 
