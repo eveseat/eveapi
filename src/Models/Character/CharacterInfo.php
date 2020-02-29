@@ -37,7 +37,6 @@ use Seat\Eveapi\Models\Corporation\CorporationTitle;
 use Seat\Eveapi\Models\Fittings\CharacterFitting;
 use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
 use Seat\Eveapi\Models\Industry\CharacterMining;
-use Seat\Eveapi\Models\Killmails\CharacterKillmail;
 use Seat\Eveapi\Models\Location\CharacterLocation;
 use Seat\Eveapi\Models\Location\CharacterOnline;
 use Seat\Eveapi\Models\Location\CharacterShip;
@@ -423,16 +422,6 @@ class CharacterInfo extends Model
     {
 
         return $this->hasMany(CharacterJumpClone::class,
-            'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function killmails()
-    {
-
-        return $this->hasMany(CharacterKillmail::class,
             'character_id', 'character_id');
     }
 
