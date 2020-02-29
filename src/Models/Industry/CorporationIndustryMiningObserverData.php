@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationIndustryMiningObserverData.
@@ -31,8 +30,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationIndustryMiningObserverData extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var string
      */
@@ -44,7 +41,12 @@ class CorporationIndustryMiningObserverData extends Model
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var null
      */
-    protected $primaryKey = ['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'updated_at'];
+    protected $primaryKey = null;
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 }

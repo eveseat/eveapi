@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Fittings;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterFitting.
@@ -32,17 +31,10 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterFitting extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'fitting_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

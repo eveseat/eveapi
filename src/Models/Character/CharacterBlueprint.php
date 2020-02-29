@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterBluePrints.
@@ -34,7 +33,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 class CharacterBlueprint extends Model
 {
     use CanUpsertIgnoreReplace;
-    use HasCompositePrimaryKey;
 
     /**
      * @var bool
@@ -44,7 +42,7 @@ class CharacterBlueprint extends Model
     /**
      * @var string
      */
-    protected $primaryKey = ['character_id', 'item_id'];
+    protected $primaryKey = 'item_id';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

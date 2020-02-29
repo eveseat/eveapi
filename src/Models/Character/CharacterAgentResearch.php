@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterAgentsResearch.
@@ -33,17 +32,10 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterAgentResearch extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = ['character_id', 'agent_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

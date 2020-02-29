@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterCorporationHistory.
@@ -79,17 +78,10 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 class CharacterCorporationHistory extends Model
 {
 
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = ['character_id', 'record_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

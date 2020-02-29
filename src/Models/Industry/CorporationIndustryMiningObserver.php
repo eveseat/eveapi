@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationIndustryMiningObserver.
@@ -31,8 +30,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationIndustryMiningObserver extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
@@ -41,5 +38,10 @@ class CorporationIndustryMiningObserver extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['corporation_id', 'observer_id'];
+    protected $primaryKey = 'observer_id';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 }
