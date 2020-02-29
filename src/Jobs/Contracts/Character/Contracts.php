@@ -74,17 +74,11 @@ class Contracts extends AbstractAuthCharacterJob
 
         while (true) {
 
-            logger()->debug('contract while passed with success');
-
             $contracts = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            logger()->debug('contract retrieve passed with success');
-
             if ($contracts->isCachedLoad()) return;
-
-            logger()->debug('contract cache passed with success');
 
             collect($contracts)->each(function ($contract) {
 
