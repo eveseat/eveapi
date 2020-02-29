@@ -37,6 +37,72 @@ class UniverseMoonContent extends Model
     protected static $unguarded = true;
 
     /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUbiquitous($query)
+    {
+        return $query->whereHas('type', function ($sub_query) {
+            $sub_query->where('marketGroupID', 2396);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCommon($query)
+    {
+        return $query->whereHas('type', function ($sub_query) {
+            $sub_query->where('marketGroupID', 2397);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUncommon($query)
+    {
+        return $query->whereHas('type', function ($sub_query) {
+            $sub_query->where('marketGroupID', 2398);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRare($query)
+    {
+        return $query->whereHas('type', function ($sub_query) {
+            $sub_query->where('marketGroupID', 2400);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeExceptional($query)
+    {
+        return $query->whereHas('type', function ($sub_query) {
+            $sub_query->where('marketGroupID', 2401);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeStandard($query)
+    {
+        return $query->whereHas('type', function ($sub_query) {
+            $sub_query->whereNotIn('marketGroupID', [2396, 2397, 2398, 2400, 2401]);
+        });
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()
