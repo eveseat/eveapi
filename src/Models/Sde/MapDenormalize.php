@@ -166,6 +166,11 @@ class MapDenormalize extends Model
     protected $primaryKey = 'itemID';
 
     /**
+     * @var object
+     */
+    private $moon_indicators;
+
+    /**
      * @param $query
      */
     public function scopeMoons($query)
@@ -243,6 +248,44 @@ class MapDenormalize extends Model
     {
 
         return $this->belongsTo(InvType::class, 'typeID', 'typeID');
+    }
+
+    /**
+     * @return object
+     */
+    public function getMoonIndicatorsAttribute()
+    {
+        if (is_null($this->moon_indicators)) {
+            $this->moon_indicators = (object)[
+                'ubiquitous' => $this->moon_contents->filter(function ($content) {
+                    return $content->type->marketGroupID == 2396;
+                })->count(),
+                'common' => $this->moon_contents->filter(function ($content) {
+                    return $content->type->marketGroupID == 2397;
+                })->count(),
+                'uncommon' => $this->moon_contents->filter(function ($content) {
+                    return $content->type->marketGroupID == 2398;
+                })->count(),
+                'rare' => $this->moon_contents->filter(function ($content) {
+                    return $content->type->marketGroupID == 2400;
+                })->count(),
+                'exceptional' => $this->moon_contents->filter(function ($content) {
+                    return $content->type->marketGroupID == 2401;
+                })->count(),
+                'standard' => $this->moon_contents->filter(function ($content) {
+                    return !in_array($content->type->marketGroupID, [2396, 2397, 2398, 2400, 2401]);
+                })->count(),
+            ];
+        }
+
+        return $this->moon_indicators ?: (object) [
+            'ubiquitous' => 0,
+            'common' => 0,
+            'uncommon' => 0,
+            'rare' => 0,
+            'exceptional' => 0,
+            'standard' => 0,
+        ];
     }
 
     /**
