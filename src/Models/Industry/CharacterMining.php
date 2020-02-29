@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Services\Repositories\Eve\EvePrices;
 
 /**
@@ -35,7 +34,7 @@ use Seat\Services\Repositories\Eve\EvePrices;
  */
 class CharacterMining extends Model
 {
-    use HasCompositePrimaryKey, EvePrices;
+    use EvePrices;
 
     /**
      * @var bool
@@ -43,9 +42,14 @@ class CharacterMining extends Model
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var null
      */
-    protected $primaryKey = ['character_id', 'date', 'time', 'solar_system_id', 'type_id'];
+    protected $primaryKey = null;
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

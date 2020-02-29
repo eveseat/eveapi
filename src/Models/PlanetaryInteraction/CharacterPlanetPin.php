@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterPlanetPin.
@@ -31,21 +30,18 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterPlanetPin extends Model
 {
-
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
+     * @var null
+     */
+    protected $primaryKey = null;
+
+    /**
      * @var bool
      */
     public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'planet_id', 'pin_id'];
 }

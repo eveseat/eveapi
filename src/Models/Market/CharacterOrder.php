@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Market;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterOrder.
@@ -144,22 +143,10 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterOrder extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'order_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

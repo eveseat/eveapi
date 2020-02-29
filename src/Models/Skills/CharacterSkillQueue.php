@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Skills;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterSkillQueue.
@@ -107,22 +106,10 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterSkillQueue extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'skill_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

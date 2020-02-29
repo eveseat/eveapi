@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Calendar;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterCalendarAttendee.
@@ -31,15 +30,8 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterCalendarAttendee extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['event_id', 'character_id'];
 }

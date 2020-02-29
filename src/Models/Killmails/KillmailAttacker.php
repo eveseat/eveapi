@@ -121,15 +121,20 @@ class KillmailAttacker extends Model
      */
     protected static $unguarded = true;
 
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
+    protected static function boot()
+    {
+        parent::boot();
 
-    /**
-     * @var null
-     */
-    protected $primaryKey = null;
+        // generate unique hash for the model based on attacker meta-data
+        self::creating(function ($model) {
+            $model->hash = md5(serialize([
+                $model->character_id,
+                $model->corporation_id,
+                $model->alliance_id,
+                $model->faction_id,
+            ]));
+        });
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

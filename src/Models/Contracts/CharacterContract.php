@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterContract.
@@ -49,17 +48,10 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterContract extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'contract_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

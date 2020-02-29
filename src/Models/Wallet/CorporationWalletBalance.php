@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationWalletBalance.
@@ -31,15 +30,18 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationWalletBalance extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var null
      */
-    protected $primaryKey = ['corporation_id', 'division'];
+    protected $primaryKey = null;
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 }

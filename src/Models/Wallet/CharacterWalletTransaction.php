@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterWalletTransaction.
@@ -117,22 +116,20 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterWalletTransaction extends Model
 {
-    use HasCompositePrimaryKey;
-
-    /**
+     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
+     * @var null
+     */
+    protected $primaryKey = null;
+
+    /**
      * @var bool
      */
     public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'transaction_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

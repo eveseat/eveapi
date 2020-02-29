@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Industry;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationIndustryMiningExtraction.
@@ -33,8 +32,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationIndustryMiningExtraction extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * Return the theoretical duration of a chunk once it reached its drilling cycle.
      */
@@ -56,9 +53,14 @@ class CorporationIndustryMiningExtraction extends Model
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $primaryKey = ['corporation_id', 'structure_id'];
+    protected $primaryKey = 'structure_id';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @return \Carbon\Carbon

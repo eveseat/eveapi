@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Traits\AuthorizedScope;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterSkill.
@@ -69,23 +68,12 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterSkill extends Model
 {
-    use HasCompositePrimaryKey;
     use AuthorizedScope;
 
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'skill_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

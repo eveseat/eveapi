@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class KillmailVictimItem.
@@ -31,16 +30,9 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class KillmailVictimItem extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['killmail_id', 'item_type_id'];
 
 }
