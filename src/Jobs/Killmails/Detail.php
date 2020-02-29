@@ -22,9 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Killmails;
 
-use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Killmails\CharacterKillmail;
 use Seat\Eveapi\Models\Killmails\KillmailAttacker;
 use Seat\Eveapi\Models\Killmails\KillmailDetail;
 use Seat\Eveapi\Models\Killmails\KillmailVictim;
@@ -137,6 +135,7 @@ class Detail extends EsiBase
                     $attacker->alliance_id : null,
                 'faction_id'      => property_exists($attacker, 'faction_id') ?
                     $attacker->faction_id : null,
+            ], [
                 'security_status' => $attacker->security_status,
                 'final_blow'      => $attacker->final_blow,
                 'damage_done'     => $attacker->damage_done,
