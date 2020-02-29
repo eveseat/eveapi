@@ -66,7 +66,7 @@ class Mails extends AbstractAuthCharacterJob
     public function handle()
     {
         // get last known mail ID to detect when parity has been reached
-        $mail_id = MailRecipient::where('recipient_id', $this->getCharacterId())
+        $last_known_mail = MailRecipient::where('recipient_id', $this->getCharacterId())
             ->orderBy('mail_id', 'desc')
             ->first();
 
@@ -76,9 +76,9 @@ class Mails extends AbstractAuthCharacterJob
 
         if ($mail->isCachedLoad()) return;
 
-        collect($mail)->each(function ($header) use ($mail_id) {
+        collect($mail)->each(function ($header) use ($last_known_mail) {
 
-            if ($mail_id == $header->mail_id)
+            if (! is_null($last_known_mail) && ($last_known_mail->mail_id == $header->mail_id))
                 return false;
 
             // seed mail header if not exists
