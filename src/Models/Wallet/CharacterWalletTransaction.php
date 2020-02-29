@@ -116,7 +116,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  */
 class CharacterWalletTransaction extends Model
 {
-     /**
+    /**
      * @var bool
      */
     protected static $unguarded = true;

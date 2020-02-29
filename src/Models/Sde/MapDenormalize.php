@@ -256,7 +256,7 @@ class MapDenormalize extends Model
     public function getMoonIndicatorsAttribute()
     {
         if (is_null($this->moon_indicators)) {
-            $this->moon_indicators = (object)[
+            $this->moon_indicators = (object) [
                 'ubiquitous' => $this->moon_contents->filter(function ($content) {
                     return $content->type->marketGroupID == 2396;
                 })->count(),
@@ -273,7 +273,7 @@ class MapDenormalize extends Model
                     return $content->type->marketGroupID == 2401;
                 })->count(),
                 'standard' => $this->moon_contents->filter(function ($content) {
-                    return !in_array($content->type->marketGroupID, [2396, 2397, 2398, 2400, 2401]);
+                    return ! in_array($content->type->marketGroupID, [2396, 2397, 2398, 2400, 2401]);
                 })->count(),
             ];
         }
