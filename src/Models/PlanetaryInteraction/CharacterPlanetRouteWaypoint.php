@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterPlanetRouteWaypoint.
@@ -31,20 +30,18 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterPlanetRouteWaypoint extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
+     * @var null
+     */
+    protected $primaryKey = null;
+
+    /**
      * @var bool
      */
     public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'planet_id', 'route_id', 'pin_id'];
 }

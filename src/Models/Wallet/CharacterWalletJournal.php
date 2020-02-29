@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Wallet;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterWalletJournal.
@@ -141,8 +140,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterWalletJournal extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
@@ -152,11 +149,6 @@ class CharacterWalletJournal extends Model
      * @var bool
      */
     public $incrementing = false;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = ['character_id', 'ref_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

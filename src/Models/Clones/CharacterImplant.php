@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Clones;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterImplant.
@@ -32,17 +31,10 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterImplant extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'type_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

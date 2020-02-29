@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationCustomsOffice.
@@ -32,17 +31,20 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationCustomsOffice extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $primaryKey = ['corporation_id', 'office_id'];
+    protected $primaryKey = 'office_id';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

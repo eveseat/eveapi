@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\RamActivity;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationIndustryJob.
@@ -223,8 +222,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationIndustryJob extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
@@ -233,7 +230,12 @@ class CorporationIndustryJob extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['corporation_id', 'job_id'];
+    protected $primaryKey = 'job_id';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
