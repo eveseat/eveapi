@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Clones;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CharacterJumpClone.
@@ -87,8 +86,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CharacterJumpClone extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
@@ -100,11 +97,6 @@ class CharacterJumpClone extends Model
     protected $casts = [
         'implants' => 'array',
     ];
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['character_id', 'jump_clone_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

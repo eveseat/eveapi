@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Wallet;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationWalletJournal.
@@ -148,7 +147,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 class CorporationWalletJournal extends Model
 {
     use CanUpsertIgnoreReplace;
-    use HasCompositePrimaryKey;
 
     /**
      * @var bool
@@ -156,9 +154,14 @@ class CorporationWalletJournal extends Model
     protected static $unguarded = true;
 
     /**
-     * @var array
+     * @var null
      */
-    protected $primaryKey = ['corporation_id', 'division', 'ref_id'];
+    protected $primaryKey = null;
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

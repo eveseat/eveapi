@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Models\Market;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationOrder.
@@ -145,17 +144,10 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationOrder extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['corporation_id', 'order_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

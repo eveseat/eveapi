@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Alliances;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class AllianceMember.
@@ -31,15 +30,8 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class AllianceMember extends Model
 {
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var array
-     */
-    protected $primaryKey = ['alliance_id', 'corporation_id'];
 }

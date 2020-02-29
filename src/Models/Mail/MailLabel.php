@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Mail;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class MailLabel.
@@ -31,16 +30,8 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class MailLabel extends Model
 {
-
-    use HasCompositePrimaryKey;
-
     /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @var null
-     */
-    protected $primaryKey = ['character_id', 'label_id'];
 }
