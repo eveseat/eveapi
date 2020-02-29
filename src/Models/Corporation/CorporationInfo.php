@@ -32,7 +32,6 @@ use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\Contacts\CorporationLabel;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
-use Seat\Eveapi\Models\Killmails\CorporationKillmail;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
 use Seat\Eveapi\Models\Universe\UniverseName;
@@ -348,16 +347,6 @@ class CorporationInfo extends Model
     {
 
         return $this->hasMany(CorporationIssuedMedal::class,
-            'corporation_id', 'corporation_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function killmails()
-    {
-
-        return $this->hasMany(CorporationKillmail::class,
             'corporation_id', 'corporation_id');
     }
 
