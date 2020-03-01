@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -32,6 +33,10 @@ class RemoveCorporationBookmarkFoldersSurrogateKey extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
+
+        DB::table('corporation_bookmark_folders')
+            ->where('folder_id', 0)
+            ->delete();
 
         Schema::table('corporation_bookmark_folders', function (Blueprint $table) {
             $table->dropPrimary();

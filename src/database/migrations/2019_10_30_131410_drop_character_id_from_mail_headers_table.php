@@ -24,6 +24,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Class DropCharacterIdFromMailHeadersTable.
@@ -97,12 +99,19 @@ class DropCharacterIdFromMailHeadersTable extends Migration
             $table->json('labels')->nullable()->after('is_read');
         });
 
+        $count = DB::table('mig_mail_recipients')
+            ->distinct()
+            ->count();
+
+        $output = new ConsoleOutput();
+        $progress = new ProgressBar($output, $count);
+
         // seed mail recipients table using migration table
         DB::table('mig_mail_recipients')
             ->select('mail_id', 'recipient_id', 'is_read', 'labels')
             ->orderBy('mail_id')
             ->distinct()
-            ->each(function ($entry) {
+            ->each(function ($entry) use ($progress) {
                 DB::table('mail_recipients')
                     ->updateOrInsert(
                         [
@@ -114,12 +123,17 @@ class DropCharacterIdFromMailHeadersTable extends Migration
                             'is_read' => $entry->is_read,
                             'labels'  => $entry->labels,
                         ]);
+
+                $progress->advance();
             });
 
         Schema::dropIfExists('mig_mail_headers');
         Schema::dropIfExists('mig_mail_recipients');
 
         Schema::enableForeignKeyConstraints();
+
+        $progress->finish();
+        $output->writeln('');
     }
 
     public function down()
