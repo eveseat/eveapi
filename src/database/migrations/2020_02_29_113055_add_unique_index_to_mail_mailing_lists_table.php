@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -31,6 +32,16 @@ class AddUniqueIndexToMailMailingListsTable extends Migration
 {
     public function up()
     {
+        Schema::table('mail_mailing_lists', function (Blueprint $table) {
+            $table->increments('id');
+        });
+
+        DB::statement('DELETE a FROM mail_mailing_lists a INNER JOIN mail_mailing_lists b WHERE a.id > b.id AND a.character_id = b.character_id AND a.mailing_list_id = b.mailing_list_id');
+
+        Schema::table('mail_mailing_lists', function (Blueprint $table) {
+            $table->dropColumn('id');
+        });
+
         Schema::table('mail_mailing_lists', function (Blueprint $table) {
             $table->unique(['character_id', 'mailing_list_id'], 'mail_mailing_lists');
         });
