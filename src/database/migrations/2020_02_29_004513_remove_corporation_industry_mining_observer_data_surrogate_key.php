@@ -32,8 +32,8 @@ class RemoveCorporationIndustryMiningObserverDataSurrogateKey extends Migration
     public function up()
     {
         Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
-            $table->dropPrimary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'updated_at']);
-            $table->unique(['observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'updated_at'], 'corporation_industry_mining_observer_data_unique');
+            $table->dropPrimary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'last_updated']);
+            $table->unique(['observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'last_updated'], 'corporation_industry_mining_observer_data_unique');
         });
     }
 
@@ -41,7 +41,7 @@ class RemoveCorporationIndustryMiningObserverDataSurrogateKey extends Migration
     {
         Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
             $table->dropUnique('corporation_industry_mining_observer_data_unique');
-            $table->primary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'updated_at'], 'corporation_industry_mining_observer_data_primary');
+            $table->primary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'last_updated'], 'corporation_industry_mining_observer_data_primary');
         });
     }
 }
