@@ -213,7 +213,8 @@ abstract class EsiBase extends AbstractJob
             if ($exception->getEsiResponse()->getErrorCode() == 400 && in_array($exception->getEsiResponse()->error(), [
                 'invalid_token: The refresh token is expired.',
                 'invalid_token: The refresh token does not match the client specified.',
-                'Invalid refresh token. Character grant missing/expired.',
+                'invalid_grant: Invalid refresh token. Character grant missing/expired.',
+                'invalid_grant: Invalid refresh token. Unable to migrate grant.',
             ])) {
 
                 // Remove the invalid token
