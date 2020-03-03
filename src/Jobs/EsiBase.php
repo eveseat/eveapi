@@ -215,6 +215,7 @@ abstract class EsiBase extends AbstractJob
                 'invalid_token: The refresh token does not match the client specified.',
                 'invalid_grant: Invalid refresh token. Character grant missing/expired.',
                 'invalid_grant: Invalid refresh token. Unable to migrate grant.',
+                'invalid_grant: Invalid refresh token. Token missing/expired.',
             ])) {
 
                 // Remove the invalid token
