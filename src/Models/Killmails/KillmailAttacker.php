@@ -127,7 +127,7 @@ class KillmailAttacker extends Model
 
         // generate unique hash for the model based on attacker meta-data
         self::creating(function ($model) {
-            $model->hash = md5(serialize([
+            $model->attacker_hash = md5(serialize([
                 $model->character_id,
                 $model->corporation_id,
                 $model->alliance_id,
