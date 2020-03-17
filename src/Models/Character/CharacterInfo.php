@@ -595,7 +595,8 @@ class CharacterInfo extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'character_id', 'id');
+        return $this->hasOneThrough(User::class, RefreshToken::class, 
+            'character_id', 'id', 'character_id', 'user_id');
     }
 
     /**
