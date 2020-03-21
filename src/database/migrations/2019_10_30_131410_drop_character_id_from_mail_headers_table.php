@@ -99,41 +99,7 @@ class DropCharacterIdFromMailHeadersTable extends Migration
             $table->json('labels')->nullable()->after('is_read');
         });
 
-        $count = DB::table('mig_mail_recipients')
-            ->distinct()
-            ->count();
-
-        $output = new ConsoleOutput();
-        $progress = new ProgressBar($output, $count);
-
-        // seed mail recipients table using migration table
-        DB::table('mig_mail_recipients')
-            ->select('mail_id', 'recipient_id', 'is_read', 'labels')
-            ->orderBy('mail_id')
-            ->distinct()
-            ->each(function ($entry) use ($progress) {
-                DB::table('mail_recipients')
-                    ->updateOrInsert(
-                        [
-                            'mail_id'        => $entry->mail_id,
-                            'recipient_id'   => $entry->recipient_id,
-                            'recipient_type' => 'character',
-                        ],
-                        [
-                            'is_read' => $entry->is_read,
-                            'labels'  => $entry->labels,
-                        ]);
-
-                $progress->advance();
-            });
-
         Schema::dropIfExists('mig_mail_headers');
-        Schema::dropIfExists('mig_mail_recipients');
-
-        Schema::enableForeignKeyConstraints();
-
-        $progress->finish();
-        $output->writeln('');
     }
 
     public function down()
