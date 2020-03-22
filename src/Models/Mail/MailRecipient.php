@@ -29,20 +29,20 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  * Class MailRecipient.
  * @package Seat\Eveapi\Models\Mail
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Mail Recipient",
  *     title="MailRecipient",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="recipient_id",
  *     description="The recipient ID"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     enum={"character", "corporation", "alliance", "mailing_list"},
  *     property="recipient_type",

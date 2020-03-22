@@ -28,9 +28,58 @@ use Seat\Eveapi\Models\Sde\InvType;
 /**
  * Class ContractItem.
  * @package Seat\Eveapi\Models\Contacts
+ *
+ * @OA\Schema(
+ *     description="Contract Item",
+ *     title="ContractItem",
+ *     type="object"
+ * )
+ *
+ * @OA\Property(
+ *     property="type_id",
+ *     type="integer",
+ *     description="The item type identifier"
+ * )
+ *
+ * @OA\Property(
+ *     property="quantity",
+ *     type="number",
+ *     description="The item quantity"
+ * )
+ *
+ * @OA\Property(
+ *     property="raw_quantity",
+ *     type="integer",
+ *     minimum=-2
+ * )
+ *
+ * @OA\Property(
+ *     property="is_singleton",
+ *     type="boolean",
+ *     description="Determine if the item is stacked"
+ * )
+ *
+ * @OA\Property(
+ *     property="is_included",
+ *     type="boolean",
+ *     description="Determine if the item is contained in a parent item"
+ * )
  */
 class ContractItem extends Model
 {
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'is_singleton' => 'boolean',
+        'is_included' => 'boolean',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['contract_id', 'record_id', 'created_at', 'updated_at'];
+
     /**
      * @var bool
      */

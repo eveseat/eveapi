@@ -30,45 +30,44 @@ use Seat\Eveapi\Traits\AuthorizedScope;
  * Class CharacterSkill.
  * @package Seat\Eveapi\Models\Character
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Character Skill",
  *     title="CharacterSkill",
  *     type="object"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     property="skill_id",
- *     description="The skill inventory type ID"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="skillpoints_in_skill",
  *     description="The amount of skill point actually learned for that skill"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="trained_skill_level",
  *     description="The level up to which the skill as been learned"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="active_skill_level",
  *     description="The level actually training"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     property="type",
- *     ref="#/definitions/InvType",
+ *     ref="#/components/schemas/InvType",
  *     description="The inventory type information"
  * )
  */
 class CharacterSkill extends Model
 {
     use AuthorizedScope;
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['id', 'character_id', 'skill_id', 'created_at', 'updated_at'];
 
     /**
      * @var bool

@@ -29,93 +29,87 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  * Class KillmailAttacker.
  * @package Seat\Eveapi\Models\Killmails
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Killmail Attacker",
  *     title="KillmailAttacker",
  *     type="object"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     format="int64",
- *     property="killmail_id",
- *     description="The killmail identifier to which the attacker is attached"
+ * @OA\Property(
+ *     property="attacker_hash",
+ *     type="string",
+ *     description="A hash composite of character_id, corporation_id, alliance_id and faction_id fields"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="character_id",
  *     description="The character identifier"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="corporation_id",
  *     description="The corporation identifier to which the attacker depends"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="alliance_id",
  *     description="The alliance identifier to which the attacker depends"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="faction_id",
  *     description="The faction identifier to which the attacker depends (if factional warfare)"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="float",
  *     property="security_status",
  *     description="The attacker security status"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="boolean",
  *     property="final_blow",
  *     description="True if the attacker did the final blow"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="damage_done",
  *     description="The amount of damage the attacker applied"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="ship_type_id",
  *     description="The ship inventory type identifier into which attacker was"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="weapon_type_id",
  *     description="The weapon inventory type identifier used by the attacker"
  * )
- *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="created_at",
- *     description="The date-time when record has been created into SeAT"
- * )
- *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="updated_at",
- *     description="The date-time when record has been updated into SeAT"
- * )
  */
 class KillmailAttacker extends Model
 {
+    protected $casts = [
+        'final_blow' => 'boolean',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['id', 'killmail_id', 'created_at', 'updated_at'];
+
     /**
      * @var bool
      */

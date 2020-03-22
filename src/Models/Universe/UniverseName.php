@@ -28,9 +28,40 @@ use Seat\Eveapi\Models\Character\CharacterAffiliation;
 /**
  * Class UniverseName.
  * @package Seat\Eveapi\Models\Universe
+ *
+ * @OA\Schema(
+ *      description="Universe Name",
+ *      title="UniverseName",
+ *      type="object"
+ * )
+ *
+ * @OA\Property(
+ *      property="entity_id",
+ *      type="integer",
+ *      format="int64",
+ *      description="The entity identifier"
+ * )
+ *
+ * @OA\Property(
+ *      property="name",
+ *      type="string",
+ *      description="The entity name"
+ * )
+ *
+ * @OA\Property(
+ *      property="category",
+ *      type="string",
+ *      enum={"alliance","character","constellation","corporation","inventory_type","region","solar_system","station","faction"},
+ *      description="The entity type"
+ * )
  */
 class UniverseName extends Model
 {
+    /**
+     * @var array
+     */
+    protected $hidden = ['created_at', 'updated_at'];
+
     /**
      * @var bool
      */

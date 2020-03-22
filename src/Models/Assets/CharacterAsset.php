@@ -35,100 +35,112 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  * Class CharacterAsset.
  * @package Seat\Eveapi\Models\Assets
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Character Asset",
  *     title="CharacterAsset",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="item_id",
  *     description="The item identifier"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     property="type_id",
- *     description="The item inventory type identifier"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="integer",
  *     property="quantity",
  *     description="The item quantity"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="location_id",
  *     description="The place of the item"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     enum={"station", "solar_system", "other"},
  *     property="location_type",
  *     description="The location qualifier"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="location_flag",
  *     description="The location flag"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="boolean",
  *     property="is_singleton",
  *     description="True if the item is not stacked"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="x",
  *     description="The x coordinate if the item is in space"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="y",
  *     description="The y coordinate if the item is in space"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="z",
  *     description="The z coordinate if the item is in space"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="map_id",
  *     description="The map identifier into which item is located"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="map_name",
  *     description="The name of the system where the item resides"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
+ *     type="string",
+ *     property="name",
+ *     description="The name of the asset (ie: a ship name)"
+ * )
+ *
+ * @OA\Property(
  *     property="type",
- *     ref="#/definitions/InvType"
+ *     ref="#/components/schemas/InvType"
  * )
  */
 class CharacterAsset extends Model
 {
     use CanUpsertIgnoreReplace;
     use AuthorizedScope;
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['character_id', 'type_id', 'created_at', 'updated_at'];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'is_singleton' => 'boolean',
+    ];
 
     /**
      * @var bool
