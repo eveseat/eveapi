@@ -33,13 +33,13 @@ use Seat\Web\Models\User;
  * Class RefreshToken.
  * @package Seat\Eveapi\Models
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="EVE Online SSO Refresh Token",
  *     title="RefreshToken",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     minimum=90000000,
@@ -47,47 +47,47 @@ use Seat\Web\Models\User;
  *     property="character_id"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     description="Refresh token hash",
  *     property="refresh_token"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="array",
  *     description="Scopes granted for this token",
  *     property="scopes",
- *     @SWG\Items(type="string")
+ *     @OA\Items(type="string")
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     description="The datetime UTC when the token expires",
  *     property="expires_on"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     description="The short life access token",
  *     property="token"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     description="The date-time when the token has been created into SeAT",
  *     property="created_at"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     description="The date-time when the token has been updated into SeAT",
  *     property="updated_at"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     description="The date-time when the token has been disabled",
