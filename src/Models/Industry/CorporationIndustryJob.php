@@ -31,197 +31,164 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CorporationIndustryJob.
  * @package Seat\Eveapi\Models\Industry
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Corporation Industry Jobs",
  *     title="CorporationIndustryJob",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="job_id",
  *     description="The job ID"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="installer_id",
  *     description="The character who start the job"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="facility_id",
  *     description="The structure where the job has been started"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="station_id",
  *     description="The outpost where the job has been started (deprecated)"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="activity_id",
  *     description="The activity type used for the job"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="blueprint_id",
  *     description="The item blueprint ID on which the job is based"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     property="blueprint_type_id",
- *     description="The used blueprint type"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="blueprint_location_id",
  *     description="The place where the blueprint is stored"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="output_location_id",
  *     description="The place where the resulting item should be put"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="runs",
  *     description="The runs amount for the activity"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="cost",
  *     description="The job installation cost"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="licensed_runs",
  *     description="The number of copy"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="probability",
  *     description="The success rate"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     property="product_type_id",
- *     description="The resulting item type"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     enum={"active","cancelled","delivered","paused","ready","reverted"},
  *     property="status",
  *     description="The job status"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="duration",
  *     description="The job duration in seconds"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="start_date",
  *     description="The date-time when job has been started"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="end_date",
  *     description="The date-time when job should be done"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="pause_date",
  *     description="The date-time when job has been paused"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="completed_date",
  *     description="The date-time when job has been delivered"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="completed_character_id",
  *     description="The character who deliver the job"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="successful_runs",
  *     description="The amount of completed runs"
  * )
  *
- * @SWG\Property(
- *     type="object",
- *     property="created_at",
- *     description="The contact creation date",
- *     @SWG\Property(
- *          type="string",
- *          format="date-time",
- *          property="date"
- *     ),
- *     @SWG\Property(
- *          type="integer",
- *          property="timezone_type"
- *     ),
- *     @SWG\Property(
- *          type="string",
- *          property="timezone"
- *     )
+ * @OA\Property(
+ *     property="blueprint",
+ *     description="The used blueprint type",
+ *     ref="#/components/schemas/InvType"
  * )
  *
- * @SWG\Property(
- *     type="object",
- *     property="updated_at",
- *     description="The contact creation date",
- *     @SWG\Property(
- *          type="string",
- *          format="date-time",
- *          property="date"
- *     ),
- *     @SWG\Property(
- *          type="integer",
- *          property="timezone_type"
- *     ),
- *     @SWG\Property(
- *          type="string",
- *          property="timezone"
- *     )
+ * @OA\Property(
+ *     property="product",
+ *     description="The output type",
+ *     ref="#/components/schemas/InvType"
  * )
  */
 class CorporationIndustryJob extends Model
 {
+    /**
+     * @var array
+     */
+    protected $hidden = ['created_at', 'updated_at'];
+
     /**
      * @var bool
      */

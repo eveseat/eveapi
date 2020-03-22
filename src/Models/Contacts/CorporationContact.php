@@ -29,92 +29,50 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  * Class CorporationContact.
  * @package Seat\Eveapi\Models\Contacts
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Corporation Contact",
  *     title="CorporationContact",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="contact_id",
  *     description="The entity ID"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="float",
  *     property="standing",
  *     description="The standing between -10 and 10"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     enum={"character","corporation","alliance","faction"},
  *     property="contact_type",
  *     description="The entity type"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="boolean",
  *     property="is_watched",
  *     description="True if the contact is in the watchlist"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="boolean",
  *     property="is_blocked",
  *     description="True if the contact is in the blacklist"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     property="label_id",
- *     description="The labels mask attached to the the contact"
- * )
- *
- * @SWG\Property(
- *     type="string",
- *     property="label_data"
- * )
- *
- * @SWG\Property(
- *     type="object",
- *     property="created_at",
- *     description="The contact creation date",
- *     @SWG\Property(
- *          type="string",
- *          format="date-time",
- *          property="date"
- *     ),
- *     @SWG\Property(
- *          type="integer",
- *          property="timezone_type"
- *     ),
- *     @SWG\Property(
- *          type="string",
- *          property="timezone"
- *     )
- * )
- *
- * @SWG\Property(
- *     type="object",
- *     property="updated_at",
- *     description="The contact creation date",
- *     @SWG\Property(
- *          type="string",
- *          format="date-time",
- *          property="date"
- *     ),
- *     @SWG\Property(
- *          type="integer",
- *          property="timezone_type"
- *     ),
- *     @SWG\Property(
- *          type="string",
- *          property="timezone"
- *     )
+ * @OA\Property(
+ *     property="labels",
+ *     type="array",
+ *     description="Labels attached to the the contact",
+ *     @OA\Items(type="string")
  * )
  */
 class CorporationContact extends Model
@@ -124,7 +82,16 @@ class CorporationContact extends Model
      * @var array
      */
     protected $casts = [
+        'is_watched' => 'boolean',
+        'is_blocked' => 'boolean',
         'label_ids' => 'array',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $hidden = [
+        'created_at', 'updated_at',
     ];
 
     /**

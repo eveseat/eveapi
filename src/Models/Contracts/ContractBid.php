@@ -27,9 +27,41 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class ContractBid.
  * @package Seat\Eveapi\Models\Contacts
+ *
+ * @OA\Schema(
+ *     description="Contract Bid",
+ *     title="ContractBid",
+ *     type="object"
+ * )
+ *
+ * @OA\Property(
+ *     property="bidder_id",
+ *     type="integer",
+ *     format="int64",
+ *     description="Identifier from entity who put a bid"
+ * )
+ *
+ * @OA\Property(
+ *     property="date_bid",
+ *     type="string",
+ *     format="date-time",
+ *     description="Date/Time when the bid has been placed"
+ * )
+ *
+ * @OA\Property(
+ *     property="amount",
+ *     type="number",
+ *     description="Amount of placed bid"
+ * )
+ *
  */
 class ContractBid extends Model
 {
+    /**
+     * @var array
+     */
+    protected $hidden = ['bid_id', 'contract_id', 'created_at', 'updated_at'];
+
     /**
      * @var bool
      */

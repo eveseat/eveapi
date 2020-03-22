@@ -29,53 +29,45 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
  * Class KillmailDetail.
  * @package Seat\Eveapi\Models\Killmails
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Killmail Detail",
  *     title="KillmailDetail",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
+ *     property="killmail_time",
  *     type="string",
  *     format="date-time",
- *     property="killmail_time",
  *     description="The date-time when kill append"
  * )
  *
- * @SWG\Property(
- *     type="integer",
+ * @OA\Property(
  *     property="solar_system_id",
+ *     type="integer",
  *     description="The solar system identifier in which the kill occurs"
  * )
  *
- * @SWG\Property(
- *     type="integer",
+ * @OA\Property(
  *     property="moon_id",
+ *     type="integer",
  *     description="The moon identifier near to which the kill occurs"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
+ *     property="war_id",
  *     type="integer",
  *     format="int64",
- *     property="war_id",
  *     description="The war identifier in which the kill involves"
- * )
- *
- * @SWG\Property(
- *     type="array",
- *     property="attackers",
- *     description="A list of attackers",
- *     @SWG\Items(ref="#/definitions/KillmailAttacker")
- * )
- *
- * @SWG\Property(
- *     property="victims",
- *     description="The victim",
- *     ref="#/definitions/KillmailVictim"
  * )
  */
 class KillmailDetail extends Model
 {
+    /**
+     * @var array
+     */
+    protected $hidden = ['killmail_id', 'created_at', 'updated_at'];
+
     /**
      * @var bool
      */

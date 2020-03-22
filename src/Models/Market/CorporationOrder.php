@@ -30,120 +30,125 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CorporationOrder.
  * @package Seat\Eveapi\Models\Market
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Corporation Order",
  *     title="CorporationOrder",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="order_id",
  *     description="The market order ID"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     property="type_id",
- *     description="The type to which order is referring"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="region_id",
  *     description="The region up to which the order is valid"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="location_id",
  *     description="The structure where the order is"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="range",
  *     description="The range the order is covering"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="boolean",
  *     property="is_buy_order",
  *     description="True if the order is a buy order"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="price",
  *     description="The unit price"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="volume_total",
  *     description="The order initial volume"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="volume_remain",
  *     description="The order remaining volume"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="issued",
  *     description="The date-time when the order has been created"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
+ *     property="issued_by",
+ *     type="integer",
+ *     format="int64",
+ *     description="The entity ID who create the order"
+ * )
+ *
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="min_volume",
  *     description="The minimum volume which is requested for a buy order"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     property="duration",
- *     description="The number of seconds the order is valid"
- * )
- *
- * @SWG\Property(
- *     type="number",
- *     format="double",
- *     property="escrow"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     minimum=1,
  *     property="wallet_division",
  *     description="The division to which the order is depending."
  * )
  *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="created_at",
- *     description="The date-time when order has been created into SeAT"
+ * @OA\Property(
+ *     type="integer",
+ *     property="duration",
+ *     description="The number of seconds the order is valid"
  * )
  *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="updated_at",
- *     description="The date-time when order has been updated into SeAT"
+ * @OA\Property(
+ *     type="number",
+ *     format="double",
+ *     property="escrow"
+ * )
+ *
+ * @OA\Property(
+ *     property="type",
+ *     ref="#/components/schemas/InvType",
+ *     description="The type to which order is referring"
  * )
  */
 class CorporationOrder extends Model
 {
+    /**
+     * @var array
+     */
+    protected $hidden = ['id', 'corporation_id', 'type_id', 'created_at', 'updated_at'];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'is_buy_order' => 'boolean',
+    ];
+
     /**
      * @var bool
      */

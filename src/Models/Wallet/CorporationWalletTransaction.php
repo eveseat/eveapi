@@ -31,91 +31,88 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CharacterWalletTransaction.
  * @package Seat\Eveapi\Models\Wallet
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Corporation Wallet Transaction",
  *     title="CorporationWalletTransaction",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="division",
  *     description="Wallet key of the division to fetch journals from"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="transaction_id",
  *     description="Unique transaction ID"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="date",
  *     description="Date and time of transaction"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="location_id",
  *     description="The place where the transaction has been made"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="unit_price",
  *     description="Amount paid per unit"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="quantity"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     format="int64",
- *     property="client_id"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     type="boolean",
  *     property="is_buy",
  *     description="True if the transaction is related to a buy order"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="journal_ref_id",
  *     description="-1 if there is no corresponding wallet journal entry"
  * )
  *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="created_at",
- *     description="The date-time when transaction has been created into SeAT"
+ * @OA\Property(
+ *     property="party",
+ *     ref="#/components/schemas/UniverseName"
  * )
  *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="updated_at",
- *     description="The date-time when transaction has been updated into SeAT"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     property="type",
- *     ref="#/definitions/InvType"
+ *     ref="#/components/schemas/InvType"
  * )
  */
 class CorporationWalletTransaction extends Model
 {
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'is_buy' => 'boolean',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['corporation_id', 'client_id', 'type_id', 'created_at', 'updated_at'];
+
     /**
      * @var bool
      */

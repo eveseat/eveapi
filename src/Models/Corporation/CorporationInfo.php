@@ -45,96 +45,89 @@ use Seat\Eveapi\Traits\AuthorizedScope;
  * Class CorporationInfo.
  * @package Seat\Eveapi\Models\Corporation
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *      description="Corporation Sheet",
  *      title="CorporationInfo",
  *      type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="name",
  *     description="The name of the corporation"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="ticker",
  *     description="The corporation ticker name"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="member_count",
  *     description="The member amount of the corporation"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     format="int64",
- *     minimum=90000000,
- *     property="ceo_id",
- *     description="The character ID of the corporation CEO"
+ * @OA\Property(
+ *     property="ceo",
+ *     description="The character ID of the corporation CEO",
+ *     ref="#/components/schemas/UniverseName"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     format="int64",
- *     minimum=99000000,
- *     property="alliance_id",
- *     description="The alliance ID of the corporation if any"
+ * @OA\Property(
+ *     property="alliance",
+ *     description="The alliance of the corporation if any",
+ *     ref="#/components/schemas/UniverseName"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="description",
  *     description="The corporation description"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="float",
  *     property="tax_rate",
  *     description="The corporation tax rate"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="date_founded",
  *     description="The corporation creation date"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     format="int64",
- *     property="creator_id",
- *     description="The corporation founder character ID"
+ * @OA\Property(
+ *     property="creator",
+ *     description="The corporation founder character",
+ *     ref="#/components/schemas/UniverseName"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="uri",
  *     property="url",
  *     description="The corporation homepage link"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     minimum=500000,
- *     maximum=1000000,
- *     property="faction_id",
- *     description="The corporation faction if any"
+ * @OA\Property(
+ *     property="faction",
+ *     description="The corporation faction if any",
+ *     ref="#/components/schemas/UniverseName"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="home_station_id",
  *     description="The home station where the corporation has its HQ"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="shares",
@@ -543,5 +536,26 @@ class CorporationInfo extends Model
                 'category'  => 'character',
                 'name'      => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function creator()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'creator_id')
+            ->withDefault([
+                'category' => 'character',
+                'name'     => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function faction()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
+            ->withDefault();
     }
 }

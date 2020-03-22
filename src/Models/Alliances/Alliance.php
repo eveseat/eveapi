@@ -31,6 +31,11 @@ use Illuminate\Database\Eloquent\Model;
 class Alliance extends Model
 {
     /**
+     * @var array
+     */
+    protected $hidden = ['created_at', 'updated_at'];
+
+    /**
      * @var bool
      */
     protected static $unguarded = true;

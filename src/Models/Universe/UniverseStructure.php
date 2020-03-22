@@ -29,6 +29,25 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
 /**
  * Class UniverseStructure.
  * @package Seat\Eveapi\Models\Universe
+ *
+ * @OA\Schema(
+ *     description="Universe Structure",
+ *     title="UniverseStructure",
+ *     type="object"
+ * )
+ *
+ * @OA\Property(
+ *     property="structure_id",
+ *     type="integer",
+ *     format="int64",
+ *     description="Structure identifier"
+ * )
+ *
+ * @OA\Property(
+ *     property="name",
+ *     type="string",
+ *     description="Structure name"
+ * )
  */
 class UniverseStructure extends Model
 {

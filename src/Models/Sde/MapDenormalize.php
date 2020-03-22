@@ -31,101 +31,101 @@ use Seat\Eveapi\Traits\IsReadOnly;
  * Class MapDenormalize.
  * @package Seat\Eveapi\Models\Sde
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Map Denormalize",
  *     title="MapDenormalize",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="itemID",
  *     description="The entity ID"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="typeID",
  *     description="The type of the entity"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="groupID",
  *     description="The group to which the entity is related"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="solarSystemID",
  *     description="The system to which the entity is attached"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="constellationID",
  *     description="The constellation to which the entity is attached"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="regionID",
  *     description="The region to which the entity is attached"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="orbitID",
  *     description="The orbit to which the entity is depending"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="x",
  *     description="x position on the map"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="y",
  *     description="y position on the map"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="z",
  *     description="z position on the map"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="radius",
  *     description="The radius of the entity"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="itemName",
  *     description="The entity name"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="security",
  *     description="The security status of the system to which entity is attached"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="celestialIndex",
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="orbitIndex"
  * )

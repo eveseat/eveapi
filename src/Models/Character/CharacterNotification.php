@@ -30,65 +30,65 @@ use Symfony\Component\Yaml\Yaml;
  * Class CharacterNotification.
  * @package Seat\Eveapi\Models\Character
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Character Notification",
  *     title="CharacterNotification",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="notification_id",
  *     description="The notification identifier"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="type",
  *     description="The notification type"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="sender_id",
  *     description="The entity who sent the notification"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     enum={"character","corporation","alliance","faction","other"},
  *     property="sender_type",
  *     description="The sender qualifier"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="timestamp",
  *     description="The date-time when notification has been sent"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="boolean",
  *     property="is_read",
  *     description="True if the notification has been red"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
- *     property="text",
+ *     property="object",
  *     description="The notification content"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="created_at",
  *     description="The date-time when notification has been created into SeAT"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="updated_at",
@@ -97,6 +97,18 @@ use Symfony\Component\Yaml\Yaml;
  */
 class CharacterNotification extends Model
 {
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'is_read' => 'boolean',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['created_at', 'updated_at'];
+
     /**
      * @var bool
      */

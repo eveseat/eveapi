@@ -30,104 +30,104 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  * Class CharacterBookmark.
  * @package Seat\Eveapi\Models\Assets
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Character Bookmark",
  *     title="CharacterBookmark",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="bookmark_id",
  *     description="The bookmark identifier"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="folder_id",
  *     description="The folder ID into which the bookmark resides"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="folder_name",
  *     description="The folder name into which the bookmark resides"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     property="system",
- *     ref="#/definitions/MapDenormalize"
+ *     ref="#/components/schemas/MapDenormalize"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="created",
  *     description="The bookmark creation date"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="label",
  *     description="The bookmark label"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="notes",
  *     description="A note attached to the bookmark"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="location_id",
  *     description="The system ID where the bookmark is"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="creator_id",
  *     description="The character who created the bookmark"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="item_id",
  *     description="The in-game item on which the bookmark has been took"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="type_id",
  *     description="The type of them item"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="x",
  *     description="The x position on the map"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="y",
  *     description="The y position on the map"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="z",
  *     description="The z position on the map"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="map_id",

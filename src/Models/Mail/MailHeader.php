@@ -29,56 +29,56 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  * Class MailHeader.
  * @package Seat\Eveapi\Models\Character
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Mail Header",
  *     title="MailHeader",
  *     type="object"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="mail_id",
  *     description="The mail identifier"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="subject",
  *     description="The mail topic"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     format="int64",
  *     property="from",
  *     description="The mail sender"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="timestamp",
  *     description="The date-time when the mail has been sent"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="boolean",
  *     property="boolean",
  *     description="True if the mail has been red"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     property="body",
  *     description="The mail content"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="array",
  *     property="recipients",
  *     description="A list of recipients",
- *     @SWG\Items(ref="#/definitions/MailRecipient")
+ *     @OA\Items(ref="#/components/schemas/MailRecipient")
  * )
  */
 class MailHeader extends Model

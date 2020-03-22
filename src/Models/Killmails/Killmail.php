@@ -28,9 +28,44 @@ use Illuminate\Database\Eloquent\Model;
  * Class Killmail.
  *
  * @package Seat\Eveapi\Models\Killmails
+ *
+ * @OA\Schema(
+ *     description="Killmail informations",
+ *     title="Killmail",
+ *     type="object",
+ *     @OA\Property(
+ *       property="killmail_id",
+ *       type="integer",
+ *       format="int64",
+ *       description="The unique Killmail identifier"
+ *     ),
+ *     @OA\Property(
+ *       property="killmail_hash",
+ *       type="string",
+ *       description="The killmail hash"
+ *     ),
+ *     @OA\Property(
+ *       property="detail",
+ *       ref="#/components/schemas/KillmailDetail"
+ *     ),
+ *     @OA\Property(
+ *       property="victim",
+ *       ref="#/components/schemas/KillmailVictim"
+ *     ),
+ *     @OA\Property(
+ *       property="attackers",
+ *       type="array",
+ *       @OA\Items(ref="#/components/schemas/KillmailAttacker")
+ *     )
+ * )
  */
 class Killmail extends Model
 {
+    /**
+     * @var array
+     */
+    protected $hidden = ['created_at', 'updated_at'];
+
     /**
      * @var bool
      */

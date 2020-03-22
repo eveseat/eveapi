@@ -29,83 +29,68 @@ use Seat\Eveapi\Models\Sde\InvType;
  * Class CharacterSkillQueue.
  * @package Seat\Eveapi\Models\Skills
  *
- * @SWG\Definition(
+ * @OA\Schema(
  *     description="Character Skill Queue",
  *     title="CharacterSkillQueue",
  *     type="object"
  * )
  *
- * @SWG\Property(
- *     type="integer",
- *     property="skill_id",
- *     description="The inventory type identifier"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="finish_date",
  *     description="The date-time when the skill training will end"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="string",
  *     format="date-time",
  *     property="start_date",
  *     description="The date-time when the skill training start"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="finished_level",
  *     description="The level at which the skill will be at end of the training"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="queue_position",
  *     description="The position in the queue"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="training_start_sp",
  *     description="The skillpoint amount in the skill when training start"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="level_end_sp",
  *     description="The skillpoint amount earned at end of the level training"
  * )
  *
- * @SWG\Property(
+ * @OA\Property(
  *     type="integer",
  *     property="level_start_sp",
  *     description="The skillpoint amount from which the training level is starting"
  * )
  *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="created_at",
- *     description="The date-time when record has been created into SeAT"
- * )
- *
- * @SWG\Property(
- *     type="string",
- *     format="date-time",
- *     property="updated_at",
- *     description="The date-time when record has been updated into SeAT"
- * )
- *
- * @SWG\Property(
+ * @OA\Property(
  *     property="type",
- *     ref="#/definitions/InvType"
+ *     ref="#/components/schemas/InvType"
  * )
  */
 class CharacterSkillQueue extends Model
 {
+    /**
+     * @var array
+     */
+    protected $hidden = ['id', 'character_id', 'skill_id', 'created_at', 'updated_at'];
+
     /**
      * @var bool
      */
