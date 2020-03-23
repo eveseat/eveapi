@@ -53,7 +53,6 @@ use Illuminate\Database\Eloquent\Model;
  *     type="number",
  *     description="Amount of placed bid"
  * )
- *
  */
 class ContractBid extends Model
 {
