@@ -606,7 +606,7 @@ class CharacterInfo extends Model
      */
     public function user()
     {
-        return $this->hasOneThrough(User::class, RefreshToken::class, 
+        return $this->hasOneThrough(User::class, RefreshToken::class,
             'character_id', 'id', 'character_id', 'user_id');
     }
 
