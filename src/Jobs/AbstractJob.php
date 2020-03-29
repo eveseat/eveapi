@@ -85,7 +85,6 @@ abstract class AbstractJob implements ShouldQueue
     {
         // Analytics. Report only the Exception class and message.
         dispatch((new Analytics((new AnalyticsContainer)
-            ->throttle('analytics')->allow(1)->every(60)
             ->set('type', 'exception')
             ->set('exd', get_class($exception) . ':' . $exception->getMessage())
             ->set('exf', 1))))->onQueue('default');
