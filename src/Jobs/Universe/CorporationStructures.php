@@ -123,11 +123,6 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
                     ->where('corporation_id', $this->getCorporationId())
                     ->distinct();
             })
-            // exclude already resolved structures
-            ->whereNotIn('location_id', function ($query) {
-                $query->select('structure_id')
-                    ->from((new UniverseStructure)->getTable());
-            })
             ->select('location_id')
             ->distinct()
             // Until CCP can sort out this endpoint, pick 30 random locations
@@ -136,17 +131,13 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
             ->inRandomOrder()
             ->limit(15)
             ->get()
-            ->values()
+            ->pluck('location_id')
             ->all();
 
         $structures = CorporationStructure::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('structure_id', function ($query) {
-                $query->select('structure_id')
-                    ->from((new UniverseStructure)->getTable());
-            })
             ->select('structure_id')
             ->get()
-            ->values()
+            ->pluck('structure_id')
             ->all();
 
         return array_merge($assets, $structures);

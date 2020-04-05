@@ -116,11 +116,6 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
                     ->where('character_id', $this->getCharacterId())
                     ->distinct();
             })
-            // exclude already resolved structures
-            ->whereNotIn('location_id', function ($query) {
-                $query->select('structure_id')
-                    ->from((new UniverseStructure)->getTable());
-            })
             ->select('location_id')
             ->distinct()
             // Until CCP can sort out this endpoint, pick 30 random locations
@@ -129,7 +124,7 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
             ->inRandomOrder()
             ->limit(15)
             ->get()
-            ->values()
+            ->pluck('location_id')
             ->all();
     }
 }
