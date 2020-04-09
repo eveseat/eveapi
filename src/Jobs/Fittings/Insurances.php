@@ -49,7 +49,7 @@ class Insurances extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['insurances', 'fittings'];
+    protected $tags = ['public'];
 
     /**
      * Execute the job.

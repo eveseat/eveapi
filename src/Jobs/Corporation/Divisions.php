@@ -59,7 +59,7 @@ class Divisions extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['divisions'];
+    protected $tags = ['corporation'];
 
     /**
      * Execute the job.

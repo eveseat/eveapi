@@ -61,7 +61,7 @@ class Blueprints extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['blueprints'];
+    protected $tags = ['corporation', 'industry'];
 
     /**
      * @var int

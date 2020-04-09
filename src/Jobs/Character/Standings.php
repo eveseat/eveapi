@@ -54,7 +54,7 @@ class Standings extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['standings'];
+    protected $tags = ['character'];
 
     /**
      * Execute the job.

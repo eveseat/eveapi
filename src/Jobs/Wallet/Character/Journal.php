@@ -54,7 +54,7 @@ class Journal extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['wallet', 'journal'];
+    protected $tags = ['character', 'wallet'];
 
     /**
      * @var int

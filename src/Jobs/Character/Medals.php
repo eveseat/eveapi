@@ -54,7 +54,7 @@ class Medals extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['medals'];
+    protected $tags = ['character'];
 
     /**
      * Execute the job.

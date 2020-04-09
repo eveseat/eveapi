@@ -62,7 +62,7 @@ class Structures extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['structures'];
+    protected $tags = ['corporation', 'structure'];
 
     /**
      * @var int

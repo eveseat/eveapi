@@ -54,7 +54,7 @@ class Labels extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['contacts', 'labels'];
+    protected $tags = ['character', 'contact'];
 
     /**
      * Execute the job.

@@ -49,7 +49,7 @@ class Map extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['sovereignty', 'map'];
+    protected $tags = ['sovereignty'];
 
     /**
      * Execute the job.

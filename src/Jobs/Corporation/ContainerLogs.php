@@ -59,7 +59,7 @@ class ContainerLogs extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['container_logs'];
+    protected $tags = ['corporation', 'asset'];
 
     /**
      * @var int

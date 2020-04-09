@@ -53,7 +53,7 @@ class Stations extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['universe', 'stations'];
+    protected $tags = ['public', 'universe'];
 
     /**
      * Execute the job.

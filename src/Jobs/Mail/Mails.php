@@ -56,7 +56,7 @@ class Mails extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['mail', 'headers'];
+    protected $tags = ['mail'];
 
     /**
      * Execute the job.

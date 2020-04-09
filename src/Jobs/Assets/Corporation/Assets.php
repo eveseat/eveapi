@@ -60,7 +60,7 @@ class Assets extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['assets'];
+    protected $tags = ['corporation', 'asset'];
 
     /**
      * @var int

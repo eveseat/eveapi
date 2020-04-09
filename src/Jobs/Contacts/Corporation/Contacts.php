@@ -55,7 +55,7 @@ class Contacts extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['contacts'];
+    protected $tags = ['corporation', 'contact'];
 
     /**
      * @var int

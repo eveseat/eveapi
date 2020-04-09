@@ -61,7 +61,7 @@ class Observers extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['mining', 'observers'];
+    protected $tags = ['corporation', 'industry', 'structure'];
 
     /**
      * @var int

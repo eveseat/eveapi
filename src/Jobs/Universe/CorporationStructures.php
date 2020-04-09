@@ -61,6 +61,11 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
     protected $version = 'v2';
 
     /**
+     * @var array
+     */
+    protected $tags = ['corporation', 'universe', 'structure'];
+
+    /**
      * {@inheritdoc}
      */
     public function handle()

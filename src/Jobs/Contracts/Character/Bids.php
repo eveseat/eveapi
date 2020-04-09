@@ -76,7 +76,7 @@ class Bids extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['contracts', 'bids'];
+    protected $tags = ['character', 'contract'];
 
     /**
      * Bids constructor.

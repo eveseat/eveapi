@@ -60,7 +60,7 @@ class Shareholders extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['shareholders'];
+    protected $tags = ['corporation'];
 
     /**
      * @var int

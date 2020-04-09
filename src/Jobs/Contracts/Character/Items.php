@@ -77,7 +77,7 @@ class Items extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['contracts', 'items'];
+    protected $tags = ['character', 'contract'];
 
     /**
      * @var int

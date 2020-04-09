@@ -56,7 +56,7 @@ class Detail extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['calendar', 'detail'];
+    protected $tags = ['calendar'];
 
     /**
      * Execute the job.
