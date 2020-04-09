@@ -257,11 +257,7 @@ class CharacterInfo extends Model
     public function affiliation()
     {
         return $this->hasOne(CharacterAffiliation::class, 'character_id', 'character_id')
-            ->withDefault([
-                'corporation_id' => 0,
-                'alliance_id' => 0,
-                'faction_id' => 0,
-            ]);
+            ->withDefault();
     }
 
     /**
@@ -590,7 +586,7 @@ class CharacterInfo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
      * @deprecated 4.0.0
      */
     public function user()
