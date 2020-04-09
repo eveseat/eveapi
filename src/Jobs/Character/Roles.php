@@ -54,7 +54,7 @@ class Roles extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['roles'];
+    protected $tags = ['character', 'role'];
 
     /**
      * Execute the job.

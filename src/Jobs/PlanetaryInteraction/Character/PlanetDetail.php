@@ -65,7 +65,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['pi', 'detail'];
+    protected $tags = ['character', 'pi'];
 
     /**
      * @var int

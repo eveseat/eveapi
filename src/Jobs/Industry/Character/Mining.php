@@ -58,7 +58,7 @@ class Mining extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['industry', 'mining'];
+    protected $tags = ['character', 'industry'];
 
     /**
      * @var int

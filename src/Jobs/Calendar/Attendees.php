@@ -55,7 +55,7 @@ class Attendees extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['calendar', 'attendees'];
+    protected $tags = ['calendar'];
 
     /**
      * Execute the job.

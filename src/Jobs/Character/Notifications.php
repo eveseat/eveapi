@@ -54,7 +54,7 @@ class Notifications extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['notifications'];
+    protected $tags = ['character', 'notification'];
 
     /**
      * Execute the job.

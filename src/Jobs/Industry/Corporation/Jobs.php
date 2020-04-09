@@ -66,7 +66,7 @@ class Jobs extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['industry', 'jobs'];
+    protected $tags = ['corporation', 'industry'];
 
     /**
      * @var int

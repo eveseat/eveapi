@@ -58,7 +58,7 @@ class Bookmarks extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['bookmarks'];
+    protected $tags = ['corporation', 'bookmark'];
 
     /**
      * @var int

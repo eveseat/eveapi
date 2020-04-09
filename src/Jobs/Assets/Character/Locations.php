@@ -57,7 +57,7 @@ class Locations extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['assets', 'locations'];
+    protected $tags = ['character', 'asset'];
 
     /**
      * The maximum number of itemids we can request location

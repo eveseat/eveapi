@@ -61,7 +61,7 @@ class Jobs extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['industry', 'jobs'];
+    protected $tags = ['character', 'industry'];
 
     /**
      * Execute the job.

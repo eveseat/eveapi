@@ -59,7 +59,7 @@ class Facilities extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['facilities'];
+    protected $tags = ['corporation', 'industry'];
 
     /**
      * Execute the job.

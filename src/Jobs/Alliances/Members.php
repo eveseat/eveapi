@@ -54,7 +54,7 @@ class Members extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['alliances', 'members'];
+    protected $tags = ['alliance'];
 
     /**
      * Members constructor.

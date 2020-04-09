@@ -54,7 +54,7 @@ class Stats extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['stats'];
+    protected $tags = ['character'];
 
     /**
      * Execute the job.

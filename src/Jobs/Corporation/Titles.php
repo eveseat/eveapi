@@ -61,7 +61,7 @@ class Titles extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['titles'];
+    protected $tags = ['corporation', 'role'];
 
     /**
      * @var \Illuminate\Support\Collection

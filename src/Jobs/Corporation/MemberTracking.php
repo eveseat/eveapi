@@ -59,7 +59,7 @@ class MemberTracking extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['member_tracking'];
+    protected $tags = ['corporation', 'member'];
 
     /**
      * Execute the job.

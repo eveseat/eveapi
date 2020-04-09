@@ -45,7 +45,7 @@ class CorporationHistory extends AbstractCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['corporation_history'];
+    protected $tags = ['character'];
 
     /**
      * Execute the job.

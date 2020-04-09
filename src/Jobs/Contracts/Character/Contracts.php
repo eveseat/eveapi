@@ -55,7 +55,7 @@ class Contracts extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['contracts'];
+    protected $tags = ['character', 'contract'];
 
     /**
      * @var int

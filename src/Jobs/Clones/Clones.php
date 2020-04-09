@@ -55,7 +55,7 @@ class Clones extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['clones'];
+    protected $tags = ['character', 'clone'];
 
     /**
      * Execute the job.

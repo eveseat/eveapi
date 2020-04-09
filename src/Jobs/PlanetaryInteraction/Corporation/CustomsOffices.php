@@ -60,7 +60,7 @@ class CustomsOffices extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['customs_offices'];
+    protected $tags = ['corporation', 'pi'];
 
     /**
      * @var int

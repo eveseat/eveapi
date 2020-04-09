@@ -59,7 +59,7 @@ class Extractions extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['mining', 'extractions'];
+    protected $tags = ['corporation', 'industry', 'structure'];
 
     /**
      * Execute the job.

@@ -59,7 +59,7 @@ class Balances extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['wallet', 'balance'];
+    protected $tags = ['corporation', 'wallet'];
 
     /**
      * Execute the job.

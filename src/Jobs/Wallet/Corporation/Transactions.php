@@ -60,7 +60,7 @@ class Transactions extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['wallets'];
+    protected $tags = ['corporation', 'wallet'];
 
     /**
      * A counter used to walk the transactions backwards.

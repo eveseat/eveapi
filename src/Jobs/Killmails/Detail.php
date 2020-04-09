@@ -62,7 +62,7 @@ class Detail extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['killmails', 'detail'];
+    protected $tags = ['killmail'];
 
     /**
      * Detail constructor.

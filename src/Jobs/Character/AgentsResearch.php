@@ -54,7 +54,7 @@ class AgentsResearch extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['agents_research'];
+    protected $tags = ['character', 'industry'];
 
     /**
      * Execute the job.

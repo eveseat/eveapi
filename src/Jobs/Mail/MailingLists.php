@@ -54,7 +54,7 @@ class MailingLists extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['mails', 'mailing_lists'];
+    protected $tags = ['mail'];
 
     /**
      * Execute the job.

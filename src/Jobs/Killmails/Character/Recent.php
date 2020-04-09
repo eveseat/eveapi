@@ -56,7 +56,7 @@ class Recent extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['killmails', 'latest'];
+    protected $tags = ['character', 'killmail'];
 
     /**
      * Execute the job.

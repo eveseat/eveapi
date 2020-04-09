@@ -49,7 +49,7 @@ class AllianceHistory extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['alliance_history'];
+    protected $tags = ['corporation'];
 
     /**
      * Execute the job.
