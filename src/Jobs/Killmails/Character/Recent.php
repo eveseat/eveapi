@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Jobs\Killmails\Character;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Jobs\Killmails\Detail;
 use Seat\Eveapi\Models\Killmails\Killmail;
+use Seat\Eveapi\Models\Killmails\KillmailDetail;
 
 /**
  * Class Recent.
@@ -78,7 +79,8 @@ class Recent extends AbstractAuthCharacterJob
                 'killmail_hash' => $killmail->killmail_hash,
             ]);
 
-            dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
+            if (! KillmailDetail::find($killmail->killmail_id))
+                dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
         });
     }
 }
