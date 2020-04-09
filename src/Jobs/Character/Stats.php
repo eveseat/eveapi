@@ -77,7 +77,7 @@ class Stats extends AbstractAuthCharacterJob
 
             // Separate stats by categories
             foreach (['character', 'combat', 'industry', 'inventory', 'isk', 'market',
-                         'mining', 'module', 'orbital', 'pve', 'social', 'travel', ] as $category) {
+                'mining', 'module', 'orbital', 'pve', 'social', 'travel', ] as $category) {
 
                 CharacterStats::firstOrCreate([
                     'character_id' => $this->getCharacterId(),
