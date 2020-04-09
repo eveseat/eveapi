@@ -45,7 +45,7 @@ class Assets extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v4';
+    protected $version = 'v5';
 
     /**
      * @var string
