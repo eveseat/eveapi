@@ -54,7 +54,7 @@ class Planets extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['pi', 'planets'];
+    protected $tags = ['character', 'pi'];
 
     /**
      * Execute the job.

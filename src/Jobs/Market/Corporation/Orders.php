@@ -59,7 +59,7 @@ class Orders extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['market', 'orders'];
+    protected $tags = ['corporation', 'market'];
 
     /**
      * @var int

@@ -54,7 +54,7 @@ class Queue extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['skills', 'queue'];
+    protected $tags = ['character', 'skill'];
 
     /**
      * @var int

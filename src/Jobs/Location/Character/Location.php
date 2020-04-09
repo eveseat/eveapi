@@ -54,7 +54,7 @@ class Location extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['location'];
+    protected $tags = ['character', 'meta'];
 
     /**
      * Execute the job.

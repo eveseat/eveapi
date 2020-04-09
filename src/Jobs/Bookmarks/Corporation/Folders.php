@@ -55,7 +55,7 @@ class Folders extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['bookmarks', 'folders'];
+    protected $tags = ['corporation', 'bookmark'];
 
     /**
      * @var int

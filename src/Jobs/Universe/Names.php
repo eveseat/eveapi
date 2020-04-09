@@ -57,7 +57,7 @@ class Names extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['universe', 'names'];
+    protected $tags = ['public', 'universe'];
 
     /**
      * @var \Illuminate\Support\Collection

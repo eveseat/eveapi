@@ -55,7 +55,7 @@ class Titles extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['titles'];
+    protected $tags = ['character', 'role'];
 
     /**
      * @var \Illuminate\Support\Collection

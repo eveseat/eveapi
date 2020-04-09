@@ -54,7 +54,7 @@ class Info extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['alliances', 'info'];
+    protected $tags = ['alliance'];
 
     /**
      * Info constructor.

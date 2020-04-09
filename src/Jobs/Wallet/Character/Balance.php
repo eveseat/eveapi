@@ -54,7 +54,7 @@ class Balance extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['wallet', 'balance'];
+    protected $tags = ['character', 'wallet'];
 
     /**
      * Execute the job.

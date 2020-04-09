@@ -54,7 +54,7 @@ class Orders extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['market'];
+    protected $tags = ['character', 'market'];
 
     /**
      * Execute the job.

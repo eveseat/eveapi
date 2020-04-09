@@ -59,7 +59,7 @@ class Roles extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['roles'];
+    protected $tags = ['corporation', 'role'];
 
     /**
      * @var array

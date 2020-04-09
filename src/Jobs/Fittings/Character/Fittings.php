@@ -55,7 +55,7 @@ class Fittings extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['fittings'];
+    protected $tags = ['character', 'fitting'];
 
     /**
      * Execute the job.

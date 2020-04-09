@@ -54,7 +54,7 @@ class Online extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['online'];
+    protected $tags = ['character', 'meta'];
 
     /**
      * Execute the job.
