@@ -56,7 +56,7 @@ class Skills extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['skills'];
+    protected $tags = ['character', 'skill'];
 
     /**
      * Execute the job.

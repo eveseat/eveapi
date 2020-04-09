@@ -76,7 +76,7 @@ class Bids extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['contracts', 'bids'];
+    protected $tags = ['corporation', 'contract'];
 
     /**
      * @var int

@@ -54,7 +54,7 @@ class Standings extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['standings'];
+    protected $tags = ['corporation'];
 
     /**
      * @var int

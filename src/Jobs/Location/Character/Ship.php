@@ -54,7 +54,7 @@ class Ship extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['ship'];
+    protected $tags = ['character', 'meta'];
 
     /**
      * Execute the job.

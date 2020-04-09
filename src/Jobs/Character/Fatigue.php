@@ -54,7 +54,7 @@ class Fatigue extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['fatigue'];
+    protected $tags = ['character'];
 
     /**
      * Execute the job.

@@ -48,7 +48,7 @@ class Alliances extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['alliances'];
+    protected $tags = ['alliance'];
 
     /**
      * @throws \Throwable

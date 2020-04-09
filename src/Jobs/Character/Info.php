@@ -49,7 +49,7 @@ class Info extends AbstractCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['info'];
+    protected $tags = ['character'];
 
     /**
      * Execute the job.

@@ -49,7 +49,7 @@ class Info extends AbstractCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['info'];
+    protected $tags = ['corporation'];
 
     /**
      * Execute the job.

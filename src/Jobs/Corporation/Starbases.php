@@ -60,7 +60,7 @@ class Starbases extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['starbases'];
+    protected $tags = ['corporation', 'structure'];
 
     /**
      * @var int

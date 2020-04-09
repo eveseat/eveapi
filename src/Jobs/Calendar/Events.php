@@ -54,7 +54,7 @@ class Events extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['calendar', 'events'];
+    protected $tags = ['calendar'];
 
     /**
      * Execute the job.

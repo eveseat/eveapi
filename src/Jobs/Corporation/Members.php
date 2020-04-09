@@ -54,7 +54,7 @@ class Members extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['members'];
+    protected $tags = ['corporation', 'member'];
 
     /**
      * Execute the job.

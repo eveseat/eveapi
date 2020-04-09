@@ -59,7 +59,7 @@ class Names extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['assets', 'names'];
+    protected $tags = ['corporation', 'asset'];
 
     /**
      * The maximum number of itemids we can request name

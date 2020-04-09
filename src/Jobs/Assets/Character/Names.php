@@ -61,7 +61,7 @@ class Names extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['assets', 'names'];
+    protected $tags = ['character', 'asset'];
 
     /**
      * The maximum number of itemids we can request name

@@ -57,7 +57,7 @@ class Medals extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['medals'];
+    protected $tags = ['corporation'];
 
     /**
      * @var int

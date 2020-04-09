@@ -54,7 +54,7 @@ class Attributes extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['skills', 'attributes'];
+    protected $tags = ['character', 'skill'];
 
     /**
      * Execute the job.

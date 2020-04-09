@@ -60,7 +60,7 @@ class Journals extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['wallet', 'journals'];
+    protected $tags = ['corporation', 'wallet'];
 
     /**
      * @var int

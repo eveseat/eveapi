@@ -54,7 +54,7 @@ class Status extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['ccp'];
+    protected $tags = ['public', 'meta'];
 
     /**
      * @return array

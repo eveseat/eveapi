@@ -49,7 +49,7 @@ class Prices extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['market', 'prices'];
+    protected $tags = ['public', 'market'];
 
     /**
      * Execute the job.

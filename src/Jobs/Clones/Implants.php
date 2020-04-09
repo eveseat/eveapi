@@ -54,7 +54,7 @@ class Implants extends AbstractAuthCharacterJob
     /**
      * @var array
      */
-    protected $tags = ['implants'];
+    protected $tags = ['character', 'clone'];
 
     /**
      * Execute the job.

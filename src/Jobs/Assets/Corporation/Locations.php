@@ -62,7 +62,7 @@ class Locations extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $tags = ['assets', 'locations'];
+    protected $tags = ['corporation', 'asset'];
 
     /**
      * The maximum number of itemids we can request location
