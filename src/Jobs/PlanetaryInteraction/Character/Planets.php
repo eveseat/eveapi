@@ -67,38 +67,39 @@ class Planets extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($planets->isCachedLoad()) return;
+        if (! $planets->isCachedLoad()) {
 
-        collect($planets)->each(function ($planet) {
+            collect($planets)->each(function ($planet) {
 
-            CharacterPlanet::firstOrNew([
-                'character_id'    => $this->getCharacterId(),
-                'solar_system_id' => $planet->solar_system_id,
-                'planet_id'       => $planet->planet_id,
-            ])->fill([
-                'upgrade_level' => $planet->upgrade_level,
-                'num_pins'      => $planet->num_pins,
-                'last_update'   => carbon($planet->last_update),
-                'planet_type'   => $planet->planet_type,
-            ])->save();
+                CharacterPlanet::firstOrNew([
+                    'character_id' => $this->getCharacterId(),
+                    'solar_system_id' => $planet->solar_system_id,
+                    'planet_id' => $planet->planet_id,
+                ])->fill([
+                    'upgrade_level' => $planet->upgrade_level,
+                    'num_pins' => $planet->num_pins,
+                    'last_update' => carbon($planet->last_update),
+                    'planet_type' => $planet->planet_type,
+                ])->save();
 
-        });
-
-        // Cleanup solar system ids that have removed planets
-        collect($planets)->unique('solar_system_id')
-            ->pluck('solar_system_id')->each(function ($solar_system_id) use ($planets) {
-
-                CharacterPlanet::where('character_id', $this->getCharacterId())
-                    ->where('solar_system_id', $solar_system_id)
-                    ->whereNotIn('planet_id', collect($planets)
-                        ->pluck('planet_id')->flatten()->all())
-                    ->delete();
             });
 
-        // Remove empty solarsystem ids
+            // Retrieve all waypoints which have not been returned by API.
+            // We will run a delete statement on those selected rows in order to avoid any deadlock.
+            $existing_planets = CharacterPlanet::where('character_id', $this->getCharacterId())
+                ->whereNotIn('planet_id', collect($planets)->pluck('planet_id')->toArray())
+                ->get();
+
+            CharacterPlanet::where('character_id', $this->getCharacterId())
+                ->whereIn('planet_id', $existing_planets->pluck('planet_id')->toArray())
+                ->delete();
+        }
+
+        // for all planets, enqueue a job which will collect details
         CharacterPlanet::where('character_id', $this->getCharacterId())
-            ->whereNotIn('solar_system_id', collect($planets)
-                ->pluck('solar_system_id')->flatten()->all())
-            ->delete();
+            ->get()
+            ->each(function ($planet) {
+                PlanetDetail::dispatch($this->token, $planet->planet_id);
+            });
     }
 }
