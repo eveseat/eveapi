@@ -71,7 +71,7 @@ class History extends EsiBase
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws \Seat\Services\Exceptions\SettingException
      * @throws \Throwable
      */
