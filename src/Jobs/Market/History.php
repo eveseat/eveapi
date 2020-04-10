@@ -97,13 +97,13 @@ class History extends EsiBase
                 $price = collect($prices)->sortByDesc('date')->first();
 
                 if (is_null($price)) {
-                    $price = collect([
+                    $price = (object) [
                         'average'     => 0.0,
                         'highest'     => 0.0,
                         'lowest'      => 0.0,
                         'order_count' => 0,
                         'volume'      => 0,
-                    ]);
+                    ];
                 }
 
                 Price::updateOrCreate([
