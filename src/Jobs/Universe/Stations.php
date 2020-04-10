@@ -56,6 +56,11 @@ class Stations extends EsiBase
     protected $tags = ['public', 'universe'];
 
     /**
+     * Those stations might be returned by ESI on some endpoints (ie: corporation infos) - however, they don't exist.
+     */
+    const FAKE_STATION_ID = [60000001];
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
@@ -74,6 +79,9 @@ class Stations extends EsiBase
         // NPC stations
         CorporationInfo::all()->each(function ($corporation) {
 
+            if (in_array($corporation->home_station_id, self::FAKE_STATION_ID))
+                return true;
+
             $station = $this->retrieve(['station_id' => $corporation->home_station_id]);
 
             $this->updateStructure($station);
@@ -83,6 +91,9 @@ class Stations extends EsiBase
         // conquerable outposts
         SovereigntyStructure::whereIn('structure_type_id', $structure_filter)->get()
             ->each(function ($structure) {
+
+                if (in_array($structure->structure_id, self::FAKE_STATION_ID))
+                    return true;
 
                 $outpost = $this->retrieve(['station_id' => $structure->structure_id]);
 
