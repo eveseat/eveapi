@@ -177,6 +177,7 @@ abstract class EsiBase extends AbstractJob
      * @param array $path_values
      *
      * @return \Seat\Eseye\Containers\EsiResponse
+     * @throws \Seat\Eseye\Exceptions\RequestFailedException
      * @throws \Exception
      * @throws \Throwable
      */
