@@ -64,6 +64,11 @@ class Recent extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'killmail'];
 
     /**
+     * @var int
+     */
+    protected $page = 1;
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -71,22 +76,28 @@ class Recent extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $killmails = $this->retrieve([
-            'corporation_id' => $this->getCorporationId(),
-        ]);
+        while (true) {
 
-        if ($killmails->isCachedLoad()) return;
-
-        collect($killmails)->each(function ($killmail) {
-
-            Killmail::firstOrCreate([
-                'killmail_id'   => $killmail->killmail_id,
-            ], [
-                'killmail_hash' => $killmail->killmail_hash,
+            $killmails = $this->retrieve([
+                'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if (! KillmailDetail::find($killmail->killmail_id))
-                dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
-        });
+            if ($killmails->isCachedLoad()) return;
+
+            collect($killmails)->each(function ($killmail) {
+
+                Killmail::firstOrCreate([
+                    'killmail_id' => $killmail->killmail_id,
+                ], [
+                    'killmail_hash' => $killmail->killmail_hash,
+                ]);
+
+                if (! KillmailDetail::find($killmail->killmail_id))
+                    dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
+            });
+
+            if (! $this->nextPage($killmails->pages))
+                break;
+        }
     }
 }
