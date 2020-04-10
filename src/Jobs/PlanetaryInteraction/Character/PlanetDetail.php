@@ -300,6 +300,8 @@ class PlanetDetail extends AbstractAuthCharacterJob
                 }
             });
 
+            $this->planetCleanup();
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
