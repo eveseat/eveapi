@@ -59,28 +59,39 @@ class Recent extends AbstractAuthCharacterJob
     protected $tags = ['character', 'killmail'];
 
     /**
+     * @var int
+     */
+    protected $page = 1;
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
      */
     public function handle()
     {
-        $killmails = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
-        ]);
+        while (true) {
 
-        if ($killmails->isCachedLoad()) return;
-
-        collect($killmails)->each(function ($killmail) {
-
-            Killmail::firstOrCreate([
-                'killmail_id'   => $killmail->killmail_id,
-            ], [
-                'killmail_hash' => $killmail->killmail_hash,
+            $killmails = $this->retrieve([
+                'character_id' => $this->getCharacterId(),
             ]);
 
-            if (! KillmailDetail::find($killmail->killmail_id))
-                dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
-        });
+            if ($killmails->isCachedLoad()) return;
+
+            collect($killmails)->each(function ($killmail) {
+
+                Killmail::firstOrCreate([
+                    'killmail_id' => $killmail->killmail_id,
+                ], [
+                    'killmail_hash' => $killmail->killmail_hash,
+                ]);
+
+                if (! KillmailDetail::find($killmail->killmail_id))
+                    dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
+            });
+
+            if (! $this->nextPage($killmails->pages))
+                break;
+        }
     }
 }
