@@ -61,7 +61,6 @@ return [
     'esi-corporations.read_structures.v1',
     'esi-corporations.read_titles.v1',
     'esi-corporations.track_members.v1',
-//    'esi-corporations.write_structures.v1',
     'esi-fittings.read_fittings.v1',
 //    'esi-fittings.write_fittings.v1',
     'esi-fleets.read_fleet.v1',
