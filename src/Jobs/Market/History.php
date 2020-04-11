@@ -94,7 +94,9 @@ class History extends EsiBase
                 if ($prices->isCachedLoad()) return;
 
                 // search the more recent entry in returned history.
-                $price = collect($prices)->sortByDesc('date')->first();
+                $price = collect($prices)->where('order_count', '>', 0)
+                    ->sortByDesc('date')
+                    ->first();
 
                 if (is_null($price)) {
                     $price = (object) [
