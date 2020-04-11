@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018, 2019, 2020  Leon Jacobs
+ * Copyright (C) 2015 to 2020 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,12 +43,14 @@ class CheckEsiStatus
         // bypass control if the class is not related to ESI
         if (! is_subclass_of($job, EsiBase::class)) {
             $next($job);
+
             return;
         }
 
         // esi seems to be online - continue
         if ($this->isEsiOnline()) {
             $next($job);
+
             return;
         }
 
