@@ -20,28 +20,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace Seat\Eveapi\Models\Character;
+
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class RemoveCharacterPlanetPinsSurrogateKey.
+ * Class CharacterStats.
+ * @package Seat\Eveapi\Models\Character
  */
-class RemoveCharacterPlanetPinsSurrogateKey extends Migration
+class CharacterStats extends Model
 {
-    public function up()
-    {
-        Schema::table('character_planet_pins', function (Blueprint $table) {
-            $table->dropPrimary(['character_id', 'planet_id', 'pin_id']);
-            $table->primary(['pin_id']);
-        });
-    }
+    /**
+     * @var bool
+     */
+    protected static $unguarded = true;
 
-    public function down()
-    {
-        Schema::table('character_planet_pins', function (Blueprint $table) {
-            $table->dropPrimary(['pin_id']);
-            $table->primary(['character_id', 'planet_id', 'pin_id']);
-        });
-    }
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * @var null
+     */
+    protected $primaryKey = null;
 }
