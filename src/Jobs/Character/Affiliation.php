@@ -24,14 +24,6 @@ namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
-use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\Character\CharacterNotification;
-use Seat\Eveapi\Models\Contacts\CharacterContact;
-use Seat\Eveapi\Models\Contracts\ContractDetail;
-use Seat\Eveapi\Models\Mail\MailHeader;
-use Seat\Eveapi\Models\Mail\MailRecipient;
-use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
-use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
 /**
  * Class Affiliation.
@@ -39,6 +31,11 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
  */
 class Affiliation extends EsiBase
 {
+    /**
+     * The maximum number of entities we can request affiliation information for.
+     */
+    const REQUEST_ID_LIMIT = 1000;
+
     /**
      * @var string
      */
@@ -60,24 +57,18 @@ class Affiliation extends EsiBase
     protected $tags = ['character'];
 
     /**
-     * The maximum number of itemids we can request affiliation
-     * information for.
-     *
-     * @var int
-     */
-    protected $item_id_limit = 1000;
-
-    /**
-     * @var \Illuminate\Support\Collection
+     * @var array
      */
     protected $character_ids;
 
     /**
      * Affiliation constructor.
+     *
+     * @param array $character_ids
      */
-    public function __construct()
+    public function __construct(array $character_ids)
     {
-        $this->character_ids = collect();
+        $this->character_ids = $character_ids;
     }
 
     /**
@@ -88,41 +79,7 @@ class Affiliation extends EsiBase
      */
     public function handle()
     {
-
-        // A list of column => query to retrieve character_ids for
-        // affiliation lookup. If no constraint is needed to get
-        // only character_ids, new instances of the model classes
-        // are used.
-        $queries = collect([
-            'first_party_id'  => CharacterWalletJournal::join('universe_names',
-                'first_party_id', '=', 'entity_id')->where('category', 'character')->select('first_party_id'),
-            'second_party_id' => CharacterWalletJournal::join('universe_names',
-                'second_party_id', '=', 'entity_id')->where('category', 'character')->select('second_party_id'),
-            'client_id'       => CharacterWalletTransaction::whereBetween('client_id', [3000000, 4000000])
-                ->orWhereBetween('client_id', [90000000, 98000000])
-                ->select('client_id'),
-            'contact_id'      => CharacterContact::where('contact_type', 'character'),
-            'issuer_id'       => (new ContractDetail),
-            'character_id'    => (new CharacterInfo),
-            'from'            => MailHeader::whereBetween('from', [3000000, 4000000])
-                ->orWhereBetween('from', [90000000, 98000000])
-                ->select('from'),
-            'recipient_id'    => MailRecipient::where('recipient_type', 'character'),
-            'sender_id'       => CharacterNotification::where('sender_type', 'character'),
-        ]);
-
-        $queries->each(function ($query, $column) {
-
-            // Add the results of the query to the current character_ids
-            $this->character_ids->push($query->whereNotNull($column)->distinct()->pluck($column)->all());
-
-            // Ensure the character_ids collection is flat and unique
-            $this->character_ids = $this->character_ids->flatten()->unique();
-        });
-
-        // Perform the affiliation updates for all of the unique character_ids
-        $this->character_ids->chunk($this->item_id_limit)->each(function ($chunk) {
-
+        collect($this->character_ids)->chunk(self::REQUEST_ID_LIMIT)->each(function ($chunk) {
             $this->request_body = $chunk->values()->all();
             $affiliations = $this->retrieve();
 
