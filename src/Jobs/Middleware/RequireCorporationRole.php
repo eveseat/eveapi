@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018, 2019, 2020  Leon Jacobs
+ * Copyright (C) 2015 to 2020 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,18 +41,21 @@ class RequireCorporationRole
         // in case the job is not ESI related - bypass this check
         if (! is_subclass_of($job, EsiBase::class)) {
             $next($job);
+
             return;
         }
 
         // in case no roles is required to process the job - bypass this check
         if (empty($job->getRoles())) {
             $next($job);
+
             return;
         }
 
         // in case attached character got roles required to execute the job - bypass this check
         if ($this->isCorpCharacterWithRoles($job)) {
             $next($job);
+
             return;
         }
 

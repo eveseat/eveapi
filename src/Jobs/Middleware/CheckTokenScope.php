@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018, 2019, 2020  Leon Jacobs
+ * Copyright (C) 2015 to 2020 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,12 +41,14 @@ class CheckTokenScope
         // in case the job is not related to ESI - bypass this check
         if (! is_subclass_of($job, EsiBase::class)) {
             $next($job);
+
             return;
         }
 
         // in case the job does not required specific scopes or token got required scope - forward
         if ($job->getScope() == '' || in_array($job->getScope(), $job->getToken()->scopes)) {
             $next($job);
+
             return;
         }
 
