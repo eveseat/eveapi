@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
+ * Copyright (C) 2015 to 2020 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,9 +223,9 @@ abstract class EsiBase implements ShouldQueue
             // and error message stating that this is an invalid_token, remove
             // the token from SeAT.
             if ($exception->getEsiResponse()->getErrorCode() == 400 && in_array($exception->getEsiResponse()->error(), [
-                    'invalid_token: The refresh token is expired.',
-                    'invalid_token: The refresh token does not match the client specified.',
-                ])) {
+                'invalid_token: The refresh token is expired.',
+                'invalid_token: The refresh token does not match the client specified.',
+            ])) {
 
                 // Remove the invalid token
                 $this->token->delete();

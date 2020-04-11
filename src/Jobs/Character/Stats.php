@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017, 2018, 2019  Leon Jacobs
+ * Copyright (C) 2015 to 2020 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ class Stats extends EsiBase
 
             // Separate stats by categories
             foreach (['character', 'combat', 'industry', 'inventory', 'isk', 'market',
-                         'mining', 'module', 'orbital', 'pve', 'social', 'travel', ] as $category) {
+                'mining', 'module', 'orbital', 'pve', 'social', 'travel', ] as $category) {
 
                 CharacterStats::firstOrCreate([
                     'character_id' => $this->getCharacterId(),
