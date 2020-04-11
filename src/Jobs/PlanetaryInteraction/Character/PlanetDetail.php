@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
-use Exception;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetContent;
@@ -146,168 +145,158 @@ class PlanetDetail extends AbstractAuthCharacterJob
             'planet_id'    => $this->planet_id,
         ]);
 
-        try {
-            DB::beginTransaction();
+        // seed database with pins
+        collect($planet_detail->pins)->each(function ($pin) {
 
-            // seed database with pins
-            collect($planet_detail->pins)->each(function ($pin) {
+            CharacterPlanetPin::firstOrNew([
+                'character_id' => $this->getCharacterId(),
+                'planet_id' => $this->planet_id,
+                'pin_id' => $pin->pin_id,
+            ])->fill([
+                'type_id' => $pin->type_id,
+                'schematic_id' => $pin->schematic_id ?? null,
+                'latitude' => $pin->latitude,
+                'longitude' => $pin->longitude,
+                'install_time' => property_exists($pin, 'install_time') ?
+                    carbon($pin->install_time) : null,
+                'expiry_time' => property_exists($pin, 'expiry_time') ?
+                    carbon($pin->expiry_time) : null,
+                'last_cycle_start' => property_exists($pin, 'last_cycle_start') ?
+                    carbon($pin->last_cycle_start) : null,
+            ])->save();
 
-                CharacterPlanetPin::firstOrNew([
+            // Collect data for the cleanup phase
+            $this->planet_pins->push($pin->pin_id);
+
+            if (property_exists($pin, 'factory_details')) {
+
+                CharacterPlanetFactory::firstOrNew([
                     'character_id' => $this->getCharacterId(),
                     'planet_id' => $this->planet_id,
                     'pin_id' => $pin->pin_id,
                 ])->fill([
-                    'type_id' => $pin->type_id,
-                    'schematic_id' => $pin->schematic_id ?? null,
-                    'latitude' => $pin->latitude,
-                    'longitude' => $pin->longitude,
-                    'install_time' => property_exists($pin, 'install_time') ?
-                        carbon($pin->install_time) : null,
-                    'expiry_time' => property_exists($pin, 'expiry_time') ?
-                        carbon($pin->expiry_time) : null,
-                    'last_cycle_start' => property_exists($pin, 'last_cycle_start') ?
-                        carbon($pin->last_cycle_start) : null,
-                ])->save();
-
-                // Collect data for the cleanup phase
-                $this->planet_pins->push($pin->pin_id);
-
-                if (property_exists($pin, 'factory_details')) {
-
-                    CharacterPlanetFactory::firstOrNew([
-                        'character_id' => $this->getCharacterId(),
-                        'planet_id' => $this->planet_id,
-                        'pin_id' => $pin->pin_id,
-                    ])->fill([
-                        'schematic_id' => $pin->factory_details->schematic_id,
-                    ])->save();
-
-                    // seeding garbage collector
-                    $this->planet_factories->push($pin->pin_id);
-                }
-
-                if (property_exists($pin, 'extractor_details')) {
-
-                    CharacterPlanetExtractor::firstOrNew([
-                        'character_id' => $this->getCharacterId(),
-                        'planet_id' => $this->planet_id,
-                        'pin_id' => $pin->pin_id,
-                    ])->fill([
-                        'product_type_id' => $pin->extractor_details->product_type_id ?? null,
-                        'cycle_time' => $pin->extractor_details->cycle_time ?? null,
-                        'head_radius' => $pin->extractor_details->head_radius ?? null,
-                        'qty_per_cycle' => $pin->extractor_details->qty_per_cycle ?? null,
-                    ])->save();
-
-                    // Collect data for the cleanup phase
-                    $this->planet_extractors->push($pin->pin_id);
-
-                    collect($pin->extractor_details->heads)->each(function ($head) use ($pin) {
-
-                        CharacterPlanetHead::firstOrNew([
-                            'character_id' => $this->getCharacterId(),
-                            'planet_id' => $this->planet_id,
-                            'extractor_id' => $pin->pin_id,
-                            'head_id' => $head->head_id,
-                        ])->fill([
-                            'latitude' => $head->latitude,
-                            'longitude' => $head->longitude,
-                        ])->save();
-
-                        // seeding garbage collector
-                        $this->planet_heads->push([
-                            'extractor_id' => $pin->pin_id,
-                            'head_id' => $head->head_id,
-                        ]);
-                    });
-                }
-
-                if (property_exists($pin, 'contents')) {
-
-                    collect($pin->contents)->each(function ($content) use ($pin) {
-
-                        CharacterPlanetContent::firstOrNew([
-                            'character_id' => $this->getCharacterId(),
-                            'planet_id' => $this->planet_id,
-                            'pin_id' => $pin->pin_id,
-                            'type_id' => $content->type_id,
-                        ])->fill([
-                            'amount' => $content->amount,
-                        ])->save();
-
-                        // seeding garbage collector
-                        $this->planet_contents->push([
-                            'pin_id' => $pin->pin_id,
-                            'type_id' => $content->type_id,
-                        ]);
-
-                    });
-                }
-            });
-
-            collect($planet_detail->links)->each(function ($link) {
-
-                CharacterPlanetLink::firstOrNew([
-                    'character_id' => $this->getCharacterId(),
-                    'planet_id' => $this->planet_id,
-                    'source_pin_id' => $link->source_pin_id,
-                    'destination_pin_id' => $link->destination_pin_id,
-                ])->fill([
-                    'link_level' => $link->link_level,
-                ])->save();
-
-                // Collect data for the cleanup phase
-                $this->planet_links->push([
-                    'source_pin_id' => $link->source_pin_id,
-                    'destination_pin_id' => $link->destination_pin_id,
-                ]);
-
-            });
-
-            collect($planet_detail->routes)->each(function ($route) {
-
-                CharacterPlanetRoute::firstOrNew([
-                    'character_id' => $this->getCharacterId(),
-                    'planet_id' => $this->planet_id,
-                    'route_id' => $route->route_id,
-                ])->fill([
-                    'source_pin_id' => $route->source_pin_id,
-                    'destination_pin_id' => $route->destination_pin_id,
-                    'content_type_id' => $route->content_type_id,
-                    'quantity' => $route->quantity,
+                    'schematic_id' => $pin->factory_details->schematic_id,
                 ])->save();
 
                 // seeding garbage collector
-                $this->planet_routes->push($route->route_id);
+                $this->planet_factories->push($pin->pin_id);
+            }
 
-                if (property_exists($route, 'waypoints')) {
-                    collect($route->waypoints)->each(function ($waypoint) use ($route) {
+            if (property_exists($pin, 'extractor_details')) {
 
-                        CharacterPlanetRouteWaypoint::firstOrNew([
-                            'character_id' => $this->getCharacterId(),
-                            'planet_id' => $this->planet_id,
-                            'route_id' => $route->route_id,
-                            'pin_id' => $waypoint,
-                        ])->save();
+                CharacterPlanetExtractor::firstOrNew([
+                    'character_id' => $this->getCharacterId(),
+                    'planet_id' => $this->planet_id,
+                    'pin_id' => $pin->pin_id,
+                ])->fill([
+                    'product_type_id' => $pin->extractor_details->product_type_id ?? null,
+                    'cycle_time' => $pin->extractor_details->cycle_time ?? null,
+                    'head_radius' => $pin->extractor_details->head_radius ?? null,
+                    'qty_per_cycle' => $pin->extractor_details->qty_per_cycle ?? null,
+                ])->save();
 
-                        // seeding garbage collector
-                        $this->planet_waypoints->push([
-                            'route_id' => $route->route_id,
-                            'pin_id' => $waypoint,
-                        ]);
+                // Collect data for the cleanup phase
+                $this->planet_extractors->push($pin->pin_id);
 
-                    });
-                }
-            });
+                collect($pin->extractor_details->heads)->each(function ($head) use ($pin) {
 
-            $this->planetCleanup();
+                    CharacterPlanetHead::firstOrNew([
+                        'character_id' => $this->getCharacterId(),
+                        'planet_id' => $this->planet_id,
+                        'extractor_id' => $pin->pin_id,
+                        'head_id' => $head->head_id,
+                    ])->fill([
+                        'latitude' => $head->latitude,
+                        'longitude' => $head->longitude,
+                    ])->save();
 
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
+                    // seeding garbage collector
+                    $this->planet_heads->push([
+                        'extractor_id' => $pin->pin_id,
+                        'head_id' => $head->head_id,
+                    ]);
+                });
+            }
 
-            throw $e;
-        }
+            if (property_exists($pin, 'contents')) {
+
+                collect($pin->contents)->each(function ($content) use ($pin) {
+
+                    CharacterPlanetContent::firstOrNew([
+                        'character_id' => $this->getCharacterId(),
+                        'planet_id' => $this->planet_id,
+                        'pin_id' => $pin->pin_id,
+                        'type_id' => $content->type_id,
+                    ])->fill([
+                        'amount' => $content->amount,
+                    ])->save();
+
+                    // seeding garbage collector
+                    $this->planet_contents->push([
+                        'pin_id' => $pin->pin_id,
+                        'type_id' => $content->type_id,
+                    ]);
+
+                });
+            }
+        });
+
+        collect($planet_detail->links)->each(function ($link) {
+
+            CharacterPlanetLink::firstOrNew([
+                'character_id' => $this->getCharacterId(),
+                'planet_id' => $this->planet_id,
+                'source_pin_id' => $link->source_pin_id,
+                'destination_pin_id' => $link->destination_pin_id,
+            ])->fill([
+                'link_level' => $link->link_level,
+            ])->save();
+
+            // Collect data for the cleanup phase
+            $this->planet_links->push([
+                'source_pin_id' => $link->source_pin_id,
+                'destination_pin_id' => $link->destination_pin_id,
+            ]);
+
+        });
+
+        collect($planet_detail->routes)->each(function ($route) {
+
+            CharacterPlanetRoute::firstOrNew([
+                'character_id' => $this->getCharacterId(),
+                'planet_id' => $this->planet_id,
+                'route_id' => $route->route_id,
+            ])->fill([
+                'source_pin_id' => $route->source_pin_id,
+                'destination_pin_id' => $route->destination_pin_id,
+                'content_type_id' => $route->content_type_id,
+                'quantity' => $route->quantity,
+            ])->save();
+
+            // seeding garbage collector
+            $this->planet_routes->push($route->route_id);
+
+            if (property_exists($route, 'waypoints')) {
+                collect($route->waypoints)->each(function ($waypoint) use ($route) {
+
+                    CharacterPlanetRouteWaypoint::firstOrNew([
+                        'character_id' => $this->getCharacterId(),
+                        'planet_id' => $this->planet_id,
+                        'route_id' => $route->route_id,
+                        'pin_id' => $waypoint,
+                    ])->save();
+
+                    // seeding garbage collector
+                    $this->planet_waypoints->push([
+                        'route_id' => $route->route_id,
+                        'pin_id' => $waypoint,
+                    ]);
+
+                });
+            }
+        });
+
+        $this->planetCleanup();
     }
 
     /**

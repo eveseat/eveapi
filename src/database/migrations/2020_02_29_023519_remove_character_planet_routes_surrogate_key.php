@@ -33,14 +33,14 @@ class RemoveCharacterPlanetRoutesSurrogateKey extends Migration
     {
         Schema::table('character_planet_routes', function (Blueprint $table) {
             $table->dropPrimary(['character_id', 'planet_id', 'route_id']);
-            $table->unique(['planet_id', 'route_id']);
+            $table->primary(['route_id']);
         });
     }
 
     public function down()
     {
         Schema::table('character_planet_routes', function (Blueprint $table) {
-            $table->dropUnique(['planet_id', 'route_id']);
+            $table->dropPrimary(['route_id']);
             $table->primary(['character_id', 'planet_id', 'route_id']);
         });
     }
