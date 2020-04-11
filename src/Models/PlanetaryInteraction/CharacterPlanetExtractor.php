@@ -38,7 +38,7 @@ class CharacterPlanetExtractor extends Model
     /**
      * @var null
      */
-    protected $primaryKey = null;
+    protected $primaryKey = 'pin_id';
 
     /**
      * @var bool

@@ -38,7 +38,7 @@ class CharacterPlanetRoute extends Model
     /**
      * @var array
      */
-    protected $primaryKey = null;
+    protected $primaryKey = 'route_id';
 
     /**
      * @var bool
