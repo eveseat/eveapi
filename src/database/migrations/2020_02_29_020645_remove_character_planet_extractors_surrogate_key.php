@@ -33,14 +33,14 @@ class RemoveCharacterPlanetExtractorsSurrogateKey extends Migration
     {
         Schema::table('character_planet_extractors', function (Blueprint $table) {
             $table->dropPrimary(['character_id', 'planet_id', 'pin_id']);
-            $table->unique(['planet_id', 'pin_id']);
+            $table->primary(['pin_id']);
         });
     }
 
     public function down()
     {
         Schema::table('character_planet_extractors', function (Blueprint $table) {
-            $table->dropUnique(['planet_id', 'pin_id']);
+            $table->dropPrimary(['pin_id']);
             $table->primary(['character_id', 'planet_id', 'pin_id']);
         });
     }
