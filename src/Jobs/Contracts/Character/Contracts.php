@@ -120,7 +120,7 @@ class Contracts extends AbstractAuthCharacterJob
                 ]);
 
                 // dispatch a job which will collect bids related to this contract
-                if ($contract->type == 'auction')
+                if ($contract->type == 'auction' && $contract->status != 'deleted')
                     dispatch(new Bids($this->token, $contract->contract_id));
 
                 // dispatch a job which will collect items related to this contract
