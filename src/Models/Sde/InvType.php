@@ -183,6 +183,7 @@ class InvType extends Model
 
         return $this->hasOne(Price::class, 'type_id', 'typeID')
             ->withDefault([
+                'average'        => 0.00,
                 'average_price'  => 0.00,
                 'adjusted_price' => 0.00,
             ]);
