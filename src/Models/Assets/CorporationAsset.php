@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
@@ -223,9 +224,21 @@ class CorporationAsset extends Model
             ->withDefault();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function structure()
     {
         return $this->hasOne(UniverseStructure::class, 'structure_id', 'location_id')
+            ->withDefault();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function system()
+    {
+        return $this->hasOne(MapDenormalize::class, 'itemID', 'location_id')
             ->withDefault();
     }
 }
