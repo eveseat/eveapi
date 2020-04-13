@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\Universe;
 
 use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyStructure;
 use Seat\Eveapi\Models\Universe\UniverseStation;
@@ -77,28 +78,40 @@ class Stations extends EsiBase
         ];
 
         // NPC stations
-        CorporationInfo::all()->each(function ($corporation) {
+        CorporationInfo::whereNotIn('home_station_id', self::FAKE_STATION_ID)
+            ->select('home_station_id')
+            ->distinct()
+            ->get()
+            ->each(function ($corporation) {
 
-            if (in_array($corporation->home_station_id, self::FAKE_STATION_ID))
-                return true;
+                $station = $this->retrieve(['station_id' => $corporation->home_station_id]);
 
-            $station = $this->retrieve(['station_id' => $corporation->home_station_id]);
-
-            $this->updateStructure($station);
-
-        });
+                $this->updateStructure($station);
+            });
 
         // conquerable outposts
-        SovereigntyStructure::whereIn('structure_type_id', $structure_filter)->get()
+        SovereigntyStructure::whereIn('structure_type_id', $structure_filter)
+            ->whereNotIn('structure_id', self::FAKE_STATION_ID)
+            ->select('structure_id')
+            ->distinct()
+            ->get()
             ->each(function ($structure) {
-
-                if (in_array($structure->structure_id, self::FAKE_STATION_ID))
-                    return true;
 
                 $outpost = $this->retrieve(['station_id' => $structure->structure_id]);
 
                 $this->updateStructure($outpost);
+            });
 
+        // corporation assets
+        CorporationAsset::where('location_type', 'station')
+            ->select('location_id')
+            ->distinct()
+            ->get()
+            ->each(function ($asset) {
+
+                $outpost = $this->retrieve(['station_id' => $asset->location_id]);
+
+                $this->updateStructure($outpost);
             });
     }
 
