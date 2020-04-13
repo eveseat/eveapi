@@ -24,6 +24,8 @@ namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Universe\UniverseStation;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
@@ -152,20 +154,6 @@ class CorporationAsset extends Model
     protected $primaryKey = 'item_id';
 
     /**
-     * @param $value
-     *
-     * @return string
-     */
-    public function getNameAttribute($value)
-    {
-
-        if (is_null($value) || $value == '')
-            return $this->type->typeName;
-
-        return $value;
-    }
-
-    /**
      * Provide a rate of the used space based on item capacity and stored item volume.
      *
      * @return float
@@ -213,7 +201,8 @@ class CorporationAsset extends Model
     public function container()
     {
 
-        return $this->belongsTo(CorporationAsset::class, 'item_id', 'location_id');
+        return $this->belongsTo(CorporationAsset::class, 'location_id', 'item_id')
+            ->withDefault();
     }
 
     /**
@@ -223,5 +212,20 @@ class CorporationAsset extends Model
     {
 
         return $this->hasMany(CorporationAsset::class, 'location_id', 'item_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function station()
+    {
+        return $this->hasOne(UniverseStation::class, 'station_id', 'location_id')
+            ->withDefault();
+    }
+
+    public function structure()
+    {
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'location_id')
+            ->withDefault();
     }
 }
