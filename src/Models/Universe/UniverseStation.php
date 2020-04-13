@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 
 /**
  * Class UniverseStation.
@@ -45,4 +46,12 @@ class UniverseStation extends Model
      */
     protected $primaryKey = 'station_id';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function system()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'system_id', 'itemID')
+            ->withDefault();
+    }
 }
