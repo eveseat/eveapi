@@ -22,7 +22,7 @@
 
 return [
 
-    'version'               => '3.0.21',
+    'version'               => '4.0.x-dev',
 
     // API Joblog logging
     'enable_joblog'         => false,
