@@ -55,7 +55,7 @@ class CorporationIndustryMiningExtraction extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'structure_id';
+    protected $primaryKey = 'moon_id';
 
     /**
      * @var bool
