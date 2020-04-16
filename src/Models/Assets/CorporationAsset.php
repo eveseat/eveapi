@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvGroup;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Models\Universe\UniverseStation;
@@ -193,7 +194,14 @@ class CorporationAsset extends Model
     public function type()
     {
 
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+        return $this->hasOne(InvType::class, 'typeID', 'type_id')
+            ->withDefault(function ($type) {
+                $group = new InvGroup();
+                $group->groupName = 'Unknown';
+
+                $type->typeName = trans('web::seat.unknown');
+                $type->group = $group;
+            });
     }
 
     /**
@@ -221,7 +229,9 @@ class CorporationAsset extends Model
     public function station()
     {
         return $this->hasOne(UniverseStation::class, 'station_id', 'location_id')
-            ->withDefault();
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
@@ -230,7 +240,9 @@ class CorporationAsset extends Model
     public function structure()
     {
         return $this->hasOne(UniverseStructure::class, 'structure_id', 'location_id')
-            ->withDefault();
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
