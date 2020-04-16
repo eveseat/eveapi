@@ -24,9 +24,6 @@ namespace Seat\Eveapi\Jobs\Universe;
 
 use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Assets\CorporationAsset;
-use Seat\Eveapi\Models\Corporation\CorporationInfo;
-use Seat\Eveapi\Models\Sovereignty\SovereigntyStructure;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStationService;
 
@@ -57,9 +54,19 @@ class Stations extends EsiBase
     protected $tags = ['public', 'universe'];
 
     /**
-     * Those stations might be returned by ESI on some endpoints (ie: corporation infos) - however, they don't exist.
+     * @var array
      */
-    const FAKE_STATION_ID = [60000001];
+    private $station_ids;
+
+    /**
+     * Stations constructor.
+     *
+     * @param array $station_ids
+     */
+    public function __construct(array $station_ids)
+    {
+        $this->station_ids = $station_ids;
+    }
 
     /**
      * Execute the job.
@@ -68,51 +75,11 @@ class Stations extends EsiBase
      */
     public function handle()
     {
-        // filtering public structures on outpost typeID
-        $structure_filter = [
-            12242, 12294, 12295, // conquerable outpost
-            21642,               // caldari outpost
-            21644,               // amarr outpost
-            21645,               // gallente outpost
-            21646,               // minmatar outpost
-        ];
+        foreach ($this->station_ids as $station_id) {
+            $station = $this->retrieve(['station_id' => $station_id]);
 
-        // NPC stations
-        CorporationInfo::whereNotIn('home_station_id', self::FAKE_STATION_ID)
-            ->select('home_station_id')
-            ->distinct()
-            ->get()
-            ->each(function ($corporation) {
-
-                $station = $this->retrieve(['station_id' => $corporation->home_station_id]);
-
-                $this->updateStructure($station);
-            });
-
-        // conquerable outposts
-        SovereigntyStructure::whereIn('structure_type_id', $structure_filter)
-            ->whereNotIn('structure_id', self::FAKE_STATION_ID)
-            ->select('structure_id')
-            ->distinct()
-            ->get()
-            ->each(function ($structure) {
-
-                $outpost = $this->retrieve(['station_id' => $structure->structure_id]);
-
-                $this->updateStructure($outpost);
-            });
-
-        // corporation assets
-        CorporationAsset::where('location_type', 'station')
-            ->select('location_id')
-            ->distinct()
-            ->get()
-            ->each(function ($asset) {
-
-                $outpost = $this->retrieve(['station_id' => $asset->location_id]);
-
-                $this->updateStructure($outpost);
-            });
+            $this->updateStructure($station);
+        }
     }
 
     /**
