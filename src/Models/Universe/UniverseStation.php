@@ -32,6 +32,11 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
 class UniverseStation extends Model
 {
     /**
+     * Those stations might be returned by ESI on some endpoints (ie: corporation infos) - however, they don't exist.
+     */
+    const FAKE_STATION_ID = [60000001];
+
+    /**
      * @var bool
      */
     protected static $unguarded = true;
