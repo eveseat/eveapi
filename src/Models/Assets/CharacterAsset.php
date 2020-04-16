@@ -30,7 +30,6 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\AuthorizedScope;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CharacterAsset.
@@ -128,7 +127,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  */
 class CharacterAsset extends Model
 {
-    use CanUpsertIgnoreReplace;
     use AuthorizedScope;
 
     /**
