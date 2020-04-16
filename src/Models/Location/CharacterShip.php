@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\Location;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Assets\CharacterAsset;
+use Seat\Eveapi\Models\Sde\InvGroup;
 use Seat\Eveapi\Models\Sde\InvType;
 
 /**
@@ -48,11 +50,25 @@ class CharacterShip extends Model
     protected $primaryKey = 'character_id';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function content()
+    {
+        return $this->hasMany(CharacterAsset::class, 'location_id', 'ship_item_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()
     {
+        return $this->hasOne(InvType::class, 'typeID', 'ship_type_id')
+            ->withDefault(function ($type) {
+                $group = new InvGroup();
+                $group->groupName = 'Unknown';
 
-        return $this->belongsTo(InvType::class, 'ship_type_id', 'typeID');
+                $type->typeName = trans('web::seat.unknown');
+                $type->group = $group;
+            });
     }
 }
