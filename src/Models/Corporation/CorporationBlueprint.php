@@ -23,7 +23,10 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Universe\UniverseStation;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
@@ -45,6 +48,37 @@ class CorporationBlueprint extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'item_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function container()
+    {
+        return $this->belongsTo(CorporationAsset::class, 'location_id', 'item_id')
+            ->withDefault();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function station()
+    {
+        return $this->hasOne(UniverseStation::class, 'station_id', 'location_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function structure()
+    {
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'location_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
