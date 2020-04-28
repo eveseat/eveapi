@@ -35,8 +35,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationStructure extends Model
 {
-    use HasCompositePrimaryKey;
-
     const DGM_SERVICE_MODULE_CYCLE_FUEL_NEED = 2109;
 
     const DGM_SERVICE_MODULE_ACTIVATION_FUEL_NEED = 2110;
@@ -49,7 +47,12 @@ class CorporationStructure extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['corporation_id', 'structure_id'];
+    protected $primaryKey = 'structure_id';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
