@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 
 /**
  * Class CharacterContract.
@@ -34,6 +35,14 @@ class CharacterContract extends Model
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function character()
+    {
+        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
