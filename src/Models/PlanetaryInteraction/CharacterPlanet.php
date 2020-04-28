@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 
 /**
  * Class CharacterPlanet.
@@ -44,4 +46,33 @@ class CharacterPlanet extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function extractors()
+    {
+        return $this->hasMany(CharacterPlanetExtractor::class, 'planet_id', 'planet_id')
+            ->where('character_id', $this->character_id);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function planet()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'planet_id', 'itemID')
+            ->withDefault([
+                'type' => new InvType(),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function system()
+    {
+        return $this->belongsTo(MapDenormalize::class, 'solar_system_id', 'itemID')
+            ->withDefault();
+    }
 }
