@@ -22,12 +22,12 @@
 
 namespace Seat\Eveapi;
 
-use App\Providers\AbstractSeatPlugin;
 use Seat\Eveapi\Helpers\EseyeSetup;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Observers\CharacterAffiliationObserver;
 use Seat\Eveapi\Observers\RefreshTokenObserver;
+use Seat\Services\AbstractSeatPlugin;
 
 /**
  * Class EveapiServiceProvider.
