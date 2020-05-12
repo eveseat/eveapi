@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
-use Seat\Services\Repositories\Eve\EvePrices;
 
 /**
  * Class CharacterMining.
@@ -34,8 +33,6 @@ use Seat\Services\Repositories\Eve\EvePrices;
  */
 class CharacterMining extends Model
 {
-    use EvePrices;
-
     /**
      * @var bool
      */

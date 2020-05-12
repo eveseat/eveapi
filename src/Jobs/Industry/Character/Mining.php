@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Jobs\Industry\Character;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\Industry\CharacterMining;
-use Seat\Services\Repositories\Eve\EvePrices;
 
 /**
  * Class Mining.
@@ -33,8 +32,6 @@ use Seat\Services\Repositories\Eve\EvePrices;
  */
 class Mining extends AbstractAuthCharacterJob
 {
-    use EvePrices;
-
     /**
      * @var string
      */
@@ -116,10 +113,6 @@ class Mining extends AbstractAuthCharacterJob
                     ]);
 
                 }
-
-                // Set Historical Price
-                $this->getHistoricalPrice($ledger_entry->type_id, $ledger_entry->date);
-
             });
 
             if (! $this->nextPage($mining->pages))
