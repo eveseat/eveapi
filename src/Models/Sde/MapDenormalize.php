@@ -171,11 +171,58 @@ class MapDenormalize extends Model
     private $moon_indicators;
 
     /**
-     * @param $query
+     * Return constellations entities.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeConstellations($query)
+    {
+        return $query->where('groupID', self::CONSTELLATION);
+    }
+
+    /**
+     * Return moons entities.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeMoons($query)
     {
-        $query->where('groupID', self::MOON);
+        return $query->where('groupID', self::MOON);
+    }
+
+    /**
+     * Return planets entities.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePlanets($query)
+    {
+        return $query->where('groupID', self::PLANET);
+    }
+
+    /**
+     * Return regions entities.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRegions($query)
+    {
+        return $query->where('groupID', self::REGION);
+    }
+
+    /**
+     * Return systems entities.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSystems($query)
+    {
+        return $query->where('groupID', self::SYSTEM);
     }
 
     /**
