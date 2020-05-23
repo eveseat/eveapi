@@ -156,11 +156,12 @@ class InvType extends Model
     protected $primaryKey = 'typeID';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function materials()
     {
-        return $this->hasMany(InvTypeMaterial::class, 'typeID', 'typeID');
+        return $this->belongsToMany(InvType::class, 'invTypeMaterials', 'typeID', 'materialTypeID')
+            ->withPivot('quantity');
     }
 
     /**
@@ -211,6 +212,16 @@ class InvType extends Model
     public function reactions()
     {
         return $this->belongsToMany(InvType::class, 'invTypeReactions', 'typeID', 'reactionTypeID')
-            ->withPivot('quantity');
+            ->withPivot('input', 'quantity');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function components()
+    {
+        return $this->belongsToMany(InvType::class, 'invTypeReactions', 'reactionTypeID', 'typeID')
+            ->wherePivot('input', true)
+            ->withPivot('input', 'quantity');
     }
 }

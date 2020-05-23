@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
-use Seat\Eveapi\Models\Universe\UniverseMoonContent;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
@@ -150,6 +149,16 @@ class MapDenormalize extends Model
 
     const SYSTEM = 5;
 
+    const UBIQUITOUS = 2396;
+
+    const COMMON = 2397;
+
+    const UNCOMMON = 2398;
+
+    const RARE = 2400;
+
+    const EXCEPTIONAL = 2401;
+
     /**
      * @var bool
      */
@@ -226,6 +235,72 @@ class MapDenormalize extends Model
     }
 
     /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUbiquitous($query)
+    {
+        return $query->whereHas('moon_content', function ($sub_query) {
+            $sub_query->where('marketGroupID', self::UBIQUITOUS);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCommon($query)
+    {
+        return $query->whereHas('moon_content', function ($sub_query) {
+            $sub_query->where('marketGroupID', self::COMMON);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUncommon($query)
+    {
+        return $query->whereHas('moon_content', function ($sub_query) {
+            $sub_query->where('marketGroupID', self::UNCOMMON);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRare($query)
+    {
+        return $query->whereHas('moon_content', function ($sub_query) {
+            $sub_query->where('marketGroupID', self::RARE);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeExceptional($query)
+    {
+        return $query->whereHas('moon_content', function ($sub_query) {
+            $sub_query->where('marketGroupID', self::EXCEPTIONAL);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeStandard($query)
+    {
+        return $query->whereHas('moon_content', function ($sub_query) {
+            $sub_query->whereNotIn('marketGroupID', [self::UBIQUITOUS, self::COMMON, self::UNCOMMON, self::RARE, self::EXCEPTIONAL]);
+        });
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
      */
     public function constellation()
@@ -237,11 +312,12 @@ class MapDenormalize extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function moon_contents()
+    public function moon_content()
     {
-        return $this->hasMany(UniverseMoonContent::class, 'moon_id', 'itemID');
+        return $this->belongsToMany(InvType::class, 'universe_moon_contents', 'moon_id', 'type_id')
+            ->withPivot('rate');
     }
 
     /**
@@ -304,23 +380,23 @@ class MapDenormalize extends Model
     {
         if (is_null($this->moon_indicators)) {
             $this->moon_indicators = (object) [
-                'ubiquitous' => $this->moon_contents->filter(function ($content) {
-                    return $content->type->marketGroupID == 2396;
+                'ubiquitous' => $this->moon_content->filter(function ($type) {
+                    return $type->marketGroupID == 2396;
                 })->count(),
-                'common' => $this->moon_contents->filter(function ($content) {
-                    return $content->type->marketGroupID == 2397;
+                'common' => $this->moon_content->filter(function ($type) {
+                    return $type->marketGroupID == 2397;
                 })->count(),
-                'uncommon' => $this->moon_contents->filter(function ($content) {
-                    return $content->type->marketGroupID == 2398;
+                'uncommon' => $this->moon_content->filter(function ($type) {
+                    return $type->marketGroupID == 2398;
                 })->count(),
-                'rare' => $this->moon_contents->filter(function ($content) {
-                    return $content->type->marketGroupID == 2400;
+                'rare' => $this->moon_content->filter(function ($type) {
+                    return $type->marketGroupID == 2400;
                 })->count(),
-                'exceptional' => $this->moon_contents->filter(function ($content) {
-                    return $content->type->marketGroupID == 2401;
+                'exceptional' => $this->moon_content->filter(function ($type) {
+                    return $type->marketGroupID == 2401;
                 })->count(),
-                'standard' => $this->moon_contents->filter(function ($content) {
-                    return ! in_array($content->type->marketGroupID, [2396, 2397, 2398, 2400, 2401]);
+                'standard' => $this->moon_content->filter(function ($type) {
+                    return ! in_array($type->marketGroupID, [2396, 2397, 2398, 2400, 2401]);
                 })->count(),
             ];
         }
