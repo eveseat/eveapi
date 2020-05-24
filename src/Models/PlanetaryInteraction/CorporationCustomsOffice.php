@@ -23,7 +23,8 @@
 namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\Planet;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class CorporationCustomsOffice.
@@ -51,16 +52,14 @@ class CorporationCustomsOffice extends Model
      */
     public function planet()
     {
-
-        return $this->belongsTo(MapDenormalize::class, 'location_id', 'itemID');
+        return $this->belongsTo(Planet::class, 'location_id', 'planet_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function system()
+    public function solar_system()
     {
-
-        return $this->belongsTo(MapDenormalize::class, 'system_id', 'itemID');
+        return $this->belongsTo(SolarSystem::class, 'system_id', 'system_id');
     }
 }

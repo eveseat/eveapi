@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class KillmailDetail.
@@ -109,9 +109,8 @@ class KillmailDetail extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function system()
+    public function solar_system()
     {
-
-        return $this->hasOne(MapDenormalize::class, 'itemID', 'solar_system_id');
+        return $this->hasOne(SolarSystem::class, 'system_id', 'solar_system_id');
     }
 }

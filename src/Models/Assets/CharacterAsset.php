@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvGroup;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\AuthorizedScope;
@@ -238,9 +238,9 @@ class CharacterAsset extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function system()
+    public function solar_system()
     {
-        return $this->hasOne(MapDenormalize::class, 'itemID', 'location_id')
+        return $this->hasOne(SolarSystem::class, 'system_id', 'location_id')
             ->withDefault();
     }
 
