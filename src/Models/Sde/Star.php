@@ -20,25 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Location;
+namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\Sde\SolarSystem;
-use Seat\Eveapi\Models\Sde\StaStation;
-use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
- * Class CharacterLocation.
- * @package Seat\Eveapi\Models\Killmails
+ * Class Star.
+ *
+ * @package Seat\Eveapi\Models\Sde
  */
-class CharacterLocation extends Model
+class Star extends Model
 {
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
-
     /**
      * @var bool
      */
@@ -47,40 +39,50 @@ class CharacterLocation extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'character_id';
+    protected $primaryKey = 'star_id';
+
+    /**
+     * @var string
+     */
+    protected $table = 'stars';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function character()
+    public function constellation()
     {
+        return $this->belongsTo(Constellation::class, 'constellation_id', 'constellation_id');
+    }
 
-        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function moons()
+    {
+        return $this->hasMany(Moon::class, 'system_id', 'system_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function planets()
+    {
+        return $this->hasMany(Planet::class, 'system_id', 'system_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function solar_system()
+    public function region()
     {
-        return $this->belongsTo(SolarSystem::class, 'solar_system_id', 'system_id');
+        return $this->belongsTo(Region::class, 'region_id', 'region_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function station()
+    public function type()
     {
-
-        return $this->belongsTo(StaStation::class, 'station_id', 'stationID');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function structure()
-    {
-
-        return $this->belongsTo(UniverseStructure::class, 'structure_id', 'structure_id');
+        return $this->belongsTo(InvType::class, 'typeID', 'typeID');
     }
 }
