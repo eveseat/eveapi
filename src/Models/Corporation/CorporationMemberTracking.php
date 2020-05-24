@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Corporation;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
@@ -121,7 +121,7 @@ class CorporationMemberTracking extends Model
     {
         // System range
         if ($this->location_id >= 30000001 && $this->location_id <= 31002604)
-            return $this->belongsTo(MapDenormalize::class, 'location_id', 'itemID');
+            return $this->belongsTo(SolarSystem::class, 'location_id', 'system_id');
 
         // Station range
         if ($this->location_id >= 60000000 && $this->location_id <= 64000000)

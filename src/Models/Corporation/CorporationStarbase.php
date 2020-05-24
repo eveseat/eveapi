@@ -27,7 +27,8 @@ use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
 use Seat\Eveapi\Models\Sde\InvControlTowerResource;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\Moon;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -143,17 +144,15 @@ class CorporationStarbase extends Model
      */
     public function moon()
     {
-
-        return $this->belongsTo(MapDenormalize::class, 'moon_id', 'itemID');
+        return $this->belongsTo(Moon::class, 'moon_id', 'moon_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function system()
+    public function solar_system()
     {
-
-        return $this->belongsTo(MapDenormalize::class, 'system_id', 'itemID');
+        return $this->belongsTo(SolarSystem::class, 'system_id', 'system_id');
     }
 
     /**

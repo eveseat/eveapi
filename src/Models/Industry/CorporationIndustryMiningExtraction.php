@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\Moon;
 
 /**
  * Class CorporationIndustryMiningExtraction.
@@ -75,7 +75,7 @@ class CorporationIndustryMiningExtraction extends Model
      */
     public function moon()
     {
-        return $this->belongsTo(MapDenormalize::class, 'moon_id', 'itemID');
+        return $this->belongsTo(Moon::class, 'moon_id', 'moon_id');
     }
 
     /**
