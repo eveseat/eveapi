@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Industry;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Services\Repositories\Eve\EvePrices;
 
 /**
@@ -74,10 +74,9 @@ class CharacterMining extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function system()
+    public function solar_system()
     {
-
-        return $this->hasOne(MapDenormalize::class, 'itemID', 'solar_system_id');
+        return $this->hasOne(SolarSystem::class, 'system_id', 'solar_system_id');
     }
 
     /**

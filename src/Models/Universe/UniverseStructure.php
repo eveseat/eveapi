@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class UniverseStructure.
@@ -70,11 +70,11 @@ class UniverseStructure extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function system()
+    public function solar_system()
     {
-        return $this->hasOne(MapDenormalize::class, 'itemID', 'solar_system_id')
+        return $this->hasOne(SolarSystem::class, 'system_id', 'solar_system_id')
             ->withDefault([
-                'itemName' => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 

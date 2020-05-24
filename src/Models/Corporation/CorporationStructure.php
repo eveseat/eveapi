@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Models\Corporation;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
@@ -81,10 +81,9 @@ class CorporationStructure extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function system()
+    public function solar_system()
     {
-
-        return $this->hasOne(MapDenormalize::class, 'itemID', 'system_id');
+        return $this->hasOne(SolarSystem::class, 'system_id', 'system_id');
     }
 
     /**
