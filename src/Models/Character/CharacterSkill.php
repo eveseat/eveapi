@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\AuthorizedScope;
 
 /**
  * Class CharacterSkill.
@@ -62,8 +61,6 @@ use Seat\Eveapi\Traits\AuthorizedScope;
  */
 class CharacterSkill extends Model
 {
-    use AuthorizedScope;
-
     /**
      * @var array
      */
