@@ -29,7 +29,6 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\AuthorizedScope;
 
 /**
  * Class CharacterAsset.
@@ -127,8 +126,6 @@ use Seat\Eveapi\Traits\AuthorizedScope;
  */
 class CharacterAsset extends Model
 {
-    use AuthorizedScope;
-
     /**
      * @var array
      */
