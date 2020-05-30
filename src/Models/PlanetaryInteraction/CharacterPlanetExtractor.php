@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class CharacterPlanetExtractor.
@@ -44,4 +45,21 @@ class CharacterPlanetExtractor extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function pin()
+    {
+        return $this->belongsTo(CharacterPlanetPin::class, 'pin_id', 'pin_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function product()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'product_type_id')
+            ->withDefault();
+    }
 }

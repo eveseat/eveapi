@@ -177,7 +177,6 @@ class CorporationInfo extends Model
         // TODO: Mining delete
 
         $this->issued_medals()->delete();
-        $this->killmails()->delete();
         $this->medals()->delete();
         $this->member_limit()->delete();
         $this->member_titles()->delete();
@@ -190,6 +189,7 @@ class CorporationInfo extends Model
         $this->standings()->delete();
 
         // TODO: Starbases & Structures
+        $this->structures()->delete();
 
         $this->titles()->delete();
         $this->title_roles()->delete();
@@ -198,6 +198,17 @@ class CorporationInfo extends Model
         $this->wallet_transactions()->delete();
 
         return parent::delete();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function alliance()
+    {
+        return $this->hasOne(Alliance::class, 'alliance_id', 'alliance_id')
+            ->withDefault([
+                'name'        => '',
+            ]);
     }
 
     /**
@@ -293,11 +304,34 @@ class CorporationInfo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function pocos()
+    public function characters()
     {
-
-        return $this->hasMany(CorporationCustomsOffice::class,
+        return $this->hasMany(CharacterInfo::class,
             'corporation_id', 'corporation_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function ceo()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'ceo_id')
+            ->withDefault([
+                'category'  => 'character',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function creator()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'creator_id')
+            ->withDefault([
+                'category' => 'character',
+                'name'     => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
@@ -318,6 +352,25 @@ class CorporationInfo extends Model
 
         return $this->hasMany(CorporationFacility::class,
             'corporation_id', 'corporation_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function faction()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
+            ->withDefault();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function home_station()
+    {
+
+        return $this->belongsTo(UniverseStation::class,
+            'home_station_id', 'station_id');
     }
 
     /**
@@ -347,6 +400,16 @@ class CorporationInfo extends Model
     {
 
         return $this->hasMany(CorporationMedal::class,
+            'corporation_id', 'corporation_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function members()
+    {
+
+        return $this->hasMany(CorporationMember::class,
             'corporation_id', 'corporation_id');
     }
 
@@ -386,20 +449,20 @@ class CorporationInfo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function members()
+    public function orders()
     {
 
-        return $this->hasMany(CorporationMember::class,
+        return $this->hasMany(CorporationOrder::class,
             'corporation_id', 'corporation_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function orders()
+    public function pocos()
     {
 
-        return $this->hasMany(CorporationOrder::class,
+        return $this->hasMany(CorporationCustomsOffice::class,
             'corporation_id', 'corporation_id');
     }
 
@@ -494,65 +557,10 @@ class CorporationInfo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function home_station()
-    {
-
-        return $this->belongsTo(UniverseStation::class,
-            'home_station_id', 'station_id');
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function characters()
+    public function structures()
     {
-        return $this->hasMany(CharacterInfo::class,
-            'corporation_id', 'corporation_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function alliance()
-    {
-        return $this->hasOne(Alliance::class, 'alliance_id', 'alliance_id')
-            ->withDefault([
-                'name'        => '',
-            ]);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function ceo()
-    {
-        return $this->hasOne(UniverseName::class, 'entity_id', 'ceo_id')
-            ->withDefault([
-                'category'  => 'character',
-                'name'      => trans('web::seat.unknown'),
-            ]);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function creator()
-    {
-        return $this->hasOne(UniverseName::class, 'entity_id', 'creator_id')
-            ->withDefault([
-                'category' => 'character',
-                'name'     => trans('web::seat.unknown'),
-            ]);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function faction()
-    {
-        return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
-            ->withDefault();
+        return $this->hasMany(CorporationStructure::class, 'corporation_id', 'corporation_id');
     }
 }

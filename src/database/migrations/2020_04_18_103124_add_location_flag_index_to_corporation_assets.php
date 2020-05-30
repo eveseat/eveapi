@@ -20,36 +20,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Contracts;
-
-use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Models\Character\CharacterInfo;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CharacterContract.
- * @package Seat\Eveapi\Models\Contacts
+ * Class AddLocationFlagIndexToCorporationAssets.
  */
-class CharacterContract extends Model
+class AddLocationFlagIndexToCorporationAssets extends Migration
 {
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function character()
+    public function up()
     {
-        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id');
+        Schema::table('corporation_assets', function (Blueprint $table) {
+            $table->index(['location_flag']);
+        });
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function detail()
+    public function down()
     {
-
-        return $this->hasOne(ContractDetail::class, 'contract_id', 'contract_id');
+        Schema::table('corporation_assets', function (Blueprint $table) {
+            $table->dropIndex(['location_flag']);
+        });
     }
 }

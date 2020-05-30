@@ -42,8 +42,10 @@ use Seat\Eveapi\Models\Location\CharacterOnline;
 use Seat\Eveapi\Models\Location\CharacterShip;
 use Seat\Eveapi\Models\Mail\MailHeader;
 use Seat\Eveapi\Models\Market\CharacterOrder;
+use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Skills\CharacterAttribute;
+use Seat\Eveapi\Models\Skills\CharacterSkillQueue;
 use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
@@ -207,7 +209,7 @@ class CharacterInfo extends Model
         $this->bookmarks()->delete();
         $this->bookmark_folders()->delete();
         $this->calendar_events()->delete();
-        $this->clones()->delete();
+        $this->clone()->delete();
         $this->contact_labels()->delete();
         $this->contacts()->delete();
         $this->contracts()->delete();
@@ -217,7 +219,6 @@ class CharacterInfo extends Model
         $this->implants()->delete();
         $this->industry()->delete();
         $this->jump_clones()->delete();
-        $this->killmails()->delete();
         $this->location()->delete();
         $this->medals()->delete();
         $this->mining()->delete();
@@ -228,6 +229,7 @@ class CharacterInfo extends Model
         // TODO: PI Cleanup
 
         $this->standings()->delete();
+        $this->stats()->delete();
         $this->titles()->delete();
         $this->corporation_roles()->delete();
         $this->pilot_attributes()->delete();
@@ -240,6 +242,15 @@ class CharacterInfo extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function affiliation()
+    {
+        return $this->hasOne(CharacterAffiliation::class, 'character_id', 'character_id')
+            ->withDefault();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function agent_research()
@@ -247,15 +258,6 @@ class CharacterInfo extends Model
 
         return $this->hasMany(CharacterAgentResearch::class,
             'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function affiliation()
-    {
-        return $this->hasOne(CharacterAffiliation::class, 'character_id', 'character_id')
-            ->withDefault();
     }
 
     /**
@@ -319,13 +321,21 @@ class CharacterInfo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function clones()
+    public function clone()
     {
 
-        return $this->hasMany(CharacterClone::class,
-            'character_id', 'character_id');
+        return $this->hasOne(CharacterClone::class, 'character_id', 'character_id')
+            ->withDefault();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function colonies()
+    {
+        return $this->hasMany(CharacterPlanet::class, 'character_id', 'character_id');
     }
 
     /**
@@ -369,13 +379,23 @@ class CharacterInfo extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function corporation_roles()
+    {
+
+        return $this->hasMany(CharacterRole::class,
+            'character_id', 'character_id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function fatigue()
     {
 
-        return $this->hasOne(CharacterFatigue::class,
-            'character_id', 'character_id');
+        return $this->hasOne(CharacterFatigue::class, 'character_id', 'character_id')
+            ->withDefault();
     }
 
     /**
@@ -490,6 +510,16 @@ class CharacterInfo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
+    public function pilot_attributes()
+    {
+
+        return $this->hasOne(CharacterAttribute::class, 'character_id', 'character_id')
+            ->withDefault();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function refresh_token()
     {
         return $this->hasOne(RefreshToken::class, 'character_id', 'character_id');
@@ -506,31 +536,12 @@ class CharacterInfo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function titles()
-    {
-
-        return $this->belongsToMany(CorporationTitle::class)->using(CharacterTitle::class);
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function corporation_roles()
+    public function stats()
     {
 
-        return $this->hasMany(CharacterRole::class,
-            'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function pilot_attributes()
-    {
-
-        return $this->hasMany(CharacterAttribute::class,
+        return $this->hasMany(CharacterStats::class,
             'character_id', 'character_id');
     }
 
@@ -541,7 +552,15 @@ class CharacterInfo extends Model
     {
 
         return $this->hasMany(CharacterSkill::class,
-            'character_id', 'character_id');
+            'character_id', 'character_id')->with('type', 'type.group');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function skill_queue()
+    {
+        return $this->hasMany(CharacterSkillQueue::class, 'character_id', 'character_id');
     }
 
     /**
@@ -564,6 +583,25 @@ class CharacterInfo extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function titles()
+    {
+
+        return $this->belongsToMany(CorporationTitle::class)->using(CharacterTitle::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     * @deprecated 4.0.0
+     */
+    public function user()
+    {
+        return $this->hasOneThrough(User::class, RefreshToken::class,
+            'character_id', 'id', 'character_id', 'user_id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function wallet_journal()
@@ -581,16 +619,6 @@ class CharacterInfo extends Model
 
         return $this->hasMany(CharacterWalletTransaction::class,
             'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
-     * @deprecated 4.0.0
-     */
-    public function user()
-    {
-        return $this->hasOneThrough(User::class, RefreshToken::class,
-            'character_id', 'id', 'character_id', 'user_id');
     }
 
     /**

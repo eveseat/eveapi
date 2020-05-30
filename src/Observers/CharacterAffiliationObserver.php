@@ -27,6 +27,7 @@ use Seat\Eveapi\Jobs\Corporation\Info as CorporationInfoJob;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class CharacterAffiliationObserver.
@@ -40,7 +41,7 @@ class CharacterAffiliationObserver
      */
     public function created(CharacterAffiliation $affiliation)
     {
-        if (! CorporationInfo::find($affiliation->corporation_id))
+        if (! CorporationInfo::find($affiliation->corporation_id) && RefreshToken::withTrashed()->find($affiliation->character_id))
             dispatch(new CorporationInfoJob($affiliation->corporation_id))->onQueue('high');
 
         if (! empty($affiliation->alliance_id) && ! Alliance::find($affiliation->alliance_id))
