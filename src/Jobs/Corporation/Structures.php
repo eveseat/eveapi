@@ -123,9 +123,9 @@ class Structures extends AbstractAuthCorporationJob
                 if (! $model->exists) $model->save();
 
                 CorporationStructure::firstOrNew([
-                    'corporation_id' => $structure->corporation_id,
                     'structure_id'   => $structure->structure_id,
                 ])->fill([
+                    'corporation_id'         => $structure->corporation_id,
                     'type_id'                => $structure->type_id,
                     'system_id'              => $structure->system_id,
                     'profile_id'             => $structure->profile_id,
@@ -151,7 +151,6 @@ class Structures extends AbstractAuthCorporationJob
                     collect($structure->services)->each(function ($service) use ($structure) {
 
                         CorporationStructureService::firstOrNew([
-                            'corporation_id' => $structure->corporation_id,
                             'structure_id'   => $structure->structure_id,
                             'name'           => $service->name,
                         ])->fill([
@@ -160,8 +159,7 @@ class Structures extends AbstractAuthCorporationJob
                     });
 
                     // Cleanup Services that may no longer be applicable to this structure.
-                    CorporationStructureService::where('corporation_id', $structure->corporation_id)
-                        ->where('structure_id', $structure->structure_id)
+                    CorporationStructureService::where('structure_id', $structure->structure_id)
                         ->whereNotIn('name', collect($structure->services)
                             ->pluck('name')->flatten()->all())
                         ->delete();
@@ -170,8 +168,7 @@ class Structures extends AbstractAuthCorporationJob
 
                     // If no services are defined on this structure, remove all of the
                     // ones we might have in the database.
-                    CorporationStructureService::where('corporation_id', $structure->corporation_id)
-                        ->where('structure_id', $structure->structure_id)
+                    CorporationStructureService::where('structure_id', $structure->structure_id)
                         ->delete();
                 }
 
@@ -182,9 +179,12 @@ class Structures extends AbstractAuthCorporationJob
                 break;
         }
 
-        // Cleanup services and structures that were not in the response.
-        CorporationStructureService::where('corporation_id', $this->getCorporationId())
+        $outdated_structure = CorporationStructure::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('structure_id', $this->known_structures->flatten()->all())
+            ->get();
+
+        // Cleanup services and structures that were not in the response.
+        CorporationStructureService::whereIn('structure_id', $outdated_structure->pluck('structure_id')->toArray())
             ->delete();
 
         CorporationStructure::where('corporation_id', $this->getCorporationId())

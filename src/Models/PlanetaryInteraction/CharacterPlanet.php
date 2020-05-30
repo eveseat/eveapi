@@ -23,6 +23,9 @@
 namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\Planet;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class CharacterPlanet.
@@ -44,4 +47,33 @@ class CharacterPlanet extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function extractors()
+    {
+        return $this->hasMany(CharacterPlanetExtractor::class, 'planet_id', 'planet_id')
+            ->where('character_id', $this->character_id);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function planet()
+    {
+        return $this->belongsTo(Planet::class, 'planet_id', 'planet_id')
+            ->withDefault([
+                'type' => new InvType(),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function solar_system()
+    {
+        return $this->belongsTo(SolarSystem::class, 'solar_system_id', 'system_id')
+            ->withDefault();
+    }
 }
