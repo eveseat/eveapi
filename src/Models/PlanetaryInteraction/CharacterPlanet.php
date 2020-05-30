@@ -24,7 +24,8 @@ namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Models\Sde\Planet;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class CharacterPlanet.
@@ -61,7 +62,7 @@ class CharacterPlanet extends Model
      */
     public function planet()
     {
-        return $this->belongsTo(MapDenormalize::class, 'planet_id', 'itemID')
+        return $this->belongsTo(Planet::class, 'planet_id', 'planet_id')
             ->withDefault([
                 'type' => new InvType(),
             ]);
@@ -70,9 +71,9 @@ class CharacterPlanet extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function system()
+    public function solar_system()
     {
-        return $this->belongsTo(MapDenormalize::class, 'solar_system_id', 'itemID')
+        return $this->belongsTo(SolarSystem::class, 'solar_system_id', 'system_id')
             ->withDefault();
     }
 }
