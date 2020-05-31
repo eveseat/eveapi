@@ -20,28 +20,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\PlanetaryInteraction;
-
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CharacterPlanetHead.
- * @package Seat\Eveapi\Models\PlanetaryInteraction
+ * Class AddIdColumnToCharacterStatsTable.
  */
-class CharacterPlanetHead extends Model
+class AddIdColumnToCharacterStatsTable extends Migration
 {
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
+    public function up()
+    {
+        Schema::table('character_stats', function (Blueprint $table) {
+            $table->bigIncrements('id')->first();
+        });
+    }
 
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'id';
-
-    /**
-     * @var bool
-     */
-    public $incrementing = true;
+    public function down()
+    {
+        Schema::table('character_stats', function (Blueprint $table) {
+            $table->dropColumn('id');
+        });
+    }
 }

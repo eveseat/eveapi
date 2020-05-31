@@ -20,28 +20,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\PlanetaryInteraction;
-
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CharacterPlanetHead.
- * @package Seat\Eveapi\Models\PlanetaryInteraction
+ * Class RenameIdColumnToReferenceIdIntoCorporationWalletJournalsTable.
  */
-class CharacterPlanetHead extends Model
+class ChangeContextIdTypeToStringIntoCorporationWalletJournalsTable extends Migration
 {
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
+    public function up()
+    {
+        DB::statement('ALTER TABLE corporation_wallet_journals CHANGE context_id_type context_id_type VARCHAR(255)');
+    }
 
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'id';
+    public function down()
+    {
 
-    /**
-     * @var bool
-     */
-    public $incrementing = true;
+    }
 }

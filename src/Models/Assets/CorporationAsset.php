@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Sde\InvGroup;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
@@ -221,6 +222,17 @@ class CorporationAsset extends Model
     {
 
         return $this->hasMany(CorporationAsset::class, 'location_id', 'item_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function corporation()
+    {
+        return $this->belongsTo(CorporationInfo::class, 'corporation_id', 'corporation_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**

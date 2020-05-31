@@ -120,14 +120,14 @@ class CharacterWalletTransaction extends Model
     protected static $unguarded = true;
 
     /**
-     * @var null
+     * @var string
      */
-    protected $primaryKey = null;
+    protected $primaryKey = 'id';
 
     /**
      * @var bool
      */
-    public $incrementing = false;
+    public $incrementing = true;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
