@@ -242,6 +242,24 @@ class CharacterInfo extends Model
     }
 
     /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeNpc($query)
+    {
+        return $query->whereBetween('character_id', [3000000, 3999999]);
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePlayer($query)
+    {
+        return $query->whereNotBetween('character_id', [3000000, 3999999]);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function affiliation()
