@@ -201,6 +201,24 @@ class CorporationInfo extends Model
     }
 
     /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeNpc($query)
+    {
+        return $query->whereBetween('corporation_id', [1000000, 1999999]);
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePlayer($query)
+    {
+        return $query->whereNotBetween('corporation_id', [1000000, 1999999]);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function alliance()
