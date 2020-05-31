@@ -59,7 +59,7 @@ class MailRecipient extends Model
     /**
      * @var bool
      */
-    public $incrementing = false;
+    public $incrementing = true;
 
     /**
      * @var bool
@@ -67,9 +67,9 @@ class MailRecipient extends Model
     public $timestamps = false;
 
     /**
-     * @var null
+     * @var string
      */
-    protected $primaryKey = null;
+    protected $primaryKey = 'id';
 
     /**
      * @var array

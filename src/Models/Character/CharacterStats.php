@@ -38,10 +38,10 @@ class CharacterStats extends Model
     /**
      * @var bool
      */
-    public $incrementing = false;
+    public $incrementing = true;
 
     /**
-     * @var null
+     * @var string
      */
-    protected $primaryKey = null;
+    protected $primaryKey = 'id';
 }
