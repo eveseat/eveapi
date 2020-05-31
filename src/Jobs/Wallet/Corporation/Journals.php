@@ -94,7 +94,7 @@ class Journals extends AbstractAuthCorporationJob
                                                             ->orderBy('date', 'desc')
                                                             ->first();
 
-                $this->last_known_entry_id = is_null($last_known_entry) ? 0 : $last_known_entry->id;
+                $this->last_known_entry_id = is_null($last_known_entry) ? 0 : $last_known_entry->reference_id;
 
                 // Perform a journal walk backwards to get all of the
                 // entries as far back as possible. When the response from
@@ -122,8 +122,8 @@ class Journals extends AbstractAuthCorporationJob
 
                         // if we have reached the last known entry, exclude all entries which are lower or equal to the
                         // last known entry and flag the reached status.
-                        if ($chunk->where('id', $this->last_known_entry_id)->isNotEmpty()) {
-                            $chunk = $chunk->where('id', '>', $this->last_known_entry_id);
+                        if ($chunk->where('reference_id', $this->last_known_entry_id)->isNotEmpty()) {
+                            $chunk = $chunk->where('reference_id', '>', $this->last_known_entry_id);
 
                             $this->at_last_entry = true;
                         }
@@ -133,7 +133,7 @@ class Journals extends AbstractAuthCorporationJob
                             return [
                                 'corporation_id'  => $this->getCorporationId(),
                                 'division'        => $division->division,
-                                'id'              => $entry->id,
+                                'reference_id'    => $entry->id,
                                 'date'            => carbon($entry->date),
                                 'ref_type'        => $entry->ref_type,
                                 'first_party_id'  => $entry->first_party_id ?? null,
