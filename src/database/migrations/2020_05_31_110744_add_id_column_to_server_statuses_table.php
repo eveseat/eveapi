@@ -31,14 +31,14 @@ class AddIdColumnToServerStatusesTable extends Migration
 {
     public function up()
     {
-        Schema::table('esi_statuses', function (Blueprint $table) {
+        Schema::table('server_statuses', function (Blueprint $table) {
             $table->bigIncrements('id')->first();
         });
     }
 
     public function down()
     {
-        Schema::table('esi_statuses', function (Blueprint $table) {
+        Schema::table('server_statuses', function (Blueprint $table) {
             $table->dropColumn('id');
         });
     }
