@@ -44,7 +44,7 @@ class Location extends EsiBase
     /**
      * @var int
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var string
