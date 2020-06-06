@@ -77,7 +77,9 @@ class Transactions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-       CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
+        CorporationDivision::where('corporation_id', $this->getCorporationId())
+            ->where('type', 'wallet')
+            ->get()
             ->each(function ($division) {
 
                 // Perform a journal walk backwards to get all of the
