@@ -85,7 +85,9 @@ class Journals extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        CorporationDivision::where('corporation_id', $this->getCorporationId())->get()
+        CorporationDivision::where('corporation_id', $this->getCorporationId())
+            ->where('type', 'wallet')
+            ->get()
             ->each(function ($division) {
 
                 // retrieve last known entry for the current division and active corporation
@@ -122,13 +124,13 @@ class Journals extends AbstractAuthCorporationJob
 
                         // if we have reached the last known entry, exclude all entries which are lower or equal to the
                         // last known entry and flag the reached status.
-                        if ($chunk->where('reference_id', $this->last_known_entry_id)->isNotEmpty()) {
-                            $chunk = $chunk->where('reference_id', '>', $this->last_known_entry_id);
+                        if ($chunk->where('id', $this->last_known_entry_id)->isNotEmpty()) {
+                            $chunk = $chunk->where('id', '>', $this->last_known_entry_id);
 
                             $this->at_last_entry = true;
                         }
 
-                        $records = $chunk->map(function ($entry, $key) use ($division) {
+                        $records = $chunk->map(function ($entry) use ($division) {
 
                             return [
                                 'corporation_id'  => $this->getCorporationId(),
