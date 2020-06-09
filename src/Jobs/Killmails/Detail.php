@@ -26,7 +26,6 @@ use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Killmails\KillmailAttacker;
 use Seat\Eveapi\Models\Killmails\KillmailDetail;
 use Seat\Eveapi\Models\Killmails\KillmailVictim;
-use Seat\Eveapi\Models\Killmails\KillmailVictimItem;
 
 /**
  * Class Detail.
@@ -102,7 +101,7 @@ class Detail extends EsiBase
             'war_id'          => property_exists($detail, 'war_id') ? $detail->war_id : null,
         ]);
 
-        KillmailVictim::firstOrCreate([
+        $victim = KillmailVictim::firstOrCreate([
             'killmail_id'    => $this->killmail_id,
         ], [
             'character_id'   => property_exists($detail->victim, 'character_id') ?
@@ -148,21 +147,20 @@ class Detail extends EsiBase
 
         if (property_exists($detail->victim, 'items')) {
 
-            collect($detail->victim->items)->each(function ($item) {
+            collect($detail->victim->items)->each(function ($item) use ($victim) {
 
-                KillmailVictimItem::firstOrNew([
-                    'killmail_id'  => $this->killmail_id,
-                    'item_type_id' => $item->item_type_id,
-                ])->fill([
-                    'quantity_destroyed' => property_exists($item, 'quantity_destroyed') ?
-                        $item->quantity_destroyed : null,
-                    'quantity_dropped'   => property_exists($item, 'quantity_dropped') ?
-                        $item->quantity_dropped : null,
-                    'singleton'          => $item->singleton,
-                    'flag'               => $item->flag,
-                ])->save();
+                $pivot_attributes = [
+                    'flag'      => $item->flag,
+                    'singleton' => $item->singleton,
+                ];
 
-                // TODO: Process $item->items as a nested model.
+                if (property_exists($item, 'quantity_destroyed'))
+                    $pivot_attributes['quantity_destroyed'] = $item->quantity_destroyed;
+
+                if (property_exists($item, 'quantity_dropped'))
+                    $pivot_attributes['quantity_dropped'] = $item->quantity_dropped;
+
+                $victim->items()->attach($item->item_type_id, $pivot_attributes);
             });
         }
     }

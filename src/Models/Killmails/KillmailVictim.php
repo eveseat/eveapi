@@ -180,4 +180,13 @@ class KillmailVictim extends Model
                 'category' => 'faction',
             ]);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function items()
+    {
+        return $this->belongsToMany(InvType::class, 'killmail_victim_items', 'killmail_id', 'item_type_id', 'killmail_id', 'typeID')
+            ->withPivot(['quantity_destroyed', 'quantity_dropped', 'singleton', 'flag']);
+    }
 }

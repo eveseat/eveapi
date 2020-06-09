@@ -62,6 +62,11 @@ use Illuminate\Database\Eloquent\Model;
 class Killmail extends Model
 {
     /**
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
      * @var array
      */
     protected $hidden = ['created_at', 'updated_at'];
