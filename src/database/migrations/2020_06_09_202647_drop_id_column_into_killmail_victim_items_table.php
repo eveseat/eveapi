@@ -20,19 +20,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Killmails;
-
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class KillmailVictimItem.
- * @package Seat\Eveapi\Models\Killmails
+ * Class DropIdColumnIntoKillmailVictimItemsTable.
  */
-class KillmailVictimItem extends Model
+class DropIdColumnIntoKillmailVictimItemsTable extends Migration
 {
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
+    public function up()
+    {
+        Schema::table('killmail_victim_items', function (Blueprint $table) {
+            $table->dropColumn(['id']);
+        });
+    }
 
+    public function down()
+    {
+        Schema::table('killmail_victim_items', function (Blueprint $table) {
+            $table->bigIncrements('id')->first();
+        });
+    }
 }
