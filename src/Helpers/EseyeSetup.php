@@ -41,16 +41,16 @@ class EseyeSetup
 
         $config = Configuration::getInstance();
         $config->http_user_agent = 'SeAT v' . config('eveapi.config.version');
-        $config->logfile_location = config('eveapi.config.eseye_logfile');
-        $config->file_cache_location = config('eveapi.config.eseye_cache');
-        $config->logger_level = config('eveapi.config.eseye_loglevel');
-        $config->esi_scheme = config('eveapi.config.eseye_esi_scheme');
-        $config->esi_host = config('eveapi.config.eseye_esi_host');
-        $config->esi_port = config('eveapi.config.eseye_esi_port');
-        $config->datasource = config('eveapi.config.eseye_esi_datasource');
-        $config->sso_scheme = config('eveapi.config.eseye_sso_scheme');
-        $config->sso_host = config('eveapi.config.eseye_sso_host');
-        $config->sso_port = config('eveapi.config.eseye_sso_port');
+        $config->logfile_location = config('esi.eseye_logfile');
+        $config->file_cache_location = config('esi.eseye_cache');
+        $config->logger_level = config('esi.eseye_loglevel');
+        $config->esi_scheme = config('esi.eseye_esi_scheme');
+        $config->esi_host = config('esi.eseye_esi_host');
+        $config->esi_port = config('esi.eseye_esi_port');
+        $config->datasource = config('esi.eseye_esi_datasource');
+        $config->sso_scheme = config('esi.eseye_sso_scheme');
+        $config->sso_host = config('esi.eseye_sso_host');
+        $config->sso_port = config('esi.eseye_sso_port');
     }
 
     /**
@@ -71,8 +71,8 @@ class EseyeSetup
 
             tap($authentication, function ($auth) {
 
-                $auth->client_id = config('eveapi.config.eseye_client_id');
-                $auth->secret = config('eveapi.config.eseye_client_secret');
+                $auth->client_id = config('esi.eseye_client_id');
+                $auth->secret = config('esi.eseye_client_secret');
             });
 
             return new Eseye($authentication);
