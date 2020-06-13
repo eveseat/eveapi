@@ -46,6 +46,9 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         // Inform Laravel how to load migrations
         $this->add_migrations();
 
+        // Register ESI configuration
+        $this->add_esi_config();
+
         // Update api config
         $this->configure_api();
 
@@ -79,6 +82,16 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     private function add_migrations()
     {
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations/');
+    }
+
+    /**
+     * Publish esi configuration file - so user can tweak it.
+     */
+    private function add_esi_config()
+    {
+        $this->publishes([
+            __DIR__ . '/Config/esi.php' => config_path('esi.php'),
+        ], ['config', 'seat']);
     }
 
     /**
