@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
-use Seat\Eveapi\Models\Corporation\CorporationDivision;
+use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
 
 /**
@@ -85,14 +85,12 @@ class Journals extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        CorporationDivision::where('corporation_id', $this->getCorporationId())
-            ->where('type', 'wallet')
-            ->get()
-            ->each(function ($division) {
+        CorporationWalletBalance::where('corporation_id', $this->getCorporationId())->get()
+            ->each(function ($balance) {
 
                 // retrieve last known entry for the current division and active corporation
                 $last_known_entry = CorporationWalletJournal::where('corporation_id', $this->getCorporationId())
-                                                            ->where('division', $division->division)
+                                                            ->where('division', $balance->division)
                                                             ->orderBy('date', 'desc')
                                                             ->first();
 
@@ -105,7 +103,7 @@ class Journals extends AbstractAuthCorporationJob
 
                     $journal = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
-                        'division'       => $division->division,
+                        'division'       => $balance->division,
                     ]);
 
                     if ($journal->isCachedLoad()) return;
@@ -116,7 +114,7 @@ class Journals extends AbstractAuthCorporationJob
                     if ($entries->count() === 0)
                         break;
 
-                    $entries->chunk(1000)->each(function ($chunk) use ($division) {
+                    $entries->chunk(1000)->each(function ($chunk) use ($balance) {
 
                         // if we've reached the last known entry - abort the process
                         if ($this->at_last_entry)
@@ -130,11 +128,11 @@ class Journals extends AbstractAuthCorporationJob
                             $this->at_last_entry = true;
                         }
 
-                        $records = $chunk->map(function ($entry) use ($division) {
+                        $records = $chunk->map(function ($entry) use ($balance) {
 
                             return [
                                 'corporation_id'  => $this->getCorporationId(),
-                                'division'        => $division->division,
+                                'division'        => $balance->division,
                                 'reference_id'    => $entry->id,
                                 'date'            => carbon($entry->date),
                                 'ref_type'        => $entry->ref_type,
