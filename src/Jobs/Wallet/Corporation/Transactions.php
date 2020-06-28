@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
-use Seat\Eveapi\Models\Corporation\CorporationDivision;
+use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 
 /**
@@ -77,10 +77,8 @@ class Transactions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        CorporationDivision::where('corporation_id', $this->getCorporationId())
-            ->where('type', 'wallet')
-            ->get()
-            ->each(function ($division) {
+        CorporationWalletBalance::where('corporation_id', $this->getCorporationId())->get()
+            ->each(function ($balance) {
 
                 // Perform a journal walk backwards to get all of the
                 // entries as far back as possible. When the response from
@@ -91,7 +89,7 @@ class Transactions extends AbstractAuthCorporationJob
 
                     $transactions = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
-                        'division'       => $division->division,
+                        'division'       => $balance->division,
                     ]);
 
                     if ($transactions->isCachedLoad()) return;
@@ -100,11 +98,11 @@ class Transactions extends AbstractAuthCorporationJob
                     if (collect($transactions)->count() === 0)
                         break;
 
-                    collect($transactions)->each(function ($transaction) use ($division) {
+                    collect($transactions)->each(function ($transaction) use ($balance) {
 
                         $transaction_entry = CorporationWalletTransaction::firstOrNew([
                             'corporation_id' => $this->getCorporationId(),
-                            'division'       => $division->division,
+                            'division'       => $balance->division,
                             'transaction_id' => $transaction->transaction_id,
                         ]);
 
