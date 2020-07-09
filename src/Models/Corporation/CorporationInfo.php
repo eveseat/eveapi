@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmark;
 use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
+use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\Contacts\CorporationLabel;
@@ -320,12 +321,12 @@ class CorporationInfo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function characters()
     {
-        return $this->hasMany(CharacterInfo::class,
-            'corporation_id', 'corporation_id');
+        return $this->hasManyThrough(CharacterInfo::class, CharacterAffiliation::class,
+            'corporation_id', 'character_id');
     }
 
     /**
