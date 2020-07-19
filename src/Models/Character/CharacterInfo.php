@@ -223,7 +223,6 @@ class CharacterInfo extends Model
         // TODO: PI Cleanup
 
         $this->standings()->delete();
-        $this->stats()->delete();
         $this->titles()->delete();
         $this->corporation_roles()->delete();
         $this->pilot_attributes()->delete();
@@ -482,16 +481,6 @@ class CharacterInfo extends Model
     {
 
         return $this->hasMany(CharacterStanding::class,
-            'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function stats()
-    {
-
-        return $this->hasMany(CharacterStats::class,
             'character_id', 'character_id');
     }
 
