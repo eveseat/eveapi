@@ -50,7 +50,7 @@ class RemoveCharacterContactsSurrogateKey extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::table('character_contacts', function (Blueprint $table) {
-            $table->dropPrimary();
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'contact_id']);
         });
 

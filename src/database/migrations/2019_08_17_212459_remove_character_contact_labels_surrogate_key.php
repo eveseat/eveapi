@@ -53,7 +53,7 @@ class RemoveCharacterContactLabelsSurrogateKey extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::table('character_labels', function (Blueprint $table) {
-            $table->dropPrimary();
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'label_id']);
             $table->renameColumn('name', 'label_name');
         });
