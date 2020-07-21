@@ -49,7 +49,7 @@ class RemoveCharacterBookmarksSurrogateKey extends Migration
         Schema::table('character_bookmarks', function (Blueprint $table) {
             $table->dropPrimary();
             $table->primary(['character_id', 'bookmark_id']);
-            $table->dropIndex('character_id');
+            $table->dropIndex(['character_id']);
         });
 
         Schema::enableForeignKeyConstraints();

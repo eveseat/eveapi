@@ -53,7 +53,7 @@ class RemoveCorporationContactLabelsSurrogateKey extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::table('corporation_labels', function (Blueprint $table) {
-            $table->dropPrimary();
+            $table->dropColumn('id');
             $table->dropUnique(['corporation_id', 'label_id']);
             $table->renameColumn('name', 'label_name');
         });
