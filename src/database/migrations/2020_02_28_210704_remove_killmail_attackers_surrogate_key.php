@@ -44,25 +44,27 @@ class RemoveKillmailAttackersSurrogateKey extends Migration
         $output = new ConsoleOutput();
         $progress = new ProgressBar($output, $count);
 
-        DB::table('killmail_attackers')->get()->each(function ($row) use ($progress) {
-            $hash = md5(serialize([
-                $row->character_id,
-                $row->corporation_id,
-                $row->alliance_id,
-                $row->faction_id,
-            ]));
+        DB::table('killmail_attackers')->chunk(200, function ($attackers) use ($progress) {
+            $attackers->each(function ($attacker) use ($progress) {
+                $hash = md5(serialize([
+                    $attacker->character_id,
+                    $attacker->corporation_id,
+                    $attacker->alliance_id,
+                    $attacker->faction_id,
+                ]));
 
-            DB::table('killmail_attackers')
-                ->where('killmail_id', $row->killmail_id)
-                ->where('character_id', $row->character_id)
-                ->where('corporation_id', $row->corporation_id)
-                ->where('alliance_id', $row->alliance_id)
-                ->where('faction_id', $row->faction_id)
-                ->update([
-                    'attacker_hash' => $hash,
-                ]);
+                DB::table('killmail_attackers')
+                    ->where('killmail_id', $attacker->killmail_id)
+                    ->where('character_id', $attacker->character_id)
+                    ->where('corporation_id', $attacker->corporation_id)
+                    ->where('alliance_id', $attacker->alliance_id)
+                    ->where('faction_id', $attacker->faction_id)
+                    ->update([
+                        'attacker_hash' => $hash,
+                    ]);
 
-            $progress->advance();
+                $progress->advance();
+            });
         });
 
         // remove duplicate entries using killmail_id and attacker hash as pivot
