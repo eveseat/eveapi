@@ -21,10 +21,9 @@
  */
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Class ConvertMailRecipientsTable.
@@ -35,40 +34,33 @@ class ConvertMailRecipientsTable extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        $count = DB::table('mig_mail_recipients')
-            ->distinct()
-            ->count();
+        Schema::table('mig_mail_recipients', function (Blueprint $table) {
+            $table->index(['mail_id', 'recipient_id']);
+        });
 
-        $output = new ConsoleOutput();
-        $progress = new ProgressBar($output, $count);
+        // remove duplicate entries with sames labels
+        DB::statement('DELETE a FROM mig_mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.id < b.id AND a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id AND a.labels = b.labels');
 
-        // seed mail recipients table using migration table
-        DB::table('mig_mail_recipients')
-            ->select('mail_id', 'recipient_id', 'is_read', 'labels')
-            ->orderBy('mail_id')
-            ->distinct()
-            ->each(function ($entry) use ($progress) {
-                DB::table('mail_recipients')
-                    ->updateOrInsert(
-                        [
-                            'mail_id'        => $entry->mail_id,
-                            'recipient_id'   => $entry->recipient_id,
-                            'recipient_type' => 'character',
-                        ],
-                        [
-                            'is_read' => $entry->is_read,
-                            'labels'  => $entry->labels,
-                        ]);
+        // remove duplicate entries without labels
+        DB::statement('DELETE a FROM mig_mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id AND a.labels = "[]" AND b.labels <> "[]"');
 
-                $progress->advance();
-            });
+        // remove all remaining duplicate entries
+        DB::statement('DELETE a FROM mig_mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.id > b.id AND a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id');
+
+        // remove all entries already stored into mail_recipients
+        DB::statement('DELETE a FROM mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id');
+
+        // seed mail_recipients with updated labels and read flag
+        DB::table('mail_recipients')
+            ->insertUsing(
+                ['mail_id', 'recipient_id', 'recipient_type', 'is_read', 'labels'],
+                DB::table('mig_mail_recipients')
+                ->select('mail_id', 'recipient_id', DB::raw('"character"'), 'is_read', 'labels')
+            );
 
         Schema::dropIfExists('mig_mail_recipients');
 
         Schema::enableForeignKeyConstraints();
-
-        $progress->finish();
-        $output->writeln('');
     }
 
     public function down()
