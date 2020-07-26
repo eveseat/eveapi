@@ -44,7 +44,9 @@ class RemoveKillmailAttackersSurrogateKey extends Migration
         $output = new ConsoleOutput();
         $progress = new ProgressBar($output, $count);
 
-        DB::table('killmail_attackers')->chunk(200, function ($attackers) use ($progress) {
+        DB::table('killmail_attackers')
+            ->orderBy('killmail_id')
+            ->chunk(200, function ($attackers) use ($progress) {
             $attackers->each(function ($attacker) use ($progress) {
                 $hash = md5(serialize([
                     $attacker->character_id,
