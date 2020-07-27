@@ -47,27 +47,27 @@ class RemoveKillmailAttackersSurrogateKey extends Migration
         DB::table('killmail_attackers')
             ->orderBy('killmail_id')
             ->chunk(200, function ($attackers) use ($progress) {
-            $attackers->each(function ($attacker) use ($progress) {
-                $hash = md5(serialize([
-                    $attacker->character_id,
-                    $attacker->corporation_id,
-                    $attacker->alliance_id,
-                    $attacker->faction_id,
-                ]));
+                $attackers->each(function ($attacker) use ($progress) {
+                    $hash = md5(serialize([
+                        $attacker->character_id,
+                        $attacker->corporation_id,
+                        $attacker->alliance_id,
+                        $attacker->faction_id,
+                    ]));
 
-                DB::table('killmail_attackers')
-                    ->where('killmail_id', $attacker->killmail_id)
-                    ->where('character_id', $attacker->character_id)
-                    ->where('corporation_id', $attacker->corporation_id)
-                    ->where('alliance_id', $attacker->alliance_id)
-                    ->where('faction_id', $attacker->faction_id)
-                    ->update([
-                        'attacker_hash' => $hash,
-                    ]);
+                    DB::table('killmail_attackers')
+                        ->where('killmail_id', $attacker->killmail_id)
+                        ->where('character_id', $attacker->character_id)
+                        ->where('corporation_id', $attacker->corporation_id)
+                        ->where('alliance_id', $attacker->alliance_id)
+                        ->where('faction_id', $attacker->faction_id)
+                        ->update([
+                            'attacker_hash' => $hash,
+                        ]);
 
-                $progress->advance();
+                    $progress->advance();
+                });
             });
-        });
 
         // remove duplicate entries using killmail_id and attacker hash as pivot
         DB::statement('DELETE a FROM killmail_attackers a INNER JOIN killmail_attackers b WHERE a.id > b.id AND a.killmail_id = b.killmail_id AND a.attacker_hash = b.attacker_hash');
