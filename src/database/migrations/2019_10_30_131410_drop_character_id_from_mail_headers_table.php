@@ -44,6 +44,7 @@ class DropCharacterIdFromMailHeadersTable extends Migration
         });
 
         Schema::create('mig_mail_recipients', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->bigInteger('mail_id');
             $table->bigInteger('recipient_id');
             $table->boolean('is_read');
