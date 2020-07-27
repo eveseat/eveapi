@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -33,6 +34,16 @@ class RemoveCorporationIndustryMiningExtractionsSurrogateKey extends Migration
     {
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'structure_id']);
+        });
+
+        Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
+            $table->bigIncrements('id')->first();
+        });
+
+        DB::statement('DELETE a FROM corporation_industry_mining_extractions a INNER JOIN corporation_industry_mining_extractions b WHERE a.id < b.id AND a.structure_id = b.structure_id');
+
+        Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
+            $table->dropColumn('id');
         });
 
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
