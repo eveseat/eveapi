@@ -34,7 +34,7 @@ class RemoveCorporationIndustryMiningObserversSurrogateKey extends Migration
         Schema::table('corporation_industry_mining_observers', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'observer_id']);
         });
-        
+
         Schema::table('corporation_industry_mining_observers', function (Blueprint $table) {
             $table->bigIncrements('id')->first();
         });
