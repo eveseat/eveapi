@@ -36,6 +36,16 @@ class RemoveCorporationIndustryMiningObserversSurrogateKey extends Migration
         });
 
         Schema::table('corporation_industry_mining_observers', function (Blueprint $table) {
+            $table->bigIncrements('id')->first();
+        });
+
+        DB::statement('DELETE a FROM corporation_industry_mining_observers a INNER JOIN corporation_industry_mining_observers b WHERE a.id < b.id AND a.observer_id = b.observer_id');
+
+        Schema::table('corporation_industry_mining_observers', function (Blueprint $table) {
+            $table->dropColumn('id');
+        });
+
+        Schema::table('corporation_industry_mining_observers', function (Blueprint $table) {
             $table->primary('observer_id');
         });
     }
