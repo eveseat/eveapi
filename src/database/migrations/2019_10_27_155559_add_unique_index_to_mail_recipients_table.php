@@ -40,6 +40,12 @@ class AddUniqueIndexToMailRecipientsTable extends Migration
             ]);
         });
 
+        // remove orphan recipients
+        DB::table('mail_recipients')
+            ->leftJoin('mail_headers', 'mail_recipients.mail_id', '=', 'mail_headers.mail_id')
+            ->whereNull('mail_headers.mail_id')
+            ->delete();
+
         DB::table('mig_mail_recipients')
             ->insertUsing(
                 ['mail_id', 'recipient_id', 'recipient_type'],
