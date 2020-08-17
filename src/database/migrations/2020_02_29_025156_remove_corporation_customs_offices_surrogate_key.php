@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -33,6 +34,16 @@ class RemoveCorporationCustomsOfficesSurrogateKey extends Migration
     {
         Schema::table('corporation_customs_offices', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'office_id']);
+        });
+
+        Schema::table('corporation_customs_offices', function (Blueprint $table) {
+            $table->bigIncrements('id')->first();
+        });
+
+        DB::statement('DELETE a FROM corporation_customs_offices a INNER JOIN corporation_customs_offices b WHERE a.id < b.id AND a.office_id = b.office_id');
+
+        Schema::table('corporation_customs_offices', function (Blueprint $table) {
+            $table->dropColumn('id');
         });
 
         Schema::table('corporation_customs_offices', function (Blueprint $table) {
