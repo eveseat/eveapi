@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
-use Seat\Eveapi\Exception\EsiRateLimitException;
 use Seat\Eveapi\Jobs\EsiBase;
 
 /**
@@ -32,6 +31,8 @@ use Seat\Eveapi\Jobs\EsiBase;
  */
 class CheckEsiRateLimit
 {
+    const ESI_RATELIMITED_COOLDOWN = 60;
+
     /**
      * @param \Illuminate\Queue\InteractsWithQueue $job
      * @param $next
@@ -39,17 +40,18 @@ class CheckEsiRateLimit
     public function handle($job, $next)
     {
         // in case the job is not ESI related, bypass this check
-        if (! is_subclass_of($job, EsiBase::class)) {
-            $next($job);
+        if (is_subclass_of($job, EsiBase::class)) {
 
-            return;
-        }
+            // in case ESI limit has been reached, delay the job
+            if ($this->isEsiRateLimitReached($job)) {
+                logger()->warning(
+                    sprintf('EVE Online server seems to be unreachable. Job %s has been delayed by %d seconds.',
+                        get_class($job), self::ESI_RATELIMITED_COOLDOWN));
 
-        // in case ESI limit has been reached, crash the job
-        if ($this->isEsiRateLimitReached($job)) {
-            $job->fail(new EsiRateLimitException());
+                $job->release(self::ESI_RATELIMITED_COOLDOWN);
 
-            return;
+                return;
+            }
         }
 
         $next($job);
