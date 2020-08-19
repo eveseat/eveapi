@@ -41,5 +41,5 @@ class CorporationStructureService extends Model
     /**
      * @var array
      */
-    protected $primaryKey = ['corporation_id', 'structure_id', 'name'];
+    protected $primaryKey = ['structure_id', 'name'];
 }
