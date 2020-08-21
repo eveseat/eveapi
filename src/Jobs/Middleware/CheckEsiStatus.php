@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
-use Seat\Eveapi\Exception\EsiDownException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Status\EsiStatus;
 
@@ -41,21 +40,20 @@ class CheckEsiStatus
     public function handle($job, $next)
     {
         // bypass control if the class is not related to ESI
-        if (! is_subclass_of($job, EsiBase::class)) {
-            $next($job);
+        if (is_subclass_of($job, EsiBase::class)) {
 
-            return;
+            // esi seems to be down - delay
+            if (! $this->isEsiOnline()) {
+
+                logger()->warning(
+                    sprintf('ESI seems to be unreachable. Job %s has been abort.',
+                        get_class($job)));
+
+                return;
+            }
         }
 
-        // esi seems to be online - continue
-        if ($this->isEsiOnline()) {
-            $next($job);
-
-            return;
-        }
-
-        // esi seems down
-        $job->fail(new EsiDownException());
+        $next($job);
     }
 
     /**

@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
-use Seat\Eveapi\Exception\EveServerDownException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Status\ServerStatus;
 
@@ -36,19 +35,20 @@ class CheckServerStatus
     public function handle($job, $next)
     {
         // in case the job is not ESI related, bypass this check
-        if (! is_subclass_of($job, EsiBase::class)) {
-            $next($job);
+        if (is_subclass_of($job, EsiBase::class)) {
 
-            return;
+            // TQ seems to be down - delay
+            if (! $this->isEveOnline()) {
+
+                logger()->warning(
+                    sprintf('EVE Online server seems to be unreachable. Job %s has been abort.',
+                        get_class($job)));
+
+                return;
+            }
         }
 
-        if ($this->isEveOnline()) {
-            $next($job);
-
-            return;
-        }
-
-        $job->fail(new EveServerDownException());
+        $next($job);
     }
 
     /**

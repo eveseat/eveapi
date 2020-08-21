@@ -40,12 +40,7 @@ abstract class AbstractJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * The number of times the job may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 3;
+    const MAXIMUM_DELAYED_JOB_DURATION = 1800;
 
     /**
      * Execute the job.
@@ -91,5 +86,15 @@ abstract class AbstractJob implements ShouldQueue
 
         // Rethrow the original exception for Horizon
         throw $exception;
+    }
+
+    /**
+     * Determine the time at which the job should timeout.
+     *
+     * @return \Carbon\Carbon
+     */
+    public function retryUntil()
+    {
+        return now()->addSeconds(self::MAXIMUM_DELAYED_JOB_DURATION);
     }
 }
