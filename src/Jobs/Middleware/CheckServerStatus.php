@@ -32,8 +32,6 @@ use Seat\Eveapi\Models\Status\ServerStatus;
  */
 class CheckServerStatus
 {
-    const EVE_DOWN_COOLDOWN = 900;
-
     public function handle($job, $next)
     {
         // in case the job is not ESI related, bypass this check
@@ -43,10 +41,8 @@ class CheckServerStatus
             if (! $this->isEveOnline()) {
 
                 logger()->warning(
-                    sprintf('EVE Online server seems to be unreachable. Job %s has been delayed by %d seconds.',
-                        get_class($job), self::EVE_DOWN_COOLDOWN));
-
-                $job->release(self::EVE_DOWN_COOLDOWN);
+                    sprintf('EVE Online server seems to be unreachable. Job %s has been abort.',
+                        get_class($job)));
 
                 return;
             }
