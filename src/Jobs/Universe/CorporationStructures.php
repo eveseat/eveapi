@@ -110,17 +110,9 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
     {
         $assets = CorporationAsset::where('corporation_id', $this->getCorporationId())
             ->where('location_flag', 'Hangar')
-            ->where('location_type', 'other')
+            ->whereIn('location_type', ['item', 'other'])
             // according to ESI - structure ID has to start at a certain range
             ->where('location_id', '>=', self::START_UPWELL_RANGE)
-            // exclude assets safety which are in a doom area
-            ->where('location_id', '<>', self::ASSET_SAFETY)
-            // exclude solar system
-            ->whereNotBetween('location_id', self::SOLAR_SYSTEMS_RANGE)
-            // exclude bugged assets area
-            ->whereNotBetween('location_id', self::BUGGED_ASSETS_RANGE)
-            // exclude npc stations
-            ->whereNotBetween('location_id', self::NPC_STATIONS_RANGE)
             // exclude character assets
             ->whereNotIn('location_id', function ($query) {
                 $query->select('item_id')
@@ -130,8 +122,8 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
             })
             ->select('location_id')
             ->distinct()
-            // Until CCP can sort out this endpoint, pick 30 random locations
-            // and try to get those names. We hard cap it at 30 otherwise we
+            // Until CCP can sort out this endpoint, pick 15 random locations
+            // and try to get those names. We hard cap it at 15 otherwise we
             // will quickly kill the error limit, resulting in a ban.
             ->inRandomOrder()
             ->limit(15)
