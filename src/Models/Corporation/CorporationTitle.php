@@ -44,4 +44,12 @@ class CorporationTitle extends Model
     {
         return $this->belongsToMany(CharacterInfo::class)->using(CharacterTitle::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function corporation()
+    {
+        return $this->belongsTo(CorporationInfo::class, 'corporation_id', 'corporation_id');
+    }
 }
