@@ -92,7 +92,9 @@ class Detail extends EsiBase
 
         if ($detail->isCachedLoad()) return;
 
-        KillmailDetail::firstOrCreate([
+        logger()->debug('I am spawning models');
+
+        $killmail = KillmailDetail::firstOrCreate([
             'killmail_id'     => $this->killmail_id,
         ], [
             'killmail_time'   => carbon($detail->killmail_time),
@@ -163,5 +165,7 @@ class Detail extends EsiBase
                 $victim->items()->attach($item->item_type_id, $pivot_attributes);
             });
         }
+
+        event(sprintf('eloquent.updated: %s', KillmailDetail::class), $killmail);
     }
 }
