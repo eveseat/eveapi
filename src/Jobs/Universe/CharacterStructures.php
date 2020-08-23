@@ -102,7 +102,7 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
     public function getStructuresIdToResolve(): array
     {
         return CharacterAsset::where('character_id', $this->getCharacterId())
-            ->where('location_flag', 'Hangar')
+            ->whereIn('location_flag', ['Deliveries', 'Hangar'])
             ->whereIn('location_type', ['item', 'other'])
             // according to ESI - structure ID has to start at a certain range
             ->where('location_id', '>=', self::START_UPWELL_RANGE)
