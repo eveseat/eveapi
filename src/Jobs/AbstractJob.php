@@ -40,8 +40,6 @@ abstract class AbstractJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    const MAXIMUM_DELAYED_JOB_DURATION = 1800;
-
     /**
      * Execute the job.
      *
@@ -95,6 +93,6 @@ abstract class AbstractJob implements ShouldQueue
      */
     public function retryUntil()
     {
-        return now()->addSeconds(self::MAXIMUM_DELAYED_JOB_DURATION);
+        return now()->addSeconds(3600);
     }
 }

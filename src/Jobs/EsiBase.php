@@ -47,9 +47,19 @@ abstract class EsiBase extends AbstractJob
     const RATE_LIMIT_KEY = 'esiratelimit';
 
     /**
-     * {@inheritdoc}
+     * @var string By default, queue all ESI jobs on public queue.
      */
     public $queue = 'public';
+
+    /**
+     * @var int By default, retry all ESI jobs every 5 minutes past last fail.
+     */
+    public $retryAfter = 300;
+
+    /**
+     * @var int By default, retry all ESI jobs 3 times.
+     */
+    public $tries = 3;
 
     /**
      * The HTTP method used for the API Call.
