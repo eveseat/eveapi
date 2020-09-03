@@ -27,7 +27,7 @@ return [
 
     'eseye_logfile'         => storage_path('logs'),
     'eseye_cache'           => storage_path('eseye'),
-    'eseye_loglevel'        => 'info', // valid entries are RFC 5424 levels ('debug', 'info', 'warn', 'error')
+    'eseye_loglevel'        => env('APP_LOG_LEVEL', 'info'),
 
     'eseye_client_id'       => env('EVE_CLIENT_ID'),
     'eseye_client_secret'   => env('EVE_CLIENT_SECRET'),
