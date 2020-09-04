@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
-use Seat\Eveapi\Exception\InvalidScopeException;
 use Seat\Eveapi\Jobs\EsiBase;
 
 /**
@@ -52,7 +51,12 @@ class CheckTokenScope
             return;
         }
 
-        // otherwise, crash the job
-        $job->fail(new InvalidScopeException($job->getScope(), $job->getToken()->scopes));
+        // log event otherwise
+        logger()->warning('A job requiring a not granted scope has been queued.', [
+            'Job' => get_class($job),
+            'Required scope' => $job->getScope(),
+            'Token scopes' => $job->getToken()->scopes,
+            'Token owner' => $job->getToken()->character_id,
+        ]);
     }
 }
