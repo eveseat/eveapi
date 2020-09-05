@@ -119,7 +119,7 @@ class CreateKillmailsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('corporation_killmails', function (Blueprint  $table) {
+        Schema::create('corporation_killmails', function (Blueprint $table) {
             $table->bigInteger('corporation_id');
             $table->bigInteger('killmail_id');
             $table->string('killmail_hash');

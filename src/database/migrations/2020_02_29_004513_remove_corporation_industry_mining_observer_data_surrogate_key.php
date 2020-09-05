@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -33,6 +34,26 @@ class RemoveCorporationIndustryMiningObserverDataSurrogateKey extends Migration
     {
         Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'last_updated']);
+        });
+
+        Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
+            $table->bigIncrements('id')->first();
+        });
+
+        DB::statement('DELETE a FROM corporation_industry_mining_observer_data a
+                       INNER JOIN corporation_industry_mining_observer_data b
+                       WHERE a.id < b.id
+                       AND a.observer_id = b.observer_id
+                       AND a.recorded_corporation_id = b.recorded_corporation_id
+                       AND a.character_id = b.character_id
+                       AND a.type_id = b.type_id
+                       AND a.last_updated = b.last_updated');
+
+        Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
+            $table->dropColumn('id');
+        });
+
+        Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
             $table->unique(['observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'last_updated'], 'corporation_industry_mining_observer_data_unique');
         });
     }
