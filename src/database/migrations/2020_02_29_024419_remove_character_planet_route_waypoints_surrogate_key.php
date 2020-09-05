@@ -40,8 +40,8 @@ class RemoveCharacterPlanetRouteWaypointsSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_planet_route_waypoints', function (Blueprint $table) {
-            $table->dropUnique('character_planet_route_waypoints');
-            $table->primary(['character_id', 'planet_id', 'route_id', 'pin_id']);
+            $table->dropUnique('character_planet_route_waypoints_unique');
+            $table->primary(['character_id', 'planet_id', 'route_id', 'pin_id'], 'character_planet_route_waypoints_primary_key');
         });
     }
 }

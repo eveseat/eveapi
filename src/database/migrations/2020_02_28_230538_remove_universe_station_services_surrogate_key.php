@@ -44,8 +44,8 @@ class RemoveUniverseStationServicesSurrogateKey extends Migration
     public function down()
     {
         Schema::table('universe_station_services', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['station_id', 'service_name']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('universe_station_services', function (Blueprint $table) {

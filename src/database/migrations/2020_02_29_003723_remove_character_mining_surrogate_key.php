@@ -41,7 +41,7 @@ class RemoveCharacterMiningSurrogateKey extends Migration
     {
         Schema::table('character_minings', function (Blueprint $table) {
             $table->dropUnique('character_minings_unique');
-            $table->primary('character_minings_primary');
+            $table->primary(['character_id', 'date', 'time', 'solar_system_id', 'type_id'], 'mining_primary');
         });
     }
 }

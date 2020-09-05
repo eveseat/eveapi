@@ -57,7 +57,7 @@ class RemoveCorporationIndustryMiningObserversSurrogateKey extends Migration
         });
 
         Schema::table('corporation_industry_mining_observers', function (Blueprint $table) {
-            $table->primary(['corporation_id', 'observer_id']);
+            $table->primary(['corporation_id', 'observer_id'], 'observer_primary');
         });
     }
 }

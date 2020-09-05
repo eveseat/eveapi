@@ -41,7 +41,7 @@ class RemoveCharacterPlanetHeadsSurrogateKey extends Migration
     {
         Schema::table('character_planet_heads', function (Blueprint $table) {
             $table->dropUnique(['planet_id', 'extractor_id', 'head_id']);
-            $table->primary(['character_id', 'planet_id', 'extractor_id', 'head_id']);
+            $table->primary(['character_id', 'planet_id', 'extractor_id', 'head_id'], 'character_planet_heads_primary_key');
         });
     }
 }

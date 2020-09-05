@@ -44,8 +44,8 @@ class RemoveCharacterAgentResearchesSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_agent_researches', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'agent_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_agent_researches', function (Blueprint $table) {

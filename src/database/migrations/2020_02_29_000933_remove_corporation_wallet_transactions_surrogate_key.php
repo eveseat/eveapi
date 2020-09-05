@@ -41,7 +41,7 @@ class RemoveCorporationWalletTransactionsSurrogateKey extends Migration
     {
         Schema::table('corporation_wallet_transactions', function (Blueprint $table) {
             $table->dropUnique('corporation_wallet_transactions_unique');
-            $table->primary(['corporation_id', 'division', 'transaction_id']);
+            $table->primary(['corporation_id', 'division', 'transaction_id'], 'corporation_wallet_transactions_primary_key');
         });
     }
 }

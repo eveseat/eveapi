@@ -44,8 +44,8 @@ class RemoveAllianceMembersSurrogateKey extends Migration
     public function down()
     {
         Schema::table('alliance_members', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['alliance_id', 'corporation_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('alliance_members', function (Blueprint $table) {

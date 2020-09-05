@@ -41,7 +41,7 @@ class RemoveCharacterPlanetLinksSurrogateKey extends Migration
     {
         Schema::table('character_planet_links', function (Blueprint $table) {
             $table->dropUnique('character_planet_links_unique');
-            $table->primary(['character_id', 'planet_id', 'source_pin_id', 'destination_pin_id']);
+            $table->primary(['character_id', 'planet_id', 'source_pin_id', 'destination_pin_id'], 'character_planet_links_primary_key');
         });
     }
 }

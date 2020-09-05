@@ -44,8 +44,8 @@ class RemoveCorporationOrdersSurrogateKey extends Migration
     public function down()
     {
         Schema::table('corporation_orders', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['corporation_id', 'order_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('corporation_orders', function (Blueprint $table) {

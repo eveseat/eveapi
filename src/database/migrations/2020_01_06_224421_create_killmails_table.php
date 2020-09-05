@@ -106,6 +106,60 @@ class CreateKillmailsTable extends Migration
 
     public function down()
     {
+        Schema::create('character_killmails', function (Blueprint $table) {
+            $table->bigInteger('character_id');
+            $table->bigInteger('killmail_id');
+            $table->string('killmail_hash');
+
+            $table->index('character_id');
+            $table->index('killmail_id');
+
+            $table->primary(['character_id', 'killmail_id']);
+
+            $table->timestamps();
+        });
+
+        Schema::create('corporation_killmails', function (Blueprint  $table) {
+            $table->bigInteger('corporation_id');
+            $table->bigInteger('killmail_id');
+            $table->string('killmail_hash');
+
+            $table->index('corporation_id');
+            $table->index('killmail_id');
+
+            $table->primary(['corporation_id', 'killmail_id']);
+
+            $table->timestamps();
+        });
+
+        Schema::table('killmail_attackers', function (Blueprint $table) {
+            $table->dropForeign(['killmail_id']);
+
+            $table->foreign('killmail_id')
+                ->references('killmail_id')
+                ->on('killmail_details');
+        });
+
+        Schema::table('killmail_victims', function (Blueprint $table) {
+            $table->dropForeign(['killmail_id']);
+
+            $table->foreign('killmail_id')
+                ->references('killmail_id')
+                ->on('killmail_details');
+        });
+
+        Schema::table('killmail_victim_items', function (Blueprint $table) {
+            $table->dropForeign(['killmail_id']);
+
+            $table->foreign('killmail_id')
+                ->references('killmail_id')
+                ->on('killmail_details');
+        });
+
+        Schema::table('killmail_details', function (Blueprint $table) {
+            $table->dropForeign(['killmail_id']);
+        });
+
         Schema::dropIfExists('killmails');
     }
 }

@@ -58,7 +58,7 @@ class RemoveCorporationIndustryMiningExtractionsSurrogateKey extends Migration
         });
 
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
-            $table->primary(['corporation_id', 'structure_id']);
+            $table->primary(['corporation_id', 'structure_id'], 'extrations_primary');
         });
     }
 }

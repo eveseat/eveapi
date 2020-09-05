@@ -41,7 +41,7 @@ class RemoveCharacterWalletTransactionsSurrogateKey extends Migration
     {
         Schema::table('character_wallet_transactions', function (Blueprint $table) {
             $table->dropUnique(['character_id', 'transaction_id']);
-            $table->primary(['character_id', 'transaction_id']);
+            $table->primary(['character_id', 'transaction_id'], 'transaction_primary');
         });
     }
 }

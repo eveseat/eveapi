@@ -44,8 +44,8 @@ class RemoveCharacterFittingsSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_fittings', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'fitting_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_fittings', function (Blueprint $table) {

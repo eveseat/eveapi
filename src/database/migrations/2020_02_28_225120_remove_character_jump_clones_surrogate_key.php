@@ -44,8 +44,8 @@ class RemoveCharacterJumpClonesSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_jump_clones', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'jump_clone_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_jump_clones', function (Blueprint $table) {

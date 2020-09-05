@@ -44,8 +44,8 @@ class RemoveCharacterOrdersSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_orders', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'order_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_orders', function (Blueprint $table) {

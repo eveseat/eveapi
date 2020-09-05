@@ -50,7 +50,7 @@ class AddUniqueIndexToMailMailingListsTable extends Migration
     public function down()
     {
         Schema::table('mail_mailing_lists', function (Blueprint $table) {
-            $table->dropUnique('mail_mailing_lists_unique');
+            $table->dropUnique('mail_mailing_lists');
         });
     }
 }

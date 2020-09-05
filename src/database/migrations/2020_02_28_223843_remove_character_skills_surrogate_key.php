@@ -44,8 +44,8 @@ class RemoveCharacterSkillsSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_skills', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'skill_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_skills', function (Blueprint $table) {

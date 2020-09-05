@@ -44,8 +44,8 @@ class RemoveCharacterContractsSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_contracts', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'contract_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_contracts', function (Blueprint $table) {
