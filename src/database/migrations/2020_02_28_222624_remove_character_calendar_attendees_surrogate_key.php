@@ -44,8 +44,8 @@ class RemoveCharacterCalendarAttendeesSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_calendar_attendees', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['event_id', 'character_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_calendar_attendees', function (Blueprint $table) {

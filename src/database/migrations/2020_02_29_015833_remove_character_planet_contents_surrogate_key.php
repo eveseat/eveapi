@@ -41,7 +41,7 @@ class RemoveCharacterPlanetContentsSurrogateKey extends Migration
     {
         Schema::table('character_planet_contents', function (Blueprint $table) {
             $table->dropUnique(['planet_id', 'pin_id', 'type_id']);
-            $table->primary(['character_id', 'planet_id', 'pin_id', 'type_id']);
+            $table->primary(['character_id', 'planet_id', 'pin_id', 'type_id'], 'character_planet_contents_primary_key');
         });
     }
 }

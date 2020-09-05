@@ -43,11 +43,11 @@ class AddQueuesPositionToSkillQueueTablePK extends Migration
     public function down()
     {
         Schema::table('character_skill_queues', function (Blueprint $table) {
-            $table->primary(['character_id', 'queue_position']);
+            $table->dropPrimary(['character_id', 'queue_position']);
         });
 
         Schema::table('character_skill_queues', function (Blueprint $table) {
-            $table->dropPrimary(['character_id', 'skill_id']);
+            $table->primary(['character_id', 'skill_id']);
         });
     }
 }

@@ -44,8 +44,8 @@ class RemoveMailLabelsSurrogateKey extends Migration
     public function down()
     {
         Schema::table('mail_labels', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'label_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('mail_labels', function (Blueprint $table) {

@@ -44,7 +44,7 @@ class RemoveKillmailVictimItemsSurrogateKey extends Migration
     public function down()
     {
         Schema::table('killmail_victim_items', function (Blueprint $table) {
-            $table->dropPrimary(['id']);
+            $table->dropColumn('id');
             $table->dropUnique(['killmail_id', 'item_type_id']);
         });
 

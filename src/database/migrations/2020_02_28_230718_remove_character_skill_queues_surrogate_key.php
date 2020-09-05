@@ -44,8 +44,8 @@ class RemoveCharacterSkillQueuesSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_skill_queues', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'queue_position']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_skill_queues', function (Blueprint $table) {

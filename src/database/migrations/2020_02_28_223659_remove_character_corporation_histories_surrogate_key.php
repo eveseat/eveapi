@@ -44,8 +44,8 @@ class RemoveCharacterCorporationHistoriesSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_corporation_histories', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'record_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_corporation_histories', function (Blueprint $table) {

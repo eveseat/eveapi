@@ -44,8 +44,8 @@ class RemoveCharacterImplantsSurrogateKey extends Migration
     public function down()
     {
         Schema::table('character_implants', function (Blueprint $table) {
+            $table->dropColumn('id');
             $table->dropUnique(['character_id', 'type_id']);
-            $table->dropPrimary(['id']);
         });
 
         Schema::table('character_implants', function (Blueprint $table) {

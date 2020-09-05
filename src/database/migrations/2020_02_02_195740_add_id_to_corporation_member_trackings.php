@@ -45,7 +45,7 @@ class AddIdToCorporationMemberTrackings extends Migration
     public function down()
     {
         Schema::table('corporation_member_trackings', function (Blueprint $table) {
-            $table->dropPrimary('id');
+            $table->dropColumn('id');
 
             $table->dropUnique(['corporation_id', 'character_id']);
         });

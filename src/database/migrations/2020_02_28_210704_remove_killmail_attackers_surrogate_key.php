@@ -84,7 +84,7 @@ class RemoveKillmailAttackersSurrogateKey extends Migration
     {
         Schema::table('killmail_attackers', function (Blueprint $table) {
             $table->dropUnique(['killmail_id', 'attacker_hash']);
-            $table->dropPrimary(['id']);
+            $table->dropColumn('id');
 
             $table->dropColumn('attacker_hash');
         });
