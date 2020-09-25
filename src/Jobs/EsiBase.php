@@ -213,6 +213,9 @@ abstract class EsiBase extends AbstractJob
 
             $result = $client->invoke($this->method, $this->endpoint, $path_values);
 
+            // Update the refresh token we have stored in the database.
+            $this->updateRefreshToken();
+
         } catch (RequestFailedException $exception) {
 
             // increment ESI rate limit
@@ -232,6 +235,9 @@ abstract class EsiBase extends AbstractJob
                 // Remove the invalid token
                 $this->token->delete();
             }
+
+            // Update the refresh token we have stored in the database.
+            $this->updateRefreshToken();
 
             if ($exception->getEsiResponse()->getErrorCode() == 503 && in_array($exception->getEsiResponse()->error(), [
                 'The datasource tranquility is temporarily unavailable',
@@ -264,9 +270,6 @@ abstract class EsiBase extends AbstractJob
 
         // Perform error checking
         $this->warning($result);
-
-        // Update the refresh token we have stored in the database.
-        $this->updateRefreshToken();
 
         return $result;
     }
