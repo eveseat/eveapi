@@ -276,8 +276,8 @@ class CharacterInfo extends Model
     public function corporation_history()
     {
 
-        return $this->hasMany(CharacterCorporationHistory::class,
-            'character_id', 'character_id');
+        return $this->hasMany(CharacterCorporationHistory::class, 'character_id', 'character_id')
+            ->orderByDesc('record_id');
     }
 
     /**
@@ -462,7 +462,8 @@ class CharacterInfo extends Model
      */
     public function skill_queue()
     {
-        return $this->hasMany(CharacterSkillQueue::class, 'character_id', 'character_id');
+        return $this->hasMany(CharacterSkillQueue::class, 'character_id', 'character_id')
+            ->orderBy('queue_position');
     }
 
     /**
