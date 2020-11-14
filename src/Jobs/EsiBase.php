@@ -409,6 +409,9 @@ abstract class EsiBase extends AbstractJob
             if (is_null($this->client) || is_null($token))
                 return;
 
+            if (! $this->client->isAuthenticated())
+                return;
+
             $last_auth = $this->client->getAuthentication();
 
             if (! empty($last_auth->refresh_token))
