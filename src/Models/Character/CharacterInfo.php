@@ -77,55 +77,6 @@ class CharacterInfo extends Model
     public $incrementing = false;
 
     /**
-     * Make sure we cleanup on delete.
-     *
-     * @return bool|null
-     * @throws \Exception
-     */
-    public function delete()
-    {
-
-        // Cleanup the character
-        $this->agent_research()->delete();
-        $this->assets()->delete();
-        $this->balance()->delete();
-        $this->blueprints()->delete();
-        $this->bookmarks()->delete();
-        $this->bookmark_folders()->delete();
-        $this->calendar_events()->delete();
-        $this->clone()->delete();
-        $this->contact_labels()->delete();
-        $this->contacts()->delete();
-        $this->contracts()->delete();
-        $this->corporation_history()->delete();
-        $this->fatigue()->delete();
-        $this->fittings()->delete();
-        $this->implants()->delete();
-        $this->industry()->delete();
-        $this->jump_clones()->delete();
-        $this->location()->delete();
-        $this->medals()->delete();
-        $this->mining()->delete();
-        $this->notifications()->delete();
-        $this->online()->delete();
-        $this->orders()->delete();
-
-        // TODO: PI Cleanup
-
-        $this->standings()->delete();
-        $this->stats()->delete();
-        $this->titles()->delete();
-        $this->corporation_roles()->delete();
-        $this->pilot_attributes()->delete();
-        $this->skills()->delete();
-        $this->ship()->delete();
-        $this->wallet_journal()->delete();
-        $this->wallet_transactions()->delete();
-
-        return parent::delete();
-    }
-
-    /**
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
