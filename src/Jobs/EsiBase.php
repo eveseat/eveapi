@@ -339,35 +339,16 @@ abstract class EsiBase extends AbstractJob
         if (! is_null($response->pages) && $this->page === null) {
 
             $this->eseye()->getLogger()->warning('Response contained pages but none was expected');
-
-            dispatch((new Analytics((new AnalyticsContainer)
-                ->set('type', 'endpoint_warning')
-                ->set('ec', 'unexpected_page')
-                ->set('el', $this->version)
-                ->set('ev', $this->endpoint))))->onQueue('default');
         }
 
         if (! is_null($this->page) && $response->pages === null) {
 
             $this->eseye()->getLogger()->warning('Expected a paged response but had none');
-
-            dispatch((new Analytics((new AnalyticsContainer)
-                ->set('type', 'endpoint_warning')
-                ->set('ec', 'missing_pages')
-                ->set('el', $this->version)
-                ->set('ev', $this->endpoint))))->onQueue('default');
         }
 
         if (array_key_exists('Warning', $response->headers)) {
 
-            $this->eseye()->getLogger()->warning('A response contained a warning: ' .
-                $response->headers['Warning']);
-
-            dispatch((new Analytics((new AnalyticsContainer)
-                ->set('type', 'generic_warning')
-                ->set('ec', 'missing_pages')
-                ->set('el', $this->endpoint)
-                ->set('ev', $response->headers['Warning']))))->onQueue('default');
+            $this->eseye()->getLogger()->warning('A response contained a warning: ' . $response->headers['Warning']);
         }
     }
 
