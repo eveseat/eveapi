@@ -23,9 +23,12 @@
 use Illuminate\Database\Migrations\Migration;
 use Carbon\Carbon;
 use Seat\Eveapi\Models\RefreshToken;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use GuzzleHttp\Client;
 
@@ -41,61 +44,67 @@ class UpgradeRefreshTokens extends Migration
         ]);
         $authsite = 'https://login.eveonline.com/v2/oauth/token';
 
-        $tokens = RefreshToken::all();
-
         $errors = 0;
         $success = 0;
 
+        $count = DB::table('refresh_tokens')->count();
         $output = new ConsoleOutput();
-        
-        foreach ($tokens as $token){
-            try{
-                $token_headers = [
-                    'headers' => [
-                    'Authorization' => 'Basic ' . base64_encode(env('EVE_CLIENT_ID') . ':' . env('EVE_CLIENT_SECRET')),
-                    'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact Crypta Electrica',
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                    'Host' => 'login.eveonline.com',
-                    ],
-                    'form_params' => [
-                    // 'client_id' => env('EVE_CLIENT_ID'),
-                    'grant_type' => 'refresh_token',
-                    'refresh_token' => $token->refresh_token,
-                    ]
-                ];
+        $progress = new ProgressBar($output, $count);
 
-                $result = $client->post($authsite, $token_headers);
-                $resp = json_decode($result->getBody());
-                $expires_new = Carbon::createFromTimestamp(time() + $resp->expires_in);
+        RefreshToken::chunk(100, function ($tokens) use ($client, $errors, $success, $authsite, $output, $progress){
+            foreach ($tokens as $token){
+                try{
+                    $token_headers = [
+                        'headers' => [
+                        'Authorization' => 'Basic ' . base64_encode(env('EVE_CLIENT_ID') . ':' . env('EVE_CLIENT_SECRET')),
+                        'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact Crypta Electrica',
+                        'Content-Type' => 'application/x-www-form-urlencoded',
+                        'Host' => 'login.eveonline.com',
+                        ],
+                        'form_params' => [
+                        // 'client_id' => env('EVE_CLIENT_ID'),
+                        'grant_type' => 'refresh_token',
+                        'refresh_token' => $token->refresh_token,
+                        ]
+                    ];
+    
+                    $result = $client->post($authsite, $token_headers);
+                    $resp = json_decode($result->getBody());
+                    $expires_new = Carbon::createFromTimestamp(time() + $resp->expires_in);
+    
+                    $token->token = $resp->access_token;
+                    $token->refresh_token = $resp->refresh_token;
+                    $token->expires_on = $expires_new;
+    
+                    $token->save();
+    
+                    $success += 1;
+    
+                } catch (RequestException $e) {
+                    throw $e;
+                    $output->writeln($e->getMessage());
+                    Log::warning("-----------------------------------------------------");
+                    Log::warning("ERROR ENCOUNTERED");
+                    Log::warning("CharacterID: " . $token->character_id);
+                    Log::warning($e->getMessage());
+                    Log::warning((string) $e->getResponse()->getBody());
+                    foreach ($e->getResponse()->getHeaders() as $name => $values) {
+                        echo $name . ': ' . implode(', ', $values) . "\r\n";
+                    }
+                    Log::warning("-----------------------------------------------------");
+                    $errors += 1;
+                };
+                $progress->advance();
+            }
+        });
 
-                $token->token = $resp->access_token;
-                $token->refresh_token = $resp->refresh_token;
-                $token->expires_on = $expires_new;
-
-                $token->save();
-
-                $success += 1;
-
-            } catch (\Exception $e) {
-                $output->writeln("-----------------------------------------------------");
-                $output->writeln("ERROR ENCOUNTERED");
-                $output->writeln("CharacterID: " . $token->character_id);
-                $output->writeln($e->getMessage());
-                $output->writeln((string) $e->getResponse()->getBody());
-                foreach ($e->getResponse()->getHeaders() as $name => $values) {
-                    echo $name . ': ' . implode(', ', $values) . "\r\n";
-                }
-                $output->writeln("-----------------------------------------------------");
-                $errors += 1;
-            };
-            
-        }
-
-        
+        $progress->finish();
         $output->writeln('');
+        
+        Log::warning('');
 
-        $output->writeln('Migrated tokens: ' . $success);
-        $output->writeln('Errors: ' . $errors);
+        Log::warning('Migrated tokens: ' . $success);
+        Log::warning('Errors: ' . $errors);
 
 
     }
