@@ -73,7 +73,9 @@ class Facilities extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($facilities->isCachedLoad()) return;
+        if ($facilities->isCachedLoad() &&
+            CorporationFacility::where('corporation_id', $this->getCorporationId())->count() > 0)
+            return;
 
         collect($facilities)->each(function ($facility) {
 

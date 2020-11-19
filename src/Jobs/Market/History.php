@@ -91,7 +91,7 @@ class History extends EsiBase
                     'region_id' => $region_id,
                 ]);
 
-                if ($prices->isCachedLoad()) return;
+                if ($prices->isCachedLoad() && Price::count() > 0) return;
 
                 // search the more recent entry in returned history.
                 $price = collect($prices)->where('order_count', '>', 0)

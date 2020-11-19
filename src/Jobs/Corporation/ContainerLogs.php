@@ -80,7 +80,9 @@ class ContainerLogs extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($logs->isCachedLoad()) return;
+            if ($logs->isCachedLoad() &&
+                CorporationContainerLog::where('corporation_id', $this->getCorporationId())->count() > 0)
+                return;
 
             collect($logs)->each(function ($log) {
 

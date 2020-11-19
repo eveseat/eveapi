@@ -76,7 +76,9 @@ class Contracts extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($contracts->isCachedLoad()) return;
+            if ($contracts->isCachedLoad() &&
+                CorporationContract::where('corporation_id', $this->getCorporationId())->count() > 0)
+                return;
 
             collect($contracts)->each(function ($contract) {
 

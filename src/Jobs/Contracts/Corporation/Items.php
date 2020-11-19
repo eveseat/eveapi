@@ -138,7 +138,9 @@ class Items extends AbstractAuthCorporationJob
                     'contract_id' => $this->contract_id,
                 ]);
 
-                if ($items->isCachedLoad()) return;
+                if ($items->isCachedLoad() &&
+                    ContractItem::where('contract_id', $this->contract_id)->count() > 0)
+                    return;
 
                 collect($items)->each(function ($item) {
 

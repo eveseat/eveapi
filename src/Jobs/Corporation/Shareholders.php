@@ -99,7 +99,9 @@ class Shareholders extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($shareholders->isCachedLoad()) return;
+            if ($shareholders->isCachedLoad() &&
+                CorporationShareholder::where('corporation_id', $this->getCorporationId())->count() > 0)
+                return;
 
             collect($shareholders)->each(function ($shareholder) {
 

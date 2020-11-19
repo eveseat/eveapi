@@ -78,7 +78,9 @@ class Contracts extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($contracts->isCachedLoad()) return;
+            if ($contracts->isCachedLoad() &&
+                ContractDetail::where('character_id', $this->getCharacterId())->count() > 0)
+                return;
 
             collect($contracts)->each(function ($contract) {
 

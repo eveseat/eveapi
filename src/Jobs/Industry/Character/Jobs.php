@@ -74,7 +74,9 @@ class Jobs extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($industry_jobs->isCachedLoad()) return;
+        if ($industry_jobs->isCachedLoad() &&
+            CharacterIndustryJob::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         collect($industry_jobs)->each(function ($job) {
 

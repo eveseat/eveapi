@@ -60,7 +60,7 @@ class Structures extends EsiBase
     {
         $structures = $this->retrieve();
 
-        if ($structures->isCachedLoad()) return;
+        if ($structures->isCachedLoad() && SovereigntyStructure::count() > 0) return;
 
         collect($structures)->each(function ($structure) {
 

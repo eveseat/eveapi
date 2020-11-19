@@ -87,7 +87,9 @@ class Jobs extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($industry_jobs->isCachedLoad()) return;
+            if ($industry_jobs->isCachedLoad() &&
+                CorporationIndustryJob::where('corporation_id', $this->getCorporationId())->count() > 0)
+                return;
 
             collect($industry_jobs)->each(function ($job) {
 

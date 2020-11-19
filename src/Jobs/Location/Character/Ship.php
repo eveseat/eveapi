@@ -67,7 +67,7 @@ class Ship extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($ship->isCachedLoad()) return;
+        if ($ship->isCachedLoad() && CharacterShip::find($this->getCharacterId())) return;
 
         CharacterShip::firstOrNew([
             'character_id' => $this->getCharacterId(),

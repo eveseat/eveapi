@@ -74,7 +74,9 @@ class Queue extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($skill_queue->isCachedLoad()) return;
+        if ($skill_queue->isCachedLoad() &&
+            CharacterSkillQueue::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         collect($skill_queue)->each(function ($skill) {
 

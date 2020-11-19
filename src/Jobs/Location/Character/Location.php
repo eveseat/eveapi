@@ -67,7 +67,7 @@ class Location extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($location->isCachedLoad()) return;
+        if ($location->isCachedLoad() && CharacterLocation::find($this->getCharacterId())) return;
 
         CharacterLocation::firstOrNew([
             'character_id' => $this->getCharacterId(),

@@ -70,7 +70,9 @@ class AgentsResearch extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($agents_research->isCachedLoad()) return;
+        if ($agents_research->isCachedLoad() &&
+            CharacterAgentResearch::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         collect($agents_research)->each(function ($agent_research) {
 

@@ -70,7 +70,9 @@ class Notifications extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($notifications->isCachedLoad()) return;
+        if ($notifications->isCachedLoad() &&
+            CharacterNotification::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         collect($notifications)->each(function ($notification) {
 

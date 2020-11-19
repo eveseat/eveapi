@@ -70,7 +70,9 @@ class Stats extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($stats->isCachedLoad()) return;
+        if ($stats->isCachedLoad() &&
+            CharacterStats::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         // Process each years aggregate
         collect($stats)->each(function ($aggregate) {

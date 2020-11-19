@@ -94,7 +94,8 @@ class Folders extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($folders->isCachedLoad()) return;
+            if ($folders->isCachedLoad() && CorporationBookmarkFolder::where('corporation_id', $this->getCorporationId())->count() > 0)
+                return;
 
             collect($folders)->each(function ($folder) {
 

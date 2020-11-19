@@ -73,7 +73,9 @@ class Extractions extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($mining_extractions->isCachedLoad()) return;
+        if ($mining_extractions->isCachedLoad() &&
+            CorporationIndustryMiningExtraction::where('corporation_id', $this->getCorporationId())->count() > 0)
+            return;
 
         collect($mining_extractions)->each(function ($extraction) {
 

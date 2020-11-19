@@ -95,7 +95,8 @@ class Folders extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($folders->isCachedLoad()) return;
+            if ($folders->isCachedLoad() && CharacterBookmarkFolder::where('character_id', $this->getCharacterId())->count() > 0)
+                return;
 
             collect($folders)->each(function ($folder) {
 

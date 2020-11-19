@@ -70,7 +70,8 @@ class Roles extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($roles->isCachedLoad()) return;
+        if ($roles->isCachedLoad() && CharacterRole::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         foreach (['roles', 'roles_at_hq', 'roles_at_base', 'roles_at_other'] as $scope) {
 

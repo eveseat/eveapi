@@ -80,7 +80,9 @@ class Orders extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($orders->isCachedLoad()) return;
+            if ($orders->isCachedLoad() &&
+                CorporationOrder::where('corporation_id', $this->getCorporationId())->count() > 0)
+                return;
 
             collect($orders)->each(function ($order) {
 

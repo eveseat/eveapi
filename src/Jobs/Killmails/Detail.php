@@ -90,9 +90,7 @@ class Detail extends EsiBase
             'killmail_hash' => $this->killmail_hash,
         ]);
 
-        if ($detail->isCachedLoad()) return;
-
-        logger()->debug('I am spawning models');
+        if ($detail->isCachedLoad() && KillmailDetail::find($this->killmail_id)) return;
 
         $killmail = KillmailDetail::firstOrCreate([
             'killmail_id'     => $this->killmail_id,

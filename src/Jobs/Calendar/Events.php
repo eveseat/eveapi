@@ -70,7 +70,9 @@ class Events extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($events->isCachedLoad()) return;
+        if ($events->isCachedLoad() &&
+            CharacterCalendarEvent::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         collect($events)->each(function ($event) {
 

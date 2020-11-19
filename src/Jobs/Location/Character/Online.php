@@ -67,7 +67,7 @@ class Online extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($online->isCachedLoad()) return;
+        if ($online->isCachedLoad() && CharacterOnline::find($this->getCharacterId())) return;
 
         CharacterOnline::firstOrNew([
             'character_id' => $this->getCharacterId(),

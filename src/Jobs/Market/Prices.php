@@ -60,7 +60,7 @@ class Prices extends EsiBase
     {
         $prices = $this->retrieve();
 
-        if ($prices->isCachedLoad()) return;
+        if ($prices->isCachedLoad() && Price::count() > 0) return;
 
         collect($prices)->chunk(1000)->each(function ($chunk) {
 
