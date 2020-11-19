@@ -76,12 +76,12 @@ class Titles extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($titles->isCachedLoad()) return;
-
         $character = CharacterInfo::find($this->getCharacterId());
 
         if (is_null($character))
             return;
+
+        if ($titles->isCachedLoad() && $character->titles()->count() > 0) return;
 
         $this->active_titles = collect();
 

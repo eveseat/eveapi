@@ -97,7 +97,8 @@ class Bookmarks extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($bookmarks->isCachedLoad()) return;
+            if ($bookmarks->isCachedLoad() && CorporationBookmark::where('corporation_id', $this->getCorporationId())->count() > 0)
+                return;
 
             collect($bookmarks)->each(function ($bookmark) {
 

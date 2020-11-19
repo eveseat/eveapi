@@ -67,7 +67,9 @@ class Orders extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($orders->isCachedLoad()) return;
+        if ($orders->isCachedLoad() &&
+            CharacterOrder::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         collect($orders)->each(function ($order) {
 

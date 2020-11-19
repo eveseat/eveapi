@@ -80,7 +80,8 @@ class Info extends EsiBase
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if ($info->isCachedLoad()) return;
+        if ($info->isCachedLoad() && Alliance::find($this->alliance_id))
+            return;
 
         Alliance::updateOrCreate([
             'alliance_id' => $this->alliance_id,

@@ -96,7 +96,9 @@ class Contacts extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($contacts->isCachedLoad()) return;
+            if ($contacts->isCachedLoad() &&
+                CharacterContact::where('character_id', $this->getCharacterId())->count() > 0)
+                return;
 
             collect($contacts)->each(function ($contact) {
 

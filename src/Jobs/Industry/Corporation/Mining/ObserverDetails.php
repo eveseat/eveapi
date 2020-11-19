@@ -87,7 +87,9 @@ class ObserverDetails extends AbstractAuthCorporationJob
                         'observer_id'    => $observer->observer_id,
                     ]);
 
-                    if ($detail->isCachedLoad()) return;
+                    if ($detail->isCachedLoad() &&
+                        CorporationIndustryMiningObserverData::where('corporation_id', $this->getCorporationId())->count() > 0)
+                        return;
 
                     collect($detail)->each(function ($data) use ($observer) {
 

@@ -60,7 +60,7 @@ class Insurances extends EsiBase
     {
         $insurances = $this->retrieve();
 
-        if ($insurances->isCachedLoad()) return;
+        if ($insurances->isCachedLoad() && Insurance::count() > 0) return;
 
         collect($insurances)->each(function ($insurance) {
 

@@ -78,7 +78,8 @@ class Members extends EsiBase
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if ($corporations->isCachedLoad()) return;
+        if ($corporations->isCachedLoad() && AllianceMember::where('alliance_id', $this->alliance_id)->count() > 0)
+            return;
 
         $corporation_ids = collect($corporations);
 

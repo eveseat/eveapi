@@ -87,7 +87,9 @@ class Roles extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($roles->isCachedLoad()) return;
+        if ($roles->isCachedLoad() &&
+            CorporationRole::where('corporation_id', $this->getCorporationId())->count() > 0)
+            return;
 
         collect($roles)->each(function ($role) {
 

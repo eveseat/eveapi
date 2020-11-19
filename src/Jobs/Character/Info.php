@@ -65,7 +65,7 @@ class Info extends AbstractCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($character_info->isCachedLoad()) return;
+        if ($character_info->isCachedLoad() && CharacterInfo::find($this->getCharacterId())) return;
 
         CharacterInfo::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
             'name'            => $character_info->name,

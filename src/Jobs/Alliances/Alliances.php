@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Alliances;
 
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Models\Alliances\Alliance;
 
 /**
  * Class Alliances.
@@ -58,7 +59,8 @@ class Alliances extends EsiBase
 
         $alliances = $this->retrieve();
 
-        if ($alliances->isCachedLoad()) return;
+        if ($alliances->isCachedLoad() && Alliance::count() > 0)
+            return;
 
         collect($alliances)->each(function ($alliance_id) {
 

@@ -129,7 +129,9 @@ class Bids extends AbstractAuthCorporationJob
                             'contract_id' => $this->contract_id,
                         ]);
 
-                        if ($bids->isCachedLoad()) return;
+                        if ($bids->isCachedLoad() &&
+                            ContractBid::where('contract_id', $this->contract_id)->count() > 0)
+                            return;
 
                         collect($bids)->each(function ($bid) {
 

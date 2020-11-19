@@ -60,7 +60,7 @@ class Map extends EsiBase
     {
         $systems = $this->retrieve();
 
-        if ($systems->isCachedLoad()) return;
+        if ($systems->isCachedLoad() && SovereigntyMap::count() > 0) return;
 
         collect($systems)->chunk(1000)->each(function ($chunk) {
 

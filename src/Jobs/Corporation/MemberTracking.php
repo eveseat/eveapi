@@ -73,7 +73,9 @@ class MemberTracking extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($members->isCachedLoad()) return;
+        if ($members->isCachedLoad() &&
+            CorporationMemberTracking::where('corporation_id', $this->getCorporationId())->count() > 0)
+            return;
 
         collect($members)->each(function ($member) {
 

@@ -92,7 +92,9 @@ class Transactions extends AbstractAuthCorporationJob
                         'division'       => $balance->division,
                     ]);
 
-                    if ($transactions->isCachedLoad()) return;
+                    if ($transactions->isCachedLoad() &&
+                        CorporationWalletTransaction::where('corporation_id', $this->getCorporationId())->count() > 0)
+                        return;
 
                     // If we have no more entries, break the loop.
                     if (collect($transactions)->count() === 0)

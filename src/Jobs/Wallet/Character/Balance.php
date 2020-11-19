@@ -67,7 +67,7 @@ class Balance extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($balance->isCachedLoad()) return;
+        if ($balance->isCachedLoad() && CharacterWalletBalance::find($this->getCharacterId())) return;
 
         CharacterWalletBalance::firstOrNew([
             'character_id' => $this->getCharacterId(),

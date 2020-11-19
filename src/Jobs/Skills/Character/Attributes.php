@@ -67,7 +67,7 @@ class Attributes extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($attributes->isCachedLoad()) return;
+        if ($attributes->isCachedLoad() && CharacterAttribute::find($this->getCharacterId())) return;
 
         CharacterAttribute::firstOrNew([
             'character_id' => $this->getCharacterId(),

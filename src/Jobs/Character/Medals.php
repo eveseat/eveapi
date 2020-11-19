@@ -70,7 +70,8 @@ class Medals extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($medals->isCachedLoad()) return;
+        if ($medals->isCachedLoad() && CharacterMedal::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         collect($medals)->each(function ($medal) {
 

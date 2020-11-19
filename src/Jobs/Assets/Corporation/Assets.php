@@ -99,7 +99,8 @@ class Assets extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($assets->isCachedLoad()) return;
+            if ($assets->isCachedLoad() && CorporationAsset::where('corporation_id', $this->getCorporationId())->count() > 0)
+                return;
 
             collect($assets)->chunk(1000)->each(function ($chunk) {
 

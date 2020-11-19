@@ -61,7 +61,9 @@ class CorporationHistory extends AbstractCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($corporation_history->isCachedLoad()) return;
+        if ($corporation_history->isCachedLoad() &&
+            CharacterCorporationHistory::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         collect($corporation_history)->each(function ($corporation) {
 

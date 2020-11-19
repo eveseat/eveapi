@@ -98,7 +98,8 @@ class Bookmarks extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($bookmarks->isCachedLoad()) return;
+            if ($bookmarks->isCachedLoad() && CharacterBookmark::where('character_id', $this->getCharacterId())->count() > 0)
+                return;
 
             collect($bookmarks)->chunk(1000)->each(function ($chunk) {
 

@@ -100,7 +100,9 @@ class Blueprints extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($blueprints->isCachedLoad()) return;
+            if ($blueprints->isCachedLoad() &&
+                CharacterBlueprint::where('character_id', $this->getCharacterId())->count() > 0)
+                return;
 
             // Process the blueprints from the response
             collect($blueprints)->chunk(100)->each(function ($chunk) {

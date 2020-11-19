@@ -94,7 +94,9 @@ class Journal extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($journal->isCachedLoad()) return;
+            if ($journal->isCachedLoad() &&
+                CharacterWalletJournal::where('character_id', $this->getCharacterId())->count() > 0)
+                return;
 
             $entries = collect($journal);
 

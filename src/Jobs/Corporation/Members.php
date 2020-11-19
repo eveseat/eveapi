@@ -68,7 +68,9 @@ class Members extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($members->isCachedLoad()) return;
+        if ($members->isCachedLoad() &&
+            CorporationMember::where('corporation_id', $this->getCorporationId())->count() > 0)
+            return;
 
         collect($members)->each(function ($member_id) {
 
