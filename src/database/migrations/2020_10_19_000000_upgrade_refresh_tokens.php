@@ -20,16 +20,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-use Illuminate\Database\Migrations\Migration;
 use Carbon\Carbon;
-use Seat\Eveapi\Models\RefreshToken;
-use Illuminate\Support\Facades\DB;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+use Seat\Eveapi\Models\RefreshToken;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use GuzzleHttp\Client;
 
 /**
  * Class RenameCharacterAgentResearchesIntoCharacterAgentResearch.
@@ -50,35 +48,35 @@ class UpgradeRefreshTokens extends Migration
         $output = new ConsoleOutput();
         $progress = new ProgressBar($output, $count);
 
-        RefreshToken::chunk(100, function ($tokens) use ($client, &$errors, &$success, $authsite, $progress){
+        RefreshToken::chunk(100, function ($tokens) use ($client, &$errors, &$success, $authsite, $progress) {
             foreach ($tokens as $token){
                 try{
                     $token_headers = [
                         'headers' => [
-                        'Authorization' => 'Basic ' . base64_encode(env('EVE_CLIENT_ID') . ':' . env('EVE_CLIENT_SECRET')),
-                        'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact Crypta Electrica',
-                        'Content-Type' => 'application/x-www-form-urlencoded',
-                        'Host' => 'login.eveonline.com',
+                            'Authorization' => 'Basic ' . base64_encode(env('EVE_CLIENT_ID') . ':' . env('EVE_CLIENT_SECRET')),
+                            'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact Crypta Electrica',
+                            'Content-Type' => 'application/x-www-form-urlencoded',
+                            'Host' => 'login.eveonline.com',
                         ],
                         'form_params' => [
-                        // 'client_id' => env('EVE_CLIENT_ID'),
-                        'grant_type' => 'refresh_token',
-                        'refresh_token' => $token->refresh_token,
-                        ]
+                            // 'client_id' => env('EVE_CLIENT_ID'),
+                            'grant_type' => 'refresh_token',
+                            'refresh_token' => $token->refresh_token,
+                        ],
                     ];
-    
+
                     $result = $client->post($authsite, $token_headers);
                     $resp = json_decode($result->getBody());
                     $expires_new = Carbon::createFromTimestamp(time() + $resp->expires_in);
-    
+
                     $token->token = $resp->access_token;
                     $token->refresh_token = $resp->refresh_token;
                     $token->expires_on = $expires_new;
-    
+
                     $token->save();
-    
+
                     $success += 1;
-    
+
                 } catch (RequestException $e) {
                     logger()->error('Error Migrating Refresh Token', [
                         'Character ID'   => $token->character_id,
@@ -87,14 +85,14 @@ class UpgradeRefreshTokens extends Migration
                         'Headers' => $e->getResponse()->getHeaders(),
                     ]);
                     $errors += 1;
-                };
+                }
                 $progress->advance();
             }
         });
 
         $progress->finish();
         $output->writeln('');
-        
+
         logger()->error('SeAT SSO Token Migration Complete!', [
             'Migrated' => $success,
             'Failures' => $errors,
@@ -106,7 +104,4 @@ class UpgradeRefreshTokens extends Migration
     {
         // There is no downgrade possible from here. Not sure, should I throw an exception or just let it go?
     }
-
-
 }
-
