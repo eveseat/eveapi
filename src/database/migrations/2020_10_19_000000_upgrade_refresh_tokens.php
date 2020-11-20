@@ -24,7 +24,6 @@ use Illuminate\Database\Migrations\Migration;
 use Carbon\Carbon;
 use Seat\Eveapi\Models\RefreshToken;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\RequestException;
@@ -51,7 +50,7 @@ class UpgradeRefreshTokens extends Migration
         $output = new ConsoleOutput();
         $progress = new ProgressBar($output, $count);
 
-        RefreshToken::chunk(100, function ($tokens) use ($client, $errors, $success, $authsite, $output, $progress){
+        RefreshToken::chunk(100, function ($tokens) use ($client, &$errors, &$success, $authsite, $progress){
             foreach ($tokens as $token){
                 try{
                     $token_headers = [
@@ -81,17 +80,12 @@ class UpgradeRefreshTokens extends Migration
                     $success += 1;
     
                 } catch (RequestException $e) {
-                    throw $e;
-                    $output->writeln($e->getMessage());
-                    Log::warning("-----------------------------------------------------");
-                    Log::warning("ERROR ENCOUNTERED");
-                    Log::warning("CharacterID: " . $token->character_id);
-                    Log::warning($e->getMessage());
-                    Log::warning((string) $e->getResponse()->getBody());
-                    foreach ($e->getResponse()->getHeaders() as $name => $values) {
-                        echo $name . ': ' . implode(', ', $values) . "\r\n";
-                    }
-                    Log::warning("-----------------------------------------------------");
+                    logger()->error('Error Migrating Refresh Token', [
+                        'Character ID'   => $token->character_id,
+                        'Message' => $e->getMessage(),
+                        'Body' => (string) $e->getResponse()->getBody(),
+                        'Headers' => $e->getResponse()->getHeaders(),
+                    ]);
                     $errors += 1;
                 };
                 $progress->advance();
@@ -101,11 +95,10 @@ class UpgradeRefreshTokens extends Migration
         $progress->finish();
         $output->writeln('');
         
-        Log::warning('');
-
-        Log::warning('Migrated tokens: ' . $success);
-        Log::warning('Errors: ' . $errors);
-
+        logger()->error('SeAT SSO Token Migration Complete!', [
+            'Migrated' => $success,
+            'Failures' => $errors,
+        ]);
 
     }
 
