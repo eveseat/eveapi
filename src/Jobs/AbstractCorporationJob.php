@@ -22,6 +22,8 @@
 
 namespace Seat\Eveapi\Jobs;
 
+use Seat\Eveapi\Jobs\Middleware\CorporationThrottler;
+
 /**
  * Class AbstractCorporationJob.
  *
@@ -52,6 +54,16 @@ abstract class AbstractCorporationJob extends EsiBase
     public function getCorporationId(): int
     {
         return $this->corporation_id;
+    }
+
+    /**
+     * @return array
+     */
+    public function middleware()
+    {
+        return array_merge(parent::middleware(), [
+            new CorporationThrottler,
+        ]);
     }
 
     /**
