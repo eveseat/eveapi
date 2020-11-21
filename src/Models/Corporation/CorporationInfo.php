@@ -152,56 +152,6 @@ class CorporationInfo extends Model
     protected $primaryKey = 'corporation_id';
 
     /**
-     * Make sure we cleanup on delete.
-     *
-     * @return bool|null
-     * @throws \Exception
-     */
-    public function delete()
-    {
-
-        // Cleanup the corporation
-        $this->alliance_history()->delete();
-        $this->assets()->delete();
-        $this->blueprints()->delete();
-        $this->bookmarks()->delete();
-        $this->bookmark_folders()->delete();
-        $this->contacts()->delete();
-        $this->contact_labels()->delete();
-        $this->container_logs()->delete();
-        $this->contracts()->delete();
-        $this->pocos()->delete();
-        $this->divisions()->delete();
-        $this->facilities()->delete();
-        $this->industry_jobs()->delete();
-
-        // TODO: Mining delete
-
-        $this->issued_medals()->delete();
-        $this->medals()->delete();
-        $this->member_limit()->delete();
-        $this->member_titles()->delete();
-        $this->member_tracking()->delete();
-        $this->members()->delete();
-        $this->orders()->delete();
-        $this->roles()->delete();
-        $this->role_history()->delete();
-        $this->shareholders()->delete();
-        $this->standings()->delete();
-
-        // TODO: Starbases & Structures
-        $this->structures()->delete();
-
-        $this->titles()->delete();
-        $this->title_roles()->delete();
-        $this->wallet_balances()->delete();
-        $this->wallet_journal()->delete();
-        $this->wallet_transactions()->delete();
-
-        return parent::delete();
-    }
-
-    /**
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
