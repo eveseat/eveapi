@@ -22,8 +22,8 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
-use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Exception\TokenVersionException;
+use Seat\Eveapi\Jobs\EsiBase;
 
 /**
  * Class CheckTokenVersion.
