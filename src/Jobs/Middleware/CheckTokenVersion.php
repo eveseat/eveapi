@@ -41,8 +41,6 @@ class CheckTokenVersion
     public function handle($job, $next)
     {
 
-        logger()->error('TEST');
-
         // in case the job is not ESI related - bypass this check
         if (! is_subclass_of($job, EsiBase::class)) {
             $next($job);
@@ -51,10 +49,9 @@ class CheckTokenVersion
         }
 
         $ver = $job->getToken()->version;
-        logger()->error($ver);
 
         if ($ver == self::CURRENT_VERSION){
-            logger()->error('Job running with up to date token', [
+            logger()->debug('Job running with up to date token', [
                 'job' => get_class($job),
                 'token_id' => $job->getToken()->character_id,
             ]);
