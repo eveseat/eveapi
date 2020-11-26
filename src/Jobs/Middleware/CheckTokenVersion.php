@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Middleware;
 
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Exception\TokenVersionException;
 
 /**
  * Class CheckTokenVersion.
@@ -61,7 +62,7 @@ class CheckTokenVersion
                 'job' => get_class($job),
                 'token_id' => $job->getToken()->character_id,
             ]);
-            $job->delete();
+            $job->fail(new TokenVersionException('Token Version Mismatch. Run command `php artisan seat:token:upgrade` in order to fix.'));
         }
 
     }
