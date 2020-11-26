@@ -38,11 +38,11 @@ class AddVersionToRefreshToken extends Migration
 
         DB::table('refresh_tokens')
             ->update(['version' => 1]);
-        
+
         Schema::table('refresh_tokens', function (Blueprint $table) {
             $table->unsignedSmallInteger('version')->default(2)->change();
         });
-    
+
     }
 
     public function down()
