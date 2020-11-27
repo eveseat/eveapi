@@ -22,8 +22,6 @@
 
 namespace Seat\Eveapi\Jobs;
 
-use Exception;
-
 /**
  * Class AbstractCharacterJob.
  *
@@ -66,12 +64,8 @@ abstract class AbstractCharacterJob extends EsiBase
         if (! in_array('character', $tags))
             $tags[] = 'character';
 
-        try {
-            if (! in_array($this->getCharacterId(), $tags))
-                $tags[] = $this->getCharacterId();
-        } catch (Exception $e) {
-            logger()->error($e->getMessage(), $e->getTrace());
-        }
+        if (! in_array($this->getCharacterId(), $tags))
+            $tags[] = $this->getCharacterId();
 
         return $tags;
     }
