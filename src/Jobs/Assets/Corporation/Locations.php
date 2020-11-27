@@ -22,6 +22,8 @@
 
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
+use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Exception\InvalidAssetLocation;
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Traits\Utils;
@@ -33,6 +35,14 @@ use Seat\Eveapi\Traits\Utils;
 class Locations extends AbstractAuthCorporationJob
 {
     use Utils;
+
+    /**
+     * The maximum number of itemids we can request location
+     * information for.
+     *
+     * @var int
+     */
+    const ITEMS_LIMIT = 1000;
 
     /**
      * @var string
@@ -65,12 +75,9 @@ class Locations extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'asset'];
 
     /**
-     * The maximum number of itemids we can request location
-     * information for.
-     *
-     * @var int
+     * @var bool
      */
-    protected $item_id_limit = 1000;
+    private $has_exception = false;
 
     /**
      * Execute the job.
@@ -96,44 +103,48 @@ class Locations extends AbstractAuthCorporationJob
             // 65 : Structure
             ->whereIn('categoryID', [2, 6, 22, 23, 65])
             ->select('item_id')
-            ->chunk($this->item_id_limit, function ($item_ids) {
+            ->chunk(self::ITEMS_LIMIT, function ($item_ids) {
 
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
-                $locations = $this->retrieve([
-                    'corporation_id' => $this->getCorporationId(),
-                ]);
-
-                collect($locations)->each(function ($location) {
-
-                    $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
-                        ->where('item_id', $location->item_id)
-                        ->first();
-
-                    // Location for items in either hangar or stations match to 0, 0, 0
-                    $asset_data->fill([
-                        'x'        => $location->position->x,
-                        'y'        => $location->position->y,
-                        'z'        => $location->position->z,
-                        'map_id'   => 0,
-                        'map_name' => '',
+                try {
+                    $locations = $this->retrieve([
+                        'corporation_id' => $this->getCorporationId(),
                     ]);
 
-                    // If we have a non zero value for coordinates, attempt to identify a celestial.
-                    if (($location->position->x + $location->position->y + $location->position->y) !== 0) {
-                        $normalized_location = $this->find_nearest_celestial(
-                            $asset_data->location_id,
-                            $location->position->x, $location->position->y, $location->position->z);
+                    collect($locations)->each(function ($location) {
 
-                        // Update the assets location information
+                        $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
+                            ->where('item_id', $location->item_id)
+                            ->first();
+
+                        // Location for items in either hangar or stations match to 0, 0, 0
                         $asset_data->fill([
-                            'map_id'   => $normalized_location['map_id'],
-                            'map_name' => $normalized_location['map_name'],
+                            'x' => $location->position->x,
+                            'y' => $location->position->y,
+                            'z' => $location->position->z,
+                            'map_id' => 0,
+                            'map_name' => '',
                         ]);
-                    }
 
-                    $asset_data->save();
-                });
+                        // If we have a non zero value for coordinates, attempt to identify a celestial.
+                        if (($location->position->x + $location->position->y + $location->position->y) !== 0) {
+                            $normalized_location = $this->find_nearest_celestial(
+                                $asset_data->location_id,
+                                $location->position->x, $location->position->y, $location->position->z);
+
+                            // Update the assets location information
+                            $asset_data->fill([
+                                'map_id' => $normalized_location['map_id'],
+                                'map_name' => $normalized_location['map_name'],
+                            ]);
+                        }
+
+                        $asset_data->save();
+                    });
+                } catch (RequestFailedException $exception) {
+                    $this->handleInvalidIdException($exception, $item_ids->pluck('item_id')->all());
+                }
             });
 
         // items which may not be singleton
@@ -147,44 +158,70 @@ class Locations extends AbstractAuthCorporationJob
             // 46 : Orbitals
             ->whereIn('categoryID', [46])
             ->select('item_id')
-            ->chunk($this->item_id_limit, function ($item_ids) {
+            ->chunk(self::ITEMS_LIMIT, function ($item_ids) {
 
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
-                $locations = $this->retrieve([
-                    'corporation_id' => $this->getCorporationId(),
-                ]);
-
-                collect($locations)->each(function ($location) {
-
-                    $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
-                        ->where('item_id', $location->item_id)
-                        ->first();
-
-                    // Location for items in either hangar or stations match to 0, 0, 0
-                    $asset_data->fill([
-                        'x'        => $location->position->x,
-                        'y'        => $location->position->y,
-                        'z'        => $location->position->z,
-                        'map_id'   => 0,
-                        'map_name' => '',
+                try {
+                    $locations = $this->retrieve([
+                        'corporation_id' => $this->getCorporationId(),
                     ]);
 
-                    // If we have a non zero value for coordinates, attempt to identify a celestial.
-                    if (($location->position->x + $location->position->y + $location->position->y) !== 0) {
-                        $normalized_location = $this->find_nearest_celestial(
-                            $asset_data->location_id,
-                            $location->position->x, $location->position->y, $location->position->z);
+                    collect($locations)->each(function ($location) {
 
-                        // Update the assets location information
+                        $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
+                            ->where('item_id', $location->item_id)
+                            ->first();
+
+                        // Location for items in either hangar or stations match to 0, 0, 0
                         $asset_data->fill([
-                            'map_id' => $normalized_location['map_id'],
-                            'map_name' => $normalized_location['map_name'],
+                            'x' => $location->position->x,
+                            'y' => $location->position->y,
+                            'z' => $location->position->z,
+                            'map_id' => 0,
+                            'map_name' => '',
                         ]);
-                    }
 
-                    $asset_data->save();
-                });
+                        // If we have a non zero value for coordinates, attempt to identify a celestial.
+                        if (($location->position->x + $location->position->y + $location->position->y) !== 0) {
+                            $normalized_location = $this->find_nearest_celestial(
+                                $asset_data->location_id,
+                                $location->position->x, $location->position->y, $location->position->z);
+
+                            // Update the assets location information
+                            $asset_data->fill([
+                                'map_id' => $normalized_location['map_id'],
+                                'map_name' => $normalized_location['map_name'],
+                            ]);
+                        }
+
+                        $asset_data->save();
+                    });
+                } catch (RequestFailedException $exception) {
+                    $this->handleInvalidIdException($exception, $item_ids->pluck('item_id')->all());
+                }
             });
+
+        if ($this->has_exception)
+            throw new InvalidAssetLocation();
+    }
+
+    /**
+     * @param \Seat\Eseye\Exceptions\RequestFailedException $exception
+     * @param array $item_ids
+     *
+     * @throws \Seat\Eseye\Exceptions\RequestFailedException
+     */
+    private function handleInvalidIdException(RequestFailedException $exception, array $item_ids)
+    {
+        if ($exception->getError() !== 'Invalid IDs in the request')
+            throw $exception;
+
+        logger()->error('Request contains an invalid asset ID from which retrieve a location.', [
+            'corporation_id' => $this->corporation_id,
+            'assets_batch' => $item_ids,
+        ]);
+
+        $this->has_exception = true;
     }
 }
