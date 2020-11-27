@@ -22,9 +22,13 @@
 
 namespace Seat\Eveapi\Jobs;
 
+use Exception;
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
 use Seat\Eveapi\Jobs\Middleware\IgnoreNpcCorporation;
 use Seat\Eveapi\Jobs\Middleware\RequireCorporationRole;
+use Seat\Eveapi\Models\Character\CharacterAffiliation;
+use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -34,6 +38,8 @@ use Seat\Eveapi\Models\RefreshToken;
  */
 abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
 {
+    const CHARACTER_NOT_IN_CORPORATION = 'Character is not in the corporation';
+
     /**
      * {@inheritdoc}
      */
@@ -69,5 +75,32 @@ abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
             new IgnoreNpcCorporation,
             new RequireCorporationRole,
         ]);
+    }
+
+    /**
+     * @param \Exception $exception
+     *
+     * @throws \Exception
+     */
+    public function failed(Exception $exception)
+    {
+        if (is_a($exception, RequestFailedException::class)) {
+            if ($exception->getError() == self::CHARACTER_NOT_IN_CORPORATION) {
+
+                // remove character from the corporation, if it's not updated yet
+                CorporationMemberTracking::where('character_id', $this->token->character_id)
+                    ->where('corporation_id', $this->corporation_id)
+                    ->delete();
+
+                // force remove character <-> corporation relation
+                CharacterAffiliation::where('character_id', $this->token->character_id)
+                    ->where('corporation_id', $this->corporation_id)
+                    ->delete();
+
+                return;
+            }
+        }
+
+        parent::failed($exception);
     }
 }
