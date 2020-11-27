@@ -59,6 +59,13 @@ class RequireCorporationRole
             return;
         }
 
+        logger()->warning('Unprocessable job. Character does not meet required corporation role.', [
+            'job' => get_class($job),
+            'character_id' => $job->getToken()->character_id,
+            'corporation_id' => $job->getCorporationId(),
+            'required_roles' => $job->getRoles(),
+        ]);
+
         $job->delete();
     }
 
