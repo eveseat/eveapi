@@ -23,8 +23,8 @@
 namespace Seat\Eveapi\Jobs\Middleware;
 
 use Seat\Eveapi\Exception\TokenVersionException;
-use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class CheckTokenVersion.
@@ -33,7 +33,6 @@ use Seat\Eveapi\Jobs\EsiBase;
  */
 class CheckTokenVersion
 {
-
     /**
      * @param \Seat\Eveapi\Jobs\EsiBase $job
      * @param $next
