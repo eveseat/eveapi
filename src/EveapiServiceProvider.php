@@ -122,6 +122,30 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getChangelogUri(): ?string
+    {
+        return 'https://api.github.com/repos/eveseat/eveapi/releases';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getChangelogBodyAttribute(): ?string
+    {
+        return 'body';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getChangelogTagAttribute(): ?string
+    {
+        return 'tag_name';
+    }
+
+    /**
      * Return the plugin public name as it should be displayed into settings.
      *
      * @return string
