@@ -46,6 +46,13 @@ use Seat\Web\Models\User;
  *     description="Character ID to which the token is tied",
  *     property="character_id"
  * )
+ * @OA\Property(
+ *     type="integer",
+ *     format="uint8",
+ *     minimum=1,
+ *     description="Refresh Token SSO Version",
+ *     property="version"
+ * )
  *
  * @OA\Property(
  *     type="string",
@@ -98,6 +105,8 @@ class RefreshToken extends Model
 {
     use SoftDeletes;
 
+    const CURRENT_VERSION = 2;
+
     /**
      * @var array
      */
@@ -119,7 +128,7 @@ class RefreshToken extends Model
      * @var array
      */
     protected $fillable = [
-        'character_id', 'user_id', 'character_owner_hash', 'refresh_token', 'scopes', 'expires_on', 'token',
+        'character_id', 'version', 'user_id', 'character_owner_hash', 'refresh_token', 'scopes', 'expires_on', 'token',
     ];
 
     /**

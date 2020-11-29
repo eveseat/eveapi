@@ -20,44 +20,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs;
-
-use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
-use Seat\Eveapi\Jobs\Middleware\CheckTokenVersion;
-use Seat\Eveapi\Models\RefreshToken;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class AbstractAuthenticatedCharacterJob.
- *
- * @package Seat\Eveapi\Jobs
+ * Class AddVersionToRefreshToken.
  */
-abstract class AbstractAuthCharacterJob extends AbstractCharacterJob
+class AddVersionToRefreshToken extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
-    public $queue = 'characters';
-
-    /**
-     * AbstractCharacterJob constructor.
-     *
-     * @param \Seat\Eveapi\Models\RefreshToken $token
-     */
-    public function __construct(RefreshToken $token)
+    public function up()
     {
-        $this->token = $token;
+        Schema::table('refresh_tokens', function (Blueprint $table) {
+            $table->unsignedSmallInteger('version')->after('character_id');
+        });
 
-        parent::__construct($token->character_id);
+        DB::table('refresh_tokens')
+            ->update(['version' => 1]);
+
+        Schema::table('refresh_tokens', function (Blueprint $table) {
+            $table->unsignedSmallInteger('version')->default(2)->change();
+        });
+
     }
 
-    /**
-     * @return array
-     */
-    public function middleware()
+    public function down()
     {
-        return array_merge(parent::middleware(), [
-            new CheckTokenScope,
-            new CheckTokenVersion,
-        ]);
+        Schema::table('refresh_tokens', function (Blueprint $table) {
+            $table->dropColumn('version');
+        });
     }
 }
