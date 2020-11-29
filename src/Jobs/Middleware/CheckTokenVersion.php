@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Middleware;
 
 use Seat\Eveapi\Exception\TokenVersionException;
+use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Jobs\EsiBase;
 
 /**
@@ -32,8 +33,6 @@ use Seat\Eveapi\Jobs\EsiBase;
  */
 class CheckTokenVersion
 {
-
-    const CURRENT_VERSION = 2;
 
     /**
      * @param \Seat\Eveapi\Jobs\EsiBase $job
@@ -51,7 +50,7 @@ class CheckTokenVersion
 
         $ver = $job->getToken()->version;
 
-        if ($ver == self::CURRENT_VERSION){
+        if ($ver == RefreshToken::CURRENT_VERSION){
             logger()->debug('Job running with up to date token', [
                 'job' => get_class($job),
                 'token_id' => $job->getToken()->character_id,

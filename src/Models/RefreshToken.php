@@ -105,6 +105,8 @@ class RefreshToken extends Model
 {
     use SoftDeletes;
 
+    const CURRENT_VERSION = 2;
+
     /**
      * @var array
      */
