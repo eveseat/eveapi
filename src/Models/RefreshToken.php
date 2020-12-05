@@ -107,7 +107,7 @@ class RefreshToken extends Model
 
     const CURRENT_VERSION = 2;
 
-     /**
+    /**
      * @var array
      */
     protected $attributes = [
