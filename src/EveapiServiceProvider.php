@@ -64,7 +64,6 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     public function register()
     {
 
-        $this->mergeConfigFrom(__DIR__ . '/Config/eveapi.config.php', 'eveapi.config');
         $this->mergeConfigFrom(__DIR__ . '/Config/eveapi.scopes.php', 'eveapi.scopes');
 
         // Eseye Singleton
