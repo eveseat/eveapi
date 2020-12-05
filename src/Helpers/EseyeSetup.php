@@ -22,6 +22,8 @@
 
 namespace Seat\Eveapi\Helpers;
 
+use Composer\InstalledVersions;
+use OutOfBoundsException;
 use Seat\Eseye\Configuration;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Eseye;
@@ -38,9 +40,14 @@ class EseyeSetup
      */
     public function __construct()
     {
+        try {
+            $version = sprintf('v%s', InstalledVersions::getPrettyVersion('eveseat/eveapi'));
+        } catch (OutOfBoundsException $e) {
+            $version = 'dev';
+        }
 
         $config = Configuration::getInstance();
-        $config->http_user_agent = 'SeAT v' . config('eveapi.config.version');
+        $config->http_user_agent = sprintf('SeAT %s', $version);
         $config->logfile_location = config('esi.eseye_logfile');
         $config->file_cache_location = config('esi.eseye_cache');
         $config->logger_level = config('esi.eseye_loglevel');
