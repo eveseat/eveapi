@@ -110,6 +110,13 @@ class RefreshToken extends Model
     /**
      * @var array
      */
+    protected $attributes = [
+        'version' => self::CURRENT_VERSION,
+    ];
+
+    /**
+     * @var array
+     */
     protected $casts = [
         'scopes' => 'array',
     ];
