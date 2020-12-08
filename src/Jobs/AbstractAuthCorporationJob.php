@@ -26,7 +26,6 @@ use Exception;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenVersion;
-use Seat\Eveapi\Jobs\Middleware\EsiTokenThrottler;
 use Seat\Eveapi\Jobs\Middleware\IgnoreNpcCorporation;
 use Seat\Eveapi\Jobs\Middleware\RequireCorporationRole;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
@@ -77,7 +76,6 @@ abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
             new CheckTokenVersion,
             new IgnoreNpcCorporation,
             new RequireCorporationRole,
-            new EsiTokenThrottler,
         ]);
     }
 
