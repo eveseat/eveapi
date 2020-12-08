@@ -59,7 +59,7 @@ abstract class AbstractAuthCharacterJob extends AbstractCharacterJob
         return array_merge(parent::middleware(), [
             new CheckTokenScope,
             new CheckTokenVersion,
-            new EsiTokenThrottler,
+            //new EsiTokenThrottler,
         ]);
     }
 }
