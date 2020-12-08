@@ -77,7 +77,7 @@ abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
             new CheckTokenVersion,
             new IgnoreNpcCorporation,
             new RequireCorporationRole,
-            //new EsiTokenThrottler,
+            new EsiTokenThrottler,
         ]);
     }
 
