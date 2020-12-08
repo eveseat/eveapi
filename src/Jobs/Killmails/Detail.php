@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Jobs\Killmails;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Jobs\Middleware\KillmailRateLimit;
 use Seat\Eveapi\Models\Killmails\KillmailAttacker;
 use Seat\Eveapi\Models\Killmails\KillmailDetail;
 use Seat\Eveapi\Models\Killmails\KillmailVictim;
@@ -37,7 +36,7 @@ class Detail extends EsiBase
     /**
      * @var int
      */
-    public $killmail_id;
+    private $killmail_id;
 
     /**
      * @var string
@@ -76,13 +75,6 @@ class Detail extends EsiBase
         $this->killmail_hash = $killmail_hash;
 
         array_push($this->tags, $killmail_id);
-    }
-
-    public function middleware()
-    {
-        return array_merge(parent::middleware(), [
-            new KillmailRateLimit(),
-        ]);
     }
 
     /**
