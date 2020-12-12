@@ -25,8 +25,6 @@ namespace Seat\Eveapi\Models\Corporation;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
-use Seat\Eveapi\Models\Bookmarks\CorporationBookmark;
-use Seat\Eveapi\Models\Bookmarks\CorporationBookmarkFolder;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
@@ -207,26 +205,6 @@ class CorporationInfo extends Model
     {
 
         return $this->hasMany(CorporationBlueprint::class,
-            'corporation_id', 'corporation_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function bookmarks()
-    {
-
-        return $this->hasMany(CorporationBookmark::class,
-            'corporation_id', 'corporation_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function bookmark_folders()
-    {
-
-        return $this->hasMany(CorporationBookmarkFolder::class,
             'corporation_id', 'corporation_id');
     }
 

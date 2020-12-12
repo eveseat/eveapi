@@ -24,8 +24,6 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
-use Seat\Eveapi\Models\Bookmarks\CharacterBookmark;
-use Seat\Eveapi\Models\Bookmarks\CharacterBookmarkFolder;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 use Seat\Eveapi\Models\Clones\CharacterClone;
 use Seat\Eveapi\Models\Clones\CharacterImplant;
@@ -140,26 +138,6 @@ class CharacterInfo extends Model
     {
 
         return $this->hasMany(CharacterBlueprint::class,
-            'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function bookmarks()
-    {
-
-        return $this->hasMany(CharacterBookmark::class,
-            'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function bookmark_folders()
-    {
-
-        return $this->hasMany(CharacterBookmarkFolder::class,
             'character_id', 'character_id');
     }
 
