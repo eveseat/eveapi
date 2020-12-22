@@ -103,7 +103,9 @@ use Seat\Web\Models\User;
  */
 class RefreshToken extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes {
+        SoftDeletes::runSoftDelete as protected traitRunSoftDelete;
+    }
 
     const CURRENT_VERSION = 2;
 
@@ -139,9 +141,27 @@ class RefreshToken extends Model
     ];
 
     /**
+     * @var string[]
+     */
+    protected $observables = [
+        'softDeleted',
+    ];
+
+    /**
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * Register a soft deleted model event with the dispatcher.
+     *
+     * @param \Closure|string $callback
+     * @return void
+     */
+    public static function softDeleted($callback)
+    {
+        static::registerModelEvent('softDeleted', $callback);
+    }
 
     /**
      * Only return a token value if it is not already
@@ -186,5 +206,19 @@ class RefreshToken extends Model
     {
 
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * Perform the actual delete query on this model instance.
+     *
+     * @return void
+     */
+    protected function runSoftDelete()
+    {
+        // call standard soft delete workflow.
+        $this->traitRunSoftDelete();
+
+        // trigger softDeleted event.
+        $this->fireModelEvent('softDeleted', false);
     }
 }
