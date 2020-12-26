@@ -22,7 +22,10 @@
 
 namespace Seat\Eveapi;
 
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Queue\Events\JobExceptionOccurred;
 use Seat\Eveapi\Helpers\EseyeSetup;
+use Seat\Eveapi\Listeners\EsiFailedCall;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Observers\CharacterAffiliationObserver;
@@ -53,7 +56,10 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         $this->configure_api();
 
         // Register events observers
-        $this->add_events();
+        $this->addObservers();
+
+        // Register events listeners
+        $this->addListeners();
     }
 
     /**
@@ -112,12 +118,24 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     }
 
     /**
-     * Register the custom events that may fore for this package.
+     * Register the custom model observers.
      */
-    private function add_events()
+    private function addObservers()
     {
         CharacterAffiliation::observe(CharacterAffiliationObserver::class);
         RefreshToken::observe(RefreshTokenObserver::class);
+    }
+
+    /**
+     * Register the custom event listeners.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    private function addListeners()
+    {
+        $events = $this->app->make(Dispatcher::class);
+
+        $events->listen(JobExceptionOccurred::class, EsiFailedCall::class);
     }
 
     /**

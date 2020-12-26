@@ -27,6 +27,9 @@ use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Exception\PermanentInvalidTokenException;
+use Seat\Eveapi\Exception\TemporaryEsiOutageException;
+use Seat\Eveapi\Exception\UnavailableEveServersException;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiRateLimit;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiStatus;
 use Seat\Eveapi\Jobs\Middleware\CheckServerStatus;
@@ -46,15 +49,18 @@ abstract class EsiBase extends AbstractJob
 
     const RATE_LIMIT_KEY = 'esiratelimit';
 
+    const PERMANENT_INVALID_TOKEN_MESSAGES = [
+        'invalid_token: The refresh token is expired.',
+        'invalid_token: The refresh token does not match the client specified.',
+        'invalid_grant: Invalid refresh token. Character grant missing/expired.',
+        'invalid_grant: Invalid refresh token. Unable to migrate grant.',
+        'invalid_grant: Invalid refresh token. Token missing/expired.',
+    ];
+
     /**
      * @var string By default, queue all ESI jobs on public queue.
      */
     public $queue = 'public';
-
-    /**
-     * @var int By default, retry all ESI jobs every 5 minutes past last fail.
-     */
-    public $retryAfter = 300;
 
     /**
      * @var int By default, retry all ESI jobs 3 times.
@@ -156,6 +162,69 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
+     * @return mixed
+     */
+    public function getRateLimitKeyTtl()
+    {
+
+        return Redis::ttl('seat:' . self::RATE_LIMIT_KEY);
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles(): array
+    {
+        return $this->roles ?: [];
+    }
+
+    /**
+     * @return \Seat\Eveapi\Models\RefreshToken|null
+     */
+    public function getToken(): ?RefreshToken
+    {
+        return $this->token;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScope(): string
+    {
+        return $this->scope ?: '';
+    }
+
+    /**
+     * @return \Illuminate\Support\Carbon
+     */
+    public function retryAfter()
+    {
+        return now()->addSeconds($this->attempts() * 300);
+    }
+
+    /**
+     * @param \Exception $exception
+     *
+     * @throws \Exception
+     */
+    public function failed(Exception $exception)
+    {
+        parent::failed($exception);
+
+        // used token is non longer valid, remove it from the system.
+        if ($exception instanceof PermanentInvalidTokenException) {
+            $this->token->delete();
+        }
+
+        // TQ server is not available, clear cache, so middleware will prevent to grant jobs to be processed.
+        if ($exception instanceof UnavailableEveServersException) {
+            cache()->remember('eve_db_status', 60, function () {
+                return null;
+            });
+        }
+    }
+
+    /**
      * @param int $amount
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
@@ -175,20 +244,13 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * @return mixed
-     */
-    public function getRateLimitKeyTtl()
-    {
-
-        return Redis::ttl('seat:' . self::RATE_LIMIT_KEY);
-    }
-
-    /**
      * @param array $path_values
      *
      * @return \Seat\Eseye\Containers\EsiResponse
      * @throws \Seat\Eseye\Exceptions\RequestFailedException
-     * @throws \Exception
+     * @throws \Seat\Eveapi\Exception\PermanentInvalidTokenException
+     * @throws \Seat\Eveapi\Exception\TemporaryEsiOutageException
+     * @throws \Seat\Eveapi\Exception\UnavailableEveServersException
      * @throws \Throwable
      */
     public function retrieve(array $path_values = []): EsiResponse
@@ -217,50 +279,7 @@ abstract class EsiBase extends AbstractJob
             $this->updateRefreshToken();
 
         } catch (RequestFailedException $exception) {
-
-            // increment ESI rate limit
-            $this->incrementEsiRateLimit();
-
-            // If the token can't login and we get an HTTP 400 together with
-            // and error message stating that this is an invalid_token, remove
-            // the token from SeAT.
-            if ($exception->getEsiResponse()->getErrorCode() == 400 && in_array($exception->getEsiResponse()->error(), [
-                'invalid_token: The refresh token is expired.',
-                'invalid_token: The refresh token does not match the client specified.',
-                'invalid_grant: Invalid refresh token. Character grant missing/expired.',
-                'invalid_grant: Invalid refresh token. Unable to migrate grant.',
-                'invalid_grant: Invalid refresh token. Token missing/expired.',
-            ])) {
-
-                // Remove the invalid token
-                $this->token->delete();
-            }
-
-            // Update the refresh token we have stored in the database.
-            $this->updateRefreshToken();
-
-            if ($exception->getEsiResponse()->getErrorCode() == 503 && in_array($exception->getEsiResponse()->error(), [
-                'The datasource tranquility is temporarily unavailable',
-            ])) {
-
-                // update server status cached entry
-                cache()->remember('eve_db_status', 60, function () {
-                    return null;
-                });
-            }
-
-            if ($exception->getEsiResponse()->getErrorCode() == 504 && in_array($exception->getEsiResponse()->error(), [
-                'Timeout contacting tranquility',
-            ])) {
-
-                // update server status cached entry
-                cache()->remember('eve_db_status', 60, function () {
-                    return null;
-                });
-            }
-
-            // Rethrow the exception
-            throw $exception;
+            $this->handleEsiFailedCall($exception);
         }
 
         // If this is a cached load, don't bother with any further
@@ -303,10 +322,6 @@ abstract class EsiBase extends AbstractJob
      */
     public function eseye()
     {
-
-        if ($this->client)
-            return $this->client;
-
         $this->client = app('esi-client');
 
         if (is_null($this->token))
@@ -372,30 +387,6 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * @return \Seat\Eveapi\Models\RefreshToken|null
-     */
-    public function getToken(): ?RefreshToken
-    {
-        return $this->token;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRoles(): array
-    {
-        return $this->roles ?: [];
-    }
-
-    /**
-     * @return string
-     */
-    public function getScope(): string
-    {
-        return $this->scope ?: '';
-    }
-
-    /**
      * Update the access_token last used in the job,
      * along with the expiry time.
      */
@@ -442,5 +433,51 @@ abstract class EsiBase extends AbstractJob
         $this->page++;
 
         return true;
+    }
+
+    /**
+     * @param \Seat\Eseye\Exceptions\RequestFailedException $exception
+     *
+     * @throws \Seat\Eseye\Exceptions\RequestFailedException
+     * @throws \Seat\Eveapi\Exception\PermanentInvalidTokenException
+     * @throws \Seat\Eveapi\Exception\TemporaryEsiOutageException
+     * @throws \Seat\Eveapi\Exception\UnavailableEveServersException
+     */
+    private function handleEsiFailedCall(RequestFailedException $exception)
+    {
+        // increment ESI rate limit
+        $this->incrementEsiRateLimit();
+
+        $response = $exception->getEsiResponse();
+
+        // Update the refresh token we have stored in the database.
+        $this->updateRefreshToken();
+
+        // in case SSO did odd stuff with generated token, falsify the expires date/time
+        // so eseye library will renew the token on next call.
+        if ($response->getErrorCode() == 403 && $response->error() == 'token expiry is too far in the future') {
+            if ($this->token) {
+                $this->token->expires_on = carbon()->subMinutes(10);
+                $this->token->save();
+            }
+
+            throw new TemporaryEsiOutageException($response->error(), $response->getErrorCode());
+        }
+
+        // If the token can't login and we get an HTTP 400 together with
+        // and error message stating that this is an invalid_token, remove
+        // the token from SeAT.
+        if ($response->getErrorCode() == 400 && in_array($response->error(), self::PERMANENT_INVALID_TOKEN_MESSAGES))
+            throw new PermanentInvalidTokenException($response->error(), $response->getErrorCode());
+
+        if (($response->getErrorCode() == 503 && $response->error() == 'The datasource tranquility is temporarily unavailable') ||
+            ($response->getErrorCode() == 504 && $response->error() == 'Timeout contacting tranquility'))
+            throw new UnavailableEveServersException($response->error(), $response->getErrorCode());
+
+        if ($response->getErrorCode() >= 500)
+            throw new TemporaryEsiOutageException($response->error(), $response->getErrorCode());
+
+        // Rethrow the exception
+        throw $exception;
     }
 }
