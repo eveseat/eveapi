@@ -81,9 +81,6 @@ abstract class AbstractJob implements ShouldQueue
             ->set('type', 'exception')
             ->set('exd', get_class($exception) . ':' . $exception->getMessage())
             ->set('exf', 1))))->onQueue('default');
-
-        // Rethrow the original exception for Horizon
-        throw $exception;
     }
 
     /**

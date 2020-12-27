@@ -25,11 +25,11 @@ namespace Seat\Eveapi\Exception;
 use Exception;
 
 /**
- * Class TokenVersionException.
+ * Class TemporaryEsiOutageException.
  *
  * @package Seat\Eveapi\Exception
  */
-class TokenVersionException extends Exception
+class TemporaryEsiOutageException extends Exception
 {
 
 }
