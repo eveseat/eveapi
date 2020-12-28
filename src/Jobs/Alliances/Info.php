@@ -95,4 +95,14 @@ class Info extends EsiBase
             'faction_id'              => $info->faction_id ?? null,
         ]);
     }
+
+    /**
+     * Determine the time at which the job should timeout.
+     *
+     * @return \Carbon\Carbon
+     */
+    public function retryUntil()
+    {
+        return now()->addHours(12);
+    }
 }
