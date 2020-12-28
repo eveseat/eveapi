@@ -43,7 +43,7 @@ class CheckEsiRateLimit
             // in case ESI limit has been reached, delay the job
             if ($this->isEsiRateLimitReached($job)) {
                 logger()->warning(
-                    sprintf('EVE Online server seems to be unreachable. Job %s has been delayed by %d seconds.',
+                    sprintf('Rate Limit has been reached. Job %s has been delayed by %d seconds.',
                         get_class($job), $job::RATE_LIMIT_DURATION));
 
                 $job->release($job::RATE_LIMIT_DURATION);
