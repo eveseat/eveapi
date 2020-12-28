@@ -95,4 +95,14 @@ class Members extends EsiBase
             ->whereNotIn('corporation_id', $corporation_ids->flatten()->all())
             ->delete();
     }
+
+    /**
+     * Determine the time at which the job should timeout.
+     *
+     * @return \Carbon\Carbon
+     */
+    public function retryUntil()
+    {
+        return now()->addHours(12);
+    }
 }

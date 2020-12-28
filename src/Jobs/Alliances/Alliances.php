@@ -64,13 +64,13 @@ class Alliances extends EsiBase
 
         collect($alliances)->each(function ($alliance_id) {
 
-            // queue another job which will be
-            // responsible to collect alliance details.
-            dispatch(new Info($alliance_id));
-
-            // queue another job which will be
-            // responsible to collect alliance members.
-            dispatch(new Members($alliance_id));
+            // queue jobs which will take care of this alliance update.
+            Info::withChain([
+                new Members($alliance_id),
+            ])->dispatch($alliance_id)->delay(now()->addSeconds(rand(20, 300)));
+            // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
+            // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
+            // https://github.com/eveseat/seat/issues/731
         });
     }
 }
