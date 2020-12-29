@@ -52,7 +52,10 @@ class CharacterFitting extends Model
     public function ship()
     {
 
-        return $this->hasOne(InvType::class, 'typeID', 'ship_type_id');
+        return $this->hasOne(InvType::class, 'typeID', 'ship_type_id')
+            ->withDefault([
+                'typeName' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
