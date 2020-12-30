@@ -23,7 +23,9 @@
 namespace Seat\Eveapi\Observers;
 
 use Seat\Eveapi\Jobs\Character\Info;
+use Seat\Eveapi\Models\Bucket;
 use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Traits\BucketManager;
 
 /**
  * Class RefreshTokenObserver.
@@ -32,11 +34,50 @@ use Seat\Eveapi\Models\RefreshToken;
  */
 class RefreshTokenObserver
 {
+    use BucketManager;
+
     /**
      * @param \Seat\Eveapi\Models\RefreshToken $token
      */
     public function created(RefreshToken $token)
     {
         dispatch(new Info($token->character_id))->onQueue('high');
+
+        // update buckets
+        $this->seedBuckets();
+    }
+
+    /**
+     * @param \Seat\Eveapi\Models\RefreshToken $token
+     */
+    public function restored(RefreshToken $token)
+    {
+        // update buckets
+        $this->seedBuckets();
+    }
+
+    /**
+     * @param \Seat\Eveapi\Models\RefreshToken $token
+     */
+    public function softDeleted(RefreshToken $token)
+    {
+        $this->deleted($token);
+    }
+
+    /**
+     * @param \Seat\Eveapi\Models\RefreshToken $token
+     */
+    public function deleted(RefreshToken $token)
+    {
+        // remove token from his bucket
+        $bucket = Bucket::whereHas('disabled_tokens', function ($query) use ($token) {
+            $query->where('refresh_tokens.character_id', $token->character_id);
+        })->first();
+
+        if ($bucket)
+            $bucket->disabled_tokens()->detach($token->character_id);
+
+        // update buckets
+        $this->seedBuckets();
     }
 }

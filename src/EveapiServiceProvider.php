@@ -24,6 +24,10 @@ namespace Seat\Eveapi;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Queue\Events\JobExceptionOccurred;
+use Seat\Eveapi\Commands\Seat\Buckets\Balance;
+use Seat\Eveapi\Commands\Seat\Buckets\Info;
+use Seat\Eveapi\Commands\Seat\Buckets\ListCommand;
+use Seat\Eveapi\Commands\Seat\Buckets\Update;
 use Seat\Eveapi\Helpers\EseyeSetup;
 use Seat\Eveapi\Listeners\EsiFailedCall;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
@@ -45,6 +49,8 @@ class EveapiServiceProvider extends AbstractSeatPlugin
      */
     public function boot()
     {
+        // Register commands
+        $this->addCommands();
 
         // Inform Laravel how to load migrations
         $this->add_migrations();
@@ -77,6 +83,17 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
             return new EseyeSetup;
         });
+    }
+
+    private function addCommands()
+    {
+        $this->commands([
+            // Buckets
+            Info::class,
+            Balance::class,
+            Update::class,
+            ListCommand::class,
+        ]);
     }
 
     /**
