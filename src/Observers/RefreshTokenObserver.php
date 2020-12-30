@@ -22,8 +22,8 @@
 
 namespace Seat\Eveapi\Observers;
 
-use Seat\Eveapi\Models\Bucket;
 use Seat\Eveapi\Jobs\Character\Info;
+use Seat\Eveapi\Models\Bucket;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Traits\BucketManager;
 
