@@ -27,7 +27,6 @@ use Illuminate\Support\Facades\Cache;
 use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Bus\Corporation;
 use Seat\Eveapi\Models\Bucket;
-use Seat\Services\Traits\Telemeter;
 
 /**
  * Class Update.
@@ -36,8 +35,6 @@ use Seat\Services\Traits\Telemeter;
  */
 class Update extends Command
 {
-    use Telemeter;
-
     /**
      * @var string
      */
