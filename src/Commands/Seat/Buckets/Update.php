@@ -89,7 +89,7 @@ class Update extends Command
             }
 
             // queue character jobs for the selected token.
-            (new Character($token))->fire();
+            (new Character($token->character_id, $token))->fire();
 
             logger()->debug('processing token from a bucket', [
                 'bucket' => $bucket->id,
