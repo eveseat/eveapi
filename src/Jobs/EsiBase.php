@@ -278,7 +278,23 @@ abstract class EsiBase extends AbstractJob
             // Update the refresh token we have stored in the database.
             $this->updateRefreshToken();
 
+            $telemetry = new AnalyticsContainer();
+            $telemetry->set('type', 'event')
+                ->set('ec', 'esi')
+                ->set('ea', $this->endpoint)
+                ->set('el', $result->getErrorCode());
+
+            dispatch_now(new Analytics($telemetry));
+
         } catch (RequestFailedException $exception) {
+            $telemetry = new AnalyticsContainer();
+            $telemetry->set('type', 'event')
+                ->set('ec', 'esi')
+                ->set('ea', $this->endpoint)
+                ->set('el', $exception->getCode());
+
+            dispatch_now(new Analytics($telemetry));
+
             $this->handleEsiFailedCall($exception);
         }
 

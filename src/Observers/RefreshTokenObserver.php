@@ -26,6 +26,8 @@ use Seat\Eveapi\Jobs\Character\Info;
 use Seat\Eveapi\Models\Bucket;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Traits\BucketManager;
+use Seat\Services\Helpers\AnalyticsContainer;
+use Seat\Services\Jobs\Analytics;
 
 /**
  * Class RefreshTokenObserver.
@@ -43,6 +45,14 @@ class RefreshTokenObserver
     {
         dispatch(new Info($token->character_id))->onQueue('high');
 
+        $telemetry = new AnalyticsContainer();
+        $telemetry->set('type', 'event')
+            ->set('ec', 'tokens')
+            ->set('ea', 'created')
+            ->set('ev', RefreshToken::count());
+
+        dispatch(new Analytics($telemetry));
+
         // update buckets
         $this->seedBuckets();
     }
@@ -52,6 +62,14 @@ class RefreshTokenObserver
      */
     public function restored(RefreshToken $token)
     {
+        $telemetry = new AnalyticsContainer();
+        $telemetry->set('type', 'event')
+            ->set('ec', 'tokens')
+            ->set('ea', 'restored')
+            ->set('ev', RefreshToken::count());
+
+        dispatch(new Analytics($telemetry));
+
         // update buckets
         $this->seedBuckets();
     }
@@ -61,6 +79,14 @@ class RefreshTokenObserver
      */
     public function softDeleted(RefreshToken $token)
     {
+        $telemetry = new AnalyticsContainer();
+        $telemetry->set('type', 'event')
+            ->set('ec', 'tokens')
+            ->set('ea', 'deleted')
+            ->set('ev', RefreshToken::count());
+
+        dispatch(new Analytics($telemetry));
+
         $this->deleted($token);
     }
 
@@ -69,6 +95,14 @@ class RefreshTokenObserver
      */
     public function deleted(RefreshToken $token)
     {
+        $telemetry = new AnalyticsContainer();
+        $telemetry->set('type', 'event')
+            ->set('ec', 'tokens')
+            ->set('ea', 'deleted')
+            ->set('ev', RefreshToken::count());
+
+        dispatch(new Analytics($telemetry));
+
         // remove token from his bucket
         $bucket = Bucket::whereHas('disabled_tokens', function ($query) use ($token) {
             $query->where('refresh_tokens.character_id', $token->character_id);
