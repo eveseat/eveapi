@@ -45,6 +45,9 @@ class RefreshTokenObserver
     {
         dispatch(new Info($token->character_id))->onQueue('high');
 
+        // update buckets
+        $this->seedBuckets();
+
         $telemetry = new AnalyticsContainer();
         $telemetry->set('type', 'event')
             ->set('ec', 'tokens')
@@ -52,9 +55,6 @@ class RefreshTokenObserver
             ->set('ev', RefreshToken::count());
 
         dispatch(new Analytics($telemetry));
-
-        // update buckets
-        $this->seedBuckets();
     }
 
     /**
@@ -62,6 +62,9 @@ class RefreshTokenObserver
      */
     public function restored(RefreshToken $token)
     {
+        // update buckets
+        $this->seedBuckets();
+
         $telemetry = new AnalyticsContainer();
         $telemetry->set('type', 'event')
             ->set('ec', 'tokens')
@@ -69,9 +72,6 @@ class RefreshTokenObserver
             ->set('ev', RefreshToken::count());
 
         dispatch(new Analytics($telemetry));
-
-        // update buckets
-        $this->seedBuckets();
     }
 
     /**
@@ -79,6 +79,8 @@ class RefreshTokenObserver
      */
     public function softDeleted(RefreshToken $token)
     {
+        $this->deleted($token);
+
         $telemetry = new AnalyticsContainer();
         $telemetry->set('type', 'event')
             ->set('ec', 'tokens')
@@ -86,8 +88,6 @@ class RefreshTokenObserver
             ->set('ev', RefreshToken::count());
 
         dispatch(new Analytics($telemetry));
-
-        $this->deleted($token);
     }
 
     /**
@@ -95,14 +95,6 @@ class RefreshTokenObserver
      */
     public function deleted(RefreshToken $token)
     {
-        $telemetry = new AnalyticsContainer();
-        $telemetry->set('type', 'event')
-            ->set('ec', 'tokens')
-            ->set('ea', 'deleted')
-            ->set('ev', RefreshToken::count());
-
-        dispatch(new Analytics($telemetry));
-
         // remove token from his bucket
         $bucket = Bucket::whereHas('disabled_tokens', function ($query) use ($token) {
             $query->where('refresh_tokens.character_id', $token->character_id);
@@ -113,5 +105,13 @@ class RefreshTokenObserver
 
         // update buckets
         $this->seedBuckets();
+
+        $telemetry = new AnalyticsContainer();
+        $telemetry->set('type', 'event')
+            ->set('ec', 'tokens')
+            ->set('ea', 'deleted')
+            ->set('ev', RefreshToken::count());
+
+        dispatch(new Analytics($telemetry));
     }
 }
