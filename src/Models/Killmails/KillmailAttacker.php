@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
@@ -179,5 +180,22 @@ class KillmailAttacker extends Model
                 'name'     => trans('web::seat.unknown'),
                 'category' => 'faction',
             ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function ship()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'ship_type_id')
+            ->withDefault();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne|null
+     */
+    public function weapon()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'weapon_type_id');
     }
 }

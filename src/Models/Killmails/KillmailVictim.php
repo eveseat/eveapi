@@ -119,6 +119,44 @@ class KillmailVictim extends Model
     protected $primaryKey = 'killmail_id';
 
     /**
+     * @return float
+     */
+    public function getFittedEstimateAttribute(): float
+    {
+        return $this->items->sum(function ($item) {
+            return ($item->pivot->quantity_dropped + $item->pivot->quantity_destroyed) * $item->price->average_price;
+        });
+    }
+
+    /**
+     * @return float
+     */
+    public function getDroppedEstimateAttribute(): float
+    {
+        return $this->items->sum(function ($item) {
+            return $item->pivot->quantity_dropped * $item->price->average_price;
+        });
+    }
+
+    /**
+     * @return float
+     */
+    public function getDestroyedEstimateAttribute(): float
+    {
+        return $this->items->sum(function ($item) {
+            return $item->pivot->quantity_destroyed * $item->price->average_price;
+        }) + $this->ship->price->average_price;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalEstimateAttribute(): float
+    {
+        return $this->dropped_estimate + $this->destroyed_estimate;
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function ship()
