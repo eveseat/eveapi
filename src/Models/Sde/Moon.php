@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
 /**
  * Class Moon.
@@ -57,115 +58,6 @@ class Moon extends Model
     protected $table = 'moons';
 
     /**
-     * @var object
-     */
-    private $moon_indicators;
-
-    /**
-     * @return object
-     */
-    public function getMoonIndicatorsAttribute()
-    {
-        if (is_null($this->moon_indicators)) {
-            $this->moon_indicators = (object) [
-                'ubiquitous' => $this->content->filter(function ($type) {
-                    return $type->marketGroupID == 2396;
-                })->count(),
-                'common' => $this->content->filter(function ($type) {
-                    return $type->marketGroupID == 2397;
-                })->count(),
-                'uncommon' => $this->content->filter(function ($type) {
-                    return $type->marketGroupID == 2398;
-                })->count(),
-                'rare' => $this->content->filter(function ($type) {
-                    return $type->marketGroupID == 2400;
-                })->count(),
-                'exceptional' => $this->content->filter(function ($type) {
-                    return $type->marketGroupID == 2401;
-                })->count(),
-                'standard' => $this->content->filter(function ($type) {
-                    return ! in_array($type->marketGroupID, [2396, 2397, 2398, 2400, 2401]);
-                })->count(),
-            ];
-        }
-
-        return $this->moon_indicators ?: (object) [
-            'ubiquitous' => 0,
-            'common' => 0,
-            'uncommon' => 0,
-            'rare' => 0,
-            'exceptional' => 0,
-            'standard' => 0,
-        ];
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeUbiquitous($query)
-    {
-        return $query->whereHas('content', function ($sub_query) {
-            $sub_query->where('marketGroupID', self::UBIQUITOUS);
-        });
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeCommon($query)
-    {
-        return $query->whereHas('content', function ($sub_query) {
-            $sub_query->where('marketGroupID', self::COMMON);
-        });
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeUncommon($query)
-    {
-        return $query->whereHas('content', function ($sub_query) {
-            $sub_query->where('marketGroupID', self::UNCOMMON);
-        });
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeRare($query)
-    {
-        return $query->whereHas('content', function ($sub_query) {
-            $sub_query->where('marketGroupID', self::RARE);
-        });
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeExceptional($query)
-    {
-        return $query->whereHas('content', function ($sub_query) {
-            $sub_query->where('marketGroupID', self::EXCEPTIONAL);
-        });
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeStandard($query)
-    {
-        return $query->whereHas('content', function ($sub_query) {
-            $sub_query->whereNotIn('marketGroupID', [self::UBIQUITOUS, self::COMMON, self::UNCOMMON, self::RARE, self::EXCEPTIONAL]);
-        });
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function constellation()
@@ -174,12 +66,11 @@ class Moon extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function content()
+    public function extraction()
     {
-        return $this->belongsToMany(InvType::class, 'universe_moon_contents', 'moon_id', 'type_id')
-            ->withPivot('rate');
+        return $this->hasOne(CorporationIndustryMiningExtraction::class, 'moon_id', 'moon_id');
     }
 
     /**

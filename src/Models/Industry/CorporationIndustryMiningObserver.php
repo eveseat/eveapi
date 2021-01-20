@@ -44,4 +44,21 @@ class CorporationIndustryMiningObserver extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function entries()
+    {
+        return $this->hasMany(CorporationIndustryMiningObserverData::class, 'observer_id', 'observer_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function extraction()
+    {
+        return $this->hasOne(CorporationIndustryMiningExtraction::class, 'observer_id', 'observer_id')
+            ->withDefault();
+    }
 }
