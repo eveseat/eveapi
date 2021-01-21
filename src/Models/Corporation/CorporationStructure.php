@@ -59,7 +59,10 @@ class CorporationStructure extends Model
     public function info()
     {
 
-        return $this->hasOne(UniverseStructure::class, 'structure_id', 'structure_id');
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'structure_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
     }
 
     /**
