@@ -87,32 +87,9 @@ class Contracts extends AbstractAuthCharacterJob
                 // Update or create the contract details.
                 $model = ContractDetail::firstOrNew([
                     'contract_id' => $contract->contract_id,
-                ])->fill([
-                    'issuer_id'             => $contract->issuer_id,
-                    'issuer_corporation_id' => $contract->issuer_corporation_id,
-                    'assignee_id'           => $contract->assignee_id,
-                    'acceptor_id'           => $contract->acceptor_id,
-                    'start_location_id'     => isset($contract->start_location_id) ? $contract->start_location_id : null,
-                    'end_location_id'       => isset($contract->end_location_id) ? $contract->end_location_id : null,
-                    'type'                  => $contract->type,
-                    'status'                => $contract->status,
-                    'title'                 => isset($contract->title) ? $contract->title : null,
-                    'for_corporation'       => $contract->for_corporation,
-                    'availability'          => $contract->availability,
-                    'date_issued'           => carbon($contract->date_issued),
-                    'date_expired'          => carbon($contract->date_expired),
-                    'date_accepted'         => isset($contract->date_accepted) ?
-                        carbon($contract->date_accepted) : null,
-                    'days_to_complete'      => isset($contract->days_to_complete) ? $contract->days_to_complete : null,
-                    'date_completed'        => isset($contract->date_completed) ?
-                        carbon($contract->date_completed) : null,
-                    'price'                 => isset($contract->price) ? $contract->price : null,
-                    'reward'                => isset($contract->reward) ? $contract->reward : null,
-                    'collateral'            => isset($contract->collateral) ? $contract->collateral : null,
-                    'buyout'                => isset($contract->buyout) ? $contract->buyout : null,
-                    'volume'                => isset($contract->volume) ? $contract->volume : null,
                 ]);
 
+                $model->fromEsi($contract);
                 $model->save();
 
                 // Ensure the character is associated to this contract
