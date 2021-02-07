@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
@@ -35,6 +36,16 @@ class UniverseStation extends Model
      * Those stations might be returned by ESI on some endpoints (ie: corporation infos) - however, they don't exist.
      */
     const FAKE_STATION_ID = [60000001];
+
+    /**
+     * https://github.com/esi/esi-docs/blob/master/docs/id_ranges.md.
+     */
+    const STATION_RANGES = [
+        [60000000, 60999999], // NPC Stations
+        [61000000, 63999999], // Outposts
+        [68000000, 68999999], // Station folders
+        [69000000, 69999999], // Outposts folders
+    ];
 
     /**
      * @var bool
@@ -50,6 +61,22 @@ class UniverseStation extends Model
      * @var string
      */
     protected $primaryKey = 'station_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function contracts_from()
+    {
+        return $this->morphMany(ContractDetail::class, 'start_location');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function contracts_to()
+    {
+        return $this->morphMany(ContractDetail::class, 'end_location');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

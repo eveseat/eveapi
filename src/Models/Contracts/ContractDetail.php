@@ -23,7 +23,11 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Sde\Constellation;
+use Seat\Eveapi\Models\Sde\Region;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
@@ -206,6 +210,45 @@ class ContractDetail extends Model
     protected $primaryKey = 'contract_id';
 
     /**
+     * Seed model using an ESI data structure.
+     *
+     * @param $esi_structure
+     * @return $this
+     */
+    public function fromEsi($esi_structure): ContractDetail
+    {
+        $this->fill([
+            'issuer_id'             => $esi_structure->issuer_id,
+            'issuer_corporation_id' => $esi_structure->issuer_corporation_id,
+            'assignee_id'           => $esi_structure->assignee_id,
+            'acceptor_id'           => $esi_structure->acceptor_id,
+            'type'                  => $esi_structure->type,
+            'status'                => $esi_structure->status,
+            'title'                 => $esi_structure->title ?? null,
+            'for_corporation'       => $esi_structure->for_corporation,
+            'availability'          => $esi_structure->availability,
+            'date_issued'           => carbon($esi_structure->date_issued),
+            'date_expired'          => carbon($esi_structure->date_expired),
+            'date_accepted'         => isset($esi_structure->date_accepted) ?
+                carbon($esi_structure->date_accepted) : null,
+            'days_to_complete'      => $esi_structure->days_to_complete ?? null,
+            'date_completed'        => isset($esi_structure->date_completed) ?
+                carbon($esi_structure->date_completed) : null,
+            'price'                 => $esi_structure->price ?? null,
+            'reward'                => $esi_structure->reward ?? null,
+            'collateral'            => $esi_structure->collateral ?? null,
+            'buyout'                => $esi_structure->buyout ?? null,
+            'volume'                => $esi_structure->volume ?? null,
+        ]);
+
+        // update location fields manually (to prevent excessive database queries).
+        $this->setStartLocation($contract->start_location_id ?? null);
+        $this->setEndLocation($contract->end_location_id ?? null);
+
+        return $this;
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function acceptor()
@@ -258,24 +301,91 @@ class ContractDetail extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function start_location()
     {
-        return $this->hasOne(UniverseStructure::class, 'structure_id', 'start_location_id')
-            ->withDefault([
-                'name' => trans('web::seat.unknown'),
-            ]);
+        return $this->morphTo()
+            ->withDefault(function ($model) {
+                $model->name = trans('web::seat.unknown');
+                $model->solar_system = new SolarSystem();
+                $model->solar_system->name =
+                    sprintf('%s %s', trans('web::seat.unknown'), trans_choice('web::moons.system', 1));
+                $model->solar_system->constellation = new Constellation();
+                $model->solar_system->constellation->name =
+                    sprintf('%s %s', trans('web::seat.unknown'), trans_choice('web::moons.constellation', 1));
+                $model->solar_system->region = new Region();
+                $model->solar_system->region->name =
+                    sprintf('%s %s', trans('web::seat.unknown'), trans_choice('web::moons.region', 1));
+            });
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function end_location()
     {
-        return $this->hasOne(UniverseStructure::class, 'structure_id', 'end_location_id')
-            ->withDefault([
-                'name' => trans('web::seat.unknown'),
-            ]);
+        return $this->morphTo()
+            ->withDefault(function ($model) {
+                $model->name = trans('web::seat.unknown');
+                $model->solar_system = new SolarSystem();
+                $model->solar_system->name =
+                    sprintf('%s %s', trans('web::seat.unknown'), trans_choice('web::moons.system', 1));
+                $model->solar_system->constellation = new Constellation();
+                $model->solar_system->constellation->name =
+                    sprintf('%s %s', trans('web::seat.unknown'), trans_choice('web::moons.constellation', 1));
+                $model->solar_system->region = new Region();
+                $model->solar_system->region->name =
+                    sprintf('%s %s', trans('web::seat.unknown'), trans_choice('web::moons.region', 1));
+            });
+    }
+
+    /**
+     * Set start Location from a Contract.
+     *
+     * @param int|null $location_id
+     */
+    private function setStartLocation(?int $location_id)
+    {
+        $this->start_location_id = $location_id;
+
+        if ($location_id)
+            $this->start_location_type = $this->getLocationClass($location_id);
+    }
+
+    /**
+     * Set end Location from a Contract.
+     *
+     * @param int|null $location_id
+     */
+    private function setEndLocation(?int $location_id)
+    {
+        $this->end_location_id = $location_id;
+
+        if ($location_id)
+            $this->end_location_type = $this->getLocationClass($location_id);
+    }
+
+    /**
+     * Return location class according to the location ID.
+     *
+     * @param int $location_id
+     * @return string
+     */
+    private function getLocationClass(int $location_id): string
+    {
+        // by default, init to a structure.
+        $class = UniverseStructure::class;
+
+        // loop over station ranges - if the provided ID is matching one of them, set the class to a station.
+        foreach (UniverseStation::STATION_RANGES as $ranges) {
+            $start_range = $ranges[0];
+            $end_range = $ranges[1];
+
+            if ($location_id >= $start_range && $location_id <= $end_range)
+                $class = UniverseStation::class;
+        }
+
+        return $class;
     }
 }

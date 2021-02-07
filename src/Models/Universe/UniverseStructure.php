@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 
@@ -66,6 +67,22 @@ class UniverseStructure extends Model
      * @var string
      */
     protected $primaryKey = 'structure_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function contracts_from()
+    {
+        return $this->morphMany(ContractDetail::class, 'start_location');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function contracts_to()
+    {
+        return $this->morphMany(ContractDetail::class, 'end_location');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
