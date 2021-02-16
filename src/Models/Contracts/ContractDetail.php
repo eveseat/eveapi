@@ -242,8 +242,8 @@ class ContractDetail extends Model
         ]);
 
         // update location fields manually (to prevent excessive database queries).
-        $this->setStartLocation($contract->start_location_id ?? null);
-        $this->setEndLocation($contract->end_location_id ?? null);
+        $this->setStartLocation($esi_structure->start_location_id ?? null);
+        $this->setEndLocation($esi_structure->end_location_id ?? null);
 
         return $this;
     }
