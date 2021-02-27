@@ -22,8 +22,7 @@
 
 namespace Seat\Eveapi\Commands\Seat\Tokens;
 
-use Carbon\Carbon;
-use GuzzleHttp\Client;
+use GuzzleHttp\Client; // to be replaced by Laravel Http facade - https://laravel.com/docs/8.x/http-client
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -103,7 +102,7 @@ class Upgrade extends Command
 
                         $result = $client->post($authsite, $token_headers);
                         $resp = json_decode($result->getBody());
-                        $expires_new = Carbon::createFromTimestamp(time() + $resp->expires_in);
+                        $expires_new = carbon()::createFromTimestamp(time() + $resp->expires_in);
 
                         $token->token = $resp->access_token;
                         $token->refresh_token = $resp->refresh_token;
@@ -137,8 +136,8 @@ class Upgrade extends Command
             $this->line('');
 
             $this->info('SeAT SSO Token Migration Complete!');
-            $this->info('Success: '. $success);
-            $this->warn('Temp Fail: '. $errors);
-            $this->error('Perm Fail: '. $perm);
+            $this->info('Success: ' . $success);
+            $this->warn('Temp Fail: ' . $errors);
+            $this->error('Perm Fail: ' . $perm);
     }
 }
