@@ -20,12 +20,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+namespace Seat\Eveapi\database\seeds;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class ScheduleSeeder.
+ * Class ScheduleSeeder
+ * @package Seat\Eveapi\Database\Seeders
  */
 class ScheduleSeeder extends Seeder
 {

@@ -11,10 +11,7 @@
   "autoload": {
     "psr-4": {
       "Seat\\Eveapi\\": "src/"
-    },
-    "classmap": [
-      "src/database/seeds"
-    ]
+    }
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
