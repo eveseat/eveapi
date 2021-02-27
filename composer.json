@@ -11,7 +11,10 @@
   "autoload": {
     "psr-4": {
       "Seat\\Eveapi\\": "src/"
-    }
+    },
+    "classmap": [
+      "database/seeds"
+    ]
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -22,6 +25,7 @@
     "eveseat/services": "^4.1",
     "doctrine/dbal": "^2.9",
     "ext-json": "*",
+    "ext-posix": "*",
     "ext-redis": "*"
   },
   "extra": {

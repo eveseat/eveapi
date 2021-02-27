@@ -24,10 +24,29 @@ namespace Seat\Eveapi;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Queue\Events\JobExceptionOccurred;
+use Seat\Eveapi\Commands\Esi\Job\Dispatch;
+use Seat\Eveapi\Commands\Esi\Meta\Ping;
+use Seat\Eveapi\Commands\Esi\Update\Affiliations;
+use Seat\Eveapi\Commands\Esi\Update\Alliances;
+use Seat\Eveapi\Commands\Esi\Update\Characters;
+use Seat\Eveapi\Commands\Esi\Update\Contracts;
+use Seat\Eveapi\Commands\Esi\Update\Corporations;
+use Seat\Eveapi\Commands\Esi\Update\Killmails;
+use Seat\Eveapi\Commands\Esi\Update\Notifications;
+use Seat\Eveapi\Commands\Esi\Update\Prices;
+use Seat\Eveapi\Commands\Esi\Update\PublicInfo;
+use Seat\Eveapi\Commands\Eve\Update\Sde;
+use Seat\Eveapi\Commands\Esi\Update\Status as EsiStatus;
+use Seat\Eveapi\Commands\Eve\Update\Status as EveStatus;
+use Seat\Eveapi\Commands\Make\Job\Esi;
+use Seat\Eveapi\Commands\Seat\Admin\Diagnose;
+use Seat\Eveapi\Commands\Seat\Admin\Maintenance;
 use Seat\Eveapi\Commands\Seat\Buckets\Balance;
 use Seat\Eveapi\Commands\Seat\Buckets\Info;
 use Seat\Eveapi\Commands\Seat\Buckets\ListCommand;
 use Seat\Eveapi\Commands\Seat\Buckets\Update;
+use Seat\Eveapi\Commands\Seat\Cache\Clear;
+use Seat\Eveapi\Commands\Seat\Tokens\Upgrade;
 use Seat\Eveapi\Helpers\EseyeSetup;
 use Seat\Eveapi\Listeners\EsiFailedCall;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
@@ -93,6 +112,35 @@ class EveapiServiceProvider extends AbstractSeatPlugin
             Balance::class,
             Update::class,
             ListCommand::class,
+
+            // SeAT
+            Clear::class,
+            Diagnose::class,
+            Maintenance::class,
+
+            // Dev
+            Esi::class,
+
+            // Sde
+            Sde::class,
+
+            // Esi
+            Ping::class,
+            Characters::class,
+            Corporations::class,
+            Notifications::class,
+            PublicInfo::class,
+            Affiliations::class,
+            Prices::class,
+            Alliances::class,
+            Contracts::class,
+            Killmails::class,
+            Dispatch::class,
+            EsiStatus::class,
+            EveStatus::class,
+
+            // SSO
+            Upgrade::class,
         ]);
     }
 
