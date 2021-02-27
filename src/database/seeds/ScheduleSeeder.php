@@ -27,8 +27,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class ScheduleSeeder
- * @package Seat\Eveapi\Database\Seeders
+ * Class ScheduleSeeder.
+ * @package Seat\Eveapi\database\seeds
  */
 class ScheduleSeeder extends Seeder
 {
