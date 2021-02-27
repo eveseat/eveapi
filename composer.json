@@ -13,7 +13,7 @@
       "Seat\\Eveapi\\": "src/"
     },
     "classmap": [
-      "database/seeds"
+      "src/database/seeds"
     ]
   },
   "minimum-stability": "dev",
