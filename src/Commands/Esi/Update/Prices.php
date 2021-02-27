@@ -59,9 +59,9 @@ class Prices extends Command
             ->get();
 
         // build small batch of a maximum of 200 entries to avoid long running job.
-        $types->chunk(200)->each(function ($chunk) {
+        $types->chunk(50)->each(function ($chunk) {
             $ids = $chunk->pluck('typeID')->toArray();
-            History::dispatch($ids);
+            History::dispatch($ids)->delay(rand(20, 300));
         });
     }
 }
