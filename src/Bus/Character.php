@@ -106,7 +106,7 @@ class Character extends Bus
 
         // Character
         Info::withChain($this->jobs->toArray())
-            ->dispatch($this->token->character_id)
+            ->dispatch($this->character_id)
             ->delay(now()->addSeconds(rand(10, 120)));
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
@@ -120,7 +120,7 @@ class Character extends Bus
      */
     protected function addPublicJobs()
     {
-        $this->jobs->add(new CorporationHistory($this->token->character_id));
+        $this->jobs->add(new CorporationHistory($this->character_id));
     }
 
     /**

@@ -20,8 +20,10 @@
     "laravel/framework": "^6.2",
     "eveseat/eseye": "^2.3.0",
     "eveseat/services": "^4.1",
+    "guzzlehttp/guzzle": "^6.3",
     "doctrine/dbal": "^2.9",
     "ext-json": "*",
+    "ext-posix": "*",
     "ext-redis": "*"
   },
   "extra": {
