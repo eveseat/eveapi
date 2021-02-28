@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Industry\BlueprintMapping;
 use Seat\Eveapi\Models\Corporation\CorporationBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -106,35 +107,19 @@ class Blueprints extends AbstractAuthCorporationJob
 
             collect($blueprints)->chunk(100)->each(function ($chunk) {
 
-                $records = $chunk->map(function ($blueprint, $key) {
-                    return [
-                        'corporation_id'      => $this->getCorporationId(),
-                        'item_id'             => $blueprint->item_id,
-                        'type_id'             => $blueprint->type_id,
-                        'location_id'         => $blueprint->location_id,
-                        'location_flag'       => $blueprint->location_flag,
-                        'quantity'            => $blueprint->quantity,
-                        'time_efficiency'     => $blueprint->time_efficiency,
-                        'material_efficiency' => $blueprint->material_efficiency,
-                        'runs'                => $blueprint->runs,
-                        'created_at'          => carbon(),
-                        'updated_at'          => carbon(),
-                    ];
+                $chunk->each(function ($blueprint) {
+
+                    $model = CorporationBlueprint::firstOrNew([
+                        'corporation_id' => $this->getCorporationId(),
+                        'item_id'        => $blueprint->item_id,
+                    ]);
+
+                    BlueprintMapping::make($model, $blueprint, [
+                        'corporation_id' => function () {
+                            return $this->getCorporationId();
+                        },
+                    ])->save();
                 });
-
-                CorporationBlueprint::upsert($records->toArray(), [
-                    'corporation_id',
-                    'item_id',
-                    'type_id',
-                    'location_id',
-                    'location_flag',
-                    'quantity',
-                    'time_efficiency',
-                    'material_efficiency',
-                    'runs',
-                    'updated_at',
-                ]);
-
             });
 
             $this->known_blueprints->push(collect($blueprints)
@@ -142,7 +127,6 @@ class Blueprints extends AbstractAuthCorporationJob
 
             if (! $this->nextPage($blueprints->pages))
                 break;
-
         }
 
         // Cleanup lost blueprints

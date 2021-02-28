@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Calendar;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Characters\CalendarEventMapping;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 
 /**
@@ -57,6 +58,11 @@ class Events extends AbstractAuthCharacterJob
     protected $tags = ['calendar'];
 
     /**
+     * @var int
+     */
+    protected $from_id = 0;
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -65,26 +71,42 @@ class Events extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        // Perform a walk backwards to get all of the
+        // entries as far back as possible. When the response from
+        // ESI is empty, we can assume we have everything.
+        while (true) {
 
-        $events = $this->retrieve([
-            'character_id' => $this->getCharacterId(),
-        ]);
+            $this->query_string = ['from_event' => $this->from_id];
 
-        if ($events->isCachedLoad() &&
-            CharacterCalendarEvent::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
-
-        collect($events)->each(function ($event) {
-
-            CharacterCalendarEvent::firstOrNew([
+            $events = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
-                'event_id'     => $event->event_id,
-            ])->fill([
-                'event_date'     => carbon($event->event_date),
-                'title'          => $event->title,
-                'importance'     => $event->importance,
-                'event_response' => $event->event_response,
-            ])->save();
-        });
+            ]);
+
+            if ($events->isCachedLoad() &&
+                CharacterCalendarEvent::where('character_id', $this->getCharacterId())->count() > 0)
+                return;
+
+            $response = collect($events);
+
+            // if we have no more entries, break the loop.
+            if ($response->count() === 0)
+                break;
+
+            $response->each(function ($event) {
+
+                $model = CharacterCalendarEvent::firstOrNew([
+                    'character_id' => $this->getCharacterId(),
+                    'event_id' => $event->event_id,
+                ]);
+
+                CalendarEventMapping::make($model, $event, [
+                    'character_id' => function () {
+                        return $this->getCharacterId();
+                    }
+                ])->save();
+            });
+
+            $this->from_id = $response->min('event_id') - 1;
+        }
     }
 }

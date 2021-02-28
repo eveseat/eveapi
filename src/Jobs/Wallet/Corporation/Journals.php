@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Financial\WalletJournalMapping;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
 
@@ -130,31 +131,23 @@ class Journals extends AbstractAuthCorporationJob
                             $this->at_last_entry = true;
                         }
 
-                        $records = $chunk->map(function ($entry) use ($balance) {
+                        $chunk->each(function ($entry) use ($balance) {
 
-                            return [
-                                'corporation_id'  => $this->getCorporationId(),
-                                'division'        => $balance->division,
-                                'reference_id'    => $entry->id,
-                                'date'            => carbon($entry->date),
-                                'ref_type'        => $entry->ref_type,
-                                'first_party_id'  => $entry->first_party_id ?? null,
-                                'second_party_id' => $entry->second_party_id ?? null,
-                                'amount'          => $entry->amount ?? null,
-                                'balance'         => $entry->balance ?? null,
-                                'reason'          => $entry->reason ?? null,
-                                'tax_receiver_id' => $entry->tax_receiver_id ?? null,
-                                'tax'             => $entry->tax ?? null,
-                                // introduced in v4
-                                'description'     => $entry->description,
-                                'context_id'      => $entry->context_id ?? null,
-                                'context_id_type' => $entry->context_id_type ?? null,
-                                'created_at'      => carbon(),
-                                'updated_at'      => carbon(),
-                            ];
+                            $model = CorporationWalletJournal::firstOrNew([
+                                'corporation_id' => $this->getCorporationId(),
+                                'division'       => $balance->division,
+                                'id'             => $entry->id,
+                            ]);
+
+                            WalletJournalMapping::make($model, $entry, [
+                                'corporation_id' => function () {
+                                    return $this->getCorporationId();
+                                },
+                                'division' => function () use ($balance) {
+                                    return $balance->division;
+                                },
+                            ])->save();
                         });
-
-                        CorporationWalletJournal::insertIgnore($records->toArray());
                     });
 
                     // in case the last known entry has been reached or we non longer have pages, terminate the job.

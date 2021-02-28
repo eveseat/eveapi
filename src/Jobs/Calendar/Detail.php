@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\Calendar;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Characters\CalendarDetailMapping;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
 
@@ -86,15 +87,16 @@ class Detail extends AbstractAuthCharacterJob
                 if ($detail->isCachedLoad() && CharacterCalendarEventDetail::where('event_id', $event_id)->count() > 0)
                     return;
 
-                CharacterCalendarEventDetail::firstOrCreate([
+                $model = CharacterCalendarEventDetail::firstOrNew([
                     'event_id' => $event_id,
-                ], [
-                    'owner_id' => $detail->owner_id,
-                    'owner_name' => $detail->owner_name,
-                    'duration' => $detail->duration,
-                    'text' => $detail->text,
-                    'owner_type' => $detail->owner_type,
                 ]);
+
+                CalendarDetailMapping::make($model, $detail, [
+                    'event_id' => function () use ($event_id) {
+                        return $event_id;
+                    }
+                ])->save();
+
             } catch (RequestFailedException $e) {
                 if (strtolower($e->getError()) == 'event not found!') {
                     CharacterCalendarEvent::where('character_id', $this->getCharacterId())

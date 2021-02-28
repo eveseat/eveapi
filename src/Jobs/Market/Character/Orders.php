@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Market\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Financial\OrderMapping;
 use Seat\Eveapi\Models\Market\CharacterOrder;
 
 /**
@@ -73,23 +74,18 @@ class Orders extends AbstractAuthCharacterJob
 
         collect($orders)->each(function ($order) {
 
-            CharacterOrder::firstOrNew([
+            $model = CharacterOrder::firstOrNew([
                 'character_id' => $this->getCharacterId(),
                 'order_id'     => $order->order_id,
-            ])->fill([
-                'type_id'        => $order->type_id,
-                'region_id'      => $order->region_id,
-                'location_id'    => $order->location_id,
-                'range'          => $order->range,
-                'is_buy_order'   => $order->is_buy_order ?? null,
-                'price'          => $order->price,
-                'volume_total'   => $order->volume_total,
-                'volume_remain'  => $order->volume_remain,
-                'issued'         => carbon($order->issued),
-                'min_volume'     => $order->min_volume ?? null,
-                'duration'       => $order->duration,
-                'is_corporation' => $order->is_corporation,
-                'escrow'         => $order->escrow ?? null,
+            ]);
+
+            OrderMapping::make($model, $order, [
+                'character_id' => function () {
+                    return $this->getCharacterId();
+                },
+                'is_corporation' => function () use ($order) {
+                    return $order->is_corporation;
+                },
             ])->save();
         });
     }

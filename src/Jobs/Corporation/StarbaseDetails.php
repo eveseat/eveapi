@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Structures\StarbaseDetailMapping;
 use Seat\Eveapi\Models\Corporation\CorporationStarbase;
 use Seat\Eveapi\Models\Corporation\CorporationStarbaseDetail;
 use Seat\Eveapi\Models\Corporation\CorporationStarbaseFuel;
@@ -102,23 +103,18 @@ class StarbaseDetails extends AbstractAuthCorporationJob
                     'starbase_id'    => $starbase->starbase_id,
                 ]);
 
-                CorporationStarbaseDetail::firstOrNew([
+                $model = CorporationStarbaseDetail::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
                     'starbase_id'    => $starbase->starbase_id,
-                ])->fill([
-                    'fuel_bay_view'                            => $detail->fuel_bay_view,
-                    'fuel_bay_take'                            => $detail->fuel_bay_take,
-                    'anchor'                                   => $detail->anchor,
-                    'unanchor'                                 => $detail->unanchor,
-                    'online'                                   => $detail->online,
-                    'offline'                                  => $detail->offline,
-                    'allow_corporation_members'                => $detail->allow_corporation_members,
-                    'allow_alliance_members'                   => $detail->allow_alliance_members,
-                    'use_alliance_standings'                   => $detail->use_alliance_standings,
-                    'attack_standing_threshold'                => $detail->attack_standing_threshold ?? null,
-                    'attack_security_status_threshold'         => $detail->attack_security_status_threshold ?? null,
-                    'attack_if_other_security_status_dropping' => $detail->attack_if_other_security_status_dropping,
-                    'attack_if_at_war'                         => $detail->attack_if_at_war,
+                ]);
+
+                StarbaseDetailMapping::make($model, $detail, [
+                    'corporation_id' => function () {
+                        return $this->getCorporationId();
+                    },
+                    'starbase_id' => function () use ($starbase) {
+                        return $starbase->starbase_id;
+                    },
                 ])->save();
 
                 if (property_exists($detail, 'fuels'))

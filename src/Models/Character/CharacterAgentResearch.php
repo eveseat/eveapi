@@ -38,6 +38,14 @@ class CharacterAgentResearch extends Model
     protected static $unguarded = true;
 
     /**
+     * @param $value
+     */
+    public function setStartedAtAttribute($value)
+    {
+        $this->attributes['started_at'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function agent()

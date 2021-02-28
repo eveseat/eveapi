@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Assets\AssetMapping;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -104,33 +105,19 @@ class Assets extends AbstractAuthCorporationJob
 
             collect($assets)->chunk(1000)->each(function ($chunk) {
 
-                $records = $chunk->map(function ($asset, $key) {
+                $chunk->each(function ($asset) {
 
-                    return [
-                        'item_id'        => $asset->item_id,
+                    $model = CorporationAsset::firstOrNew([
                         'corporation_id' => $this->getCorporationId(),
-                        'type_id'        => $asset->type_id,
-                        'quantity'       => $asset->quantity,
-                        'location_id'    => $asset->location_id,
-                        'location_type'  => $asset->location_type,
-                        'location_flag'  => $asset->location_flag,
-                        'is_singleton'   => $asset->is_singleton,
-                        'created_at'     => carbon(),
-                        'updated_at'     => carbon(),
-                    ];
-                });
+                        'item_id' => $asset->item_id,
+                    ]);
 
-                CorporationAsset::upsert($records->toArray(), [
-                    'item_id',
-                    'corporation_id',
-                    'type_id',
-                    'quantity',
-                    'location_id',
-                    'location_type',
-                    'location_flag',
-                    'is_singleton',
-                    'updated_at',
-                ]);
+                    AssetMapping::make($model, $asset, [
+                        'corporation_id' => function () {
+                            return $this->getCorporationId();
+                        },
+                    ])->save();
+                });
             });
 
             // Update the list of known item_id's which should be

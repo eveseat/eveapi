@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Structures\CorporationStructureMapping;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Corporation\CorporationStructureService;
 use Seat\Eveapi\Models\RefreshToken;
@@ -124,29 +125,11 @@ class Structures extends AbstractAuthCorporationJob
                 // Persist the structure only if it doesn't already exists
                 if (! $model->exists) $model->save();
 
-                CorporationStructure::firstOrNew([
+                $model = CorporationStructure::firstOrNew([
                     'structure_id'   => $structure->structure_id,
-                ])->fill([
-                    'corporation_id'         => $structure->corporation_id,
-                    'type_id'                => $structure->type_id,
-                    'system_id'              => $structure->system_id,
-                    'profile_id'             => $structure->profile_id,
-                    'fuel_expires'           => property_exists($structure, 'fuel_expires') ?
-                        carbon($structure->fuel_expires) : null,
-                    'state_timer_start'      => property_exists($structure, 'state_timer_start') ?
-                        carbon($structure->state_timer_start) : null,
-                    'state_timer_end'        => property_exists($structure, 'state_timer_end') ?
-                        carbon($structure->state_timer_end) : null,
-                    'unanchors_at'           => property_exists($structure, 'unanchors_at') ?
-                        carbon($structure->unanchors_at) : null,
-                    'state'                  => $structure->state,
-                    'reinforce_weekday'      => $structure->reinforce_weekday ?? null,
-                    'reinforce_hour'         => $structure->reinforce_hour,
-                    'next_reinforce_weekday' => $structure->next_reinforce_weekday ?? null,
-                    'next_reinforce_hour'    => $structure->next_reinforce_hour ?? null,
-                    'next_reinforce_apply'   => property_exists($structure, 'next_reinforce_apply') ?
-                        carbon($structure->next_reinforce_apply) : null,
-                ])->save();
+                ]);
+
+                CorporationStructureMapping::make($model, $structure)->save();
 
                 if (property_exists($structure, 'services')) {
 

@@ -43,5 +43,4 @@ class CorporationStarbaseDetail extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'starbase_id'];
-
 }

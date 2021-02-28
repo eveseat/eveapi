@@ -145,12 +145,20 @@ class CorporationWalletJournal extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'internal_id';
 
     /**
      * @var bool
      */
     public $incrementing = true;
+
+    /**
+     * @param $value
+     */
+    public function setDateAttribute($value)
+    {
+        $this->attributes['date'] = is_null($value) ? null : carbon($value);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

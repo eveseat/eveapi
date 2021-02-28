@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Characters\NotificationMapping;
 use Seat\Eveapi\Models\Character\CharacterNotification;
 
 /**
@@ -76,16 +77,18 @@ class Notifications extends AbstractAuthCharacterJob
 
         collect($notifications)->each(function ($notification) {
 
-            CharacterNotification::firstOrCreate([
-                'character_id'    => $this->getCharacterId(),
-                'notification_id' => $notification->notification_id,
-                'type'            => $notification->type,
-                'sender_id'       => $notification->sender_id,
-                'sender_type'     => $notification->sender_type,
-                'timestamp'       => carbon($notification->timestamp),
-                'is_read'         => isset($notification->is_read) ? $notification->is_read : false,
-                'text'            => $notification->text ?? null,
+            $model = CharacterNotification::firstOrNew([
+                'character_id' => $this->getCharacterId(),
             ]);
+
+            NotificationMapping::make($model, $notification, [
+                'character_id' => function () {
+                    return $this->getCharacterId();
+                },
+                'is_read' => function () use ($notification) {
+                    return isset($notification->is_read) ? $notification->is_read : false;
+                }
+            ])->save();
         });
     }
 }

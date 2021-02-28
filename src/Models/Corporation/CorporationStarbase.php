@@ -100,6 +100,30 @@ class CorporationStarbase extends Model
     }
 
     /**
+     * @param $value
+     */
+    public function setOnlinedSinceAttribute($value)
+    {
+        $this->attributes['onlined_since'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setReinforcedUntilAttribute($value)
+    {
+        $this->attributes['reinforced_until'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setUnanchorAtAttribute($value)
+    {
+        $this->attributes['unanchor_at'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function detail()

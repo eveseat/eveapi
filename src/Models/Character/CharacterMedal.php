@@ -35,4 +35,12 @@ class CharacterMedal extends Model
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @param $value
+     */
+    public function setDateAttribute($value)
+    {
+        $this->attributes['date'] = is_null($value) ? null : carbon($value);
+    }
 }

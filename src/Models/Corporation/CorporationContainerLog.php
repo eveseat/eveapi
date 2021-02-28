@@ -42,4 +42,12 @@ class CorporationContainerLog extends Model
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'container_id', 'logged_at'];
+
+    /**
+     * @param $value
+     */
+    public function setLoggedAtAttribute($value)
+    {
+        $this->attributes['logged_at'] = is_null($value) ? null : carbon($value);
+    }
 }

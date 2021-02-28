@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Industry\ExtractionMapping;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
 /**
@@ -79,14 +80,14 @@ class Extractions extends AbstractAuthCorporationJob
 
         collect($mining_extractions)->each(function ($extraction) {
 
-            CorporationIndustryMiningExtraction::firstOrNew([
+            $model = CorporationIndustryMiningExtraction::firstOrNew([
                 'moon_id' => $extraction->moon_id,
-            ])->fill([
-                'corporation_id'        => $this->getCorporationId(),
-                'structure_id'          => $extraction->structure_id,
-                'extraction_start_time' => carbon($extraction->extraction_start_time),
-                'chunk_arrival_time'    => carbon($extraction->chunk_arrival_time),
-                'natural_decay_time'    => carbon($extraction->natural_decay_time),
+            ]);
+
+            ExtractionMapping::make($model, $extraction, [
+                'corporation_id' => function () {
+                    return $this->getCorporationId();
+                },
             ])->save();
         });
     }

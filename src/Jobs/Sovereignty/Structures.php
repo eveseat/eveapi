@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Sovereignty;
 
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Mapping\Structures\SovereigntyStructureMapping;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyStructure;
 
 /**
@@ -64,17 +65,14 @@ class Structures extends EsiBase
 
         collect($structures)->each(function ($structure) {
 
-            SovereigntyStructure::firstOrNew([
+            $model = SovereigntyStructure::firstOrNew([
                 'structure_id' => $structure->structure_id,
-            ])->fill([
-                'structure_type_id'             => $structure->structure_type_id,
-                'alliance_id'                   => $structure->alliance_id,
-                'solar_system_id'               => $structure->solar_system_id,
-                'vulnerability_occupancy_level' => $structure->vulnerability_occupancy_level ?? null,
-                'vulnerable_start_time'         => property_exists($structure, 'vulnerable_start_time') ?
-                    carbon($structure->vulnerable_start_time) : null,
-                'vulnerable_end_time'           => property_exists($structure, 'vulnerable_end_time') ?
-                    carbon($structure->vulnerable_end_time) : null,
+            ]);
+
+            SovereigntyStructureMapping::make($model, $structure, [
+                'structure_id' => function () use ($structure) {
+                    return $structure->structure_id;
+                },
             ])->save();
 
         });

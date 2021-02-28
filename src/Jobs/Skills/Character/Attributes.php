@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Skills\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Characters\CharacterAttributesMapping;
 use Seat\Eveapi\Models\Skills\CharacterAttribute;
 
 /**
@@ -69,20 +70,14 @@ class Attributes extends AbstractAuthCharacterJob
 
         if ($attributes->isCachedLoad() && CharacterAttribute::find($this->getCharacterId())) return;
 
-        CharacterAttribute::firstOrNew([
+        $model = CharacterAttribute::firstOrNew([
             'character_id' => $this->getCharacterId(),
-        ])->fill([
-            'charisma'                    => $attributes->charisma,
-            'intelligence'                => $attributes->intelligence,
-            'memory'                      => $attributes->memory,
-            'perception'                  => $attributes->perception,
-            'willpower'                   => $attributes->willpower,
-            'bonus_remaps'                => property_exists($attributes, 'bonus_remaps') ?
-                $attributes->bonus_remaps : null,
-            'last_remap_date'             => property_exists($attributes, 'last_remap_date') ?
-                carbon($attributes->last_remap_date) : null,
-            'accrued_remap_cooldown_date' => property_exists($attributes, 'accrued_remap_cooldown_date') ?
-                carbon($attributes->accrued_remap_cooldown_date) : null,
+        ]);
+
+        CharacterAttributesMapping::make($model, $attributes, [
+            'character_id' => function () {
+                return $this->getCharacterId();
+            },
         ])->save();
     }
 }

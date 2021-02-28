@@ -54,54 +54,6 @@ class CorporationStructure extends Model
     public $incrementing = false;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function info()
-    {
-
-        return $this->hasOne(UniverseStructure::class, 'structure_id', 'structure_id')
-            ->withDefault([
-                'name' => trans('web::seat.unknown'),
-            ]);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function services()
-    {
-
-        return $this->hasMany(CorporationStructureService::class, 'structure_id', 'structure_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function type()
-    {
-
-        return $this->hasOne(InvType::class, 'typeID', 'type_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function solar_system()
-    {
-        return $this->hasOne(SolarSystem::class, 'system_id', 'system_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function items()
-    {
-
-        return $this->hasMany(CorporationAsset::class,
-            'location_id', 'structure_id');
-    }
-
-    /**
      * @return \Illuminate\Support\Collection
      */
     public function getHighSlotsAttribute()
@@ -213,8 +165,8 @@ class CorporationStructure extends Model
     public function getEstimatedPriceAttribute()
     {
         return $this->type->price->average + $this->items->sum(function ($item) {
-            return $item->type->price->average * $item->quantity;
-        });
+                return $item->type->price->average * $item->quantity;
+            });
     }
 
     /**
@@ -225,6 +177,94 @@ class CorporationStructure extends Model
         return $this->items->sum(function ($item) {
             return $item->type->price->average * $item->quantity;
         });
+    }
+
+    /**
+     * @param $value
+     */
+    public function setFuelExpiresAttribute($value)
+    {
+        $this->attributes['fuel_expires'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setStateTimerStartAttribute($value)
+    {
+        $this->attributes['state_timer_start'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setStateTimerEndAttribute($value)
+    {
+        $this->attributes['state_timer_end'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setUnanchorsAtAttribute($value)
+    {
+        $this->attributes['unanchors_at'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setNextReinforceApplyAttribute($value)
+    {
+        $this->attributes['next_reinforce_apply'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function info()
+    {
+
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'structure_id')
+            ->withDefault([
+                'name' => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function services()
+    {
+
+        return $this->hasMany(CorporationStructureService::class, 'structure_id', 'structure_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function type()
+    {
+
+        return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function solar_system()
+    {
+        return $this->hasOne(SolarSystem::class, 'system_id', 'system_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function items()
+    {
+
+        return $this->hasMany(CorporationAsset::class,
+            'location_id', 'structure_id');
     }
 
     /**
