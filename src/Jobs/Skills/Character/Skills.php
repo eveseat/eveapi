@@ -87,7 +87,7 @@ class Skills extends AbstractAuthCharacterJob
 
             $model = CharacterSkill::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'skill_id' => $character_skill->skill_id
+                'skill_id' => $character_skill->skill_id,
             ]);
 
             SkillMapping::make($model, $character_skill, [

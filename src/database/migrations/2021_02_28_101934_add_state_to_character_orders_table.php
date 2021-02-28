@@ -25,7 +25,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class AddStateToCharacterOrdersTable
+ * Class AddStateToCharacterOrdersTable.
  */
 class AddStateToCharacterOrdersTable extends Migration
 {

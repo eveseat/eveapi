@@ -91,7 +91,7 @@ class Info extends EsiBase
         InfoMapping::make($model, $info, [
             'alliance_id' => function () {
                 return $this->alliance_id;
-            }
+            },
         ])->save();
     }
 

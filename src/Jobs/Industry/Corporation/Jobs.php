@@ -105,7 +105,7 @@ class Jobs extends AbstractAuthCorporationJob
                     },
                     'location_id' => function () use ($job) {
                         return $job->location_id;
-                    }
+                    },
                 ])->save();
             });
 

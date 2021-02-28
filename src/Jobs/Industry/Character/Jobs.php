@@ -92,7 +92,7 @@ class Jobs extends AbstractAuthCharacterJob
                 },
                 'station_id' => function () use ($job) {
                     return $job->station_id;
-                }
+                },
             ])->save();
         });
     }

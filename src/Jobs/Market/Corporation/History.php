@@ -27,7 +27,7 @@ use Seat\Eveapi\Mapping\Financial\OrderMapping;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 
 /**
- * Class History
+ * Class History.
  * @package Seat\Eveapi\Jobs\Market\Corporation
  */
 class History extends AbstractAuthCorporationJob

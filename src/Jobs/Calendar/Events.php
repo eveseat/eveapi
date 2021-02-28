@@ -102,7 +102,7 @@ class Events extends AbstractAuthCharacterJob
                 CalendarEventMapping::make($model, $event, [
                     'character_id' => function () {
                         return $this->getCharacterId();
-                    }
+                    },
                 ])->save();
             });
 

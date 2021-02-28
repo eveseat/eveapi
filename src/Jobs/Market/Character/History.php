@@ -27,7 +27,7 @@ use Seat\Eveapi\Mapping\Financial\OrderMapping;
 use Seat\Eveapi\Models\Market\CharacterOrder;
 
 /**
- * Class History
+ * Class History.
  * @package Seat\Eveapi\Jobs\Market\Character
  */
 class History extends AbstractAuthCharacterJob

@@ -94,7 +94,7 @@ class Detail extends AbstractAuthCharacterJob
                 CalendarDetailMapping::make($model, $detail, [
                     'event_id' => function () use ($event_id) {
                         return $event_id;
-                    }
+                    },
                 ])->save();
 
             } catch (RequestFailedException $e) {

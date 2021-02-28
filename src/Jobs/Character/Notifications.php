@@ -87,7 +87,7 @@ class Notifications extends AbstractAuthCharacterJob
                 },
                 'is_read' => function () use ($notification) {
                     return isset($notification->is_read) ? $notification->is_read : false;
-                }
+                },
             ])->save();
         });
     }
