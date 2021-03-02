@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Market\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Financial\OrderMapping;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 
 /**
@@ -86,24 +87,21 @@ class Orders extends AbstractAuthCorporationJob
 
             collect($orders)->each(function ($order) {
 
-                CorporationOrder::firstOrNew([
+                $model = CorporationOrder::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
                     'order_id'       => $order->order_id,
-                ])->fill([
-                    'type_id'         => $order->type_id,
-                    'region_id'       => $order->region_id,
-                    'location_id'     => $order->location_id,
-                    'range'           => $order->range,
-                    'is_buy_order'    => $order->is_buy_order ?? null,
-                    'price'           => $order->price,
-                    'volume_total'    => $order->volume_total,
-                    'volume_remain'   => $order->volume_remain,
-                    'issued'          => carbon($order->issued),
-                    'issued_by'       => $order->issued_by,
-                    'min_volume'      => $order->min_volume ?? null,
-                    'wallet_division' => $order->wallet_division ?? null,
-                    'duration'        => $order->duration ?? null,
-                    'escrow'          => $order->escrow ?? null,
+                ]);
+
+                OrderMapping::make($model, $order, [
+                    'corporation_id' => function () {
+                        return $this->getCorporationId();
+                    },
+                    'wallet_division' => function () use ($order) {
+                        return $order->wallet_division;
+                    },
+                    'issued_by' => function () use ($order) {
+                        return $order->issued_by;
+                    },
                 ])->save();
             });
 

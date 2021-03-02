@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Skills\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Characters\SkillMapping;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Character\CharacterInfoSkill;
 use Seat\Eveapi\Models\Character\CharacterSkill;
@@ -74,7 +75,9 @@ class Skills extends AbstractAuthCharacterJob
 
         CharacterInfo::firstOrCreate(['character_id' => $this->getCharacterId()]);
 
-        CharacterInfoSkill::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
+        CharacterInfoSkill::firstOrNew([
+            'character_id' => $this->getCharacterId(),
+        ])->fill([
             'total_sp'       => $character_skills->total_sp,
             'unallocated_sp' => property_exists($character_skills, 'unallocated_sp') ?
                 $character_skills->unallocated_sp : 0,
@@ -82,10 +85,16 @@ class Skills extends AbstractAuthCharacterJob
 
         collect($character_skills->skills)->each(function ($character_skill) {
 
-            CharacterSkill::updateOrCreate(
-                ['character_id' => $this->getCharacterId(), 'skill_id' => $character_skill->skill_id],
-                ['skillpoints_in_skill' => $character_skill->skillpoints_in_skill, 'trained_skill_level' => $character_skill->trained_skill_level, 'active_skill_level' => $character_skill->active_skill_level]
-            );
+            $model = CharacterSkill::firstOrNew([
+                'character_id' => $this->getCharacterId(),
+                'skill_id' => $character_skill->skill_id,
+            ]);
+
+            SkillMapping::make($model, $character_skill, [
+                'character_id' => function () {
+                    return $this->getCharacterId();
+                },
+            ])->save();
         });
 
         // delete skills which have been removed

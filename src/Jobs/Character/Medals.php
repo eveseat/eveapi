@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Characters\MedalsMapping;
 use Seat\Eveapi\Models\Character\CharacterMedal;
 
 /**
@@ -75,18 +76,18 @@ class Medals extends AbstractAuthCharacterJob
 
         collect($medals)->each(function ($medal) {
 
-            CharacterMedal::firstOrNew([
+            $model = CharacterMedal::firstOrNew([
                 'character_id' => $this->getCharacterId(),
                 'medal_id'     => $medal->medal_id,
-            ])->fill([
-                'title'          => $medal->title,
-                'description'    => $medal->description,
-                'corporation_id' => $medal->corporation_id,
-                'issuer_id'      => $medal->issuer_id,
-                'date'           => carbon($medal->date),
-                'reason'         => $medal->reason,
-                'status'         => $medal->status,
-                'graphics'       => json_encode($medal->graphics),
+            ]);
+
+            MedalsMapping::make($model, $medal, [
+                'character_id' => function () {
+                    return $this->getCharacterId();
+                },
+                'graphics' => function () use ($medal) {
+                    return json_encode($medal->graphics);
+                },
             ])->save();
         });
     }

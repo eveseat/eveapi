@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Alliances;
 
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Mapping\Alliances\InfoMapping;
 use Seat\Eveapi\Models\Alliances\Alliance;
 
 /**
@@ -83,17 +84,15 @@ class Info extends EsiBase
         if ($info->isCachedLoad() && Alliance::find($this->alliance_id))
             return;
 
-        Alliance::updateOrCreate([
+        $model = Alliance::firstOrNew([
             'alliance_id' => $this->alliance_id,
-        ], [
-            'name'                    => $info->name,
-            'creator_id'              => $info->creator_id,
-            'creator_corporation_id'  => $info->creator_corporation_id,
-            'ticker'                  => $info->ticker,
-            'executor_corporation_id' => $info->executor_corporation_id ?? null,
-            'date_founded'            => carbon($info->date_founded),
-            'faction_id'              => $info->faction_id ?? null,
         ]);
+
+        InfoMapping::make($model, $info, [
+            'alliance_id' => function () {
+                return $this->alliance_id;
+            },
+        ])->save();
     }
 
     /**

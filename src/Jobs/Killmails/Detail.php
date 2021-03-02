@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Jobs\Killmails;
 
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Mapping\Killmails\AttackerMapping;
+use Seat\Eveapi\Mapping\Killmails\VictimMapping;
 use Seat\Eveapi\Models\Killmails\KillmailAttacker;
 use Seat\Eveapi\Models\Killmails\KillmailDetail;
 use Seat\Eveapi\Models\Killmails\KillmailVictim;
@@ -101,30 +103,19 @@ class Detail extends EsiBase
             'war_id'          => property_exists($detail, 'war_id') ? $detail->war_id : null,
         ]);
 
-        $victim = KillmailVictim::firstOrCreate([
+        $victim = KillmailVictim::firstOrNew([
             'killmail_id'    => $this->killmail_id,
-        ], [
-            'character_id'   => property_exists($detail->victim, 'character_id') ?
-                $detail->victim->character_id : null,
-            'corporation_id' => property_exists($detail->victim, 'corporation_id') ?
-                $detail->victim->corporation_id : null,
-            'alliance_id'    => property_exists($detail->victim, 'alliance_id') ?
-                $detail->victim->alliance_id : null,
-            'faction_id'     => property_exists($detail->victim, 'faction_id') ?
-                $detail->victim->faction_id : null,
-            'damage_taken'   => $detail->victim->damage_taken,
-            'ship_type_id'   => $detail->victim->ship_type_id,
-            'x'              => property_exists($detail->victim, 'position') ?
-                $detail->victim->position->x : null,
-            'y'              => property_exists($detail->victim, 'position') ?
-                $detail->victim->position->y : null,
-            'z'              => property_exists($detail->victim, 'position') ?
-                $detail->victim->position->z : null,
         ]);
+
+        VictimMapping::make($victim, $detail->victim, [
+            'killmail_id' => function () {
+                return $this->killmail_id;
+            },
+        ])->save();
 
         collect($detail->attackers)->each(function ($attacker) {
 
-            KillmailAttacker::firstOrCreate([
+            $model = KillmailAttacker::firstOrNew([
                 'killmail_id'     => $this->killmail_id,
                 'character_id'    => property_exists($attacker, 'character_id') ?
                     $attacker->character_id : null,
@@ -134,15 +125,13 @@ class Detail extends EsiBase
                     $attacker->alliance_id : null,
                 'faction_id'      => property_exists($attacker, 'faction_id') ?
                     $attacker->faction_id : null,
-            ], [
-                'security_status' => $attacker->security_status,
-                'final_blow'      => $attacker->final_blow,
-                'damage_done'     => $attacker->damage_done,
-                'ship_type_id'    => property_exists($attacker, 'ship_type_id') ?
-                    $attacker->ship_type_id : null,
-                'weapon_type_id'  => property_exists($attacker, 'weapon_type_id') ?
-                    $attacker->weapon_type_id : null,
             ]);
+
+            AttackerMapping::make($model, $attacker, [
+                'killmail_id' => function () {
+                    return $this->killmail_id;
+                },
+            ])->save();
         });
 
         if (property_exists($detail->victim, 'items')) {

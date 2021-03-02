@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\AbstractCharacterJob;
+use Seat\Eveapi\Mapping\Characters\InfoMapping;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 
 /**
@@ -67,15 +68,14 @@ class Info extends AbstractCharacterJob
 
         if ($character_info->isCachedLoad() && CharacterInfo::find($this->getCharacterId())) return;
 
-        CharacterInfo::firstOrNew(['character_id' => $this->getCharacterId()])->fill([
-            'name'            => $character_info->name,
-            'description'     => $character_info->optional('description'),
-            'birthday'        => $character_info->birthday,
-            'gender'          => $character_info->gender,
-            'race_id'         => $character_info->race_id,
-            'bloodline_id'    => $character_info->bloodline_id,
-            'ancestry_id'    => $character_info->optional('ancestry_id'),
-            'security_status' => $character_info->optional('security_status'),
+        $model = CharacterInfo::firstOrNew([
+            'character_id' => $this->getCharacterId(),
+        ]);
+
+        InfoMapping::make($model, $character_info, [
+            'character_id' => function () {
+                return $this->getCharacterId();
+            },
         ])->save();
     }
 }

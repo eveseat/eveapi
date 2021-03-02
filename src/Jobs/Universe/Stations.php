@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\Universe;
 
 use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Mapping\Structures\UniverseStationMapping;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStationService;
 
@@ -88,21 +89,14 @@ class Stations extends EsiBase
     private function updateStructure(EsiResponse $structure)
     {
 
-        UniverseStation::firstOrNew([
+        $model = UniverseStation::firstOrNew([
             'station_id' => $structure->station_id,
-        ])->fill([
-            'type_id'                    => $structure->type_id,
-            'name'                       => $structure->name,
-            'owner'                      => $structure->owner ?? null,
-            'race_id'                    => $structure->race_id ?? null,
-            'x'                          => $structure->position->x,
-            'y'                          => $structure->position->y,
-            'z'                          => $structure->position->z,
-            'system_id'                  => $structure->system_id,
-            'reprocessing_efficiency'    => $structure->reprocessing_efficiency,
-            'reprocessing_stations_take' => $structure->reprocessing_stations_take,
-            'max_dockable_ship_volume'   => $structure->max_dockable_ship_volume,
-            'office_rental_cost'         => $structure->office_rental_cost,
+        ]);
+
+        UniverseStationMapping::make($model, $structure, [
+            'station_id' => function () use ($structure) {
+                return $structure->station_id;
+            },
         ])->save();
 
         collect($structure->services)->each(function ($service) use ($structure) {

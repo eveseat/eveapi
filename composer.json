@@ -22,6 +22,7 @@
     "eveseat/services": "^4.1",
     "guzzlehttp/guzzle": "^6.3",
     "doctrine/dbal": "^2.9",
+    "softcreatr/jsonpath": "^0.7",
     "ext-json": "*",
     "ext-posix": "*",
     "ext-redis": "*"

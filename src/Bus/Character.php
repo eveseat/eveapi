@@ -50,6 +50,7 @@ use Seat\Eveapi\Jobs\Location\Character\Ship;
 use Seat\Eveapi\Jobs\Mail\Labels as MailLabels;
 use Seat\Eveapi\Jobs\Mail\MailingLists;
 use Seat\Eveapi\Jobs\Mail\Mails;
+use Seat\Eveapi\Jobs\Market\Character\History;
 use Seat\Eveapi\Jobs\Market\Character\Orders;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\Planets;
 use Seat\Eveapi\Jobs\Skills\Character\Attributes;
@@ -157,6 +158,7 @@ class Character extends Bus
 
         // collect financial information
         $this->jobs->add(new Orders($this->token));
+        $this->jobs->add(new History($this->token));
         $this->jobs->add(new Planets($this->token));
         $this->jobs->add(new Balance($this->token));
         $this->jobs->add(new Journal($this->token));

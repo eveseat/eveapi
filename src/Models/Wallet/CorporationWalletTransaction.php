@@ -129,6 +129,14 @@ class CorporationWalletTransaction extends Model
     public $incrementing = true;
 
     /**
+     * @param $value
+     */
+    public function setDateAttribute($value)
+    {
+        $this->attributes['date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()

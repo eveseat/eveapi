@@ -46,4 +46,19 @@ class CharacterAttribute extends Model
      */
     protected $primaryKey = 'character_id';
 
+    /**
+     * @param $value
+     */
+    public function setLastRemapDateAttribute($value)
+    {
+        $this->attributes['last_remap_date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setAccruedRemapCooldownDateAttribute($value)
+    {
+        $this->attributes['accrued_remap_cooldown_date'] = is_null($value) ? null : carbon($value);
+    }
 }

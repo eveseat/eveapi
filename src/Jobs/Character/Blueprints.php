@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Industry\BlueprintMapping;
 use Seat\Eveapi\Models\Character\CharacterBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -107,35 +108,19 @@ class Blueprints extends AbstractAuthCharacterJob
             // Process the blueprints from the response
             collect($blueprints)->chunk(100)->each(function ($chunk) {
 
-                $records = $chunk->map(function ($blueprint, $key) {
-                    return [
-                        'character_id'        => $this->getCharacterId(),
-                        'item_id'             => $blueprint->item_id,
-                        'type_id'             => $blueprint->type_id,
-                        'location_flag'       => $blueprint->location_flag,
-                        'location_id'         => $blueprint->location_id,
-                        'quantity'            => $blueprint->quantity,
-                        'time_efficiency'     => $blueprint->time_efficiency,
-                        'material_efficiency' => $blueprint->material_efficiency,
-                        'runs'                => $blueprint->runs,
-                        'created_at'          => carbon(),
-                        'updated_at'          => carbon(),
-                    ];
+                $chunk->each(function ($blueprint) {
+
+                    $model = CharacterBlueprint::firstOrNew([
+                        'character_id' => $this->getCharacterId(),
+                        'item_id'      => $blueprint->item_id,
+                    ]);
+
+                    BlueprintMapping::make($model, $blueprint, [
+                        'character_id' => function () {
+                            return $this->getCharacterId();
+                        },
+                    ])->save();
                 });
-
-                CharacterBlueprint::upsert($records->toArray(), [
-                    'character_id',
-                    'item_id',
-                    'type_id',
-                    'location_flag',
-                    'location_id',
-                    'quantity',
-                    'time_efficiency',
-                    'material_efficiency',
-                    'runs',
-                    'updated_at',
-                ]);
-
             });
 
             // Add item ID's we should remove from the database.

@@ -36,6 +36,14 @@ class CharacterCalendarEvent extends Model
     protected static $unguarded = true;
 
     /**
+     * @param $value
+     */
+    public function setEventDateAttribute($value)
+    {
+        $this->attributes['event_date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function detail()

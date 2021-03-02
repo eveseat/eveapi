@@ -150,6 +150,14 @@ class CorporationInfo extends Model
     protected $primaryKey = 'corporation_id';
 
     /**
+     * @param $value
+     */
+    public function setDateFoundedAttribute($value)
+    {
+        $this->attributes['date_founded'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */

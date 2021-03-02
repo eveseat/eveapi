@@ -71,6 +71,30 @@ class CorporationIndustryMiningExtraction extends Model
     }
 
     /**
+     * @param $value
+     */
+    public function setExtractionStartTimeAttribute($value)
+    {
+        $this->attributes['extraction_start_time'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setChunkArrivalTimeAttribute($value)
+    {
+        $this->attributes['chunk_arrival_time'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setNaturalDecayTimeAttribute($value)
+    {
+        $this->attributes['natural_decay_time'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function moon()

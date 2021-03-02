@@ -45,4 +45,19 @@ class SovereigntyStructure extends Model
      */
     protected $primaryKey = 'structure_id';
 
+    /**
+     * @param $value
+     */
+    public function setVulnerableStartTimeAttribute($value)
+    {
+        $this->attributes['vulnerable_start_time'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setVulnerableEndTimeAttribute($value)
+    {
+        $this->attributes['vulnerable_end_time'] = is_null($value) ? null : carbon($value);
+    }
 }

@@ -140,6 +140,14 @@ class CharacterWalletJournal extends Model
     public $incrementing = false;
 
     /**
+     * @param $value
+     */
+    public function setDateAttribute($value)
+    {
+        $this->attributes['date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function character()

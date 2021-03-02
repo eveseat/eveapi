@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Assets\AssetMapping;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -99,18 +100,15 @@ class Assets extends AbstractAuthCharacterJob
 
             collect($assets)->each(function ($asset) {
 
-                CharacterAsset::updateOrCreate(
-                    ['item_id' => $asset->item_id],
-                    [
-                        'character_id'  => $this->getCharacterId(),
-                        'type_id'       => $asset->type_id,
-                        'quantity'      => $asset->quantity,
-                        'location_id'   => $asset->location_id,
-                        'location_type' => $asset->location_type,
-                        'location_flag' => $asset->location_flag,
-                        'is_singleton'  => $asset->is_singleton,
-                    ]
-                );
+                $model = CharacterAsset::firstOrNew([
+                    'item_id' => $asset->item_id,
+                ]);
+
+                AssetMapping::make($model, $asset, [
+                    'character_id' => function () {
+                        return $this->getCharacterId();
+                    },
+                ])->save();
 
                 // Update the list of known item_id's which should be
                 // excluded from the database cleanup later.

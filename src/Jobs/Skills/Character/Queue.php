@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Skills\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Characters\SkillQueueMapping;
 use Seat\Eveapi\Models\Skills\CharacterSkillQueue;
 
 /**
@@ -80,22 +81,15 @@ class Queue extends AbstractAuthCharacterJob
 
         collect($skill_queue)->each(function ($skill) {
 
-            CharacterSkillQueue::firstOrNew([
+            $model = CharacterSkillQueue::firstOrNew([
                 'character_id' => $this->getCharacterId(),
                 'queue_position'    => $skill->queue_position,
-            ])->fill([
-                'skill_id'     => $skill->skill_id,
-                'finish_date'       => property_exists($skill, 'finish_date') ?
-                    carbon($skill->finish_date) : null,
-                'start_date'        => property_exists($skill, 'start_date') ?
-                    carbon($skill->start_date) : null,
-                'finished_level'    => $skill->finished_level,
-                'training_start_sp' => property_exists($skill, 'training_start_sp') ?
-                    $skill->training_start_sp : null,
-                'level_end_sp'      => property_exists($skill, 'level_end_sp') ?
-                    $skill->level_end_sp : null,
-                'level_start_sp'    => property_exists($skill, 'level_start_sp') ?
-                    $skill->level_start_sp : null,
+            ]);
+
+            SkillQueueMapping::make($model, $skill, [
+                'character_id' => function () {
+                    return $this->getCharacterId();
+                },
             ])->save();
 
             if ($skill->queue_position > $this->greatest_position)

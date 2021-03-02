@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Structures\CustomsOfficeMapping;
 use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -105,23 +106,15 @@ class CustomsOffices extends AbstractAuthCorporationJob
 
             collect($customs_offices)->each(function ($customs_office) {
 
-                CorporationCustomsOffice::firstOrNew([
+                $model = CorporationCustomsOffice::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
                     'office_id'      => $customs_office->office_id,
-                ])->fill([
-                    'system_id'                   => $customs_office->system_id,
-                    'reinforce_exit_start'        => $customs_office->reinforce_exit_start,
-                    'reinforce_exit_end'          => $customs_office->reinforce_exit_end,
-                    'corporation_tax_rate'        => $customs_office->corporation_tax_rate ?? null,
-                    'allow_alliance_access'       => $customs_office->allow_alliance_access,
-                    'alliance_tax_rate'           => $customs_office->alliance_tax_rate ?? null,
-                    'allow_access_with_standings' => $customs_office->allow_access_with_standings,
-                    'standing_level'              => $customs_office->standing_level ?? null,
-                    'excellent_standing_tax_rate' => $customs_office->excellent_standing_tax_rate ?? null,
-                    'good_standing_tax_rate'      => $customs_office->good_standing_tax_rate ?? null,
-                    'neutral_standing_tax_rate'   => $customs_office->neutral_standing_tax_rate ?? null,
-                    'bad_standing_tax_rate'       => $customs_office->bad_standing_tax_rate ?? null,
-                    'terrible_standing_tax_rate'  => $customs_office->terrible_standing_tax_rate ?? null,
+                ]);
+
+                CustomsOfficeMapping::make($model, $customs_office, [
+                    'corporation_id' => function () {
+                        return $this->getCorporationId();
+                    },
                 ])->save();
 
                 $this->known_structures->push($customs_office->office_id);

@@ -205,6 +205,38 @@ class CharacterIndustryJob extends Model
     public $incrementing = false;
 
     /**
+     * @param $value
+     */
+    public function setStartDateAttribute($value)
+    {
+        $this->attributes['start_date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setPauseDateAttribute($value)
+    {
+        $this->attributes['pause_date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setEndDateAttribute($value)
+    {
+        $this->attributes['end_date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setCompletedDateAttribute($value)
+    {
+        $this->attributes['completed_date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function activity()

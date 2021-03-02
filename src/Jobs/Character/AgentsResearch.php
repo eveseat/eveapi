@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Industry\AgentResearchMapping;
 use Seat\Eveapi\Models\Character\CharacterAgentResearch;
 
 /**
@@ -76,14 +77,15 @@ class AgentsResearch extends AbstractAuthCharacterJob
 
         collect($agents_research)->each(function ($agent_research) {
 
-            CharacterAgentResearch::firstOrNew([
+            $model = CharacterAgentResearch::firstOrNew([
                 'character_id' => $this->getCharacterId(),
                 'agent_id'     => $agent_research->agent_id,
-            ])->fill([
-                'skill_type_id'    => $agent_research->skill_type_id,
-                'started_at'       => carbon($agent_research->started_at),
-                'points_per_day'   => $agent_research->points_per_day,
-                'remainder_points' => $agent_research->remainder_points,
+            ]);
+
+            AgentResearchMapping::make($model, $agent_research, [
+                'character_id' => function () {
+                    return $this->getCharacterId();
+                },
             ])->save();
         });
 

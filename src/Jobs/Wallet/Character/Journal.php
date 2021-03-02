@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Wallet\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Financial\WalletJournalMapping;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 
 /**
@@ -123,22 +124,10 @@ class Journal extends AbstractAuthCharacterJob
                 if ($journal_entry->exists)
                     return;
 
-                $journal_entry->fill([
-                    'character_id'    => $this->getCharacterId(),
-                    'id'              => $entry->id,                         // changed from ref_id to id into v4
-                    'date'            => carbon($entry->date),
-                    'ref_type'        => $entry->ref_type,
-                    'first_party_id'  => $entry->first_party_id ?? null,
-                    'second_party_id' => $entry->second_party_id ?? null,
-                    'amount'          => $entry->amount ?? null,
-                    'balance'         => $entry->balance ?? null,
-                    'reason'          => $entry->reason ?? null,
-                    'tax_receiver_id' => $entry->tax_receiver_id ?? null,
-                    'tax'             => $entry->tax ?? null,
-                    // appears in version 4
-                    'description'     => $entry->description,
-                    'context_id'      => $entry->context_id ?? null,
-                    'context_id_type' => $entry->context_id_type ?? null,
+                WalletJournalMapping::make($journal_entry, $entry, [
+                    'character_id' => function () {
+                        return $this->getCharacterId();
+                    },
                 ])->save();
 
             });

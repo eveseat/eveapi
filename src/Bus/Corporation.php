@@ -51,6 +51,7 @@ use Seat\Eveapi\Jobs\Industry\Corporation\Jobs;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Extractions;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\ObserverDetails;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Observers;
+use Seat\Eveapi\Jobs\Market\Corporation\History;
 use Seat\Eveapi\Jobs\Market\Corporation\Orders;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOfficeLocations;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOffices;
@@ -153,6 +154,7 @@ class Corporation extends Bus
 
         // collect financial information
         $this->jobs->add(new Orders($this->corporation_id, $this->token));
+        $this->jobs->add(new History($this->corporation_id, $this->token));
         $this->jobs->add(new Shareholders($this->corporation_id, $this->token));
         $this->jobs->add(new Balances($this->corporation_id, $this->token));
         $this->jobs->add(new Journals($this->corporation_id, $this->token));

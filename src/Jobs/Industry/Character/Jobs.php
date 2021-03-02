@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Industry\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Industry\JobMapping;
 use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
 
 /**
@@ -80,33 +81,18 @@ class Jobs extends AbstractAuthCharacterJob
 
         collect($industry_jobs)->each(function ($job) {
 
-            CharacterIndustryJob::firstOrNew([
+            $model = CharacterIndustryJob::firstOrNew([
                 'character_id' => $this->getCharacterId(),
                 'job_id'       => $job->job_id,
-            ])->fill([
-                'installer_id'           => $job->installer_id,
-                'facility_id'            => $job->facility_id,
-                'station_id'             => $job->station_id,
-                'activity_id'            => $job->activity_id,
-                'blueprint_id'           => $job->blueprint_id,
-                'blueprint_type_id'      => $job->blueprint_type_id,
-                'blueprint_location_id'  => $job->blueprint_location_id,
-                'output_location_id'     => $job->output_location_id,
-                'runs'                   => $job->runs,
-                'cost'                   => $job->cost ?? null,
-                'licensed_runs'          => $job->licensed_runs ?? null,
-                'probability'            => $job->probability ?? null,
-                'product_type_id'        => $job->product_type_id ?? null,
-                'status'                 => $job->status,
-                'duration'               => $job->duration,
-                'start_date'             => carbon($job->start_date),
-                'end_date'               => carbon($job->end_date),
-                'pause_date'             => property_exists($job, 'pause_date') ?
-                    carbon($job->pause_date) : null,
-                'completed_date'         => property_exists($job, 'completed_date') ?
-                    carbon($job->completed_date) : null,
-                'completed_character_id' => $job->completed_character_id ?? null,
-                'successful_runs'        => $job->successful_runs ?? null,
+            ]);
+
+            JobMapping::make($model, $job, [
+                'character_id' => function () {
+                    return $this->getCharacterId();
+                },
+                'station_id' => function () use ($job) {
+                    return $job->station_id;
+                },
             ])->save();
         });
     }

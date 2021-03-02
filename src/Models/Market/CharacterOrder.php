@@ -147,6 +147,14 @@ class CharacterOrder extends Model
     protected static $unguarded = true;
 
     /**
+     * @param $value
+     */
+    public function setIssuedAttribute($value)
+    {
+        $this->attributes['issued'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function location()

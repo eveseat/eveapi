@@ -145,6 +145,14 @@ class CharacterNotification extends Model
     }
 
     /**
+     * @param $value
+     */
+    public function setTimestampAttribute($value)
+    {
+        $this->attributes['timestamp'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function recipient()

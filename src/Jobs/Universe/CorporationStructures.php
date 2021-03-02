@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\Universe;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Structures\UniverseStructureMapping;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
@@ -81,17 +82,15 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
                     'structure_id' => $structure_id,
                 ]);
 
-                UniverseStructure::updateOrCreate([
+                $model = UniverseStructure::firstOrNew([
                     'structure_id' => $structure_id,
-                ], [
-                    'name'            => $structure->name,
-                    'owner_id'        => $structure->owner_id,
-                    'solar_system_id' => $structure->solar_system_id,
-                    'x'               => $structure->position->x,
-                    'y'               => $structure->position->y,
-                    'z'               => $structure->position->z,
-                    'type_id'         => $structure->type_id ?? null,
                 ]);
+
+                UniverseStructureMapping::make($model, $structure, [
+                    'structure_id' => function () use ($structure_id) {
+                        return $structure_id;
+                    },
+                ])->save();
 
             } catch (RequestFailedException $e) {
                 logger()->error('Unable to retrieve structure information.', [

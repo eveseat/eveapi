@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Wallet\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Mapping\Financial\WalletTransactionMapping;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
 /**
@@ -61,7 +62,7 @@ class Transactions extends AbstractAuthCharacterJob
      *
      * @var int
      */
-    protected $from_id = PHP_INT_MAX;
+    protected $from_id = 0;
 
     /**
      * Execute the job.
@@ -102,16 +103,13 @@ class Transactions extends AbstractAuthCharacterJob
                 if ($transaction_entry->exists)
                     return;
 
-                $transaction_entry->fill([
-                    'date'           => carbon($transaction->date),
-                    'type_id'        => $transaction->type_id,
-                    'location_id'    => $transaction->location_id,
-                    'unit_price'     => $transaction->unit_price,
-                    'quantity'       => $transaction->quantity,
-                    'client_id'      => $transaction->client_id,
-                    'is_buy'         => $transaction->is_buy,
-                    'is_personal'    => $transaction->is_personal,
-                    'journal_ref_id' => $transaction->journal_ref_id,
+                WalletTransactionMapping::make($transaction_entry, $transaction, [
+                    'character_id' => function () {
+                        return $this->getCharacterId();
+                    },
+                    'is_personal' => function () use ($transaction) {
+                        return $transaction->is_personal;
+                    },
                 ])->save();
             });
 

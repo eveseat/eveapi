@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Wallet\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Mapping\Financial\WalletTransactionMapping;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 
@@ -67,7 +68,7 @@ class Transactions extends AbstractAuthCorporationJob
      *
      * @var int
      */
-    protected $from_id = PHP_INT_MAX;
+    protected $from_id = 0;
 
     /**
      * Execute the job.
@@ -113,15 +114,13 @@ class Transactions extends AbstractAuthCorporationJob
                         if ($transaction_entry->exists)
                             return;
 
-                        $transaction_entry->fill([
-                            'date'           => carbon($transaction->date),
-                            'type_id'        => $transaction->type_id,
-                            'location_id'    => $transaction->location_id,
-                            'unit_price'     => $transaction->unit_price,
-                            'quantity'       => $transaction->quantity,
-                            'client_id'      => $transaction->client_id,
-                            'is_buy'         => $transaction->is_buy,
-                            'journal_ref_id' => $transaction->journal_ref_id,
+                        WalletTransactionMapping::make($transaction_entry, $transaction, [
+                            'corporation_id' => function () {
+                                return $this->getCorporationId();
+                            },
+                            'division' => function () use ($balance) {
+                                return $balance->division;
+                            },
                         ])->save();
                     });
 
@@ -131,7 +130,7 @@ class Transactions extends AbstractAuthCorporationJob
                 }
 
                 // Reset the from_id for the next wallet division
-                $this->from_id = PHP_INT_MAX;
+                $this->from_id = 0;
             });
     }
 }

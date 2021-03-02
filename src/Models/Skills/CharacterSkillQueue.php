@@ -97,6 +97,22 @@ class CharacterSkillQueue extends Model
     protected static $unguarded = true;
 
     /**
+     * @param $value
+     */
+    public function setStartDateAttribute($value)
+    {
+        $this->attributes['start_date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setFinishDateAttribute($value)
+    {
+        $this->attributes['finish_date'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function type()

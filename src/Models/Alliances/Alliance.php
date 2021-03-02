@@ -49,4 +49,12 @@ class Alliance extends Model
      * @var string
      */
     protected $primaryKey = 'alliance_id';
+
+    /**
+     * @param $value
+     */
+    public function setDateFoundedAttribute($value)
+    {
+        $this->attributes['date_founded'] = is_null($value) ? null : carbon($value);
+    }
 }
