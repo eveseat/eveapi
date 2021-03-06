@@ -79,6 +79,7 @@ class Notifications extends AbstractAuthCharacterJob
 
             $model = CharacterNotification::firstOrNew([
                 'character_id' => $this->getCharacterId(),
+                'notification_id' => $notification->notification_id,
             ]);
 
             NotificationMapping::make($model, $notification, [
