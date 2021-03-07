@@ -101,7 +101,8 @@ class CorporationMemberTracking extends Model
     public function ship()
     {
 
-        return $this->belongsTo(InvType::class, 'ship_type_id', 'typeID');
+        return $this->belongsTo(InvType::class, 'ship_type_id', 'typeID')
+            ->withDefault();
     }
 
     /**
