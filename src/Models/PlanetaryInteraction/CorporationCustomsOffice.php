@@ -48,22 +48,6 @@ class CorporationCustomsOffice extends Model
     public $incrementing = false;
 
     /**
-     * @param $value
-     */
-    public function setReinforceExitStartAttribute($value)
-    {
-        $this->attributes['reinforce_exit_start'] = is_null($value) ? null : carbon($value);
-    }
-
-    /**
-     * @param $value
-     */
-    public function setReinforceExitEndAttribute($value)
-    {
-        $this->attributes['reinforce_exit_end'] = is_null($value) ? null : carbon($value);
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function planet()
