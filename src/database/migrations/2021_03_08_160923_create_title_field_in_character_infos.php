@@ -20,28 +20,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Mapping\Characters;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Seat\Eveapi\Mapping\DataMapping;
-
-/**
- * Class InfoMapping.
- * @package Seat\Eveapi\Mapping\Characters
- */
-class InfoMapping extends DataMapping
+class CreateTitleFieldInCharacterInfos extends Migration
 {
     /**
-     * @var array
+     * Run the migrations.
+     *
+     * @return void
      */
-    protected static $mapping = [
-        'name'            => 'name',
-        'description'     => 'description',
-        'birthday'        => 'birthday',
-        'gender'          => 'gender',
-        'race_id'         => 'race_id',
-        'bloodline_id'    => 'bloodline_id',
-        'ancestry_id'     => 'ancestry_id',
-        'security_status' => 'security_status',
-        'title' => 'title',
-    ];
+    public function up()
+    {
+        Schema::table('character_infos', function (Blueprint $table) {
+            $table->string('title')->nullable()->after('security_status');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('character_infos', function (Blueprint $table) {
+            $table->dropColumn('title');
+        });
+    }
 }
