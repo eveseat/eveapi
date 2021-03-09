@@ -49,7 +49,8 @@ class CharacterCalendarEvent extends Model
     public function detail()
     {
 
-        return $this->hasOne(CharacterCalendarEventDetail::class, 'event_id', 'event_id');
+        return $this->hasOne(CharacterCalendarEventDetail::class, 'event_id', 'event_id')
+            ->withDefault();
     }
 
     /**
