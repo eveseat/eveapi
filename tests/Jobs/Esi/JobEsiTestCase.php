@@ -3,6 +3,7 @@
 
 namespace Seat\Eveapi\Tests\Jobs\Esi;
 
+use Illuminate\Support\Facades\Event;
 use Lunaweb\RedisMock\Providers\RedisMockServiceProvider;
 use Orchestra\Testbench\TestCase;
 use Seat\Eseye\Configuration;
@@ -54,6 +55,8 @@ class JobEsiTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Event::fake();
 
         // override guzzle fetcher by using esi mock
         Configuration::getInstance()->fetcher = EsiMockFetcher::class;

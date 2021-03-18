@@ -15,10 +15,10 @@ use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Character\InfoResource;
 
 /**
- * Class TestInfo
+ * Class InfoTest
  * @package Seat\Eveapi\Tests\Jobs\Esi\Character
  */
-class TestInfo extends JobEsiTestCase
+class InfoTest extends JobEsiTestCase
 {
     public static function setUpBeforeClass(): void
     {
@@ -70,13 +70,6 @@ class TestInfo extends JobEsiTestCase
         EsiMockFetcher::add($response_success_bis); // http@200
         EsiMockFetcher::add($response_not_modified); // http@304
         EsiMockFetcher::add($response_success); // http@200
-    }
-
-    public function testTags()
-    {
-        $job = new Info(180548812);
-
-        $this->assertEqualsCanonicalizing(['public', 'character', 180548812], $job->tags());
     }
 
     public function testHandleSuccess()
