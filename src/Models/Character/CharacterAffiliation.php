@@ -47,6 +47,16 @@ class CharacterAffiliation extends Model
     protected $primaryKey = 'character_id';
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'character_id' => 'integer',
+        'corporation_id' => 'integer',
+        'alliance_id' => 'integer',
+        'faction_id' => 'integer',
+    ];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function character()
