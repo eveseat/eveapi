@@ -47,6 +47,15 @@ class CharacterBlueprint extends Model
      */
     protected $primaryKey = 'item_id';
 
+    protected $casts = [
+        'location_id' => 'integer',
+        'material_efficiency' => 'integer',
+        'quantity' => 'integer',
+        'runs' => 'integer',
+        'time_efficiency' => 'integer',
+        'type_id' => 'integer'
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
