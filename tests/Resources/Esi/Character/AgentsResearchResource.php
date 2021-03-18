@@ -25,7 +25,7 @@ namespace Seat\Eveapi\Tests\Resources\Esi\Character;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Class AgentsResearchResource
+ * Class AgentsResearchResource.
  * @package Seat\Eveapi\Tests\Resources\Esi\Character
  */
 class AgentsResearchResource extends JsonResource

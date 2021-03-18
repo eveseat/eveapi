@@ -37,7 +37,7 @@ use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Character\AgentsResearchResource;
 
 /**
- * Class AgentResearchTest
+ * Class AgentResearchTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Character
  */
 class AgentResearchTest extends JobEsiTestCase
