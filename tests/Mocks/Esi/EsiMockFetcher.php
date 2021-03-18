@@ -40,7 +40,7 @@ class EsiMockFetcher implements FetcherInterface
         $this->scopes = ['public'];
 
         if (! is_null($authentication))
-            $this->scopes = empty($authentication->scopes) ? ['public'] : $authentication->scopes;
+            $this->scopes = empty($authentication->offsetGet('scopes')) ? ['public'] : $authentication->offsetGet('scopes');
     }
 
     /**
