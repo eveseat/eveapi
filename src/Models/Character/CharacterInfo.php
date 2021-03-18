@@ -65,6 +65,15 @@ class CharacterInfo extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'ancestry_id' => 'integer',
+        'bloodline_id' => 'integer',
+        'race_id' => 'integer',
+    ];
+
+    /**
      * @var string
      */
     protected $primaryKey = 'character_id';

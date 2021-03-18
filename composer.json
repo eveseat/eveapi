@@ -13,6 +13,11 @@
       "Seat\\Eveapi\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Seat\\Eveapi\\Tests\\": "tests/"
+    }
+  },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
@@ -24,8 +29,12 @@
     "doctrine/dbal": "^2.9",
     "softcreatr/jsonpath": "^0.7",
     "ext-json": "*",
-    "ext-posix": "*",
     "ext-redis": "*"
+  },
+  "require-dev": {
+    "josiasmontag/laravel-redis-mock": "^1.0",
+    "orchestra/testbench": "^4.0",
+    "orchestra/database": "^4.0"
   },
   "extra": {
     "laravel": {
