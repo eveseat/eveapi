@@ -124,6 +124,30 @@ class ScheduleSeeder extends Seeder
             'ping_before'       => null,
             'ping_after'        => null,
         ],
+        [   // Insurances Data | Once a day
+            'command'           => 'esi:update:insurances',
+            'expression'        => '0 7 * * *',
+            'allow_overlap'     => false,
+            'allow_maintenance' => false,
+            'ping_before'       => null,
+            'ping_after'        => null,
+        ],
+        [   // Sovereignty Data | Once a day
+            'command'           => 'esi:update:sovereignty',
+            'expression'        => '0 19 * * *',
+            'allow_overlap'     => false,
+            'allow_maintenance' => false,
+            'ping_before'       => null,
+            'ping_after'        => null,
+        ],
+        [   // Stations Data | Once a day
+            'command'           => 'esi:update:stations',
+            'expression'        => '0 1 * * *',
+            'allow_overlap'     => false,
+            'allow_maintenance' => false,
+            'ping_before'       => null,
+            'ping_after'        => null,
+        ],
     ];
 
     /**
@@ -179,6 +203,9 @@ class ScheduleSeeder extends Seeder
                 case 'esi:update:public':
                 case 'esi:update:prices':
                 case 'esi:update:alliances':
+                case 'esi:update:insurances':
+                case 'esi:update:sovereignty':
+                case 'esi:update:stations':
                     $this->schedules[$key]['expression'] = sprintf('%d %d * * *', rand(0, 59), Arr::random($hours));
                     break;
             }

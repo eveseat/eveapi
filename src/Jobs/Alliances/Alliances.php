@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Alliances;
 
+use Seat\Eveapi\Bus\Alliance as AllianceBus;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Alliances\Alliance;
 
@@ -64,13 +65,8 @@ class Alliances extends EsiBase
 
         collect($alliances)->each(function ($alliance_id) {
 
-            // queue jobs which will take care of this alliance update.
-            Info::withChain([
-                new Members($alliance_id),
-            ])->dispatch($alliance_id)->delay(now()->addSeconds(rand(20, 300)));
-            // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
-            // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
-            // https://github.com/eveseat/seat/issues/731
+            // queue update jobs which will pull alliance related data.
+            (new AllianceBus($alliance_id))->fire();
         });
     }
 }

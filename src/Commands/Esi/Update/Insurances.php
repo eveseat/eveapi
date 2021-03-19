@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015 to 2021 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,45 +23,35 @@
 namespace Seat\Eveapi\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Eveapi\Bus\Character;
-use Seat\Eveapi\Bus\Corporation;
-use Seat\Eveapi\Jobs\Universe\Names;
-use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\Corporation\CorporationInfo;
+use Seat\Eveapi\Jobs\Fittings\Insurances as InsurancesJob;
 
 /**
- * Class PublicInfo.
+ * Class Insurances.
  * @package Seat\Eveapi\Commands\Esi\Update
  */
-class PublicInfo extends Command
+class Insurances extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'esi:update:public';
+    protected $signature = 'esi:update:insurances';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for public information';
+    protected $description = 'Schedule updater jobs for insurances information';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        Names::dispatch();
+        InsurancesJob::dispatch();
 
-        CharacterInfo::doesntHave('refresh_token')->each(function ($character) {
-            (new Character($character->character_id))->fire();
-        });
-
-        CorporationInfo::all()->each(function ($corporation) {
-            (new Corporation($corporation->corporation_id))->fire();
-        });
+        $this->info('A new insurance job has been queued.');
     }
 }
