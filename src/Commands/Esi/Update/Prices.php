@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Commands\Esi\Update;
 use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Market\History;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Jobs\Market\Prices as PricesJob;
 
 /**
  * Class Prices.
@@ -57,6 +58,8 @@ class Prices extends Command
             ->where('published', true)
             ->select('typeID')
             ->get();
+
+        PricesJob::dispatch();
 
         // build small batch of a maximum of 200 entries to avoid long running job.
         $types->chunk(50)->each(function ($chunk) {

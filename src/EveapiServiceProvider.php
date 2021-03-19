@@ -31,10 +31,13 @@ use Seat\Eveapi\Commands\Esi\Update\Alliances;
 use Seat\Eveapi\Commands\Esi\Update\Characters;
 use Seat\Eveapi\Commands\Esi\Update\Contracts;
 use Seat\Eveapi\Commands\Esi\Update\Corporations;
+use Seat\Eveapi\Commands\Esi\Update\Insurances;
 use Seat\Eveapi\Commands\Esi\Update\Killmails;
 use Seat\Eveapi\Commands\Esi\Update\Notifications;
 use Seat\Eveapi\Commands\Esi\Update\Prices;
 use Seat\Eveapi\Commands\Esi\Update\PublicInfo;
+use Seat\Eveapi\Commands\Esi\Update\Sovereignty;
+use Seat\Eveapi\Commands\Esi\Update\Stations;
 use Seat\Eveapi\Commands\Esi\Update\Status as EsiStatus;
 use Seat\Eveapi\Commands\Eve\Update\Sde;
 use Seat\Eveapi\Commands\Eve\Update\Status as EveStatus;
@@ -132,6 +135,9 @@ class EveapiServiceProvider extends AbstractSeatPlugin
             PublicInfo::class,
             Affiliations::class,
             Prices::class,
+            Insurances::class,
+            Stations::class,
+            Sovereignty::class,
             Alliances::class,
             Contracts::class,
             Killmails::class,
@@ -146,7 +152,7 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
     /**
      * Set the path for migrations which should
-     * be migrated by laravel. More informations:
+     * be migrated by laravel. More information:
      * https://laravel.com/docs/5.5/packages#migrations.
      */
     private function add_migrations()
