@@ -79,16 +79,6 @@ class Sde extends Command
     protected $storage_path;
 
     /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-
-    }
-
-    /**
      * Query the eveseat/resources repository for SDE
      * related information.
      *

@@ -49,17 +49,6 @@ class Upgrade extends Command
     protected $description = 'Upgrade all tokens to latest sso version';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle()
