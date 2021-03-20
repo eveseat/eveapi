@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015 to 2021 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,36 +20,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
+namespace Seat\Eveapi\Tests\Resources\Esi\Character;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Class CharacterMedal.
- * @package Seat\Eveapi\Models\Character
+ * Class CorporationHistoryResource.
+ * @package Seat\Eveapi\Tests\Resources\Esi\Character
  */
-class CharacterMedal extends Model
+class CorporationHistoryResource extends JsonResource
 {
-
     /**
-     * @var bool
+     * @param \Illuminate\Http\Request $request
+     * @return array
      */
-    protected static $unguarded = true;
-
-    /**
-     * @var string[]
-     */
-    protected $casts = [
-        'corporation_id' => 'integer',
-        'issuer_id'      => 'integer',
-        'medal_id'       => 'integer',
-    ];
-
-    /**
-     * @param $value
-     */
-    public function setDateAttribute($value)
+    public function toArray($request)
     {
-        $this->attributes['date'] = is_null($value) ? null : carbon($value);
+        return [
+            'corporation_id' => $this->corporation_id,
+            'is_deleted'     => $this->when($this->is_deleted, $this->is_deleted),
+            'record_id'      => $this->record_id,
+            'start_date'     => carbon($this->start_date)->toIso8601ZuluString(),
+        ];
     }
 }

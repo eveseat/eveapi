@@ -28,19 +28,19 @@ use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Exception\PermanentInvalidTokenException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Exception\UnavailableEveServersException;
-use Seat\Eveapi\Jobs\Character\Blueprints;
-use Seat\Eveapi\Models\Character\CharacterBlueprint;
+use Seat\Eveapi\Jobs\Character\Medals;
+use Seat\Eveapi\Models\Character\CharacterMedal;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
 use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
-use Seat\Eveapi\Tests\Resources\Esi\Character\BlueprintResource;
+use Seat\Eveapi\Tests\Resources\Esi\Character\MedalResource;
 
 /**
- * Class BlueprintsTest.
+ * Class MedalsTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Character
  */
-class BlueprintsTest extends JobEsiTestCase
+class MedalsTest extends JobEsiTestCase
 {
     public static function setUpBeforeClass(): void
     {
@@ -48,11 +48,10 @@ class BlueprintsTest extends JobEsiTestCase
 
         // prepare dummy responses
         $response_success = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/blueprints.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/characters/medals.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
-                'X-Pages' => 1,
             ],
             carbon()->addSeconds(5)->toRfc7231String(),
             200
@@ -69,11 +68,10 @@ class BlueprintsTest extends JobEsiTestCase
         );
 
         $response_success_bis = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/blueprints.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/characters/medals.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
-                'X-Pages' => 1,
             ],
             carbon()->addSeconds(5)->toRfc7231String(),
             200
@@ -101,24 +99,24 @@ class BlueprintsTest extends JobEsiTestCase
     public function testHandleSuccess()
     {
         $token = new RefreshToken([
-            'character_id' => 180548812,
+            'character_id' => 90795931,
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_medals.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Medals($token);
         $job->handle();
 
-        $blueprints = CharacterBlueprint::all();
+        $medals = CharacterMedal::all();
 
-        $data = json_encode(BlueprintResource::collection($blueprints));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/blueprints.json', $data);
+        $data = json_encode(MedalResource::collection($medals));
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/medals.json', $data);
     }
 
     /**
@@ -127,39 +125,66 @@ class BlueprintsTest extends JobEsiTestCase
     public function testHandleNotModified()
     {
         $token = new RefreshToken([
-            'character_id' => 180548812,
+            'character_id' => 90795931,
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_medals.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        CharacterBlueprint::create([
-            'character_id'        => 180548812,
-            'item_id'             => 1000000010495,
-            'location_flag'       => 'Hangar',
-            'location_id'         => 60014719,
-            'material_efficiency' => 0,
-            'quantity'            => 1,
-            'runs'                => -1,
-            'time_efficiency'     => 0,
-            'type_id'             => 691
+        CharacterMedal::create([
+            'character_id'   => 90795931,
+            'medal_id'       => 24460,
+            'title'          => 'Medaille des 1 an de services',
+            'description'    => 'Dédiée aux vieux.....',
+            'corporation_id' => 144275616,
+            'issuer_id'      => 341025466,
+            'date'           => '2018-07-01T19:37:39Z',
+            'reason'         => 'Old Man',
+            'status'         => 'private',
+            'graphics'       => json_encode('[{"color": -1,"graphic": "Caldari.01_01","layer": 0,"part": 1},{"color": -15132388,"graphic": "Caldari.3_1","layer": 1,"part": 1},{"color": -8847360,"graphic": "Caldari.2_4","layer": 2,"part": 1},{"color": -596431,"graphic": "Caldari.01_02","layer": 3,"part": 1},{"color": -1,"graphic": "elements.13_1","layer": 0,"part": 2},{"color": -1,"graphic": "star.2_2","layer": 1,"part": 2}]'),
+        ]);
+
+        CharacterMedal::create([
+            'character_id'   => 90795931,
+            'medal_id'       => 44753,
+            'title'          => 'Médaille des 2 ans de services',
+            'description'    => 'Dédiée aux plus vieux que les vieux',
+            'corporation_id' => 144275616,
+            'issuer_id'      => 341025466,
+            'date'           => '2019-07-01 19:37:53',
+            'reason'         => 'Very Old Man',
+            'status'         => 'private',
+            'graphics'       => json_encode('[{"color":-1,"graphic":"Caldari.01_01","layer":0,"part":1},{"color":-8847360,"graphic":"Caldari.2_4","layer":1,"part":1},{"color":-15132388,"graphic":"Caldari.3_1","layer":2,"part":1},{"color":-596431,"graphic":"Caldari.01_02","layer":3,"part":1},{"color":-1,"graphic":"elements.21_1","layer":0,"part":2},{"color":-1,"graphic":"elements.13_1","layer":1,"part":2},{"color":-1,"graphic":"star.2_2","layer":2,"part":2}]'),
+        ]);
+
+        CharacterMedal::create([
+            'character_id'   => 90795931,
+            'medal_id'       => 71835,
+            'title'          => 'Médaille du gentlemen',
+            'description'    => 'Décoration attribuée pour services rendus durant la guerre qui nous opposa aux gentlemens durant les premiers jours de juillets.<br>Surcouf en son temps résuma très bien ce genre de combats entre les français et les anglais:<br>Alors que Surcouf (corsaire français) avait capturé un navire anglais, son capitaine, attaché sur son propre navire s\'addresse à lui en ces termes: "Vous les français, vous vous battez pour l\'argent, tandis que nous, anglais, nous nous battons pour l\'honneur". Ce à quoi Surcouf, dans un anglais parfait, répondit "Nous nous battons toujours pour ce que nous n\'avons pas..."<br><br>',
+            'corporation_id' => 144275616,
+            'issuer_id'      => 412492115,
+            'date'           => '2014-07-10 22:44:43',
+            'reason'         => 'Pour un scoot redoutable et une présence incroyable',
+            'status'         => 'private',
+            'graphics'       => json_encode('[{"color":-1,"graphic":"Caldari.1_1","layer":0,"part":1},{"color":-8847360,"graphic":"Caldari.2_4","layer":1,"part":1},{"color":-4254186,"graphic":"Caldari.2_1","layer":2,"part":1},{"color":-15191726,"graphic":"Caldari.3_1","layer":3,"part":1},{"color":-330271,"graphic":"Caldari.1_2","layer":4,"part":1},{"color":-1,"graphic":"elements.24_2","layer":0,"part":2},{"color":-1,"graphic":"elements.13_2","layer":1,"part":2},{"color":-1,"graphic":"elements.17_2","layer":2,"part":2},{"color":-1,"graphic":"star.3_2","layer":3,"part":2}]'),
         ]);
 
         // sleep for 5 seconds so we burn cache entry and move to ETag flow
         sleep(5);
 
-        $job = new Blueprints($token);
+        $job = new Medals($token);
         $job->handle();
 
-        $blueprints = CharacterBlueprint::all();
+        $medals = CharacterMedal::all();
 
-        foreach ($blueprints as $blueprint)
-            $this->assertEquals($blueprint->created_at, $blueprint->updated_at);
+        foreach ($medals as $medal)
+            $this->assertEquals($medal->created_at, $medal->updated_at);
     }
 
     /**
@@ -168,42 +193,69 @@ class BlueprintsTest extends JobEsiTestCase
     public function testHandleUpdated()
     {
         // bypass cache control to force job to be processed
-        EsiInMemoryCache::getInstance()->forget('/v2/characters/180548812/blueprints/', 'datasource=tranquility&page=1');
+        EsiInMemoryCache::getInstance()->forget('/v1/characters/90795931/medals/', 'datasource=tranquility');
 
         $token = new RefreshToken([
-            'character_id' => 180548812,
+            'character_id' => 90795931,
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_medals.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        CharacterBlueprint::create([
-            'character_id'        => 180548812,
-            'item_id'             => 1000000010495,
-            'location_flag'       => 'RigSlot2',
-            'location_id'         => 1654676464,
-            'material_efficiency' => 7,
-            'quantity'            => 1,
-            'runs'                => -1,
-            'time_efficiency'     => 3,
-            'type_id'             => 730
+        CharacterMedal::create([
+            'character_id'   => 90795931,
+            'medal_id'       => 24460,
+            'title'          => 'Medaille des 1 an de services',
+            'description'    => 'Dédiée aux vieux.....',
+            'corporation_id' => 144275616,
+            'issuer_id'      => 341025466,
+            'date'           => '2018-07-01T19:37:39Z',
+            'reason'         => 'Old Man',
+            'status'         => 'private',
+            'graphics'       => json_encode('[{"color": -1,"graphic": "Caldari.01_01","layer": 0,"part": 1},{"color": -15132388,"graphic": "Caldari.3_1","layer": 1,"part": 1},{"color": -8847360,"graphic": "Caldari.2_4","layer": 2,"part": 1},{"color": -596431,"graphic": "Caldari.01_02","layer": 3,"part": 1},{"color": -1,"graphic": "elements.13_1","layer": 0,"part": 2},{"color": -1,"graphic": "star.2_2","layer": 1,"part": 2}]'),
         ]);
 
-        $blueprints = CharacterBlueprint::all();
-        $data = json_encode(BlueprintResource::collection($blueprints));
-        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/blueprints.json', $data);
+        CharacterMedal::create([
+            'character_id'   => 90795931,
+            'medal_id'       => 44753,
+            'title'          => 'Médaille des 2 ans de services',
+            'description'    => 'Dédiée aux plus vieux que les vieux',
+            'corporation_id' => 144275616,
+            'issuer_id'      => 341025466,
+            'date'           => '2019-07-01 19:37:53',
+            'reason'         => 'Very Old Man',
+            'status'         => 'private',
+            'graphics'       => json_encode('[{"color":-1,"graphic":"Caldari.01_01","layer":0,"part":1},{"color":-8847360,"graphic":"Caldari.2_4","layer":1,"part":1},{"color":-15132388,"graphic":"Caldari.3_1","layer":2,"part":1},{"color":-596431,"graphic":"Caldari.01_02","layer":3,"part":1},{"color":-1,"graphic":"elements.21_1","layer":0,"part":2},{"color":-1,"graphic":"elements.13_1","layer":1,"part":2},{"color":-1,"graphic":"star.2_2","layer":2,"part":2}]'),
+        ]);
 
-        $job = new Blueprints($token);
+        CharacterMedal::create([
+            'character_id'   => 90795931,
+            'medal_id'       => 71835,
+            'title'          => 'Médaille du gentlemen',
+            'description'    => 'Décoration attribuée pour services rendus durant la guerre qui nous opposa aux gentlemens durant les premiers jours de juillets.<br>Surcouf en son temps résuma très bien ce genre de combats entre les français et les anglais:<br>Alors que Surcouf (corsaire français) avait capturé un navire anglais, son capitaine, attaché sur son propre navire s\'addresse à lui en ces termes: "Vous les français, vous vous battez pour l\'argent, tandis que nous, anglais, nous nous battons pour l\'honneur". Ce à quoi Surcouf, dans un anglais parfait, répondit "Nous nous battons toujours pour ce que nous n\'avons pas..."<br><br>',
+            'corporation_id' => 144275616,
+            'issuer_id'      => 412492115,
+            'date'           => '2014-07-10 22:44:43',
+            'reason'         => 'Pour un scoot redoutable et une présence incroyable',
+            'status'         => 'private',
+            'graphics'       => json_encode('[{"color":-1,"graphic":"Caldari.1_1","layer":0,"part":1},{"color":-8847360,"graphic":"Caldari.2_4","layer":1,"part":1},{"color":-4254186,"graphic":"Caldari.2_1","layer":2,"part":1},{"color":-15191726,"graphic":"Caldari.3_1","layer":3,"part":1},{"color":-330271,"graphic":"Caldari.1_2","layer":4,"part":1},{"color":-1,"graphic":"elements.24_2","layer":0,"part":2},{"color":-1,"graphic":"elements.13_2","layer":1,"part":2},{"color":-1,"graphic":"elements.17_2","layer":2,"part":2},{"color":-1,"graphic":"star.3_2","layer":3,"part":2}]'),
+        ]);
+
+        $medals = CharacterMedal::all();
+        $data = json_encode(MedalResource::collection($medals));
+        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/medals.json', $data);
+
+        $job = new Medals($token);
         $job->handle();
 
-        $blueprints = CharacterBlueprint::all();
-        $data = json_encode(BlueprintResource::collection($blueprints));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/blueprints.json', $data);
+        $medals = CharacterMedal::all();
+        $data = json_encode(MedalResource::collection($medals));
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/medals.json', $data);
     }
 
     /**
@@ -218,14 +270,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_medals.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Medals($token);
         $job->handle();
     }
 
@@ -241,14 +293,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_medals.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Medals($token);
         $job->handle();
     }
 
@@ -264,14 +316,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_medals.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Medals($token);
         $job->handle();
     }
 
@@ -287,14 +339,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_medals.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Medals($token);
         $job->handle();
     }
 
@@ -310,14 +362,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_medals.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Medals($token);
         $job->handle();
     }
 
@@ -333,14 +385,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_medals.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Medals($token);
         $job->handle();
     }
 
@@ -360,7 +412,7 @@ class BlueprintsTest extends JobEsiTestCase
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Medals($token);
         $job->handle();
     }
 }

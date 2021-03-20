@@ -28,19 +28,20 @@ use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Exception\PermanentInvalidTokenException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Exception\UnavailableEveServersException;
-use Seat\Eveapi\Jobs\Character\Blueprints;
-use Seat\Eveapi\Models\Character\CharacterBlueprint;
+use Seat\Eveapi\Jobs\Character\Roles;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Character\CharacterRole;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
 use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
-use Seat\Eveapi\Tests\Resources\Esi\Character\BlueprintResource;
+use Seat\Eveapi\Tests\Resources\Esi\Character\RoleResource;
 
 /**
- * Class BlueprintsTest.
+ * Class RolesTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Character
  */
-class BlueprintsTest extends JobEsiTestCase
+class RolesTest extends JobEsiTestCase
 {
     public static function setUpBeforeClass(): void
     {
@@ -48,11 +49,10 @@ class BlueprintsTest extends JobEsiTestCase
 
         // prepare dummy responses
         $response_success = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/blueprints.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/characters/roles.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
-                'X-Pages' => 1,
             ],
             carbon()->addSeconds(5)->toRfc7231String(),
             200
@@ -69,11 +69,10 @@ class BlueprintsTest extends JobEsiTestCase
         );
 
         $response_success_bis = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/blueprints.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/characters/roles.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
-                'X-Pages' => 1,
             ],
             carbon()->addSeconds(5)->toRfc7231String(),
             200
@@ -101,24 +100,33 @@ class BlueprintsTest extends JobEsiTestCase
     public function testHandleSuccess()
     {
         $token = new RefreshToken([
-            'character_id' => 180548812,
+            'character_id' => 90795931,
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_corporation_roles.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $character = CharacterInfo::create([
+            'character_id' => 90795931,
+            'ancestry_id' => 19,
+            'birthday' => "2015-03-24T11:37:00Z",
+            'bloodline_id' => 3,
+            'gender' => 'male',
+            'name' => 'CCP Bartender',
+            'race_id' => 2,
+            'title' => 'Original title',
+        ]);
+
+        $job = new Roles($token);
         $job->handle();
 
-        $blueprints = CharacterBlueprint::all();
-
-        $data = json_encode(BlueprintResource::collection($blueprints));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/blueprints.json', $data);
+        $data = json_encode(RoleResource::make($character));
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/roles.json', $data);
     }
 
     /**
@@ -127,39 +135,63 @@ class BlueprintsTest extends JobEsiTestCase
     public function testHandleNotModified()
     {
         $token = new RefreshToken([
-            'character_id' => 180548812,
+            'character_id' => 90795931,
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_corporation_roles.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        CharacterBlueprint::create([
-            'character_id'        => 180548812,
-            'item_id'             => 1000000010495,
-            'location_flag'       => 'Hangar',
-            'location_id'         => 60014719,
-            'material_efficiency' => 0,
-            'quantity'            => 1,
-            'runs'                => -1,
-            'time_efficiency'     => 0,
-            'type_id'             => 691
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'Directory',
+            'scope'        => 'roles',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'Station_Manager',
+            'scope'        => 'roles',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_hq',
+            'scope'        => 'Hangar_Query_3',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_hq',
+            'scope'        => 'Hangar_Query_5',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_other',
+            'scope'        => 'Hangar_Take_5',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_other',
+            'scope'        => 'Hangar_Query_5',
         ]);
 
         // sleep for 5 seconds so we burn cache entry and move to ETag flow
         sleep(5);
 
-        $job = new Blueprints($token);
+        $job = new Roles($token);
         $job->handle();
 
-        $blueprints = CharacterBlueprint::all();
+        $roles = CharacterRole::all();
 
-        foreach ($blueprints as $blueprint)
-            $this->assertEquals($blueprint->created_at, $blueprint->updated_at);
+        foreach ($roles as $role)
+            $this->assertEquals($role->created_at, $role->updated_at);
     }
 
     /**
@@ -168,42 +200,89 @@ class BlueprintsTest extends JobEsiTestCase
     public function testHandleUpdated()
     {
         // bypass cache control to force job to be processed
-        EsiInMemoryCache::getInstance()->forget('/v2/characters/180548812/blueprints/', 'datasource=tranquility&page=1');
+        EsiInMemoryCache::getInstance()->forget('/v2/characters/90795931/roles/', 'datasource=tranquility');
 
         $token = new RefreshToken([
-            'character_id' => 180548812,
+            'character_id' => 90795931,
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_corporation_roles.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        CharacterBlueprint::create([
-            'character_id'        => 180548812,
-            'item_id'             => 1000000010495,
-            'location_flag'       => 'RigSlot2',
-            'location_id'         => 1654676464,
-            'material_efficiency' => 7,
-            'quantity'            => 1,
-            'runs'                => -1,
-            'time_efficiency'     => 3,
-            'type_id'             => 730
+        $character = CharacterInfo::create([
+            'character_id' => 90795931,
+            'ancestry_id' => 19,
+            'birthday' => "2015-03-24T11:37:00Z",
+            'bloodline_id' => 3,
+            'gender' => 'male',
+            'name' => 'CCP Bartender',
+            'race_id' => 2,
+            'title' => 'Original title',
         ]);
 
-        $blueprints = CharacterBlueprint::all();
-        $data = json_encode(BlueprintResource::collection($blueprints));
-        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/blueprints.json', $data);
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'Directory',
+            'scope'        => 'roles',
+        ]);
 
-        $job = new Blueprints($token);
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'Station_Manager',
+            'scope'        => 'roles',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_hq',
+            'scope'        => 'Hangar_Query_3',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_hq',
+            'scope'        => 'Hangar_Query_5',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_base',
+            'scope'        => 'Hangar_Take_5',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_base',
+            'scope'        => 'Hangar_Query_5',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_other',
+            'scope'        => 'Hangar_Take_5',
+        ]);
+
+        CharacterRole::create([
+            'character_id' => 90795931,
+            'role'         => 'roles_at_other',
+            'scope'        => 'Hangar_Query_5',
+        ]);
+
+        $data = json_encode(RoleResource::make($character));
+        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/roles.json', $data);
+
+        $job = new Roles($token);
         $job->handle();
 
-        $blueprints = CharacterBlueprint::all();
-        $data = json_encode(BlueprintResource::collection($blueprints));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/blueprints.json', $data);
+        $character->load('corporation_roles');
+
+        $data = json_encode(RoleResource::make($character));
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/roles.json', $data);
     }
 
     /**
@@ -218,14 +297,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_corporation_roles.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Roles($token);
         $job->handle();
     }
 
@@ -241,14 +320,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_corporation_roles.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Roles($token);
         $job->handle();
     }
 
@@ -264,14 +343,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_corporation_roles.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Roles($token);
         $job->handle();
     }
 
@@ -287,14 +366,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_corporation_roles.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Roles($token);
         $job->handle();
     }
 
@@ -310,14 +389,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_corporation_roles.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Roles($token);
         $job->handle();
     }
 
@@ -333,14 +412,14 @@ class BlueprintsTest extends JobEsiTestCase
             'version' => RefreshToken::CURRENT_VERSION,
             'user_id' => 0,
             'refresh_token' => 'refresh',
-            'scopes' => ['esi-characters.read_blueprints.v1'],
+            'scopes' => ['esi-characters.read_corporation_roles.v1'],
             'expires_on' => carbon()->addHour(),
             'token' => 'token',
             'character_owner_hash' => '87qs9fs1df1sfd654s65d4fgf6s6d4f654q6sf4d6q4gf63qsfc143q464sf',
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Roles($token);
         $job->handle();
     }
 
@@ -360,7 +439,7 @@ class BlueprintsTest extends JobEsiTestCase
         ]);
         $token->save();
 
-        $job = new Blueprints($token);
+        $job = new Roles($token);
         $job->handle();
     }
 }
