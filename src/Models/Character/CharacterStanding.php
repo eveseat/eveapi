@@ -36,6 +36,11 @@ class CharacterStanding extends Model
      */
     protected static $unguarded = true;
 
+    protected $casts = [
+        'from_id' => 'integer',
+        'standing' => 'float',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
