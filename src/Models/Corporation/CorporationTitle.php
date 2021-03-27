@@ -37,6 +37,10 @@ class CorporationTitle extends Model
      */
     protected static $unguarded = true;
 
+    protected $casts = [
+        'title_id' => 'integer',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
