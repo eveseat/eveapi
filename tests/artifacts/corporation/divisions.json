@@ -1,0 +1,14 @@
+{
+  "hangar": [
+    {
+      "division": 1,
+      "name": "Awesome Hangar 1"
+    }
+  ],
+  "wallet": [
+    {
+      "division": 1,
+      "name": "Rich Wallet 1"
+    }
+  ]
+}
