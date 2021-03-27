@@ -44,7 +44,7 @@ class AffiliationTest extends JobEsiTestCase
 
         // prepare dummy responses
         $response_success = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/affiliation.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/affiliation.json'),
             [
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
             ],
@@ -76,7 +76,7 @@ class AffiliationTest extends JobEsiTestCase
         $affiliation = CharacterAffiliation::all();
 
         $data = json_encode(AffiliationResource::collection($affiliation));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/affiliation.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/affiliation.json', $data);
     }
 
     /**
@@ -91,7 +91,7 @@ class AffiliationTest extends JobEsiTestCase
         $affiliation->save();
 
         $data = json_encode($affiliation);
-        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/affiliation.json', $data);
+        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/character/affiliation.json', $data);
 
         $job = new Affiliation([90795931]);
         $job->handle();
@@ -99,7 +99,7 @@ class AffiliationTest extends JobEsiTestCase
         $affiliation = CharacterAffiliation::all();
 
         $data = json_encode(AffiliationResource::collection($affiliation));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/affiliation.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/affiliation.json', $data);
     }
 
     /**

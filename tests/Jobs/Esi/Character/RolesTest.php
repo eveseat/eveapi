@@ -49,7 +49,7 @@ class RolesTest extends JobEsiTestCase
 
         // prepare dummy responses
         $response_success = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/roles.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/roles.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
@@ -69,7 +69,7 @@ class RolesTest extends JobEsiTestCase
         );
 
         $response_success_bis = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/roles.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/roles.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
@@ -126,7 +126,7 @@ class RolesTest extends JobEsiTestCase
         $job->handle();
 
         $data = json_encode(RoleResource::make($character));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/roles.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/roles.json', $data);
     }
 
     /**
@@ -274,7 +274,7 @@ class RolesTest extends JobEsiTestCase
         ]);
 
         $data = json_encode(RoleResource::make($character));
-        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/roles.json', $data);
+        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/character/roles.json', $data);
 
         $job = new Roles($token);
         $job->handle();
@@ -282,7 +282,7 @@ class RolesTest extends JobEsiTestCase
         $character->load('corporation_roles');
 
         $data = json_encode(RoleResource::make($character));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/roles.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/roles.json', $data);
     }
 
     /**

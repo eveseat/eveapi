@@ -47,5 +47,6 @@ class InfoMapping extends DataMapping
         'faction_id'      => 'faction_id',
         'home_station_id' => 'home_station_id',
         'shares'          => 'shares',
+        'war_eligible'    => 'war_eligible',
     ];
 }

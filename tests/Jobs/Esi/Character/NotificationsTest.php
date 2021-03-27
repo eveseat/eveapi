@@ -48,7 +48,7 @@ class NotificationsTest extends JobEsiTestCase
 
         // prepare dummy responses
         $response_success = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/notifications.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/notifications.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
@@ -68,7 +68,7 @@ class NotificationsTest extends JobEsiTestCase
         );
 
         $response_success_bis = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/notifications.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/notifications.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
@@ -116,7 +116,7 @@ class NotificationsTest extends JobEsiTestCase
         $notifications = CharacterNotification::all();
 
         $data = json_encode(NotificationResource::collection($notifications));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/notifications.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/notifications.json', $data);
     }
 
     /**
@@ -210,14 +210,14 @@ class NotificationsTest extends JobEsiTestCase
 
         $notifications = CharacterNotification::all();
         $data = json_encode(NotificationResource::collection($notifications));
-        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/notifications.json', $data);
+        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/character/notifications.json', $data);
 
         $job = new Notifications($token);
         $job->handle();
 
         $notifications = CharacterNotification::all();
         $data = json_encode(NotificationResource::collection($notifications));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/notifications.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/notifications.json', $data);
     }
 
     /**

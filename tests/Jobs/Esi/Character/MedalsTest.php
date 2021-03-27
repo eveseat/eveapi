@@ -48,7 +48,7 @@ class MedalsTest extends JobEsiTestCase
 
         // prepare dummy responses
         $response_success = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/medals.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/medals.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
@@ -68,7 +68,7 @@ class MedalsTest extends JobEsiTestCase
         );
 
         $response_success_bis = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/medals.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/medals.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
@@ -116,7 +116,7 @@ class MedalsTest extends JobEsiTestCase
         $medals = CharacterMedal::all();
 
         $data = json_encode(MedalResource::collection($medals));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/medals.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/medals.json', $data);
     }
 
     /**
@@ -248,14 +248,14 @@ class MedalsTest extends JobEsiTestCase
 
         $medals = CharacterMedal::all();
         $data = json_encode(MedalResource::collection($medals));
-        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/medals.json', $data);
+        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/character/medals.json', $data);
 
         $job = new Medals($token);
         $job->handle();
 
         $medals = CharacterMedal::all();
         $data = json_encode(MedalResource::collection($medals));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/medals.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/medals.json', $data);
     }
 
     /**

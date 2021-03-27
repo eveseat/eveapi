@@ -48,7 +48,7 @@ class AgentResearchTest extends JobEsiTestCase
 
         // prepare dummy responses
         $response_success = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/agents_research.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/agents_research.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
@@ -68,7 +68,7 @@ class AgentResearchTest extends JobEsiTestCase
         );
 
         $response_success_bis = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/agents_research.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/agents_research.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
@@ -116,7 +116,7 @@ class AgentResearchTest extends JobEsiTestCase
         $agents = CharacterAgentResearch::all();
 
         $data = json_encode(AgentsResearchResource::collection($agents));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/agents_research.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/agents_research.json', $data);
     }
 
     /**
@@ -220,14 +220,14 @@ class AgentResearchTest extends JobEsiTestCase
 
         $agents = CharacterAgentResearch::all();
         $data = json_encode(AgentsResearchResource::collection($agents));
-        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/agents_research.json', $data);
+        $this->assertJsonStringNotEqualsJsonFile(__DIR__ . '/../../../artifacts/character/agents_research.json', $data);
 
         $job = new AgentsResearch($token);
         $job->handle();
 
         $agents = CharacterAgentResearch::all();
         $data = json_encode(AgentsResearchResource::collection($agents));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/agents_research.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/agents_research.json', $data);
     }
 
     /**

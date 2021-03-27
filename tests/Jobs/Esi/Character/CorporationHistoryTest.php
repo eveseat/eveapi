@@ -44,7 +44,7 @@ class CorporationHistoryTest extends JobEsiTestCase
 
         // prepare dummy responses
         $response_success = new EsiResponse(
-            file_get_contents(__DIR__ . '/../../../artifacts/characters/corporation_history.json'),
+            file_get_contents(__DIR__ . '/../../../artifacts/character/corporation_history.json'),
             [
                 'ETag' => '2b163975d331cee0273f42391831a1b9d7ca53cec57c45d6e4631cdc',
                 'Expires' => carbon()->addSeconds(5)->toRfc7231String(),
@@ -87,7 +87,7 @@ class CorporationHistoryTest extends JobEsiTestCase
         $corporations = CharacterCorporationHistory::all();
 
         $data = json_encode(CorporationHistoryResource::collection($corporations));
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/characters/corporation_history.json', $data);
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . '/../../../artifacts/character/corporation_history.json', $data);
     }
 
     /**
