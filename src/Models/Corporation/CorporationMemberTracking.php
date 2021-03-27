@@ -96,6 +96,15 @@ class CorporationMemberTracking extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'character_id' => 'integer',
+        'location_id' => 'integer',
+        'ship_type_id' => 'integer',
+    ];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function ship()
