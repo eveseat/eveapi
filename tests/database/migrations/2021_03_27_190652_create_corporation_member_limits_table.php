@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015 to 2021 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,35 +20,40 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Corporation;
-
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CorporationMembersLimit.
- * @package Seat\Eveapi\Models\Corporation
+ * Class CreateCorporationMemberLimitsTable.
  */
-class CorporationMemberLimits extends Model
+class CreateCorporationMemberLimitsTable extends Migration
 {
     /**
-     * @var bool
+     * Run the migrations.
+     *
+     * @return void
      */
-    protected static $unguarded = true;
+    public function up()
+    {
+
+        Schema::create('corporation_member_limits', function (Blueprint $table) {
+
+            $table->bigInteger('corporation_id')->primary();
+            $table->integer('limit');
+
+            $table->timestamps();
+        });
+    }
 
     /**
-     * @var bool
+     * Reverse the migrations.
+     *
+     * @return void
      */
-    public $incrementing = false;
+    public function down()
+    {
 
-    /**
-     * @var string[]
-     */
-    protected $casts = [
-        'limit' => 'integer',
-    ];
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'corporation_id';
+        Schema::dropIfExists('corporation_member_limits');
+    }
 }
