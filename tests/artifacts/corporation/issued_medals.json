@@ -1,0 +1,10 @@
+[
+  {
+    "character_id": 45678,
+    "issued_at": "2017-10-10T14:00:00Z",
+    "issuer_id": 67890,
+    "medal_id": 123,
+    "reason": "Awesome Reason",
+    "status": "private"
+  }
+]
