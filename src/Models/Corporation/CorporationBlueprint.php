@@ -45,6 +45,19 @@ class CorporationBlueprint extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'item_id' => 'integer',
+        'location_id' => 'integer',
+        'material_efficiency' => 'integer',
+        'quantity' => 'integer',
+        'runs' => 'integer',
+        'time_efficiency' => 'integer',
+        'type_id' => 'integer',
+    ];
+
+    /**
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'item_id'];
