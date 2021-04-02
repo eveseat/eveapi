@@ -47,13 +47,16 @@ class CharacterBlueprint extends Model
      */
     protected $primaryKey = 'item_id';
 
+    /**
+     * @var string[]
+     */
     protected $casts = [
         'location_id' => 'integer',
         'material_efficiency' => 'integer',
         'quantity' => 'integer',
         'runs' => 'integer',
         'time_efficiency' => 'integer',
-        'type_id' => 'integer'
+        'type_id' => 'integer',
     ];
 
     /**
