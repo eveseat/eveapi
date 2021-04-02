@@ -29,6 +29,7 @@
     "doctrine/dbal": "^2.9",
     "softcreatr/jsonpath": "^0.7",
     "ext-json": "*",
+    "ext-posix": "*",
     "ext-redis": "*"
   },
   "require-dev": {
