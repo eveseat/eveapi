@@ -40,4 +40,13 @@ class Insurance extends Model
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @var string[]
+     */
+    protected $casts = [
+        'type_id' => 'integer',
+        'cost' => 'double',
+        'payout' => 'double',
+    ];
 }
