@@ -30,7 +30,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CharacterAttribute extends Model
 {
-
     /**
      * @var bool
      */
@@ -45,6 +44,18 @@ class CharacterAttribute extends Model
      * @var string
      */
     protected $primaryKey = 'character_id';
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'bonus_remap' => 'integer',
+        'charisma' => 'integer',
+        'intelligence' => 'integer',
+        'memory' => 'integer',
+        'perception' => 'integer',
+        'willpower' => 'integer',
+    ];
 
     /**
      * @param $value
