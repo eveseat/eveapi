@@ -36,6 +36,17 @@ class CharacterFittingItem extends Model
      */
     protected static $unguarded = true;
 
+    /**
+     * @var string[]
+     */
+    protected $casts = [
+        'quantity' => 'integer',
+        'type_id' => 'integer',
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function type()
     {
 
