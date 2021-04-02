@@ -72,6 +72,16 @@ class CharacterSkill extends Model
     protected static $unguarded = true;
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'active_skill_level' => 'integer',
+        'skill_id' => 'integer',
+        'skillpoints_in_skill' => 'integer',
+        'trained_skill_level' => 'integer',
+    ];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function character()

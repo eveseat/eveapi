@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015 to 2021 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,36 +20,41 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
-
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CharacterInfo.
- * @package Seat\Eveapi\Models\Character
+ * Class CreateCharacterInfoSkillsTable.
  */
-class CharacterInfoSkill extends Model
+class CreateCharacterInfoSkillsTable extends Migration
 {
     /**
-     * @var bool
+     * Run the migrations.
+     *
+     * @return void
      */
-    protected static $unguarded = true;
+    public function up()
+    {
+
+        Schema::create('character_info_skills', function (Blueprint $table) {
+
+            $table->bigInteger('character_id')->primary();
+            $table->bigInteger('total_sp');
+            $table->bigInteger('unallocated_sp')->nullable();
+
+            $table->timestamps();
+        });
+    }
 
     /**
-     * @var string
+     * Reverse the migrations.
+     *
+     * @return void
      */
-    protected $primaryKey = 'character_id';
+    public function down()
+    {
 
-    /**
-     * @var array
-     */
-    protected $casts = [
-        'total_sp' => 'integer',
-        'unallocated_sp' => 'integer',
-    ];
-
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
+        Schema::dropIfExists('character_info_skills');
+    }
 }
