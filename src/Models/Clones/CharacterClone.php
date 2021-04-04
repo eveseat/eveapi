@@ -44,4 +44,11 @@ class CharacterClone extends Model
      * @var string
      */
     protected $primaryKey = 'character_id';
+
+    /**
+     * @var string[]
+     */
+    protected $casts = [
+        'home_location_id',
+    ];
 }

@@ -87,6 +87,8 @@ class CharacterJumpClone extends Model
      */
     protected $casts = [
         'implants' => 'array',
+        'jump_clone_id' => 'integer',
+        'location_id' => 'integer',
     ];
 
     /**
