@@ -33,14 +33,14 @@ use Seat\Eveapi\Models\Contacts\CharacterLabel;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Contacts\ContactLabelResource;
 
 /**
  * Class LabelsTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Contacts\Character
  */
-class LabelsTest extends JobEsiTestCase
+class LabelsTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

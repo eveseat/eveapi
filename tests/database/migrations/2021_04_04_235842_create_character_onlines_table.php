@@ -25,9 +25,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CreateCharacterCorporationHistoriesTable.
+ * Class CreateCharacterOnlineTable.
  */
-class CreateCharacterCorporationHistoriesTable extends Migration
+class CreateCharacterOnlinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -37,17 +37,13 @@ class CreateCharacterCorporationHistoriesTable extends Migration
     public function up()
     {
 
-        Schema::create('character_corporation_histories', function (Blueprint $table) {
+        Schema::create('character_onlines', function (Blueprint $table) {
 
-            $table->bigIncrements('id');
             $table->bigInteger('character_id');
-            $table->dateTime('start_date');
-            $table->bigInteger('corporation_id');
-            $table->boolean('is_deleted')->nullable();
-            $table->integer('record_id');
-
-            $table->index(['character_id']);
-            $table->unique(['character_id', 'record_id']);
+            $table->dateTime('last_login')->nullable();
+            $table->dateTime('last_logout')->nullable();
+            $table->integer('logins')->nullable();
+            $table->boolean('online');
 
             $table->timestamps();
         });
@@ -61,6 +57,6 @@ class CreateCharacterCorporationHistoriesTable extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('character_corporation_histories');
+        Schema::dropIfExists('character_onlines');
     }
 }

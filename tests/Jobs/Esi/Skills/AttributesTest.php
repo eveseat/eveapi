@@ -33,14 +33,14 @@ use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Skills\CharacterAttribute;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Skills\AttributeResource;
 
 /**
  * Class AttributesTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Skills
  */
-class AttributesTest extends JobEsiTestCase
+class AttributesTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

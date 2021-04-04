@@ -39,7 +39,7 @@ use Seat\Eveapi\Models\Fittings\Insurance;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Fittings\FittingResource;
 use Seat\Eveapi\Tests\Resources\Esi\Insurance\InsuranceResource;
 
@@ -47,7 +47,7 @@ use Seat\Eveapi\Tests\Resources\Esi\Insurance\InsuranceResource;
  * Class PricesTest
  * @package Seat\Eveapi\Tests\Jobs\Esi\Insurance
  */
-class PricesTest extends JobEsiTestCase
+class PricesTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

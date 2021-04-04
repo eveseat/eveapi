@@ -33,14 +33,14 @@ use Seat\Eveapi\Models\Corporation\CorporationFacility;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Corporation\FacilityResource;
 
 /**
  * Class FacilitiesTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Corporation
  */
-class FacilitiesTest extends JobEsiTestCase
+class FacilitiesTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

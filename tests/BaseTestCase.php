@@ -15,12 +15,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Tests\Jobs\Esi;
+namespace Seat\Eveapi\Tests;
 
 use Illuminate\Support\Facades\Event;
 use Lunaweb\RedisMock\Providers\RedisMockServiceProvider;
@@ -32,10 +32,10 @@ use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
 
 /**
- * Class JobEsiTestCase.
- * @package Seat\Eveapi\Tests\Jobs\Esi
+ * Class BaseTestCase.
+ * @package Seat\Eveapi\Tests
  */
-class JobEsiTestCase extends TestCase
+class BaseTestCase extends TestCase
 {
     protected function getEnvironmentSetUp($app)
     {
@@ -86,7 +86,7 @@ class JobEsiTestCase extends TestCase
         // override logs by using honey pot
         Configuration::getInstance()->logger = NullLogger::class;
 
-        $this->loadMigrationsFrom(realpath(__DIR__ . '/../../database/migrations'));
+        $this->loadMigrationsFrom(realpath(__DIR__ . '/database/migrations'));
     }
 
     /**

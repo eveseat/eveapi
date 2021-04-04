@@ -131,13 +131,13 @@ class CharacterInfo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function balance()
     {
 
-        return $this->belongsTo(CharacterWalletBalance::class,
-            'character_id', 'character_id');
+        return $this->hasOne(CharacterWalletBalance::class, 'character_id', 'character_id')
+            ->withDefault();
     }
 
     /**

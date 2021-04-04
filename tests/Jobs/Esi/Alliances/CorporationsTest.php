@@ -31,13 +31,13 @@ use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 
 /**
  * Class CorporationsTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Alliances
  */
-class CorporationsTest extends JobEsiTestCase
+class CorporationsTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

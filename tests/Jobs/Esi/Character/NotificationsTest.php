@@ -33,14 +33,14 @@ use Seat\Eveapi\Models\Character\CharacterNotification;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Character\NotificationResource;
 
 /**
  * Class NotificationsTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Character
  */
-class NotificationsTest extends JobEsiTestCase
+class NotificationsTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

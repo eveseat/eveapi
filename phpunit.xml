@@ -23,6 +23,9 @@
         <testsuite name="Esi Jobs Test Suite">
             <directory suffix="Test.php">./tests/Jobs/Esi/</directory>
         </testsuite>
+        <testsuite name="Relationship Test Suite">
+            <directory suffix="Test.php">./tests/Relationship/</directory>
+        </testsuite>
     </testsuites>
 
 </phpunit>

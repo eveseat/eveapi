@@ -28,7 +28,7 @@ use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Exception\UnavailableEveServersException;
 use Seat\Eveapi\Jobs\Character\Affiliation;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
 use Seat\Eveapi\Tests\Resources\Esi\Character\AffiliationResource;
 
@@ -36,7 +36,7 @@ use Seat\Eveapi\Tests\Resources\Esi\Character\AffiliationResource;
  * Class AffiliationTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Character
  */
-class AffiliationTest extends JobEsiTestCase
+class AffiliationTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

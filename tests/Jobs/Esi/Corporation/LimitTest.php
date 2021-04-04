@@ -33,13 +33,13 @@ use Seat\Eveapi\Models\Corporation\CorporationMemberLimits;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 
 /**
  * Class LimitTest
  * @package Seat\Eveapi\Tests\Jobs\Esi\Corporation
  */
-class LimitTest extends JobEsiTestCase
+class LimitTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

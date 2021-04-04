@@ -33,14 +33,14 @@ use Seat\Eveapi\Models\Character\CharacterAgentResearch;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Character\AgentsResearchResource;
 
 /**
  * Class AgentResearchTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Character
  */
-class AgentResearchTest extends JobEsiTestCase
+class AgentResearchTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

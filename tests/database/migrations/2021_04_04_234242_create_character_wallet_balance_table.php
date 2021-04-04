@@ -25,9 +25,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CreateCharacterCorporationHistoriesTable.
+ * Class CreateCharacterWalletBalanceTable.
  */
-class CreateCharacterCorporationHistoriesTable extends Migration
+class CreateCharacterWalletBalanceTable extends Migration
 {
     /**
      * Run the migrations.
@@ -37,17 +37,10 @@ class CreateCharacterCorporationHistoriesTable extends Migration
     public function up()
     {
 
-        Schema::create('character_corporation_histories', function (Blueprint $table) {
+        Schema::create('character_wallet_balances', function (Blueprint $table) {
 
-            $table->bigIncrements('id');
             $table->bigInteger('character_id');
-            $table->dateTime('start_date');
-            $table->bigInteger('corporation_id');
-            $table->boolean('is_deleted')->nullable();
-            $table->integer('record_id');
-
-            $table->index(['character_id']);
-            $table->unique(['character_id', 'record_id']);
+            $table->double('balance');
 
             $table->timestamps();
         });
@@ -61,6 +54,6 @@ class CreateCharacterCorporationHistoriesTable extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('character_corporation_histories');
+        Schema::dropIfExists('character_wallet_balances');
     }
 }

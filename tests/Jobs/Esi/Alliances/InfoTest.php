@@ -30,14 +30,14 @@ use Seat\Eveapi\Jobs\Alliances\Info;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Alliances\AllianceResource;
 
 /**
  * Class InfoTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Alliances
  */
-class InfoTest extends JobEsiTestCase
+class InfoTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

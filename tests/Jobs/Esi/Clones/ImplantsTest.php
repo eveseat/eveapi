@@ -34,13 +34,13 @@ use Seat\Eveapi\Models\Clones\CharacterImplant;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 
 /**
  * Class ImplantsTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Clones
  */
-class ImplantsTest extends JobEsiTestCase
+class ImplantsTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

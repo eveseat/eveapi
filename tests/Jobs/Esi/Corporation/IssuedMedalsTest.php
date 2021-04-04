@@ -33,14 +33,14 @@ use Seat\Eveapi\Models\Corporation\CorporationIssuedMedal;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Corporation\IssuedMedalResource;
 
 /**
  * Class IssuedMedalsTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Corporation
  */
-class IssuedMedalsTest extends JobEsiTestCase
+class IssuedMedalsTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

@@ -34,14 +34,14 @@ use Seat\Eveapi\Models\Corporation\CorporationTitle;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiInMemoryCache;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Character\TitleResource;
 
 /**
  * Class TitlesTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Character
  */
-class TitlesTest extends JobEsiTestCase
+class TitlesTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {

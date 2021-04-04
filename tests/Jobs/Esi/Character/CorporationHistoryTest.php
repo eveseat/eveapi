@@ -29,14 +29,14 @@ use Seat\Eveapi\Exception\UnavailableEveServersException;
 use Seat\Eveapi\Jobs\Character\CorporationHistory;
 use Seat\Eveapi\Models\Character\CharacterCorporationHistory;
 use Seat\Eveapi\Tests\Mocks\Esi\EsiMockFetcher;
-use Seat\Eveapi\Tests\Jobs\Esi\JobEsiTestCase;
+use Seat\Eveapi\Tests\BaseTestCase;
 use Seat\Eveapi\Tests\Resources\Esi\Character\CorporationHistoryResource;
 
 /**
  * Class CorporationHistoryTest.
  * @package Seat\Eveapi\Tests\Jobs\Esi\Character
  */
-class CorporationHistoryTest extends JobEsiTestCase
+class CorporationHistoryTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {
