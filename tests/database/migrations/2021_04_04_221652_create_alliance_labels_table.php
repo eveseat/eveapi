@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015 to 2021 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,35 +20,42 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Contacts;
-
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Class AllianceLabel.
- *
- * @package Seat\Eveapi\Models\Contacts
+ * Class CreateAllianceLabelsTable.
  */
-class AllianceLabel extends Model
+class CreateAllianceLabelsTable extends Migration
 {
-
     /**
-     * @var bool
+     * Run the migrations.
+     *
+     * @return void
      */
-    protected static $unguarded = true;
-
-    /**
-     * @var string[]
-     */
-    protected $casts = [
-        'label_id' => 'integer',
-    ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function contacts()
+    public function up()
     {
-        return $this->belongsToMany(AllianceContact::class);
+
+        Schema::create('alliance_labels', function (Blueprint $table) {
+
+            $table->bigIncrements('id');
+            $table->integer('alliance_id');
+            $table->bigInteger('label_id');
+            $table->string('name');
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+
+        Schema::dropIfExists('alliance_labels');
     }
 }
