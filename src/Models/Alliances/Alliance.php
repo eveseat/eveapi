@@ -51,6 +51,16 @@ class Alliance extends Model
     protected $primaryKey = 'alliance_id';
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'creator_corporation_id' => 'integer',
+        'creator_id' => 'integer',
+        'executor_corporation_id' => 'integer',
+        'faction_id' => 'integer',
+    ];
+
+    /**
      * @param $value
      */
     public function setDateFoundedAttribute($value)
