@@ -28,6 +28,10 @@ use Seat\Eveapi\Bus\Corporation;
 use Seat\Eveapi\Jobs\Universe\Names;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
+use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
+use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
+use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
+use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 
 /**
  * Class PublicInfo.
@@ -54,7 +58,11 @@ class PublicInfo extends Command
      */
     public function handle()
     {
-        Names::dispatch();
+        $entities_list = $this->buildUniqueEntitiesIdList();
+
+        $entities_list->chunk(Names::ITEMS_LIMIT)->each(function ($chunk) {
+            Names::dispatch($chunk);
+        });
 
         CharacterInfo::doesntHave('refresh_token')->each(function ($character) {
             (new Character($character->character_id))->fire();
@@ -63,5 +71,59 @@ class PublicInfo extends Command
         CorporationInfo::all()->each(function ($corporation) {
             (new Corporation($corporation->corporation_id))->fire();
         });
+    }
+
+    /**
+     * @return array
+     */
+    private function buildUniqueEntitiesIdList()
+    {
+        $entities_id = collect();
+
+        // collect entries from character wallet
+        $entities_id->push(CharacterWalletJournal::select('first_party_id')
+            ->whereNotNull('first_party_id')
+            ->distinct()
+            ->get()
+            ->pluck('first_party_id')
+            ->toArray());
+
+        $entities_id->push(CharacterWalletJournal::select('second_party_id')
+            ->whereNotNull('second_party_id')
+            ->distinct()
+            ->get()
+            ->pluck('second_party_id')
+            ->toArray());
+
+        $entities_id->push(CharacterWalletTransaction::select('client_id')
+            ->whereNotNull('client_id')
+            ->distinct()
+            ->get()
+            ->pluck('client_id')
+            ->toArray());
+
+        // collect entities from corporation wallet
+        $entities_id->push(CorporationWalletJournal::select('first_party_id')
+            ->whereNotNull('first_party_id')
+            ->distinct()
+            ->get()
+            ->pluck('first_party_id')
+            ->toArray());
+
+        $entities_id->push(CorporationWalletJournal::select('second_party_id')
+            ->whereNotNull('second_party_id')
+            ->distinct()
+            ->get()
+            ->pluck('second_party_id')
+            ->toArray());
+
+        $entities_id->push(CorporationWalletTransaction::select('client_id')
+            ->whereNotNull('client_id')
+            ->distinct()
+            ->get()
+            ->pluck('client_id')
+            ->toArray());
+
+        return $entities_id->unique()->toArray();
     }
 }

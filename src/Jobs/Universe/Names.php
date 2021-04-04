@@ -36,8 +36,10 @@ class Names extends EsiBase
 
     /**
      * The maximum number of entity ids we can request resolution for.
+     *
+     * @var int
      */
-    protected $items_id_limit = 1000;
+    const ITEMS_LIMIT = 1000;
 
     /**
      * @var string
@@ -70,6 +72,15 @@ class Names extends EsiBase
     protected $existing_entity_ids;
 
     /**
+     * Names constructor.
+     * @param array $entity_ids
+     */
+    public function __construct(array $entity_ids)
+    {
+        $this->entity_ids = collect($entity_ids);
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
@@ -82,30 +93,7 @@ class Names extends EsiBase
             ->get()
             ->pluck('entity_id');
 
-        $this->entity_ids = collect();
-
-        $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')
-            ->whereNotNull('first_party_id')
-            ->distinct()
-            ->get()
-            ->pluck('first_party_id')
-            ->toArray());
-
-        $this->entity_ids->push(CharacterWalletJournal::select('second_party_id')
-            ->whereNotNull('second_party_id')
-            ->distinct()
-            ->get()
-            ->pluck('second_party_id')
-            ->toArray());
-
-        $this->entity_ids->push(CharacterWalletTransaction::select('client_id')
-            ->whereNotNull('client_id')
-            ->distinct()
-            ->get()
-            ->pluck('client_id')
-            ->toArray());
-
-        $this->entity_ids->flatten()->diff($this->existing_entity_ids)->values()->chunk($this->items_id_limit)->each(function ($chunk) {
+        $this->entity_ids->flatten()->diff($this->existing_entity_ids)->values()->chunk(self::ITEMS_LIMIT)->each(function ($chunk) {
 
             $this->request_body = collect($chunk->values()->all())->unique()->values()->all();
 

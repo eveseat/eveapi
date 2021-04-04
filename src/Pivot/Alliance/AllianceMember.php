@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015 to 2021 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,23 +15,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Alliances;
+namespace Seat\Eveapi\Pivot\Alliance;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * Class AllianceMember.
- * @package Seat\Eveapi\Models\Alliances
+ * @package Seat\Eveapi\Pivot\Alliance
  */
-class AllianceMember extends Model
+class AllianceMember extends Pivot
 {
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
+
 }

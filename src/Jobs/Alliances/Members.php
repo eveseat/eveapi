@@ -23,7 +23,8 @@
 namespace Seat\Eveapi\Jobs\Alliances;
 
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Alliances\AllianceMember;
+use Seat\Eveapi\Jobs\Universe\Names;
+use Seat\Eveapi\Models\Alliances\Alliance;
 
 /**
  * Class Members.
@@ -78,22 +79,15 @@ class Members extends EsiBase
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if ($corporations->isCachedLoad() && AllianceMember::where('alliance_id', $this->alliance_id)->count() > 0)
+        $alliance = Alliance::find($this->alliance_id);
+
+        if ($corporations->isCachedLoad() && $alliance->members->count() > 0)
             return;
 
-        $corporation_ids = collect($corporations);
+        $name_job = new Names((array) $corporations);
+        $name_job->handle();
 
-        $corporation_ids->each(function ($corporation_id) {
-
-            AllianceMember::firstOrCreate([
-                'alliance_id' => $this->alliance_id,
-                'corporation_id' => $corporation_id,
-            ]);
-        });
-
-        AllianceMember::where('alliance_id', $this->alliance_id)
-            ->whereNotIn('corporation_id', $corporation_ids->flatten()->all())
-            ->delete();
+        $alliance->members()->sync($corporations);
     }
 
     /**
