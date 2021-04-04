@@ -84,7 +84,9 @@ class CharacterContact extends Model
     protected $casts = [
         'is_watched' => 'boolean',
         'is_blocked' => 'boolean',
-        'label_ids' => 'array',
+        'label_ids'  => 'array',
+        'contact_id' => 'integer',
+        'standing'   => 'float',
     ];
 
     /**
