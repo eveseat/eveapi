@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015 to 2021 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@ namespace Seat\Eveapi\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Market\History;
-use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Jobs\Market\Prices as PricesJob;
+use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class Prices.
