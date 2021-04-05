@@ -1,0 +1,17 @@
+[
+  {
+    "from_id": 3009841,
+    "from_type": "agent",
+    "standing": 0.1
+  },
+  {
+    "from_id": 1000061,
+    "from_type": "npc_corp",
+    "standing": 0
+  },
+  {
+    "from_id": 500003,
+    "from_type": "faction",
+    "standing": -1
+  }
+]

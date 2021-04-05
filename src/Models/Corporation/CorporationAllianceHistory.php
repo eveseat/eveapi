@@ -38,9 +38,14 @@ class CorporationAllianceHistory extends Model
      */
     protected static $unguarded = true;
 
+    protected $casts = [
+        'alliance_id' => 'integer',
+        'is_deleted' => 'boolean',
+        'record_id' => 'integer',
+    ];
+
     /**
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'record_id'];
-
 }

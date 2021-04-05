@@ -65,6 +65,15 @@ class CharacterInfo extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'ancestry_id' => 'integer',
+        'bloodline_id' => 'integer',
+        'race_id' => 'integer',
+    ];
+
+    /**
      * @var string
      */
     protected $primaryKey = 'character_id';
@@ -122,13 +131,13 @@ class CharacterInfo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function balance()
     {
 
-        return $this->belongsTo(CharacterWalletBalance::class,
-            'character_id', 'character_id');
+        return $this->hasOne(CharacterWalletBalance::class, 'character_id', 'character_id')
+            ->withDefault();
     }
 
     /**

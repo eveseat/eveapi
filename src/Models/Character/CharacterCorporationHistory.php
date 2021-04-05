@@ -72,6 +72,8 @@ class CharacterCorporationHistory extends Model
      * @var array
      */
     protected $casts = [
+        'corporation_id' => 'integer',
+        'record_id' => 'integer',
         'is_deleted' => 'boolean',
     ];
 

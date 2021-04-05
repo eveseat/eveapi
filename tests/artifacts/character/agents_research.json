@@ -1,0 +1,23 @@
+[
+  {
+    "agent_id": 3014221,
+    "points_per_day": 31.25,
+    "remainder_points": 76877.06,
+    "skill_type_id": 11445,
+    "started_at": "2016-01-10T00:39:55Z"
+  },
+  {
+    "agent_id": 3012880,
+    "points_per_day": 21.93,
+    "remainder_points": -12950.18,
+    "skill_type_id": 11450,
+    "started_at": "2015-06-04T05:41:09Z"
+  },
+  {
+    "agent_id": 3011474,
+    "points_per_day": 12.78,
+    "remainder_points": 35.10,
+    "skill_type_id": 11446,
+    "started_at": "2019-04-22T12:25:28Z"
+  }
+]

@@ -101,7 +101,9 @@ class CharacterNotification extends Model
      * @var array
      */
     protected $casts = [
-        'is_read' => 'boolean',
+        'notification_id' => 'integer',
+        'sender_id'       => 'integer',
+        'is_read'         => 'boolean',
     ];
 
     /**

@@ -1,0 +1,23 @@
+[
+  {
+    "corporation_id": 98413060,
+    "record_id": 48289010,
+    "start_date": "2018-08-24T17:42:00Z"
+  },
+  {
+    "corporation_id": 98456198,
+    "record_id": 44157795,
+    "start_date": "2017-02-01T20:50:00Z"
+  },
+  {
+    "corporation_id": 1000014,
+    "record_id": 44157792,
+    "start_date": "2017-02-01T20:50:00Z"
+  },
+  {
+    "corporation_id": 98451304,
+    "is_deleted": true,
+    "record_id": 42479868,
+    "start_date": "2016-08-07T13:45:00Z"
+  }
+]

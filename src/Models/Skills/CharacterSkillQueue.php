@@ -97,6 +97,18 @@ class CharacterSkillQueue extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'finished_level' => 'integer',
+        'level_end_sp' => 'integer',
+        'level_start_sp' => 'integer',
+        'queue_position' => 'integer',
+        'skill_id' => 'integer',
+        'training_start_sp' => 'integer',
+    ];
+
+    /**
      * @param $value
      */
     public function setStartDateAttribute($value)

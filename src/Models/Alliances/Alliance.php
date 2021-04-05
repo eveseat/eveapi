@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Models\Alliances;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Eveapi\Pivot\Alliance\AllianceMember;
 
 /**
  * Class Alliance.
@@ -51,10 +53,29 @@ class Alliance extends Model
     protected $primaryKey = 'alliance_id';
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'creator_corporation_id' => 'integer',
+        'creator_id' => 'integer',
+        'executor_corporation_id' => 'integer',
+        'faction_id' => 'integer',
+    ];
+
+    /**
      * @param $value
      */
     public function setDateFoundedAttribute($value)
     {
         $this->attributes['date_founded'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function members()
+    {
+        return $this->belongsToMany(UniverseName::class, 'alliance_members', 'alliance_id', 'corporation_id')
+            ->using(AllianceMember::class);
     }
 }

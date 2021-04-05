@@ -50,17 +50,6 @@ class Clear extends Command
     protected $description = 'Clear caches used by SeAT.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle()

@@ -78,6 +78,13 @@ class UniverseName extends Model
     protected $primaryKey = 'entity_id';
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'entity_id' => 'integer',
+    ];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function affiliation()

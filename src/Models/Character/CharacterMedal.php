@@ -37,6 +37,15 @@ class CharacterMedal extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'corporation_id' => 'integer',
+        'issuer_id'      => 'integer',
+        'medal_id'       => 'integer',
+    ];
+
+    /**
      * @param $value
      */
     public function setDateAttribute($value)

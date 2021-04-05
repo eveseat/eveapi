@@ -1,0 +1,18 @@
+[
+  {
+    "character_id": 2112000001,
+    "location_id": 30003657,
+    "logoff_date": "2017-08-03T14:31:16Z",
+    "logon_date": "2017-08-03T14:22:03Z",
+    "ship_type_id": 22464,
+    "start_date": "2017-07-10T14:46:00Z"
+  },
+  {
+    "character_id": 2112000002,
+    "location_id": 30003657,
+    "logoff_date": "2017-07-25T11:07:40Z",
+    "logon_date": "2017-07-25T10:54:00Z",
+    "ship_type_id": 670,
+    "start_date": "2017-07-10T14:50:00Z"
+  }
+]

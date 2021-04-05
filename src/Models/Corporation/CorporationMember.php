@@ -39,6 +39,14 @@ class CorporationMember extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'corporation_id' => 'integer',
+        'character_id' => 'integer',
+    ];
+
+    /**
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'character_id'];

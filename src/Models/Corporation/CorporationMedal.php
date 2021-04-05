@@ -39,6 +39,14 @@ class CorporationMedal extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'creator_id' => 'integer',
+        'medal_id' => 'integer',
+    ];
+
+    /**
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'medal_id'];

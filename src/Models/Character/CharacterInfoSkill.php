@@ -41,6 +41,14 @@ class CharacterInfoSkill extends Model
     protected $primaryKey = 'character_id';
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'total_sp' => 'integer',
+        'unallocated_sp' => 'integer',
+    ];
+
+    /**
      * @var bool
      */
     public $incrementing = false;

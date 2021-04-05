@@ -41,6 +41,13 @@ class CorporationMemberLimits extends Model
     public $incrementing = false;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'limit' => 'integer',
+    ];
+
+    /**
      * @var string
      */
     protected $primaryKey = 'corporation_id';

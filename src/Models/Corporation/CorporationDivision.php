@@ -40,6 +40,13 @@ class CorporationDivision extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'division' => 'integer',
+    ];
+
+    /**
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'type', 'division'];

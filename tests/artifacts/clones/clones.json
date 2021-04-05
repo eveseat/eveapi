@@ -1,0 +1,16 @@
+{
+  "home_location": {
+    "location_id": 1021348135816,
+    "location_type": "structure"
+  },
+  "jump_clones": [
+    {
+      "implants": [
+        22118
+      ],
+      "jump_clone_id": 12345,
+      "location_id": 60003463,
+      "location_type": "station"
+    }
+  ]
+}

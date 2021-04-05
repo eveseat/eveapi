@@ -150,6 +150,18 @@ class CorporationInfo extends Model
     protected $primaryKey = 'corporation_id';
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'alliance_id' => 'integer',
+        'ceo_id' => 'integer',
+        'creator_id' => 'integer',
+        'member_count' => 'integer',
+        'tax_rate' => 'float',
+        'war_eligible' => 'boolean',
+    ];
+
+    /**
      * @param $value
      */
     public function setDateFoundedAttribute($value)

@@ -1,0 +1,15 @@
+{
+  "roles": [
+    "Director",
+    "Station_Manager"
+  ],
+  "roles_at_base": [],
+  "roles_at_hq": [
+    "Hangar_Query_3",
+    "Hangar_Query_5"
+  ],
+  "roles_at_other": [
+    "Hangar_Query_5",
+    "Hangar_Take_5"
+  ]
+}

@@ -22,6 +22,9 @@
 
 namespace Seat\Eveapi\Jobs\Fittings;
 
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Fittings\Insurance;
 
@@ -62,19 +65,38 @@ class Insurances extends EsiBase
 
         if ($insurances->isCachedLoad() && Insurance::count() > 0) return;
 
+        // create a temporary table - so it will be easier to handle delta between
+        // dropped insurances and created/not-updated ones.
+
+        Schema::create('temp_insurances', function (Blueprint $table) {
+            $table->integer('id')->primary();
+            $table->temporary();
+        });
+
         collect($insurances)->each(function ($insurance) {
 
             collect($insurance->levels)->each(function ($level) use ($insurance) {
 
-                Insurance::firstOrNew([
+                $model = Insurance::updateOrCreate([
                     'type_id' => $insurance->type_id,
                     'name'    => $level->name,
                 ], [
                     'cost'    => $level->cost,
                     'payout'  => $level->payout,
-                ])->save();
+                ]);
 
+                DB::table('temp_insurances')->insert([
+                    'id' => $model->id,
+                ]);
             });
         });
+
+        // drop old insurances
+        DB::table('insurances')
+            ->leftJoin('temp_insurances', 'insurances.id', '=', 'temp_insurances.id')
+            ->whereNull('temp_insurances.id')
+            ->delete();
+
+        Schema::dropIfExists('temp_insurances');
     }
 }

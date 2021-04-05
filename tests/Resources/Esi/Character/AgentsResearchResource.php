@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2020 Leon Jacobs
+ * Copyright (C) 2015 to 2021 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,18 +20,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Alliances;
+namespace Seat\Eveapi\Tests\Resources\Esi\Character;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Class AllianceMember.
- * @package Seat\Eveapi\Models\Alliances
+ * Class AgentsResearchResource.
+ * @package Seat\Eveapi\Tests\Resources\Esi\Character
  */
-class AllianceMember extends Model
+class AgentsResearchResource extends JsonResource
 {
     /**
-     * @var bool
+     * @param \Illuminate\Http\Request $request
+     * @return array
      */
-    protected static $unguarded = true;
+    public function toArray($request)
+    {
+        return [
+            'agent_id'         => $this->agent_id,
+            'points_per_day'   => $this->points_per_day,
+            'remainder_points' => $this->remainder_points,
+            'skill_type_id'    => $this->skill_type_id,
+            'started_at'       => carbon($this->started_at)->toIso8601ZuluString(),
+        ];
+    }
 }

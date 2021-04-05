@@ -71,6 +71,8 @@ class AllianceContact extends Model
      */
     protected $casts = [
         'label_ids' => 'array',
+        'standing' => 'float',
+        'contact_id' => 'integer',
     ];
 
     /**

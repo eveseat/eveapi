@@ -39,6 +39,15 @@ class CorporationFacility extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'facility_id' => 'integer',
+        'system_id' => 'integer',
+        'type_id' => 'integer',
+    ];
+
+    /**
      * @var array
      */
     protected $primaryKey = ['corporation_id', 'facility_id'];

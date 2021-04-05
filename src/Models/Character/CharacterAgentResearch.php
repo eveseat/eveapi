@@ -38,6 +38,16 @@ class CharacterAgentResearch extends Model
     protected static $unguarded = true;
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'agent_id' => 'integer',
+        'points_per_day' => 'double',
+        'remainder_points' => 'double',
+        'skill_type_id' => 'integer',
+    ];
+
+    /**
      * @param $value
      */
     public function setStartedAtAttribute($value)
