@@ -14,3 +14,5 @@ script:
   - vendor/bin/phpunit -c phpunit.xml
 after_script:
   - ./cc-test-reporter after-build
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
