@@ -79,6 +79,11 @@ class Affiliation extends EsiBase
      */
     public function handle()
     {
+        logger()->debug('Retrieving affiliation for the following characters list.', [
+            'limit' => self::REQUEST_ID_LIMIT,
+            'batch' => $this->character_ids,
+        ]);
+
         collect($this->character_ids)->chunk(self::REQUEST_ID_LIMIT)->each(function ($chunk) {
             $this->request_body = $chunk->values()->all();
             $affiliations = $this->retrieve();
