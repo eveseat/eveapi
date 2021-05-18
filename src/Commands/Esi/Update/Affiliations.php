@@ -55,19 +55,26 @@ class Affiliations extends Command
     {
         $character_ids = collect($this->argument('character_id'));
 
-        // in case no IDs has been specified, collect all characters and universe names.
-        if ($character_ids->isEmpty()) {
-            $characters = CharacterInfo::select('character_id')->get();
-            $entities = UniverseName::where('category', 'character')->select('entity_id')->get();
+        // build small batch of a maximum of 1000 entries to avoid long running job.
+        if (! $character_ids->isEmpty()) {
+            $character_ids->unique()->chunk(Affiliation::REQUEST_ID_LIMIT)->each(function ($chunk) {
+                $character_ids = $chunk->toArray();
+                Affiliation::dispatch($character_ids);
+            });
 
-            $character_ids = $character_ids->merge($characters->pluck('character_id')->toArray());
-            $character_ids = $character_ids->merge($entities->pluck('entity_id')->toArray());
+            return;
         }
 
+        // in case no IDs has been specified, collect all characters and universe names.
         // build small batch of a maximum of 200 entries to avoid long running job.
-        $character_ids->unique()->chunk(Affiliation::REQUEST_ID_LIMIT)->each(function ($chunk) {
-            $ids = $chunk->toArray();
-            Affiliation::dispatch($ids);
+        CharacterInfo::select('character_id')
+            ->union(UniverseName::where('category', 'character')
+                ->selectRaw('entity_id as character_id')
+            )
+            ->orderBy('character_id')
+            ->chunk(Affiliation::REQUEST_ID_LIMIT, function ($chunk) {
+                $character_ids = $chunk->pluck('character_id')->toArray();
+                Affiliation::dispatch($character_ids);
         });
     }
 }
