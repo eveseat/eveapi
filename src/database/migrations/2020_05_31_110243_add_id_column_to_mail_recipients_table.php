@@ -31,9 +31,17 @@ class AddIdColumnToMailRecipientsTable extends Migration
 {
     public function up()
     {
-        Schema::table('mail_recipients', function (Blueprint $table) {
-            $table->bigIncrements('id')->first();
-        });
+        try {
+            Schema::table('mail_recipients', function (Blueprint $table) {
+                $table->bigIncrements('id')->first();
+            });
+        } catch (\Illuminate\Database\QueryException $th) {
+            // This is a fix for mariadb 10.5 causing issues with migrations due to the CHECK(json_valid('labels'))
+            DB::statement('ALTER TABLE mail_recipients MODIFY COLUMN labels longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (JSON_VALID(labels)) AFTER is_read;');
+            Schema::table('mail_recipients', function (Blueprint $table) {
+                $table->bigIncrements('id')->first();
+            });
+        }
     }
 
     public function down()
