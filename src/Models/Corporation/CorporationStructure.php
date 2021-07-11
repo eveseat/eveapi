@@ -38,6 +38,8 @@ class CorporationStructure extends Model
 
     const DGM_SERVICE_MODULE_ACTIVATION_FUEL_NEED = 2110;
 
+    const DGM_STRUCTURE_SERVICE_ROLE_BONUS = 2339;
+
     /**
      * @var bool
      */
@@ -142,10 +144,17 @@ class CorporationStructure extends Model
      */
     public function getFuelConsumptionAttribute()
     {
-        return $this->items->sum(function ($item) {
+        $use = $this->items->sum(function ($item) {
             return $item->type->dogma_attributes->where('attributeID', self::DGM_SERVICE_MODULE_CYCLE_FUEL_NEED)
                 ->sum('valueFloat');
         });
+
+        $reduction = $this->type->dogma_attributes->where('attributeID', self::DGM_STRUCTURE_SERVICE_ROLE_BONUS)->first();
+        if ($reduction) {
+            $use = $use * ((100 + $reduction->valueFloat) / 100);
+        }
+
+        return $use;
     }
 
     /**
@@ -153,10 +162,17 @@ class CorporationStructure extends Model
      */
     public function getActivationFuelConsumptionAttribute()
     {
-        return $this->items->sum(function ($item) {
+        $use =  $this->items->sum(function ($item) {
             return $item->type->dogma_attributes->where('attributeID', self::DGM_SERVICE_MODULE_ACTIVATION_FUEL_NEED)
                 ->sum('valueFloat');
         });
+
+        $reduction = $this->type->dogma_attributes->where('attributeID', self::DGM_STRUCTURE_SERVICE_ROLE_BONUS)->first();
+        if ($reduction) {
+            $use = $use * ((100 + $reduction->valueFloat) / 100);
+        }
+
+        return $use;
     }
 
     /**
