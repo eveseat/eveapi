@@ -162,7 +162,7 @@ class CorporationStructure extends Model
      */
     public function getActivationFuelConsumptionAttribute()
     {
-        $use =  $this->items->sum(function ($item) {
+        $use = $this->items->sum(function ($item) {
             return $item->type->dogma_attributes->where('attributeID', self::DGM_SERVICE_MODULE_ACTIVATION_FUEL_NEED)
                 ->sum('valueFloat');
         });
