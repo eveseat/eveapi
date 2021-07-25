@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs;
 
 use Exception;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eseye\Exceptions\RequestFailedException;
@@ -162,12 +162,11 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getRateLimitKeyTtl()
+    public function getRateLimitKeyTtl():? int
     {
-
-        return Redis::ttl('seat:' . self::RATE_LIMIT_KEY);
+        return Cache::get(self::RATE_LIMIT_KEY);
     }
 
     /**
