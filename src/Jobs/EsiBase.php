@@ -163,9 +163,9 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getRateLimitKeyTtl(): ?int
+    public function getRateLimitKeyTtl(): int
     {
         return Redis::ttl(Cache::getPrefix() . self::RATE_LIMIT_KEY);
     }
