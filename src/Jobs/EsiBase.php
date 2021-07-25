@@ -164,7 +164,7 @@ abstract class EsiBase extends AbstractJob
     /**
      * @return int|null
      */
-    public function getRateLimitKeyTtl():? int
+    public function getRateLimitKeyTtl(): ?int
     {
         return Cache::get(self::RATE_LIMIT_KEY);
     }
