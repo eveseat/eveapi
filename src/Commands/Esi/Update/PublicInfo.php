@@ -65,7 +65,7 @@ class PublicInfo extends Command
             (new Corporation($corporation->corporation_id))->fire();
         });
 
-        AllianceMember::doesntHave('corporation')->each(function ($member){
+        AllianceMember::doesntHave('corporation')->each(function ($member) {
             (new Corporation($member->corporation_id))->fire();
         });
     }
