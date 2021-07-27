@@ -23,6 +23,9 @@
 namespace Seat\Eveapi\Models\Alliances;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Contacts\AllianceContact;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
+use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class Alliance.
@@ -56,5 +59,85 @@ class Alliance extends Model
     public function setDateFoundedAttribute($value)
     {
         $this->attributes['date_founded'] = is_null($value) ? null : carbon($value);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function executor()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'executor_corporation_id')
+            ->withDefault([
+                'category'  => 'corporation',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function creator()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'creator_id')
+            ->withDefault([
+                'category'  => 'character',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function creator_corporation()
+    {
+        return $this->hasOne(UniverseName::class, 'entity_id', 'creator_corporation_id')
+            ->withDefault([
+                'category'  => 'corporation',
+                'name'      => trans('web::seat.unknown'),
+            ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function contacts()
+    {
+
+        return $this->hasMany(AllianceContact::class,
+            'alliance_id', 'alliance_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function members()
+    {
+
+        return $this->hasMany(AllianceMember::class,
+            'alliance_id', 'alliance_id');
+
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function corporations()
+    {
+        return $this->hasManyThrough(
+            CorporationInfo::class,
+            AllianceMember::class,
+            'alliance_id',
+            'corporation_id',
+            'alliance_id',
+            'corporation_id'
+        );
+    }
+
+    /**
+     * @return int
+     */
+    public function character_count()
+    {
+        return $this->corporations->sum('member_count');
     }
 }
