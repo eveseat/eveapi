@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Alliances;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
  * Class AllianceMember.
@@ -34,4 +35,20 @@ class AllianceMember extends Model
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function alliance()
+    {
+        return $this->hasOne(Alliance::class, 'alliance_id', 'alliance_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function corporation()
+    {
+        return $this->hasOne(CorporationInfo::class, 'corporation_id', 'corporation_id');
+    }
 }

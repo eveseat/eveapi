@@ -26,6 +26,7 @@ use Illuminate\Console\Command;
 use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Bus\Corporation;
 use Seat\Eveapi\Jobs\Universe\Names;
+use Seat\Eveapi\Models\Alliances\AllianceMember;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
@@ -62,6 +63,10 @@ class PublicInfo extends Command
 
         CorporationInfo::all()->each(function ($corporation) {
             (new Corporation($corporation->corporation_id))->fire();
+        });
+
+        AllianceMember::doesntHave('corporation')->each(function ($member){
+            (new Corporation($member->corporation_id))->fire();
         });
     }
 }
