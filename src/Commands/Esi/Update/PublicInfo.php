@@ -26,7 +26,6 @@ use Illuminate\Console\Command;
 use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Bus\Corporation;
 use Seat\Eveapi\Jobs\Universe\Names;
-use Seat\Eveapi\Models\Alliances\AllianceMember;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
