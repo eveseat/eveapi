@@ -82,6 +82,7 @@ class Extractions extends AbstractAuthCorporationJob
 
             $model = CorporationIndustryMiningExtraction::firstOrNew([
                 'moon_id' => $extraction->moon_id,
+                'extraction_start_time' => $extraction->extraction_start_time,
             ]);
 
             ExtractionMapping::make($model, $extraction, [

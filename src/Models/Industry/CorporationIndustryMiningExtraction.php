@@ -55,12 +55,12 @@ class CorporationIndustryMiningExtraction extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'moon_id';
+    protected $primaryKey = 'id';
 
     /**
      * @var bool
      */
-    public $incrementing = false;
+    public $incrementing = true;
 
     /**
      * @return \Carbon\Carbon
