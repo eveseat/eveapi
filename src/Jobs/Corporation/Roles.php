@@ -91,12 +91,24 @@ class Roles extends AbstractAuthCorporationJob
             CorporationRole::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
 
-        collect($roles)->each(function ($role) {
+        $returned_characters_ids = collect();
+
+        collect($roles)->each(function ($role) use ($returned_characters_ids) {
+
+            $returned_characters_ids->push($role->character_id);
 
             collect($this->types)->each(function ($type) use ($role) {
 
-                if (! property_exists($role, $type))
-                    return;
+                // in case the searched type do not exist, exit the current type loop
+                // make sure we drop all roles tied to both this character and corporation from that type
+                if (! property_exists($role, $type)) {
+                    CorporationRole::where('corporation_id', $this->getCorporationId())
+                        ->where('character_id', $role->character_id)
+                        ->where('type', $type)
+                        ->delete();
+
+                    return true;
+                }
 
                 collect($role->{$type})->each(function ($name) use ($role, $type) {
 
@@ -116,5 +128,10 @@ class Roles extends AbstractAuthCorporationJob
                     ->delete();
             });
         });
+
+        // drop all role entries related to characters which have not be returned by ESI
+        CorporationRole::where('corporation_id', $this->getCorporationId())
+            ->whereNotIn('character_id', $returned_characters_ids)
+            ->delete();
     }
 }
