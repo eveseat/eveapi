@@ -110,7 +110,6 @@ class Blueprints extends AbstractAuthCorporationJob
                 $chunk->each(function ($blueprint) {
 
                     $model = CorporationBlueprint::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
                         'item_id'        => $blueprint->item_id,
                     ]);
 
