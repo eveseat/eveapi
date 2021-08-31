@@ -111,7 +111,6 @@ class Blueprints extends AbstractAuthCharacterJob
                 $chunk->each(function ($blueprint) {
 
                     $model = CharacterBlueprint::firstOrNew([
-                        'character_id' => $this->getCharacterId(),
                         'item_id'      => $blueprint->item_id,
                     ]);
 
