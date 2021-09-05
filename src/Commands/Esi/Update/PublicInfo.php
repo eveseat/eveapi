@@ -65,9 +65,9 @@ class PublicInfo extends Command
             (new Corporation($corporation->corporation_id))->fire();
         });
 
-        Alliance::has('corporations.characters.refresh_token')->each(function($alliance){
-            $alliance->members->each(function ($member){
-                if (!$member->corporation()->exists()){
+        Alliance::has('corporations.characters.refresh_token')->each(function ($alliance) {
+            $alliance->members->each(function ($member) {
+                if (! $member->corporation()->exists()){
                     (new Corporation($member->corporation_id))->fire();
                 }
             });
