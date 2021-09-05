@@ -27,7 +27,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\FailedJob;
 use Seat\Eveapi\Models\Status\EsiStatus;
 use Seat\Eveapi\Models\Status\ServerStatus;
@@ -70,8 +72,10 @@ class Maintenance implements ShouldQueue
 
         $this->cleanup_tables();
 
-        if (setting('cleanup_data', true) == 'yes')
+        if (setting('cleanup_data', true) == 'yes') {
             $this->cleanup_characters();
+            $this->cleanup_corps();
+        }
     }
 
     /**
@@ -99,5 +103,20 @@ class Maintenance implements ShouldQueue
     private function cleanup_characters()
     {
         CharacterInfo::doesntHave('refresh_token')->delete();
+    }
+
+    private function cleanup_corps()
+    {
+
+        // Need to find all corps that dont have a reason to be kept (no chars with tokens and not part of an alliance that has an active member)
+        Alliance::doesntHave('corporations.characters.refresh_token')->each(function($alliance){
+            $alliance->corporations()->whereNotBetween('corporation_id', [1000000, 1999999])->delete();
+        });
+
+        // Now delete all the corps that have no alliance and no active tokens
+        CorporationInfo::whereNotBetween('corporation_id', [1000000, 1999999])
+            ->doesntHave('alliance')
+            ->doesntHave('characters.refresh_token')
+            ->delete();
     }
 }
