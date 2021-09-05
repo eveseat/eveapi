@@ -26,6 +26,7 @@ use Illuminate\Console\Command;
 use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Bus\Corporation;
 use Seat\Eveapi\Jobs\Universe\Names;
+use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
@@ -62,6 +63,14 @@ class PublicInfo extends Command
 
         CorporationInfo::all()->each(function ($corporation) {
             (new Corporation($corporation->corporation_id))->fire();
+        });
+
+        Alliance::has('corporations.characters.refresh_token')->each(function($alliance){
+            $alliance->members->each(function ($member){
+                if (!$member->corporation()->exists()){
+                    (new Corporation($member->corporation_id))->fire();
+                }
+            });
         });
     }
 }
