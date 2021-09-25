@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
 /**
  * Class Extractions.
+ *
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
 class Extractions extends AbstractAuthCorporationJob
@@ -66,6 +67,7 @@ class Extractions extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()
