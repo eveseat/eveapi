@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
+use Seat\Web\Models\UniverseMoonReport;
 
 /**
  * Class Moon.
@@ -66,11 +67,27 @@ class Moon extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function extractions()
+    {
+        return $this->hasMany(CorporationIndustryMiningExtraction::class, 'moon_id', 'moon_id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function extraction()
     {
         return $this->hasOne(CorporationIndustryMiningExtraction::class, 'moon_id', 'moon_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function moon_report()
+    {
+        return $this->hasOne(UniverseMoonReport::class, 'moon_id', 'moon_id');
     }
 
     /**
