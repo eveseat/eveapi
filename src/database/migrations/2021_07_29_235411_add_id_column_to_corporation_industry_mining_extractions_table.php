@@ -25,7 +25,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class AddIdColumnToCorporationIndustryMiningTable extends Migration
+class AddIdColumnToCorporationIndustryMiningExtractionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -56,10 +56,10 @@ class AddIdColumnToCorporationIndustryMiningTable extends Migration
         DB::statement('delete t1 from corporation_industry_mining_extractions t1 inner join corporation_industry_mining_extractions t2 where t1.id < t2.id AND t1.moon_id=t2.moon_id');
 
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
+            $table->dropUnique('corporation_industry_mining_extractions_uk_moon_extraction');
             $table->dropColumn('id');
             $table->index(['moon_id']);
             $table->primary(['moon_id']);
-            $table->dropUnique('corporation_industry_mining_extractions_uk_moon_extraction');
         });
     }
 }
