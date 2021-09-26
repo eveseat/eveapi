@@ -143,8 +143,6 @@ class CorporationIndustryMiningExtraction extends Model
      */
     public function extraction_length()
     {
-        return carbon($this->chunk_arrival_time)->diffInHours($this->extraction_start_time);
-
-        return 72;
+        return carbon($this->chunk_arrival_time)->diffInSeconds($this->extraction_start_time) / 3600.0;
     }
 }
