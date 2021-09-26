@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddIdColumnToCorporationIndustryMiningTable extends Migration
@@ -39,7 +40,7 @@ class AddIdColumnToCorporationIndustryMiningTable extends Migration
         });
 
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
-            $table->increments('id')->first();
+            $table->bigIncrements('id')->first();
             $table->unique(['moon_id', 'extraction_start_time'], 'corporation_industry_mining_extractions_uk_moon_extraction');
         });
     }
@@ -51,6 +52,9 @@ class AddIdColumnToCorporationIndustryMiningTable extends Migration
      */
     public function down()
     {
+
+        DB::statement('delete t1 from corporation_industry_mining_extractions t1 inner join corporation_industry_mining_extractions t2 where t1.id < t2.id AND t1.moon_id=t2.moon_id');
+
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
             $table->dropColumn('id');
             $table->primary(['moon_id']);
