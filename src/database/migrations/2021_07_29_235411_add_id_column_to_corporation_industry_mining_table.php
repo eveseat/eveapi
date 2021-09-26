@@ -57,8 +57,9 @@ class AddIdColumnToCorporationIndustryMiningTable extends Migration
 
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
             $table->dropColumn('id');
+            $table->index(['moon_id']);
             $table->primary(['moon_id']);
-            $table->dropUnique(['moon_id', 'extraction_start_time'], 'corporation_industry_mining_extractions_uk_moon_extraction');
+            $table->dropUnique('corporation_industry_mining_extractions_uk_moon_extraction');
         });
     }
 }
