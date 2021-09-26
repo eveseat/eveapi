@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Sde\Moon;
 
 /**
  * Class CorporationIndustryMiningExtraction.
+ *
  * @package Seat\Eveapi\Models\Industry
  */
 class CorporationIndustryMiningExtraction extends Model
@@ -48,6 +49,11 @@ class CorporationIndustryMiningExtraction extends Model
     const MAXIMUM_DRILLING_DURATION = 4836240;
 
     /**
+     * Return the base m3 amount gained per hour of extraction length.
+     */
+    const BASE_DRILLING_VOLUME = 20000;
+
+    /**
      * @var bool
      */
     protected static $unguarded = true;
@@ -55,12 +61,12 @@ class CorporationIndustryMiningExtraction extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'moon_id';
+    protected $primaryKey = 'id';
 
     /**
      * @var bool
      */
-    public $incrementing = false;
+    public $incrementing = true;
 
     /**
      * @return \Carbon\Carbon
@@ -118,5 +124,25 @@ class CorporationIndustryMiningExtraction extends Model
     public function isReady()
     {
         return carbon()->gte(carbon($this->chunk_arrival_time));
+    }
+
+    /**
+     * Determine m3 quantity of a chunk.
+     *
+     * @return bool
+     */
+    public function volume()
+    {
+        return $this->extraction_length() * self::BASE_DRILLING_VOLUME;
+    }
+
+    /**
+     * The number of hours the moon pull was created for.
+     *
+     * @return int
+     */
+    public function extraction_length()
+    {
+        return carbon($this->chunk_arrival_time)->diffInSeconds($this->extraction_start_time) / 3600.0;
     }
 }
