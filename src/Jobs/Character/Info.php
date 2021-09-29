@@ -28,7 +28,7 @@ use Seat\Eveapi\Models\Character\CharacterInfo;
 
 /**
  * Class Info.
- * 
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Info extends AbstractCharacterJob
@@ -57,7 +57,7 @@ class Info extends AbstractCharacterJob
      * Execute the job.
      *
      * @return void
-     * 
+     *
      * @throws \Exception
      * @throws \Throwable
      */

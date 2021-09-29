@@ -26,7 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class InfoMapping.
- * 
+ *
  * @package Seat\Eveapi\Mapping\Characters
  */
 class InfoMapping extends DataMapping
