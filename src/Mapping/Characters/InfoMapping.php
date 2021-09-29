@@ -40,8 +40,7 @@ class InfoMapping extends DataMapping
         'gender'          => 'gender',
         'race_id'         => 'race_id',
         'bloodline_id'    => 'bloodline_id',
-        'ancestry_id'     => 'ancestry_id',
         'security_status' => 'security_status',
-        'title' => 'title',
+        'title'           => 'title',
     ];
 }

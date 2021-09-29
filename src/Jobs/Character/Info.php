@@ -45,7 +45,7 @@ class Info extends AbstractCharacterJob
     /**
      * @var int
      */
-    protected $version = 'v4';
+    protected $version = 'v5';
 
     /**
      * @var array
