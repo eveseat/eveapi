@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Character\CharacterInfo;
 
 /**
  * Class Info.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Info extends AbstractCharacterJob
@@ -45,7 +46,7 @@ class Info extends AbstractCharacterJob
     /**
      * @var int
      */
-    protected $version = 'v4';
+    protected $version = 'v5';
 
     /**
      * @var array
@@ -56,6 +57,7 @@ class Info extends AbstractCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */
