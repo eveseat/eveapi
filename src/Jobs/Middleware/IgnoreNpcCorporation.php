@@ -32,8 +32,9 @@ use Seat\Eveapi\Jobs\EsiBase;
 class IgnoreNpcCorporation
 {
     /**
-     * @param \Seat\Eveapi\Jobs\EsiBase $job
+     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
      * @param $next
+     *
      * @throws \Exception
      */
     public function handle($job, $next)
@@ -58,7 +59,7 @@ class IgnoreNpcCorporation
     /**
      * Determine if the current corporation ID is in NPC corporation range.
      *
-     * @param \Seat\Eveapi\Jobs\EsiBase $job
+     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
      * @return bool
      */
     private function isNPCCorporation(EsiBase $job): bool

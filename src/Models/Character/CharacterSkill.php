@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class CharacterSkill.
+ *
  * @package Seat\Eveapi\Models\Character
  *
  * @OA\Schema(

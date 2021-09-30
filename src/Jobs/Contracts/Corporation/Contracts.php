@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Contracts\CorporationContract;
 
 /**
  * Class Contracts.
+ *
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
 class Contracts extends AbstractAuthCorporationJob
@@ -66,6 +67,7 @@ class Contracts extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

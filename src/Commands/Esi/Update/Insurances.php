@@ -27,6 +27,7 @@ use Seat\Eveapi\Jobs\Fittings\Insurances as InsurancesJob;
 
 /**
  * Class Insurances.
+ *
  * @package Seat\Eveapi\Commands\Esi\Update
  */
 class Insurances extends Command

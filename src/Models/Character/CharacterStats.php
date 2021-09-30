@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CharacterStats.
+ *
  * @package Seat\Eveapi\Models\Character
  */
 class CharacterStats extends Model

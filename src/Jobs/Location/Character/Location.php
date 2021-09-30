@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Location\CharacterLocation;
 
 /**
  * Class Location.
+ *
  * @package Seat\Eveapi\Jobs\Location\Character
  */
 class Location extends AbstractAuthCharacterJob

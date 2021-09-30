@@ -28,6 +28,7 @@ use Seat\Eveapi\Traits\Utils;
 
 /**
  * Class CustomsOffices.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class CustomsOfficeLocations extends AbstractAuthCorporationJob
@@ -68,6 +69,7 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

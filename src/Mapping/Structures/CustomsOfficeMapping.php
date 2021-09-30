@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class CustomsOfficeMapping.
+ *
  * @package Seat\Eveapi\Mapping\Structures
  */
 class CustomsOfficeMapping extends DataMapping

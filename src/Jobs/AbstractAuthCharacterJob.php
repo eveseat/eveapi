@@ -41,7 +41,7 @@ abstract class AbstractAuthCharacterJob extends AbstractCharacterJob
     /**
      * AbstractCharacterJob constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(RefreshToken $token)
     {

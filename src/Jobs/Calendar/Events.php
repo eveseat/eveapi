@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 
 /**
  * Class Events.
+ *
  * @package Seat\Eveapi\Jobs\Calendar
  */
 class Events extends AbstractAuthCharacterJob
@@ -66,6 +67,7 @@ class Events extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

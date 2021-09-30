@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CorporationWalletBalance.
+ *
  * @package Seat\Eveapi\Models\Wallet
  */
 class CorporationWalletBalance extends Model

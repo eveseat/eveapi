@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class CharacterAttributesMapping.
+ *
  * @package Seat\Eveapi\Mapping\Characters
  */
 class CharacterAttributesMapping extends DataMapping

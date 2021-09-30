@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class CharacterPlanetExtractor.
+ *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
 class CharacterPlanetExtractor extends Model

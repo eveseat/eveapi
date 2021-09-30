@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Contacts\AllianceLabel;
 
 /**
  * Class Labels.
+ *
  * @package Seat\Eveapi\Jobs\Contacts\Alliance
  */
 class Labels extends AbstractAuthAllianceJob
@@ -60,6 +61,7 @@ class Labels extends AbstractAuthAllianceJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

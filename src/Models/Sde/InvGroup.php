@@ -27,6 +27,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class InvGroup.
+ *
  * @package Seat\Eveapi\Models\Sde
  */
 class InvGroup extends Model

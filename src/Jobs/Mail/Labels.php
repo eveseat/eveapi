@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Mail\MailLabel;
 
 /**
  * Class Labels.
+ *
  * @package Seat\Eveapi\Jobs\Mail
  */
 class Labels extends AbstractAuthCharacterJob

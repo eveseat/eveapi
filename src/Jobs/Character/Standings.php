@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Character\CharacterStanding;
 
 /**
  * Class Standings.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Standings extends AbstractAuthCharacterJob
@@ -60,6 +61,7 @@ class Standings extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class SkillMapping.
+ *
  * @package Seat\Eveapi\Mapping\Characters
  */
 class SkillMapping extends DataMapping

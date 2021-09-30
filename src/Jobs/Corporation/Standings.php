@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationStanding;
 
 /**
  * Class Standings.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Standings extends AbstractAuthCorporationJob
@@ -65,6 +66,7 @@ class Standings extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

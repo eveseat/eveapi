@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Character\CharacterInfo;
 
 /**
  * Class CharacterContract.
+ *
  * @package Seat\Eveapi\Models\Contacts
  */
 class CharacterContract extends Model

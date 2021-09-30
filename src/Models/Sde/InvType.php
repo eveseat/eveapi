@@ -29,6 +29,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class InvType.
+ *
  * @package Seat\Eveapi\Models\Sde
  *
  * @OA\Schema(

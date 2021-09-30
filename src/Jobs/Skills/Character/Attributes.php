@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Skills\CharacterAttribute;
 
 /**
  * Class Attributes.
+ *
  * @package Seat\Eveapi\Jobs\Skills\Character
  */
 class Attributes extends AbstractAuthCharacterJob

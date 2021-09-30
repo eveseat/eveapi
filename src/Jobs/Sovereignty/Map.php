@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
 
 /**
  * Class Map.
+ *
  * @package Seat\Eveapi\Jobs\Sovereignty
  */
 class Map extends EsiBase

@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationDivision;
 
 /**
  * Class Divisions.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Divisions extends AbstractAuthCorporationJob
@@ -65,6 +66,7 @@ class Divisions extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

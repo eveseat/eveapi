@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Mail\MailRecipient;
 
 /**
  * Class Headers.
+ *
  * @package Seat\Eveapi\Jobs\Mail
  */
 class Mails extends AbstractAuthCharacterJob

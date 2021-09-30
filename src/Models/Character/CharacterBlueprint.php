@@ -31,6 +31,7 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CharacterBluePrints.
+ *
  * @package App
  */
 class CharacterBlueprint extends Model

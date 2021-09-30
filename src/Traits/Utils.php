@@ -26,6 +26,7 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
 
 /**
  * Class Utils.
+ *
  * @package Seat\Eveapi\Traits
  */
 trait Utils
@@ -35,11 +36,10 @@ trait Utils
      * of the celestial closest to the x, y, z in a given
      * solar system.
      *
-     * @param int   $solar_system_id
-     * @param float $x
-     * @param float $y
-     * @param float $z
-     *
+     * @param  int  $solar_system_id
+     * @param  float  $x
+     * @param  float  $y
+     * @param  float  $z
      * @return array
      */
     public function find_nearest_celestial(int $solar_system_id, float $x, float $y, float $z): array

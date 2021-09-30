@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class CharacterImplant.
+ *
  * @package Seat\Eveapi\Models\Clones
  */
 class CharacterImplant extends Model

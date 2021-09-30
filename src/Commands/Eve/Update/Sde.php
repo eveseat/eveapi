@@ -330,7 +330,6 @@ class Sde extends Command
      * amount of iterations we expect to use.
      *
      * @param $iterations
-     *
      * @return \Symfony\Component\Console\Helper\ProgressBar
      */
     public function getProgressBar($iterations)

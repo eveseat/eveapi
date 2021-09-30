@@ -27,6 +27,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationAllianceHistory.
+ *
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationAllianceHistory extends Model

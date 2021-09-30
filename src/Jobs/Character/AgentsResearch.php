@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Character\CharacterAgentResearch;
 
 /**
  * Class AgentsResearch.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class AgentsResearch extends AbstractAuthCharacterJob
@@ -61,6 +62,7 @@ class AgentsResearch extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

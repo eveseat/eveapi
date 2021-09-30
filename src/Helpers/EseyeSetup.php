@@ -30,12 +30,14 @@ use Seat\Eseye\Eseye;
 
 /**
  * Class EseyeSetup.
+ *
  * @package Seat\Eveapi\Helpers
  */
 class EseyeSetup
 {
     /**
      * EseyeSetup constructor.
+     *
      * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function __construct()
@@ -66,9 +68,9 @@ class EseyeSetup
      * We automatically add the CLIENT_ID and SHARED_SECRET configured
      * for this SeAT instance to the EsiAuthentication container.
      *
-     * @param \Seat\Eseye\Containers\EsiAuthentication|null $authentication
-     *
+     * @param  \Seat\Eseye\Containers\EsiAuthentication|null  $authentication
      * @return \Seat\Eseye\Eseye
+     *
      * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function get(EsiAuthentication $authentication = null): Eseye

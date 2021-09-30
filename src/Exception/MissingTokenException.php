@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Exception;
 
 /**
  * Class MissingTokenException.
+ *
  * @package Seat\Eveapi\Exception
  */
 class MissingTokenException extends \Exception

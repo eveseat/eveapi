@@ -50,8 +50,8 @@ abstract class AbstractAuthAllianceJob extends AbstractAllianceJob
     /**
      * AbstractAllianceJob constructor.
      *
-     * @param int $alliance_id
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  int  $alliance_id
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(int $alliance_id, RefreshToken $token)
     {

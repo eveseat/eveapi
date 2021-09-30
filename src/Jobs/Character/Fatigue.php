@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Character\CharacterFatigue;
 
 /**
  * Class Fatigue.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Fatigue extends AbstractAuthCharacterJob
@@ -60,6 +61,7 @@ class Fatigue extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

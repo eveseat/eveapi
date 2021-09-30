@@ -31,6 +31,7 @@ use Seat\Services\Jobs\Analytics;
 
 /**
  * Class Clear.
+ *
  * @package Seat\Eveapi\Commands\Seat\Cache
  */
 class Clear extends Command

@@ -33,6 +33,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationStarbase.
+ *
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationStarbase extends Model

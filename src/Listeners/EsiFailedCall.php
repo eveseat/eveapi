@@ -36,7 +36,7 @@ use Seat\Eveapi\Exception\UnavailableEveServersException;
 class EsiFailedCall
 {
     /**
-     * @param \Illuminate\Queue\Events\JobExceptionOccurred $event
+     * @param  \Illuminate\Queue\Events\JobExceptionOccurred  $event
      */
     public function handle(JobExceptionOccurred $event)
     {

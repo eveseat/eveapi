@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class KillmailAttacker.
+ *
  * @package Seat\Eveapi\Models\Killmails
  *
  * @OA\Schema(

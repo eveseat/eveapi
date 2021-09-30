@@ -33,6 +33,7 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CorporationAsset.
+ *
  * @package Seat\Eveapi\Models\Assets
  *
  * @OA\Schema(

@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Character\CharacterStats;
 
 /**
  * Class Stats.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Stats extends AbstractAuthCharacterJob
@@ -60,6 +61,7 @@ class Stats extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

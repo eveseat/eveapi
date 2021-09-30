@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class StarbaseMapping.
+ *
  * @package Seat\Eveapi\Mapping\Structures
  */
 class StarbaseMapping extends DataMapping

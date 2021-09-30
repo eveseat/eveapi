@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class AttackerMapping.
+ *
  * @package Seat\Eveapi\Mapping\Killmails
  */
 class AttackerMapping extends DataMapping

@@ -60,6 +60,7 @@ use Seat\Services\AbstractSeatPlugin;
 
 /**
  * Class EveapiServiceProvider.
+ *
  * @package Seat\Eveapi
  */
 class EveapiServiceProvider extends AbstractSeatPlugin

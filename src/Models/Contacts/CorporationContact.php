@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CorporationContact.
+ *
  * @package Seat\Eveapi\Models\Contacts
  *
  * @OA\Schema(

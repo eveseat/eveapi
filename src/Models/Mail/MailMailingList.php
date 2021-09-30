@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class MailMailingList.
+ *
  * @package Seat\Eveapi\Models\Mail
  */
 class MailMailingList extends Model

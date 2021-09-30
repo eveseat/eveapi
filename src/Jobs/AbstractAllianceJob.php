@@ -39,7 +39,7 @@ abstract class AbstractAllianceJob extends EsiBase
     /**
      * AbstractAllianceJob constructor.
      *
-     * @param int $alliance_id
+     * @param  int  $alliance_id
      */
     public function __construct(int $alliance_id)
     {

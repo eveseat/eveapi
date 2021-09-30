@@ -32,6 +32,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class CharacterAsset.
+ *
  * @package Seat\Eveapi\Models\Assets
  *
  * @OA\Schema(

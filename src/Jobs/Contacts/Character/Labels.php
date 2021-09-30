@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Contacts\CharacterLabel;
 
 /**
  * Class Labels.
+ *
  * @package Seat\Eveapi\Jobs\Contacts\Character
  */
 class Labels extends AbstractAuthCharacterJob
@@ -60,6 +61,7 @@ class Labels extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class MailLabel.
+ *
  * @package Seat\Eveapi\Models\Mail
  */
 class MailLabel extends Model

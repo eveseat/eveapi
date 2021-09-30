@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class CharacterWalletTransaction.
+ *
  * @package Seat\Eveapi\Models\Wallet
  *
  * @OA\Schema(

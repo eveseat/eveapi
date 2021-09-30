@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CorporationIndustryMiningObserverData.
+ *
  * @package Seat\Eveapi\Models\Industry
  */
 class CorporationIndustryMiningObserverData extends Model

@@ -26,14 +26,14 @@ use Illuminate\Database\Grammar;
 
 /**
  * Trait CanUpsertIgnoreReplace.
+ *
  * @package Seat\Eveapi\Traits
  */
 trait CanUpsertIgnoreReplace
 {
     /**
-     * @param array      $values
-     * @param array|null $updateColumns
-     *
+     * @param  array  $values
+     * @param  array|null  $updateColumns
      * @return bool
      */
     public static function upsert(array $values, array $updateColumns = null)
@@ -77,10 +77,9 @@ trait CanUpsertIgnoreReplace
     }
 
     /**
-     * @param \Illuminate\Database\Grammar $grammar
-     * @param array                        $values
-     * @param array|null                   $updateColumns
-     *
+     * @param  \Illuminate\Database\Grammar  $grammar
+     * @param  array  $values
+     * @param  array|null  $updateColumns
      * @return string
      */
     private static function compileUpsert(Grammar $grammar, array $values, array $updateColumns = null)
@@ -122,8 +121,7 @@ trait CanUpsertIgnoreReplace
     }
 
     /**
-     * @param array $records
-     *
+     * @param  array  $records
      * @return array
      */
     protected static function inLineArray(array $records)
@@ -138,8 +136,7 @@ trait CanUpsertIgnoreReplace
     }
 
     /**
-     * @param array $values
-     *
+     * @param  array  $values
      * @return bool
      */
     public static function insertIgnore(array $values)
@@ -171,9 +168,8 @@ trait CanUpsertIgnoreReplace
     }
 
     /**
-     * @param \Illuminate\Database\Grammar $grammar
-     * @param array                        $values
-     *
+     * @param  \Illuminate\Database\Grammar  $grammar
+     * @param  array  $values
      * @return string
      */
     private static function compileInsertIgnore(Grammar $grammar, array $values)
@@ -195,8 +191,7 @@ trait CanUpsertIgnoreReplace
     }
 
     /**
-     * @param array $values
-     *
+     * @param  array  $values
      * @return bool
      */
     public static function replace(array $values)
@@ -228,9 +223,8 @@ trait CanUpsertIgnoreReplace
     }
 
     /**
-     * @param \Illuminate\Database\Grammar $grammar
-     * @param array                        $values
-     *
+     * @param  \Illuminate\Database\Grammar  $grammar
+     * @param  array  $values
      * @return string
      */
     private static function compileReplace(Grammar $grammar, array $values)

@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Market\CharacterOrder;
 
 /**
  * Class Orders.
+ *
  * @package Seat\Eveapi\Jobs\Market\Character
  */
 class Orders extends AbstractAuthCharacterJob

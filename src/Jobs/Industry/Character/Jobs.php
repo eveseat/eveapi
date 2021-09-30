@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
 
 /**
  * Class Jobs.
+ *
  * @package Seat\Eveapi\Jobs\Industry\Character
  */
 class Jobs extends AbstractAuthCharacterJob

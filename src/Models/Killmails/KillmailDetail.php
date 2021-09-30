@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class KillmailDetail.
+ *
  * @package Seat\Eveapi\Models\Killmails
  *
  * @OA\Schema(

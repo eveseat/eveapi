@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Contracts\ContractDetail;
 
 /**
  * Class Contracts.
+ *
  * @package Seat\Eveapi\Jobs\Contracts\Character
  */
 class Contracts extends AbstractAuthCharacterJob
@@ -66,6 +67,7 @@ class Contracts extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

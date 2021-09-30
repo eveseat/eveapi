@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class CustomsOffices.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class CustomsOffices extends AbstractAuthCorporationJob
@@ -76,8 +77,8 @@ class CustomsOffices extends AbstractAuthCorporationJob
     /**
      * CustomsOffices constructor.
      *
-     * @param int $corporation_id
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  int  $corporation_id
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(int $corporation_id, RefreshToken $token)
     {
@@ -90,6 +91,7 @@ class CustomsOffices extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

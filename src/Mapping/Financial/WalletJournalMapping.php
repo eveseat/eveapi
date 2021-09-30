@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class WalletJournalMapping.
+ *
  * @package Seat\Eveapi\Mapping\Financial
  */
 class WalletJournalMapping extends DataMapping

@@ -56,8 +56,8 @@ abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
     /**
      * AbstractCorporationJob constructor.
      *
-     * @param int $corporation_id
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  int  $corporation_id
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(int $corporation_id, RefreshToken $token)
     {
@@ -80,7 +80,7 @@ abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
     }
 
     /**
-     * @param \Exception $exception
+     * @param  \Exception  $exception
      *
      * @throws \Exception
      */

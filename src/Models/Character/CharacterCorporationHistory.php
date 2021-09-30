@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterCorporationHistory.
+ *
  * @package Seat\Eveapi\Models\Character
  *
  * @OA\Schema(

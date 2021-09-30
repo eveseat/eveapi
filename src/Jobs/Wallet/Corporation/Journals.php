@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
 
 /**
  * Class Journals.
+ *
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
 class Journals extends AbstractAuthCorporationJob
@@ -82,6 +83,7 @@ class Journals extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

@@ -32,6 +32,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class ContractDetail.
+ *
  * @package Seat\Eveapi\Models\Contacts
  *
  * @OA\Schema(
@@ -343,7 +344,7 @@ class ContractDetail extends Model
     /**
      * Set start Location from a Contract.
      *
-     * @param int|null $location_id
+     * @param  int|null  $location_id
      */
     private function setStartLocation(?int $location_id)
     {
@@ -356,7 +357,7 @@ class ContractDetail extends Model
     /**
      * Set end Location from a Contract.
      *
-     * @param int|null $location_id
+     * @param  int|null  $location_id
      */
     private function setEndLocation(?int $location_id)
     {
@@ -369,7 +370,7 @@ class ContractDetail extends Model
     /**
      * Return location class according to the location ID.
      *
-     * @param int $location_id
+     * @param  int  $location_id
      * @return string
      */
     private function getLocationClass(int $location_id): string

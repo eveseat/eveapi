@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class VictimMapping.
+ *
  * @package Seat\Eveapi\Mapping\Killmails
  */
 class VictimMapping extends DataMapping

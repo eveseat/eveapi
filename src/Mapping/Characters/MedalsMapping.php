@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class MedalsMapping.
+ *
  * @package Seat\Eveapi\Mapping\Characters
  */
 class MedalsMapping extends DataMapping

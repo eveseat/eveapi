@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 
 /**
  * Class Balances.
+ *
  * @package Seat\Eveapi\Jobs\Wallet\Corporation
  */
 class Balances extends AbstractAuthCorporationJob
@@ -65,6 +66,7 @@ class Balances extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

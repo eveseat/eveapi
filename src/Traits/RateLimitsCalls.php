@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Traits;
 
 /**
  * Trait RateLimitsCalls.
+ *
  * @package Seat\Eveapi\Traits
  */
 trait RateLimitsCalls
@@ -32,6 +33,7 @@ trait RateLimitsCalls
      * Checks if the current cache key is to be considered rate limited.
      *
      * @return bool
+     *
      * @throws \Exception
      */
     public function isRateLimited(): bool
@@ -77,7 +79,7 @@ trait RateLimitsCalls
      * A rate limit should only live for one minute. This is
      * because CCP reset the error count every minute.
      *
-     * @param int $amount
+     * @param  int  $amount
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */

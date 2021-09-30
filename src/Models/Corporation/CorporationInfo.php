@@ -41,6 +41,7 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 
 /**
  * Class CorporationInfo.
+ *
  * @package Seat\Eveapi\Models\Corporation
  *
  * @OA\Schema(
@@ -158,7 +159,7 @@ class CorporationInfo extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeNpc($query)
@@ -167,7 +168,7 @@ class CorporationInfo extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePlayer($query)

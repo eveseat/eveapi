@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class MailBody.
+ *
  * @package Seat\Eveapi\Models\Mail
  */
 class MailBody extends Model

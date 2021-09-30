@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Calendar\CharacterCalendarEventDetail;
 
 /**
  * Class Attendees.
+ *
  * @package Seat\Eveapi\Jobs\Calendar
  */
 class Attendees extends AbstractAuthCharacterJob
@@ -72,8 +73,8 @@ class Attendees extends AbstractAuthCharacterJob
      * TODO: Why do we have this as a separate call?
      * We should add this to handle().
      *
-     * @param string $owner_type
-     * @param int    $owner_id
+     * @param  string  $owner_type
+     * @param  int  $owner_id
      *
      * @throws \Exception
      */

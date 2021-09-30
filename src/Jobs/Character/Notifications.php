@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Character\CharacterNotification;
 
 /**
  * Class Notifications.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Notifications extends AbstractAuthCharacterJob
@@ -61,6 +62,7 @@ class Notifications extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

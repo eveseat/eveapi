@@ -28,6 +28,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class DgmTypeAttribute.
+ *
  * @package Seat\Eveapi\Models\Sde
  */
 class DgmTypeAttribute extends Model

@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationRoleHistory;
 
 /**
  * Class RoleHistories.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class RoleHistories extends AbstractAuthCorporationJob
@@ -70,6 +71,7 @@ class RoleHistories extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

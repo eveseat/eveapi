@@ -32,7 +32,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 class CheckTokenScope
 {
     /**
-     * @param \Seat\Eveapi\Jobs\EsiBase $job
+     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
      * @param $next
      */
     public function handle($job, $next)

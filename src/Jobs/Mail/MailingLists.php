@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Mail\MailMailingList;
 
 /**
  * Class MailingLists.
+ *
  * @package Seat\Eveapi\Jobs\Mail
  */
 class MailingLists extends AbstractAuthCharacterJob

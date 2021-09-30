@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class MailHeader.
+ *
  * @package Seat\Eveapi\Models\Character
  *
  * @OA\Schema(

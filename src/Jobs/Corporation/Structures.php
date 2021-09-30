@@ -31,6 +31,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class Structures.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Structures extends AbstractAuthCorporationJob
@@ -78,8 +79,8 @@ class Structures extends AbstractAuthCorporationJob
     /**
      * Structures constructor.
      *
-     * @param int $corporation_id
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  int  $corporation_id
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(int $corporation_id, RefreshToken $token)
     {
@@ -92,6 +93,7 @@ class Structures extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

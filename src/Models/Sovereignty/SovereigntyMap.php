@@ -28,6 +28,7 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class SovereigntyMap.
+ *
  * @package Seat\Eveapi\Models\Sovereignty
  */
 class SovereigntyMap extends Model

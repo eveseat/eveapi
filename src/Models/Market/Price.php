@@ -28,6 +28,7 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class Price.
+ *
  * @package Seat\Eveapi\Models\Market
  */
 class Price extends Model

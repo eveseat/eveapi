@@ -32,6 +32,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class CorporationMemberTracking.
+ *
  * @package Seat\Eveapi\Models\Corporation
  *
  * @OA\Schema(
@@ -107,6 +108,7 @@ class CorporationMemberTracking extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     *
      * @deprecated
      */
     public function refresh_token()

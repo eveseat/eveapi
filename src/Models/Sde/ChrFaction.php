@@ -27,6 +27,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class ChrFaction.
+ *
  * @package Seat\Eveapi\Models\Sde
  */
 class ChrFaction extends Model

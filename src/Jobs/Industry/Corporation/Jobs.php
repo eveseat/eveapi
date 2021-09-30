@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
 
 /**
  * Class Jobs.
+ *
  * @package Seat\Eveapi\Jobs\Industry\Corporation
  */
 class Jobs extends AbstractAuthCorporationJob
@@ -78,6 +79,7 @@ class Jobs extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

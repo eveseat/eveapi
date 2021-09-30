@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Alliances\AllianceMember;
 
 /**
  * Class Members.
+ *
  * @package Seat\Eveapi\Jobs\Alliances
  */
 class Members extends EsiBase
@@ -59,7 +60,7 @@ class Members extends EsiBase
     /**
      * Members constructor.
      *
-     * @param int $alliance_id
+     * @param  int  $alliance_id
      */
     public function __construct(int $alliance_id)
     {

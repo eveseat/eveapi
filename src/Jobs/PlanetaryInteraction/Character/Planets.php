@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 
 /**
  * Class Planet.
+ *
  * @package Seat\Eveapi\Jobs\PlanetaryInteraction\Character
  */
 class Planets extends AbstractAuthCharacterJob

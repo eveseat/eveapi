@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Character\CharacterMedal;
 
 /**
  * Class Medals.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Medals extends AbstractAuthCharacterJob
@@ -61,6 +62,7 @@ class Medals extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

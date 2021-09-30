@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Corporation\CorporationTitle;
 
 /**
  * Class Title.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Titles extends AbstractAuthCharacterJob
@@ -66,6 +67,7 @@ class Titles extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

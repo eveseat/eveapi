@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class Alliance.
+ *
  * @package Seat\Eveapi\Models\Alliances
  */
 class Alliance extends Model

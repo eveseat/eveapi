@@ -27,6 +27,7 @@ use Throwable;
 
 /**
  * Class ReadOnlyModelException.
+ *
  * @package Seat\Eveapi\Exception
  */
 class ReadOnlyModelException extends Exception
@@ -34,9 +35,9 @@ class ReadOnlyModelException extends Exception
     /**
      * ReadOnlyModelException constructor.
      *
-     * @param string          $message
-     * @param int             $code
-     * @param \Throwable|null $previous
+     * @param  string  $message
+     * @param  int  $code
+     * @param  \Throwable|null  $previous
      */
     public function __construct(string $message = '', int $code = 0, Throwable $previous = null)
     {

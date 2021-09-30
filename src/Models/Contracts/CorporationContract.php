@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CorporationContract.
+ *
  * @package Seat\Eveapi\Models\Contacts
  */
 class CorporationContract extends Model

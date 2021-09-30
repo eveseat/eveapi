@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 
 /**
  * Class Observers.
+ *
  * @package Seat\Eveapi\Jobs\Industry\Corporation\Mining
  */
 class Observers extends AbstractAuthCorporationJob
@@ -72,6 +73,7 @@ class Observers extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

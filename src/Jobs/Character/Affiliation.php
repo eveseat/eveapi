@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Character\CharacterAffiliation;
 
 /**
  * Class Affiliation.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Affiliation extends EsiBase
@@ -64,7 +65,7 @@ class Affiliation extends EsiBase
     /**
      * Affiliation constructor.
      *
-     * @param array $character_ids
+     * @param  array  $character_ids
      */
     public function __construct(array $character_ids)
     {
@@ -75,6 +76,7 @@ class Affiliation extends EsiBase
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      */
     public function handle()

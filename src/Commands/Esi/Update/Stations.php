@@ -32,6 +32,7 @@ use Seat\Eveapi\Models\Universe\UniverseStation;
 
 /**
  * Class Stations.
+ *
  * @package Seat\Eveapi\Commands\Esi\Update
  */
 class Stations extends Command

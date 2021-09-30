@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Killmails\KillmailDetail;
 
 /**
  * Class Recent.
+ *
  * @package Seat\Eveapi\Jobs\Killmails\Character
  */
 class Recent extends AbstractAuthCharacterJob

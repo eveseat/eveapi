@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Status\EsiStatus;
 
 /**
  * Class Status.
+ *
  * @package Seat\Eveapi\Jobs\Status
  */
 class Esi extends EsiBase
@@ -64,6 +65,7 @@ class Esi extends EsiBase
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

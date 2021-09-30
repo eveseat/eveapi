@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Contacts.
+ *
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
 class Contacts extends AbstractAuthCorporationJob
@@ -70,8 +71,8 @@ class Contacts extends AbstractAuthCorporationJob
     /**
      * Contacts constructor.
      *
-     * @param int $corporation_id
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  int  $corporation_id
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(int $corporation_id, RefreshToken $token)
     {
@@ -84,6 +85,7 @@ class Contacts extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

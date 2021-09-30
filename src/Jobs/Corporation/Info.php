@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
  * Class Info.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Info extends AbstractCorporationJob
@@ -56,6 +57,7 @@ class Info extends AbstractCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

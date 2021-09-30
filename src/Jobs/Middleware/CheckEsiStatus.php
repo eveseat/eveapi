@@ -33,8 +33,9 @@ use Seat\Eveapi\Models\Status\EsiStatus;
 class CheckEsiStatus
 {
     /**
-     * @param \Seat\Eveapi\Jobs\EsiBase $job
+     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
      * @param $next
+     *
      * @throws \Exception
      */
     public function handle($job, $next)

@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class ServerStatus.
+ *
  * @package Seat\Eveapi\Models\Status
  */
 class ServerStatus extends Model

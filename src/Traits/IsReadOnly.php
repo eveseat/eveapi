@@ -26,12 +26,13 @@ use Seat\Eveapi\Exception\ReadOnlyModelException;
 
 /**
  * Trait IsReadOnly.
+ *
  * @package Seat\Eveapi\Traits
  */
 trait IsReadOnly
 {
     /**
-     * @param array $attributes
+     * @param  array  $attributes
      *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
@@ -42,7 +43,7 @@ trait IsReadOnly
     }
 
     /**
-     * @param array $arr
+     * @param  array  $arr
      *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
@@ -53,7 +54,7 @@ trait IsReadOnly
     }
 
     /**
-     * @param array $options
+     * @param  array  $options
      *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
@@ -64,8 +65,8 @@ trait IsReadOnly
     }
 
     /**
-     * @param array $attributes
-     * @param array $options
+     * @param  array  $attributes
+     * @param  array  $options
      *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */

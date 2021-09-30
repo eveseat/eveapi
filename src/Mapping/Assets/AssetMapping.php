@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class AssetMapping.
+ *
  * @package Seat\Eveapi\Mapping\Assets
  */
 class AssetMapping extends DataMapping

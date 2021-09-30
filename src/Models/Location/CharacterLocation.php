@@ -30,6 +30,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class CharacterLocation.
+ *
  * @package Seat\Eveapi\Models\Killmails
  */
 class CharacterLocation extends Model

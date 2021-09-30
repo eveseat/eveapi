@@ -63,7 +63,7 @@ class Update extends Command
     /**
      * Update characters tied to the bucket tokens.
      *
-     * @param \Seat\Eveapi\Models\Bucket $bucket
+     * @param  \Seat\Eveapi\Models\Bucket  $bucket
      */
     private function updateCharacters(Bucket $bucket)
     {
@@ -102,7 +102,7 @@ class Update extends Command
     /**
      * Update corporations tied to the bucket tokens.
      *
-     * @param \Seat\Eveapi\Models\Bucket $bucket
+     * @param  \Seat\Eveapi\Models\Bucket  $bucket
      */
     private function updateCorporations(Bucket $bucket)
     {

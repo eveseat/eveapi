@@ -27,6 +27,7 @@ use Seat\Eveapi\Jobs\Maintenance as MaintenanceJob;
 
 /**
  * Class Maintenance.
+ *
  * @package Seat\Eveapi\Commands\Seat\Admin
  */
 class Maintenance extends Command

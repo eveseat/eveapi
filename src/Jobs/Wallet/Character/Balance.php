@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 
 /**
  * Class Balance.
+ *
  * @package Seat\Eveapi\Jobs\Wallet\Character
  */
 class Balance extends AbstractAuthCharacterJob

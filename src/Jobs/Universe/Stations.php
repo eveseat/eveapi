@@ -30,6 +30,7 @@ use Seat\Eveapi\Models\Universe\UniverseStationService;
 
 /**
  * Class Stations.
+ *
  * @package Seat\Eveapi\Jobs\Universe
  */
 class Stations extends EsiBase
@@ -62,7 +63,7 @@ class Stations extends EsiBase
     /**
      * Stations constructor.
      *
-     * @param array $station_ids
+     * @param  array  $station_ids
      */
     public function __construct(array $station_ids)
     {
@@ -84,7 +85,7 @@ class Stations extends EsiBase
     }
 
     /**
-     * @param \Seat\Eseye\Containers\EsiResponse $structure
+     * @param  \Seat\Eseye\Containers\EsiResponse  $structure
      */
     private function updateStructure(EsiResponse $structure)
     {

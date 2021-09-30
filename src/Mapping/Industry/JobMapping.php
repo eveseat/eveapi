@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class JobMapping.
+ *
  * @package Seat\Eveapi\Mapping\Industry
  */
 class JobMapping extends DataMapping

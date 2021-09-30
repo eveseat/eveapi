@@ -27,6 +27,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationFacility.
+ *
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationFacility extends Model

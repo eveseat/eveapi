@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class CorporationCustomsOffice.
+ *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
 class CorporationCustomsOffice extends Model
