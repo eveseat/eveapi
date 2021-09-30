@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CharacterPlanetPin.
+ *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
 class CharacterPlanetPin extends Model

@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
 /**
  * Class Transactions.
+ *
  * @package Seat\Eveapi\Jobs\Wallet\Character
  */
 class Transactions extends AbstractAuthCharacterJob

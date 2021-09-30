@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CharacterPlanetRouteWaypoint.
+ *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
 class CharacterPlanetRouteWaypoint extends Model

@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class UniverseStation.
+ *
  * @package Seat\Eveapi\Models\Universe
  */
 class UniverseStation extends Model

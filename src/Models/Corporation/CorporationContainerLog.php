@@ -27,6 +27,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationContainerLog.
+ *
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationContainerLog extends Model

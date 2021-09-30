@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 
 /**
  * Class Names.
+ *
  * @package Seat\Eveapi\Jobs\Universe
  */
 class Names extends EsiBase

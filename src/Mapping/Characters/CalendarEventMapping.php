@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class CalendarEventMapping.
+ *
  * @package Seat\Eveapi\Mapping\Characters
  */
 class CalendarEventMapping extends DataMapping

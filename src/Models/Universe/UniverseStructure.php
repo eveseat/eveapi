@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class UniverseStructure.
+ *
  * @package Seat\Eveapi\Models\Universe
  *
  * @OA\Schema(

@@ -34,6 +34,7 @@ use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Items.
+ *
  * @package Seat\Eveapi\Jobs\Contracts\Character
  */
 class Items extends AbstractAuthCharacterJob
@@ -87,8 +88,8 @@ class Items extends AbstractAuthCharacterJob
     /**
      * Items constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken $token
-     * @param int $contract_id
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
+     * @param  int  $contract_id
      */
     public function __construct(RefreshToken $token, int $contract_id)
     {
@@ -103,6 +104,7 @@ class Items extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      */
     public function handle()

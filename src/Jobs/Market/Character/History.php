@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Market\CharacterOrder;
 
 /**
  * Class History.
+ *
  * @package Seat\Eveapi\Jobs\Market\Character
  */
 class History extends AbstractAuthCharacterJob

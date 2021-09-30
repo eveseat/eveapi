@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CharacterOnline.
+ *
  * @package Seat\Eveapi\Models\Location
  */
 class CharacterOnline extends Model

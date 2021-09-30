@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationRole;
 
 /**
  * Class Roles.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Roles extends AbstractAuthCorporationJob
@@ -79,6 +80,7 @@ class Roles extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

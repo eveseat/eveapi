@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Corporation\CorporationContainerLog;
 
 /**
  * Class ContainerLogs.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class ContainerLogs extends AbstractAuthCorporationJob
@@ -71,6 +72,7 @@ class ContainerLogs extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

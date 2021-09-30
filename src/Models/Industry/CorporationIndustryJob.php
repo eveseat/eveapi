@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class CorporationIndustryJob.
+ *
  * @package Seat\Eveapi\Models\Industry
  *
  * @OA\Schema(

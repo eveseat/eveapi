@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Alliances\Alliance;
 
 /**
  * Class Info.
+ *
  * @package Seat\Eveapi\Jobs\Alliances
  */
 class Info extends EsiBase
@@ -60,7 +61,7 @@ class Info extends EsiBase
     /**
      * Info constructor.
      *
-     * @param int $alliance_id
+     * @param  int  $alliance_id
      */
     public function __construct(int $alliance_id)
     {

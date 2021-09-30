@@ -65,7 +65,7 @@ class Alliances extends Command
     }
 
     /**
-     * @param array $alliance_ids
+     * @param  array  $alliance_ids
      */
     private function handleAllianceList(array $alliance_ids)
     {

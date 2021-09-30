@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationAllianceHistory;
 
 /**
  * Class AllianceHistory.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class AllianceHistory extends AbstractCorporationJob
@@ -55,6 +56,7 @@ class AllianceHistory extends AbstractCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

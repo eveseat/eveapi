@@ -78,8 +78,8 @@ trait BucketManager
     /**
      * Take all buckets which are exceeding threshold and remove some tokens to reduce their load.
      *
-     * @param \Illuminate\Support\Collection $buckets
-     * @param int $threshold
+     * @param  \Illuminate\Support\Collection  $buckets
+     * @param  int  $threshold
      */
     private function reduceBucketLoad(Collection $buckets, float $threshold)
     {
@@ -92,8 +92,8 @@ trait BucketManager
     /**
      * Take all buckets which are under threshold and add tokens to them in order to balance their load.
      *
-     * @param \Illuminate\Support\Collection $buckets
-     * @param float $threshold
+     * @param  \Illuminate\Support\Collection  $buckets
+     * @param  float  $threshold
      */
     private function balanceBucketLoad(Collection $buckets, float $threshold)
     {
@@ -132,8 +132,7 @@ trait BucketManager
     /**
      * Return the first refresh token which is not already tied to a bucket.
      *
-     * @param int $count
-     *
+     * @param  int  $count
      * @return \Illuminate\Support\Collection
      */
     private function getOrphanTokens(int $count): Collection
@@ -148,7 +147,7 @@ trait BucketManager
     /**
      * Seed database with missing buckets amount.
      *
-     * @param int $count The number of buckets to spawn.
+     * @param  int  $count  The number of buckets to spawn.
      */
     private function spawnBuckets(int $count)
     {

@@ -30,6 +30,7 @@ use Seat\Eveapi\Models\Character\CharacterSkill;
 
 /**
  * Class Skills.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Skills extends AbstractAuthCharacterJob

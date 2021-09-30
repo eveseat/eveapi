@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class CorporationOrder.
+ *
  * @package Seat\Eveapi\Models\Market
  *
  * @OA\Schema(

@@ -82,8 +82,8 @@ class Character extends Bus
     /**
      * Character constructor.
      *
-     * @param int $character_id
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param  int  $character_id
+     * @param  \Seat\Eveapi\Models\RefreshToken|null  $token
      */
     public function __construct(int $character_id, ?RefreshToken $token = null)
     {

@@ -32,6 +32,7 @@ use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
  * Class PublicInfo.
+ *
  * @package Seat\Eveapi\Commands\Esi\Update
  */
 class PublicInfo extends Command

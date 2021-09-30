@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 
 /**
  * Class Journal.
+ *
  * @package Seat\Eveapi\Jobs\Wallet\Character
  */
 class Journal extends AbstractAuthCharacterJob

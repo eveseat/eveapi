@@ -51,6 +51,7 @@ class CorporationHistory extends AbstractCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

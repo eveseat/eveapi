@@ -30,6 +30,7 @@ use Seat\Eveapi\Traits\Utils;
 
 /**
  * Class Locations.
+ *
  * @package Seat\Eveapi\Jobs\Assets\Character
  */
 class Locations extends AbstractAuthCharacterJob
@@ -78,6 +79,7 @@ class Locations extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      */
     public function handle()
@@ -201,8 +203,8 @@ class Locations extends AbstractAuthCharacterJob
     }
 
     /**
-     * @param \Seat\Eseye\Exceptions\RequestFailedException $exception
-     * @param array $item_ids
+     * @param  \Seat\Eseye\Exceptions\RequestFailedException  $exception
+     * @param  array  $item_ids
      *
      * @throws \Seat\Eseye\Exceptions\RequestFailedException
      */

@@ -28,6 +28,7 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CorporationWalletJournal.
+ *
  * @package Seat\Eveapi\Models\Wallet
  *
  * @OA\Schema(

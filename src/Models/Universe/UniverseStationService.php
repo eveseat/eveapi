@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class UniverseStationService.
+ *
  * @package Seat\Eveapi\Models\Universe
  */
 class UniverseStationService extends Model

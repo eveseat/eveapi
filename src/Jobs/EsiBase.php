@@ -40,6 +40,7 @@ use Seat\Services\Jobs\Analytics;
 
 /**
  * Class EsiBase.
+ *
  * @package Seat\Eveapi\Jobs
  */
 abstract class EsiBase extends AbstractJob
@@ -203,7 +204,7 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * @param \Exception $exception
+     * @param  \Exception  $exception
      *
      * @throws \Exception
      */
@@ -225,7 +226,7 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * @param int $amount
+     * @param  int  $amount
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
@@ -244,9 +245,9 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * @param array $path_values
-     *
+     * @param  array  $path_values
      * @return \Seat\Eseye\Containers\EsiResponse
+     *
      * @throws \Seat\Eseye\Exceptions\RequestFailedException
      * @throws \Seat\Eveapi\Exception\PermanentInvalidTokenException
      * @throws \Seat\Eveapi\Exception\TemporaryEsiOutageException
@@ -298,6 +299,7 @@ abstract class EsiBase extends AbstractJob
      * in the job that is using this base class.
      *
      * @return void
+     *
      * @throws \Exception
      */
     public function validateCall(): void
@@ -318,6 +320,7 @@ abstract class EsiBase extends AbstractJob
      * Get an instance of Eseye to use for this job.
      *
      * @return \Seat\Eseye\Eseye
+     *
      * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function eseye()
@@ -344,7 +347,7 @@ abstract class EsiBase extends AbstractJob
      * These warnings will also cause analytics jobs to be
      * sent to allow for monitoring of endpoint changes.
      *
-     * @param \Seat\Eseye\Containers\EsiResponse $response
+     * @param  \Seat\Eseye\Containers\EsiResponse  $response
      *
      * @throws \Throwable
      */
@@ -420,8 +423,7 @@ abstract class EsiBase extends AbstractJob
      * based on the number of pages available and the
      * current page.
      *
-     * @param int|null $pages
-     *
+     * @param  int|null  $pages
      * @return bool
      */
     public function nextPage(?int $pages): bool
@@ -436,7 +438,7 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * @param \Seat\Eseye\Exceptions\RequestFailedException $exception
+     * @param  \Seat\Eseye\Exceptions\RequestFailedException  $exception
      *
      * @throws \Seat\Eseye\Exceptions\RequestFailedException
      * @throws \Seat\Eveapi\Exception\PermanentInvalidTokenException

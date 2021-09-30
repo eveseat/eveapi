@@ -28,6 +28,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class MapDenormalize.
+ *
  * @package Seat\Eveapi\Models\Sde
  *
  * @OA\Schema(
@@ -182,7 +183,7 @@ class MapDenormalize extends Model
     /**
      * Return constellations entities.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeConstellations($query)
@@ -193,7 +194,7 @@ class MapDenormalize extends Model
     /**
      * Return moons entities.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeMoons($query)
@@ -204,7 +205,7 @@ class MapDenormalize extends Model
     /**
      * Return planets entities.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePlanets($query)
@@ -215,7 +216,7 @@ class MapDenormalize extends Model
     /**
      * Return regions entities.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeRegions($query)
@@ -226,7 +227,7 @@ class MapDenormalize extends Model
     /**
      * Return systems entities.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSystems($query)
@@ -235,7 +236,7 @@ class MapDenormalize extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeUbiquitous($query)
@@ -246,7 +247,7 @@ class MapDenormalize extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCommon($query)
@@ -257,7 +258,7 @@ class MapDenormalize extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeUncommon($query)
@@ -268,7 +269,7 @@ class MapDenormalize extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeRare($query)
@@ -279,7 +280,7 @@ class MapDenormalize extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeExceptional($query)
@@ -290,7 +291,7 @@ class MapDenormalize extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeStandard($query)

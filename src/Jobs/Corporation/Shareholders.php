@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Shareholders.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class Shareholders extends AbstractAuthCorporationJob
@@ -75,8 +76,8 @@ class Shareholders extends AbstractAuthCorporationJob
     /**
      * Shareholders constructor.
      *
-     * @param int $corporation_id
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  int  $corporation_id
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(int $corporation_id, RefreshToken $token)
     {
@@ -89,6 +90,7 @@ class Shareholders extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

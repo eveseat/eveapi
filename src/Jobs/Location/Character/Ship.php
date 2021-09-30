@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Location\CharacterShip;
 
 /**
  * Class Ship.
+ *
  * @package Seat\Eveapi\Jobs\Location\Character
  */
 class Ship extends AbstractAuthCharacterJob

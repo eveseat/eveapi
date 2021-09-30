@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class CharacterJumpClone.
+ *
  * @package Seat\Eveapi\Models\Clones
  *
  * @OA\Schema(

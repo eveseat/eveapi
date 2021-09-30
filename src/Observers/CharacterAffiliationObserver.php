@@ -37,7 +37,7 @@ use Seat\Eveapi\Models\RefreshToken;
 class CharacterAffiliationObserver
 {
     /**
-     * @param \Seat\Eveapi\Models\Character\CharacterAffiliation $affiliation
+     * @param  \Seat\Eveapi\Models\Character\CharacterAffiliation  $affiliation
      */
     public function created(CharacterAffiliation $affiliation)
     {

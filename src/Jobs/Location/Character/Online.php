@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Location\CharacterOnline;
 
 /**
  * Class Online.
+ *
  * @package Seat\Eveapi\Jobs\Location\Character
  */
 class Online extends AbstractAuthCharacterJob

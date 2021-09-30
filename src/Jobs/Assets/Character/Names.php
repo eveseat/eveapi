@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Assets\CharacterAsset;
 
 /**
  * Class Names.
+ *
  * @package Seat\Eveapi\Jobs\Assets\Character
  */
 class Names extends AbstractAuthCharacterJob
@@ -75,6 +76,7 @@ class Names extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      */
     public function handle()

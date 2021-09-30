@@ -30,6 +30,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
  * Class CorporationStructure.
+ *
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationStructure extends Model

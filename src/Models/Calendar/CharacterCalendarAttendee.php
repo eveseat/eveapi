@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CharacterCalendarAttendee.
+ *
  * @package Seat\Eveapi\Models\Calendar
  */
 class CharacterCalendarAttendee extends Model

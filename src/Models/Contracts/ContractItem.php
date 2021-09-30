@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class ContractItem.
+ *
  * @package Seat\Eveapi\Models\Contacts
  *
  * @OA\Schema(

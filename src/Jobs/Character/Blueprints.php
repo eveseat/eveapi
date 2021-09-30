@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Blueprints.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Blueprints extends AbstractAuthCharacterJob
@@ -74,7 +75,7 @@ class Blueprints extends AbstractAuthCharacterJob
     /**
      * Blueprints constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(RefreshToken $token)
     {
@@ -88,6 +89,7 @@ class Blueprints extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

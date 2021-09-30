@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Skills\CharacterSkillQueue;
 
 /**
  * Class Queue.
+ *
  * @package Seat\Eveapi\Jobs\Skills\Character
  */
 class Queue extends AbstractAuthCharacterJob

@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Contacts\CorporationLabel;
 
 /**
  * Class Labels.
+ *
  * @package Seat\Eveapi\Jobs\Contacts\Corporation
  */
 class Labels extends AbstractAuthCorporationJob
@@ -60,6 +61,7 @@ class Labels extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

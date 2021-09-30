@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Character\CharacterAffiliation;
 
 /**
  * Class UniverseName.
+ *
  * @package Seat\Eveapi\Models\Universe
  *
  * @OA\Schema(

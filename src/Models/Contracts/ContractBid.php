@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class ContractBid.
+ *
  * @package Seat\Eveapi\Models\Contacts
  *
  * @OA\Schema(

@@ -63,7 +63,7 @@ class History extends EsiBase
     /**
      * History constructor.
      *
-     * @param array $type_ids
+     * @param  array  $type_ids
      */
     public function __construct(array $type_ids)
     {
@@ -72,6 +72,7 @@ class History extends EsiBase
 
     /**
      * {@inheritdoc}
+     *
      * @throws \Seat\Services\Exceptions\SettingException
      * @throws \Throwable
      */

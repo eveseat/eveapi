@@ -28,6 +28,7 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CorporationStanding.
+ *
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationStanding extends Model

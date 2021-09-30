@@ -36,6 +36,7 @@ use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class PlanetDetail.
+ *
  * @package Seat\Eveapi\Jobs\PlanetaryInteraction\Character
  */
 class PlanetDetail extends AbstractAuthCharacterJob
@@ -114,8 +115,8 @@ class PlanetDetail extends AbstractAuthCharacterJob
     /**
      * PlanetDetail constructor.
      *
-     * @param RefreshToken $token
-     * @param int $planet_id
+     * @param  RefreshToken  $token
+     * @param  int  $planet_id
      */
     public function __construct(RefreshToken $token, int $planet_id)
     {

@@ -33,6 +33,7 @@ use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Bids.
+ *
  * @package Seat\Eveapi\Jobs\Contracts\Corporation
  */
 class Bids extends AbstractAuthCorporationJob
@@ -86,9 +87,9 @@ class Bids extends AbstractAuthCorporationJob
     /**
      * Bids constructor.
      *
-     * @param int $corporation_id
-     * @param \Seat\Eveapi\Models\RefreshToken $token
-     * @param int $contract_id
+     * @param  int  $corporation_id
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
+     * @param  int  $contract_id
      */
     public function __construct(int $corporation_id, RefreshToken $token, int $contract_id)
     {
@@ -103,6 +104,7 @@ class Bids extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

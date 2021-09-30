@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CharacterAttribute.
+ *
  * @package Seat\Eveapi\Models\Market
  */
 class CharacterAttribute extends Model

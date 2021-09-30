@@ -28,6 +28,7 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class CharacterNotification.
+ *
  * @package Seat\Eveapi\Models\Character
  *
  * @OA\Schema(

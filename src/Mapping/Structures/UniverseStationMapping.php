@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class UniverseStationMapping.
+ *
  * @package Seat\Eveapi\Mapping\Structures
  */
 class UniverseStationMapping extends DataMapping

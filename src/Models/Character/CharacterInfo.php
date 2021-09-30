@@ -53,6 +53,7 @@ use Seat\Web\Models\User;
 
 /**
  * Class CharacterInfo.
+ *
  * @package Seat\Eveapi\Models\Character
  */
 class CharacterInfo extends Model
@@ -75,7 +76,7 @@ class CharacterInfo extends Model
     public $incrementing = false;
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeNpc($query)
@@ -84,7 +85,7 @@ class CharacterInfo extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePlayer($query)
@@ -425,6 +426,7 @@ class CharacterInfo extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     *
      * @deprecated 4.0.0
      */
     public function user()
@@ -458,6 +460,7 @@ class CharacterInfo extends Model
 
     /**
      * @return \Seat\Eveapi\Models\Character\CharacterCorporationHistory
+     *
      * @deprecated 4.0.0
      */
     public function getCurrentCorporationAttribute()

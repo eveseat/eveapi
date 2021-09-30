@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Fittings\Insurance;
 
 /**
  * Class Fittings.
+ *
  * @package Seat\Eveapi\Jobs\FIttings\Character
  */
 class Insurances extends EsiBase

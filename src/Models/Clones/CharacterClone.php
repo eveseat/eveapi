@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CharacterClone.
+ *
  * @package Seat\Eveapi\Models\Clones
  */
 class CharacterClone extends Model

@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Killmails\KillmailDetail;
 
 /**
  * Class Recent.
+ *
  * @package Seat\Eveapi\Jobs\Killmails\Corporation
  */
 class Recent extends AbstractAuthCorporationJob
@@ -72,6 +73,7 @@ class Recent extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

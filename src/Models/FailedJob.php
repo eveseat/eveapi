@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class FailedJob.
+ *
  * @package Seat\Eveapi\Models
  */
 class FailedJob extends Model

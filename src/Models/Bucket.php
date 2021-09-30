@@ -32,8 +32,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bucket extends Model
 {
     /**
-     * @param int $threshold
-     *
+     * @param  int  $threshold
      * @return string
      */
     public function getStatus(int $threshold)

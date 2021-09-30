@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterWalletJournal.
+ *
  * @package Seat\Eveapi\Models\Wallet
  *
  * @OA\Schema(

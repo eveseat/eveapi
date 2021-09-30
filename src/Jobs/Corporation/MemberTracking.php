@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 
 /**
  * Class MemberTracking.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class MemberTracking extends AbstractAuthCorporationJob
@@ -65,6 +66,7 @@ class MemberTracking extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

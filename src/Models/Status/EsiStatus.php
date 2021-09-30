@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class EsiStatus.
+ *
  * @package Seat\Eveapi\Models\Market
  */
 class EsiStatus extends Model

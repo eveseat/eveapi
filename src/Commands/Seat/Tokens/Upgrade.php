@@ -30,6 +30,7 @@ use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Upgrade.
+ *
  * @package Seat\Eveapi\Commands\Seat\Tokens
  */
 class Upgrade extends Command

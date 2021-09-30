@@ -28,6 +28,7 @@ use Seat\Eveapi\Jobs\Sovereignty\Structures;
 
 /**
  * Class Sovereignty.
+ *
  * @package Seat\Eveapi\Commands\Esi\Update
  */
 class Sovereignty extends Command

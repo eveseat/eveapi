@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CharacterRole.
+ *
  * @package Seat\Eveapi\Models\Character
  */
 class CharacterRole extends Model

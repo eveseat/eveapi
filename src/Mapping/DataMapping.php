@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class DataMapping.
+ *
  * @package Seat\Eveapi\Mapping
  */
 abstract class DataMapping
@@ -41,9 +42,9 @@ abstract class DataMapping
     ];
 
     /**
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param $data
-     * @param array $overrides
+     * @param  array  $overrides
      * @return \Illuminate\Database\Eloquent\Model
      */
     public static function make(Model $model, $data, array $overrides = []): Model

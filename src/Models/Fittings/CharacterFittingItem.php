@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class CharacterFittingItem.
+ *
  * @package Seat\Eveapi\Models\Fittings
  */
 class CharacterFittingItem extends Model

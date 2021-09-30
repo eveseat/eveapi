@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Sovereignty\SovereigntyStructure;
 
 /**
  * Class Structures.
+ *
  * @package Seat\Eveapi\Jobs\Sovereignty
  */
 class Structures extends EsiBase

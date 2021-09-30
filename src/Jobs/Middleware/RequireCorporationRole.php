@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\Character\CharacterRole;
 class RequireCorporationRole
 {
     /**
-     * @param \Seat\Eveapi\Jobs\AbstractAuthCorporationJob $job
+     * @param  \Seat\Eveapi\Jobs\AbstractAuthCorporationJob  $job
      * @param $next
      */
     public function handle($job, $next)
@@ -73,7 +73,7 @@ class RequireCorporationRole
      * Determine if the current character refresh token has
      * the roles needed to make the corporation API call.
      *
-     * @param \Seat\Eveapi\Jobs\AbstractAuthCorporationJob $job
+     * @param  \Seat\Eveapi\Jobs\AbstractAuthCorporationJob  $job
      * @return bool
      */
     public function isCorpCharacterWithRoles($job): bool
@@ -104,7 +104,7 @@ class RequireCorporationRole
     }
 
     /**
-     * @param \Seat\Eveapi\Jobs\AbstractAuthCorporationJob $job
+     * @param  \Seat\Eveapi\Jobs\AbstractAuthCorporationJob  $job
      * @return array
      */
     private function getCharacterRoles($job): array

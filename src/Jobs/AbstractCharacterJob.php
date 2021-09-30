@@ -37,7 +37,7 @@ abstract class AbstractCharacterJob extends EsiBase
     /**
      * AbstractCharacterJob constructor.
      *
-     * @param int $character_id
+     * @param  int  $character_id
      */
     public function __construct(int $character_id)
     {

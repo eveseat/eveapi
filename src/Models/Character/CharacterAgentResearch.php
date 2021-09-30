@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterAgentsResearch.
+ *
  * @package App
  */
 class CharacterAgentResearch extends Model

@@ -27,6 +27,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class StaStation.
+ *
  * @package Seat\Eveapi\Models\Sde
  */
 class StaStation extends Model

@@ -28,6 +28,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
  * Class InvControlTowerResources.
+ *
  * @package Seat\Eveapi\Models\Sde
  */
 class InvControlTowerResource extends Model

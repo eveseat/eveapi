@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Assets\CorporationAsset;
 
 /**
  * Class Names.
+ *
  * @package Seat\Eveapi\Jobs\Assets\Corporation
  */
 class Names extends AbstractAuthCorporationJob
@@ -73,6 +74,7 @@ class Names extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

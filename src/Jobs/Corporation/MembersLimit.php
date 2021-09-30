@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationMemberLimits;
 
 /**
  * Class MembersLimit.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class MembersLimit extends AbstractAuthCorporationJob
@@ -65,6 +66,7 @@ class MembersLimit extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

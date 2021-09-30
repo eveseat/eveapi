@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Market\CorporationOrder;
 
 /**
  * Class Orders.
+ *
  * @package Seat\Eveapi\Jobs\Market\Corporation
  */
 class Orders extends AbstractAuthCorporationJob
@@ -71,6 +72,7 @@ class Orders extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

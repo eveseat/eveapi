@@ -62,8 +62,7 @@ class Esi extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     protected function buildClass($name)
@@ -84,9 +83,8 @@ class Esi extends GeneratorCommand
     /**
      * Replace the endpoint for the given stub.
      *
-     * @param string $stub
-     * @param string $endpoint
-     *
+     * @param  string  $stub
+     * @param  string  $endpoint
      * @return $this
      */
     protected function replaceEndpoint(string &$stub, string $endpoint)
@@ -100,9 +98,8 @@ class Esi extends GeneratorCommand
     /**
      * Replace the endpoint version for the given stub.
      *
-     * @param string $stub
-     * @param string $version
-     *
+     * @param  string  $stub
+     * @param  string  $version
      * @return $this
      */
     protected function replaceVersion(string &$stub, string $version)
@@ -116,9 +113,8 @@ class Esi extends GeneratorCommand
     /**
      * Replace the scope for the given stub.
      *
-     * @param string $stub
-     * @param string $scope
-     *
+     * @param  string  $stub
+     * @param  string  $scope
      * @return $this
      */
     protected function replaceScope(string &$stub, string $scope)
@@ -132,8 +128,7 @@ class Esi extends GeneratorCommand
     /**
      * Get the default namespace for the class.
      *
-     * @param  string $rootNamespace
-     *
+     * @param  string  $rootNamespace
      * @return string
      */
     protected function getDefaultNamespace($rootNamespace)

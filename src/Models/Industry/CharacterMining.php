@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class CharacterMining.
+ *
  * @package Seat\Eveapi\Models\Industry
  */
 class CharacterMining extends Model
@@ -77,8 +78,7 @@ class CharacterMining extends Model
     }
 
     /**
-     * @param array $options
-     *
+     * @param  array  $options
      * @return bool
      */
     public function save(array $options = [])

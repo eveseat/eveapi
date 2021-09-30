@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class CharacterFatigue.
+ *
  * @package Seat\Eveapi\Models\Character
  */
 class CharacterFatigue extends Model

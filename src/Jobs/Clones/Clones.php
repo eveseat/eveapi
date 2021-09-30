@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Clones\CharacterJumpClone;
 
 /**
  * Class Clones.
+ *
  * @package Seat\Eveapi\Jobs\Clones
  */
 class Clones extends AbstractAuthCharacterJob
@@ -61,6 +62,7 @@ class Clones extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

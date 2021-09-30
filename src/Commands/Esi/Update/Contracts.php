@@ -95,7 +95,7 @@ class Contracts extends Command
     /**
      * Enqueue relevant detail jobs for requested character contracts.
      *
-     * @param array $contract_ids
+     * @param  array  $contract_ids
      */
     private function enqueueDetailedCharacterContractsJobs(array $contract_ids)
     {
@@ -131,7 +131,7 @@ class Contracts extends Command
     /**
      * Enqueue relevant detail jobs for requested corporation contracts.
      *
-     * @param array $contract_ids
+     * @param  array  $contract_ids
      */
     private function enqueueDetailedCorporationContractsJobs(array $contract_ids)
     {

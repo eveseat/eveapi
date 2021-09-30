@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationMemberTitle;
 
 /**
  * Class MembersTitles.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class MembersTitles extends AbstractAuthCorporationJob
@@ -65,6 +66,7 @@ class MembersTitles extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

@@ -81,8 +81,8 @@ class Corporation extends Bus
     /**
      * Corporation constructor.
      *
-     * @param int $corporation_id
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param  int  $corporation_id
+     * @param  \Seat\Eveapi\Models\RefreshToken|null  $token
      */
     public function __construct(int $corporation_id, ?RefreshToken $token = null)
     {

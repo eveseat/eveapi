@@ -31,6 +31,7 @@ use Seat\Eveapi\Models\Killmails\KillmailVictim;
 
 /**
  * Class Detail.
+ *
  * @package Seat\Eveapi\Jobs\Killmails
  */
 class Detail extends EsiBase
@@ -68,8 +69,8 @@ class Detail extends EsiBase
     /**
      * Detail constructor.
      *
-     * @param int $killmail_id
-     * @param string $killmail_hash
+     * @param  int  $killmail_id
+     * @param  string  $killmail_hash
      */
     public function __construct(int $killmail_id, string $killmail_hash)
     {
@@ -83,6 +84,7 @@ class Detail extends EsiBase
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      */
     public function handle()

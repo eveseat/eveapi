@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class SovereigntyStructure.
+ *
  * @package Seat\Eveapi\Models\Sovereignty
  */
 class SovereigntyStructure extends Model

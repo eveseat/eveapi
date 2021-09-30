@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class CorporationStructureMapping.
+ *
  * @package Seat\Eveapi\Mapping\Structures
  */
 class CorporationStructureMapping extends DataMapping

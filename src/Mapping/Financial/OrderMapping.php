@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class OrderMapping.
+ *
  * @package Seat\Eveapi\Mapping\Financial
  */
 class OrderMapping extends DataMapping

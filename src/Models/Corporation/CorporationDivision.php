@@ -28,6 +28,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
  * Class CorporationDivision.
+ *
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationDivision extends Model
@@ -46,7 +47,6 @@ class CorporationDivision extends Model
 
     /**
      * @param $value
-     *
      * @return string
      */
     public function getNameAttribute($value)

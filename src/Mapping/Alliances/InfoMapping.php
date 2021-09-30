@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class InfoMapping.
+ *
  * @package Seat\Eveapi\Mapping\Alliances
  */
 class InfoMapping extends DataMapping

@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class ContainerLogsMapping.
+ *
  * @package Seat\Eveapi\Mapping\Assets
  */
 class ContainerLogsMapping extends DataMapping

@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class CharacterPlanet.
+ *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
 class CharacterPlanet extends Model

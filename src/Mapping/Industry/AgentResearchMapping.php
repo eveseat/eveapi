@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class AgentResearchMapping.
+ *
  * @package Seat\Eveapi\Mapping\Industry
  */
 class AgentResearchMapping extends DataMapping

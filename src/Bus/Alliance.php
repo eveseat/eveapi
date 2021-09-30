@@ -48,8 +48,8 @@ class Alliance extends Bus
     /**
      * Alliance constructor.
      *
-     * @param int $alliance_id
-     * @param \Seat\Eveapi\Models\RefreshToken|null $token
+     * @param  int  $alliance_id
+     * @param  \Seat\Eveapi\Models\RefreshToken|null  $token
      */
     public function __construct(int $alliance_id, ?RefreshToken $token = null)
     {

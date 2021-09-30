@@ -32,7 +32,7 @@ use Seat\Eveapi\Jobs\EsiBase;
 class CheckEsiRateLimit
 {
     /**
-     * @param \Illuminate\Queue\InteractsWithQueue $job
+     * @param  \Illuminate\Queue\InteractsWithQueue  $job
      * @param $next
      */
     public function handle($job, $next)
@@ -56,7 +56,7 @@ class CheckEsiRateLimit
     }
 
     /**
-     * @param \Seat\Eveapi\Jobs\EsiBase $job
+     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
      * @return bool
      */
     private function isEsiRateLimitReached(EsiBase $job): bool

@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Market\CorporationOrder;
 
 /**
  * Class History.
+ *
  * @package Seat\Eveapi\Jobs\Market\Corporation
  */
 class History extends AbstractAuthCorporationJob
@@ -71,6 +72,7 @@ class History extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()

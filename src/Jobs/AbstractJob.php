@@ -71,7 +71,8 @@ abstract class AbstractJob implements ShouldQueue
      * limiter. This is checked as part of the preflight
      * checks when API calls are made.
      *
-     * @param \Exception $exception
+     * @param  \Exception  $exception
+     *
      * @throws \Exception
      */
     public function failed(Exception $exception)

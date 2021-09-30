@@ -36,6 +36,7 @@ use Seat\Eveapi\Models\Status\ServerStatus;
 
 /**
  * Class Maintenance.
+ *
  * @package Seat\Eveapi\Jobs
  */
 class Maintenance implements ShouldQueue

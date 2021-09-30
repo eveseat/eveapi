@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Industry\CharacterMining;
 
 /**
  * Class Mining.
+ *
  * @package Seat\Eveapi\Jobs\Industry\Character
  */
 class Mining extends AbstractAuthCharacterJob

@@ -28,6 +28,7 @@ use Seat\Eveapi\Pivot\Character\CharacterTitle;
 
 /**
  * Class CorporationTitle.
+ *
  * @package Seat\Eveapi\Models\Corporation
  */
 class CorporationTitle extends Model

@@ -34,7 +34,7 @@ use Seat\Eveapi\Models\RefreshToken;
 class CheckTokenVersion
 {
     /**
-     * @param \Seat\Eveapi\Jobs\EsiBase $job
+     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
      * @param $next
      */
     public function handle($job, $next)

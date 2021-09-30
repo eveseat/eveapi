@@ -34,6 +34,7 @@ use Seat\Eseye\Exceptions\RequestFailedException;
 
 /**
  * Class Diagnose.
+ *
  * @package Seat\Eveapi\Commands\Seat\Admin
  */
 class Diagnose extends Command

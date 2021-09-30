@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Fittings\CharacterFittingItem;
 
 /**
  * Class Fittings.
+ *
  * @package Seat\Eveapi\Jobs\FIttings\Character
  */
 class Fittings extends AbstractAuthCharacterJob

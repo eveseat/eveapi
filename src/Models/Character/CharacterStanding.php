@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterStanding.
+ *
  * @package Seat\Eveapi\Models\Character
  */
 class CharacterStanding extends Model

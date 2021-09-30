@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
  * Class AllianceMember.
+ *
  * @package Seat\Eveapi\Models\Alliances
  */
 class AllianceMember extends Model

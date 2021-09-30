@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Market\Price;
 
 /**
  * Class Prices.
+ *
  * @package Seat\Eveapi\Jobs\Market
  */
 class Prices extends EsiBase

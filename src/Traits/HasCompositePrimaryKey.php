@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Trait HasCompositePrimaryKey.
+ *
  * @package Seat\Eveapi\Traits
  */
 trait HasCompositePrimaryKey
@@ -50,8 +51,7 @@ trait HasCompositePrimaryKey
      *  https://github.com/laravel/framework/issues/5355#issuecomment-161376267
      *  https://github.com/warlof/eveseat-mining-ledger/blob/a03e15354d00567db46ec883a1e803824350c26b/src/Models/Character/MiningJournal.php#L46-L66
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function setKeysForSaveQuery(Builder $query)

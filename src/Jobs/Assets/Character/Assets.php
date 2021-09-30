@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Assets.
+ *
  * @package Seat\Eveapi\Jobs\Assets\Character
  */
 class Assets extends AbstractAuthCharacterJob
@@ -71,7 +72,7 @@ class Assets extends AbstractAuthCharacterJob
     /**
      * Assets constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(RefreshToken $token)
     {
@@ -84,6 +85,7 @@ class Assets extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle(): void

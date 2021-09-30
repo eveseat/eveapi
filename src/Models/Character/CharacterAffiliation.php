@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterAffiliation.
+ *
  * @package Seat\Eveapi\Models\Character
  */
 class CharacterAffiliation extends Model

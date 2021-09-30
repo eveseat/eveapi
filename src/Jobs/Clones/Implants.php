@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Clones\CharacterImplant;
 
 /**
  * Class Implants.
+ *
  * @package Seat\Eveapi\Jobs\Clones
  */
 class Implants extends AbstractAuthCharacterJob
@@ -60,6 +61,7 @@ class Implants extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

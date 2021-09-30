@@ -31,6 +31,7 @@ use Seat\Web\Models\User;
 
 /**
  * Class RefreshToken.
+ *
  * @package Seat\Eveapi\Models
  *
  * @OA\Schema(
@@ -155,7 +156,7 @@ class RefreshToken extends Model
     /**
      * Register a soft deleted model event with the dispatcher.
      *
-     * @param \Closure|string $callback
+     * @param  \Closure|string  $callback
      * @return void
      */
     public static function softDeleted($callback)
@@ -168,7 +169,6 @@ class RefreshToken extends Model
      * considered expired.
      *
      * @param $value
-     *
      * @return mixed
      */
     public function getTokenAttribute($value)
@@ -200,6 +200,7 @@ class RefreshToken extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     *
      * @deprecated 4.0.0
      */
     public function user()

@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Character\CharacterRole;
 
 /**
  * Class Roles.
+ *
  * @package Seat\Eveapi\Jobs\Character
  */
 class Roles extends AbstractAuthCharacterJob
@@ -60,6 +61,7 @@ class Roles extends AbstractAuthCharacterJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

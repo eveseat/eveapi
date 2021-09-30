@@ -37,7 +37,7 @@ class RefreshTokenObserver
     use BucketManager;
 
     /**
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function created(RefreshToken $token)
     {
@@ -48,7 +48,7 @@ class RefreshTokenObserver
     }
 
     /**
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function restored(RefreshToken $token)
     {
@@ -57,7 +57,7 @@ class RefreshTokenObserver
     }
 
     /**
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function softDeleted(RefreshToken $token)
     {
@@ -65,7 +65,7 @@ class RefreshTokenObserver
     }
 
     /**
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function deleted(RefreshToken $token)
     {

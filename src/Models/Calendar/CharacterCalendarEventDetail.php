@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterCalendarEventDetail.
+ *
  * @package Seat\Eveapi\Models\Calendar
  */
 class CharacterCalendarEventDetail extends Model

@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Alliances\Alliance;
 
 /**
  * Class Alliances.
+ *
  * @package Seat\Eveapi\Jobs\Alliances
  */
 class Alliances extends EsiBase

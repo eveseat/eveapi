@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class ExtractionMapping.
+ *
  * @package Seat\Eveapi\Mapping\Industry
  */
 class ExtractionMapping extends DataMapping

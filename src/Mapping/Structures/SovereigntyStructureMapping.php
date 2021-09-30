@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class SovereigntyStructureMapping.
+ *
  * @package Seat\Eveapi\Mapping\Structures
  */
 class SovereigntyStructureMapping extends DataMapping

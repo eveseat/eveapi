@@ -26,6 +26,7 @@ use Seat\Eveapi\Mapping\DataMapping;
 
 /**
  * Class BlueprintMapping.
+ *
  * @package Seat\Eveapi\Mapping\Industry
  */
 class BlueprintMapping extends DataMapping

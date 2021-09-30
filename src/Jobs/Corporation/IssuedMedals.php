@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Corporation\CorporationIssuedMedal;
 
 /**
  * Class IssuedMedals.
+ *
  * @package Seat\Eveapi\Jobs\Corporation
  */
 class IssuedMedals extends AbstractAuthCorporationJob
@@ -70,6 +71,7 @@ class IssuedMedals extends AbstractAuthCorporationJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws \Throwable
      */
     public function handle()
