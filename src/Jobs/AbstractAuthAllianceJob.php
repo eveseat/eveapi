@@ -26,6 +26,7 @@ use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenVersion;
 use Seat\Eveapi\Jobs\Middleware\IgnoreNpcCorporation;
 use Seat\Eveapi\Jobs\Middleware\RequireCorporationRole;
+use Seat\Eveapi\Jobs\Middleware\WithoutOverlapping;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -70,6 +71,7 @@ abstract class AbstractAuthAllianceJob extends AbstractAllianceJob
             new CheckTokenVersion,
             new IgnoreNpcCorporation,
             new RequireCorporationRole,
+            (new WithoutOverlapping($this->getToken()->character_id))->releaseAfter(20)->expireAfter(1500),
         ]);
     }
 }
