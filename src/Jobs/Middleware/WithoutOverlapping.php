@@ -161,6 +161,7 @@ class WithoutOverlapping
      */
     public function getLockKey($job)
     {
-        return $this->prefix.':'.$this->key;
+        return $this->prefix . ':' . $this->key;
     }
+
 }
