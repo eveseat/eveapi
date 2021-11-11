@@ -163,5 +163,4 @@ class WithoutOverlapping
     {
         return $this->prefix . ':' . $this->key;
     }
-
 }
