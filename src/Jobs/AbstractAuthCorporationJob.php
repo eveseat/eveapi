@@ -77,7 +77,7 @@ abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
             new CheckTokenVersion,
             new IgnoreNpcCorporation,
             new RequireCorporationRole,
-            (new WithoutOverlapping($this->getToken()->character_id))->releaseAfter(20)->expireAfter(1500),
+            (new WithoutOverlapping($this->getToken()->character_id))->releaseAfter(10)->expireAfter(1500),
         ]);
     }
 

@@ -93,14 +93,11 @@ class WithoutOverlapping
 
         if ($lock->get()) {
             try {
-                logger()->error('WOPPER2: Allowing job for ' . strval($job->getToken()->character_id));
                 $next($job);
             } finally {
-                logger()->error('WOPPER2: Lock Released for for ' . strval($job->getToken()->character_id));
                 $lock->release();
             }
         } elseif (! is_null($this->releaseAfter)) {
-            logger()->error('WOPPER2: Postponing job for ' . strval($job->getToken()->character_id));
             $job->release($this->releaseAfter);
         }
     }
@@ -164,6 +161,6 @@ class WithoutOverlapping
      */
     public function getLockKey($job)
     {
-        return $this->prefix.get_class($job).':'.$this->key;
+        return $this->prefix.':'.$this->key;
     }
 }
