@@ -35,6 +35,13 @@ class WithoutOverlapping
 {
     use InteractsWithTime;
 
+    // ANTI_RACE_DELAY prevents rapid job recylcing with low queue depths
+    const ANTI_RACE_DELAY = 10;
+
+    // ACCESS_TOKEN_EXPIRY_DELAY forces lock release after 25m (as access token exipry is 20m)
+    const ACCESS_TOKEN_EXPIRY_DELAY = 25 * 60;
+
+
     /**
      * The job's unique key used for preventing overlaps.
      *

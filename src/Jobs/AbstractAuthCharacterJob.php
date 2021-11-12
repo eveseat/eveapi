@@ -59,7 +59,9 @@ abstract class AbstractAuthCharacterJob extends AbstractCharacterJob
         return array_merge(parent::middleware(), [
             new CheckTokenScope,
             new CheckTokenVersion,
-            (new WithoutOverlapping($this->getToken()->character_id))->releaseAfter(10)->expireAfter(1500),
+            (new WithoutOverlapping($this->getToken()->character_id))
+                ->releaseAfter(WithoutOverlapping::ANTI_RACE_DELAY)
+                ->expireAfter(WithoutOverlapping::ACCESS_TOKEN_EXPIRY_DELAY),
         ]);
     }
 }
