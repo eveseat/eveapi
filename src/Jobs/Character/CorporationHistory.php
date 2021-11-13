@@ -40,7 +40,7 @@ class CorporationHistory extends AbstractCharacterJob
     /**
      * @var int
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var array

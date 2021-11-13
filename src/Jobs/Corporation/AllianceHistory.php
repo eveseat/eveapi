@@ -45,7 +45,7 @@ class AllianceHistory extends AbstractCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v2';
+    protected $version = 'v3';
 
     /**
      * @var array

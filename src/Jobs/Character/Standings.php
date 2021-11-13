@@ -45,7 +45,7 @@ class Standings extends AbstractAuthCharacterJob
     /**
      * @var int
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var string
