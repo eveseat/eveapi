@@ -45,7 +45,7 @@ class Location extends AbstractAuthCharacterJob
     /**
      * @var int
      */
-    protected $version = 'v2';
+    protected $version = 'v1';
 
     /**
      * @var string
