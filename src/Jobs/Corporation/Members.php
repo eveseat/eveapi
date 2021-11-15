@@ -45,7 +45,7 @@ class Members extends AbstractAuthCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v4;
+    protected $version = 'v4';
 
     /**
      * @var string
