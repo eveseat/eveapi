@@ -42,19 +42,11 @@ def jobFileParse(path):
 
 def versionCheck(swagger, path, version, method):
     latestVersion = 0
-    if path in swagger["paths"]:
-        p = swagger["paths"][path]
+    if path in swagger:
+        p = swagger[path]
         if method in p:
-            r = p[method]
-            for tag in r["x-alternate-versions"]:
-                if tag[0] == "v":
-                    try:
-                        v = int(tag[1:])
-                        if v > latestVersion:
-                            latestVersion = v
-                    except:
-                        continue
-            if latestVersion > version:
+            latestVersion = p[method]
+            if latestVersion != version:
                 return True, latestVersion
             else:
                 return False, latestVersion
@@ -71,7 +63,22 @@ if __name__ == "__main__":
     
     # First grab the swagger.json to compare against
 
-    swagger = requests.get(url="https://esi.evetech.net/latest/swagger.json").json()
+    swagger = requests.get(url="https://esi.evetech.net/_latest/swagger.json").json()
+
+    # Now build our current path dict
+
+    latest = dict()
+    for path in swagger["paths"]:
+        # find the path number
+        slashVslash = re.match(r"/v\d+/", path)
+        if slashVslash is not None:
+            _, e = slashVslash.span()
+            route = path[e-1:]
+            vers = int(slashVslash.group()[2:-1])
+            methods = dict()
+            for m in swagger["paths"][path].keys():
+                methods[m] = vers
+            latest[route] = methods
 
     # Now we need to open each Job file and look for job paths and version numbers
     dir = os.path.join( 'src', 'Jobs')
@@ -85,7 +92,7 @@ if __name__ == "__main__":
                 if any([path == '', vers == '', method == '']):
                     continue
 
-                mismatch, inuse = versionCheck(swagger, path, vers, method)
+                mismatch, inuse = versionCheck(latest, path, vers, method)
                 if mismatch:
                     print("Found non latest route in use")
                     print("\tFile: {}".format(filepath))
