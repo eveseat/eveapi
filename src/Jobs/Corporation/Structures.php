@@ -117,7 +117,7 @@ class Structures extends AbstractAuthCorporationJob
                     'structure_id' => $structure->structure_id,
                 ]);
 
-                if ( ! $model->exists ) {
+                if (! $model->exists) {
                     $model->fill([
                         'solar_system_id' => $structure->system_id,
                         'type_id'         => $structure->type_id,
@@ -126,7 +126,7 @@ class Structures extends AbstractAuthCorporationJob
                         'y'               => 0.0,
                         'z'               => 0.0,
                     ])->save();
-                } elseif ( $model->name != $structure->name ) {
+                } elseif ($model->name != $structure->name) {
                     $model->fill([
                         'name'            => $structure->name,
                     ])->save();
