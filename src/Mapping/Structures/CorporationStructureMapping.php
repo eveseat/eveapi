@@ -45,7 +45,6 @@ class CorporationStructureMapping extends DataMapping
         'state_timer_end'        => 'state_timer_end',
         'unanchors_at'           => 'unanchors_at',
         'state'                  => 'state',
-        'reinforce_weekday'      => 'reinforce_weekday',
         'reinforce_hour'         => 'reinforce_hour',
         'next_reinforce_weekday' => 'next_reinforce_weekday',
         'next_reinforce_hour'    => 'next_reinforce_hour',

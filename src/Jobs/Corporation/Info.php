@@ -46,7 +46,7 @@ class Info extends AbstractCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v4';
+    protected $version = 'v5';
 
     /**
      * @var array

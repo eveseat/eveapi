@@ -49,7 +49,7 @@ class Structures extends AbstractAuthCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v3';
+    protected $version = 'v4';
 
     /**
      * @var string
@@ -115,14 +115,25 @@ class Structures extends AbstractAuthCorporationJob
                 // but this will update when that models updater runs.
                 $model = UniverseStructure::firstOrNew([
                     'structure_id' => $structure->structure_id,
-                ])->fill([
-                    'solar_system_id' => $structure->system_id,
-                    'type_id'         => $structure->type_id,
-                    'name'            => 'Unknown Structure',
-                    'x'               => 0.0,
-                    'y'               => 0.0,
-                    'z'               => 0.0,
                 ]);
+
+                // Persist the structure only if it doesn't already exist
+                if (! $model->exists) {
+                    $model->fill([
+                        'solar_system_id' => $structure->system_id,
+                        'type_id'               => $structure->type_id,
+                        'name'                  => $structure->name,
+                        'x'                          => 0.0,
+                        'y'                          => 0.0,
+                        'z'                          => 0.0,
+                    ])->save();
+                }
+
+                if ($model->name != $structure->name) {
+                    $model->fill([
+                        'name' => $structure->name,
+                    ])->save();
+                }
 
                 // Persist the structure only if it doesn't already exists
                 if (! $model->exists) $model->save();

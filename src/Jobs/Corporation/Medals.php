@@ -45,7 +45,7 @@ class Medals extends AbstractAuthCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * TODO: Add a local override property as this scope

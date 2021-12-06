@@ -45,7 +45,7 @@ class MembersTitles extends AbstractAuthCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v1';
+    protected $version = 'v2';
 
     /**
      * @var string
