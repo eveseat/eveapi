@@ -23,10 +23,10 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Web\Models\User;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class CorporationIndustryMiningObserverData.
@@ -63,13 +63,13 @@ class CorporationIndustryMiningObserverData extends Model
         parent::boot();
 
         static::creating(function ($data) {
-            if (!isset($data->extraction_id) || ($data->extraction_id == 0)) {
+            if (! isset($data->extraction_id) || ($data->extraction_id == 0)) {
                 $minDate = DB::raw("DATE_SUB('{$data->last_updated}', INTERVAL 5 DAY)");
                 $maxDate = DB::raw("DATE_ADD('{$data->last_updated}', INTERVAL 5 DAY)");
 
                 $extraction = CorporationIndustryMiningExtraction::select()
                     ->where('structure_id', $data->observer_id)
-                    ->whereBetween('chunk_arrival_time', [ $minDate, $maxDate ])
+                    ->whereBetween('chunk_arrival_time', [$minDate, $maxDate])
                     ->get()
                     ->first();
                 if ($extraction) {
