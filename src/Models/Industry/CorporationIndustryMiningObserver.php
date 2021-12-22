@@ -59,7 +59,7 @@ class CorporationIndustryMiningObserver extends Model
      */
     public function extraction()
     {
-        return $this->hasOne(CorporationIndustryMiningExtraction::class, 'observer_id', 'observer_id')
+        return $this->hasOne(CorporationIndustryMiningExtraction::class, 'structure_id', 'observer_id')
             ->withDefault();
     }
 }

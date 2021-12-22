@@ -23,6 +23,10 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Web\Models\User;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class CorporationIndustryMiningObserverData.
@@ -50,4 +54,71 @@ class CorporationIndustryMiningObserverData extends Model
      * @var bool
      */
     public $incrementing = true;
+
+    /**
+     * @inheritdoc
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($data) {
+            if (!isset($data->extraction_id) || ($data->extraction_id == 0)) {
+                $minDate = DB::raw("DATE_SUB('{$data->last_updated}', INTERVAL 5 DAY)");
+                $maxDate = DB::raw("DATE_ADD('{$data->last_updated}', INTERVAL 5 DAY)");
+
+                $extraction = CorporationIndustryMiningExtraction::select()
+                    ->where('structure_id', $data->observer_id)
+                    ->whereBetween('chunk_arrival_time', [ $minDate, $maxDate ])
+                    ->get()
+                    ->first();
+                if ($extraction) {
+                    $data->extraction_id = $extraction->id;
+                }
+            }
+        });
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function observer()
+    {
+        return $this->belongsTo(CorporationIndustryMiningObserver::class, 'observer_id', 'observer_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function extraction()
+    {
+        return $this->belongsTo(CorporationIndustryMiningExtraction::class, 'extraction_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function character()
+    {
+        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function type()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'type_id')
+            ->withDefault([
+                'typeName' => trans('seat::web.unknown'),
+            ]);
+    }
 }
