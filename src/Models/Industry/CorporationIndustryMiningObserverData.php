@@ -82,14 +82,6 @@ class CorporationIndustryMiningObserverData extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function observer()
-    {
-        return $this->belongsTo(CorporationIndustryMiningObserver::class, 'observer_id', 'observer_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function extraction()
     {
         return $this->belongsTo(CorporationIndustryMiningExtraction::class, 'extraction_id', 'id');

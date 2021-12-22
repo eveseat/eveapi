@@ -145,4 +145,12 @@ class CorporationIndustryMiningExtraction extends Model
     {
         return carbon($this->chunk_arrival_time)->diffInSeconds($this->extraction_start_time) / 3600.0;
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function entries()
+    {
+        return $this->hasMany(CorporationIndustryMiningObserverData::class, 'extraction_id', 'id');
+    }
 }

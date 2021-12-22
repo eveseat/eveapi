@@ -55,6 +55,10 @@ class CorporationIndustryMiningObserver extends Model
     }
 
     /**
+     * @deprecated until CCP fixes their API.
+     * Use CorporationIndustryMiningExtraction::entries instead
+     * as ObserverData is properly linked to MiningExtraction.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function extraction()
