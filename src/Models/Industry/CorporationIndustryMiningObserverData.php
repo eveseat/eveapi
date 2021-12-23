@@ -27,7 +27,6 @@ use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Web\Models\User;
 
 /**
  * Class CorporationIndustryMiningObserverData.
