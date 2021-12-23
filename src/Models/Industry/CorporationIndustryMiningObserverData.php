@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Web\Models\User;
 
 /**
@@ -93,6 +94,14 @@ class CorporationIndustryMiningObserverData extends Model
     public function character()
     {
         return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function unverse_name()
+    {
+        return $this->belongsTo(UniverseName::class, 'character_id', 'entity_id');
     }
 
     /**
