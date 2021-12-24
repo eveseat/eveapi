@@ -98,7 +98,7 @@ class CorporationIndustryMiningObserverData extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function unverse_name()
+    public function universe_name()
     {
         return $this->belongsTo(UniverseName::class, 'character_id', 'entity_id');
     }

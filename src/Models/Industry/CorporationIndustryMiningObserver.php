@@ -55,9 +55,9 @@ class CorporationIndustryMiningObserver extends Model
     }
 
     /**
-     * @deprecated until CCP fixes their API.
+     * Returns all entries associated with athanor.
      * Use CorporationIndustryMiningExtraction::entries instead
-     * as ObserverData is properly linked to MiningExtraction.
+     * as it is linked to single extraction
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
