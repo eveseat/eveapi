@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
@@ -54,30 +53,6 @@ class CorporationIndustryMiningObserverData extends Model
      * @var bool
      */
     public $incrementing = true;
-
-    /**
-     * @inheritdoc
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($data) {
-            if (! isset($data->extraction_id) || ($data->extraction_id == 0)) {
-                $minDate = carbon($data->last_updated)->subDays(5);
-                $maxDate = carbon($data->last_updated)->addDays(5);
-
-                $extraction = CorporationIndustryMiningExtraction::select()
-                    ->where('structure_id', $data->observer_id)
-                    ->whereBetween('chunk_arrival_time', [$minDate, $maxDate])
-                    ->get()
-                    ->first();
-                if ($extraction) {
-                    $data->extraction_id = $extraction->id;
-                }
-            }
-        });
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -57,7 +57,7 @@ class CorporationIndustryMiningObserver extends Model
     /**
      * Returns all entries associated with athanor.
      * Use CorporationIndustryMiningExtraction::entries instead
-     * as it is linked to single extraction
+     * as it is linked to single extraction.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
