@@ -64,8 +64,8 @@ class CorporationIndustryMiningObserverData extends Model
 
         static::creating(function ($data) {
             if (! isset($data->extraction_id) || ($data->extraction_id == 0)) {
-                $minDate = DB::raw("DATE_SUB('{$data->last_updated}', INTERVAL 5 DAY)");
-                $maxDate = DB::raw("DATE_ADD('{$data->last_updated}', INTERVAL 5 DAY)");
+                $minDate = carbon($data->last_updated)->subDays(5);
+                $maxDate = carbon($data->last_updated)->addDays(5);
 
                 $extraction = CorporationIndustryMiningExtraction::select()
                     ->where('structure_id', $data->observer_id)
