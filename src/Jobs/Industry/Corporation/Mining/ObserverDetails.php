@@ -105,9 +105,9 @@ class ObserverDetails extends AbstractAuthCorporationJob
                         ])->fill([
                             'quantity' => $data->quantity,
                         ]);
-                        if (!$entry->id) {
+                        if (! $entry->id) {
                             $entry->fill([
-                                'extraction_id' => $this->findExtraction($observer->observer_id, $data->last_updated)
+                                'extraction_id' => $this->findExtraction($observer->observer_id, $data->last_updated),
                             ]);
                         }
                         $entry->save();
