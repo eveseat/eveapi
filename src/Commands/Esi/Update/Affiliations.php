@@ -62,7 +62,7 @@ class Affiliations extends Command
                 Affiliation::dispatch($character_ids);
             });
 
-            return;
+            return $this::SUCCESS;
         }
 
         // in case no IDs has been specified, collect all characters and universe names.
@@ -76,5 +76,7 @@ class Affiliations extends Command
                 $character_ids = $chunk->pluck('character_id')->toArray();
                 Affiliation::dispatch($character_ids);
         });
+
+        return $this::SUCCESS;
     }
 }
