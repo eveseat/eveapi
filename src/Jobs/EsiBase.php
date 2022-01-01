@@ -198,7 +198,7 @@ abstract class EsiBase extends AbstractJob
     /**
      * @return \Illuminate\Support\Carbon
      */
-    public function retryAfter()
+    public function backoff()
     {
         return now()->addSeconds($this->attempts() * 300);
     }
