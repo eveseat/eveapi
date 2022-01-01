@@ -63,7 +63,7 @@ class Maintenance implements ShouldQueue
      *
      * @var int
      */
-    public $retryAfter = 12001;
+    public $backoff = 12001;
 
     /**
      * Perform the maintenance job.
