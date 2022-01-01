@@ -80,5 +80,7 @@ class Killmails extends Command
                 RecentCorporationKills::dispatch($token->character->affiliation->corporation_id, $token);
             });
         }
+
+        return $this::SUCCESS;
     }
 }

@@ -58,10 +58,10 @@ class DummyClass extends EsiBase
     /**
      * Execute the job.
      *
-     * @return void
+     * @return int
      * @throws \Throwable
      */
-    public function handle() : void
+    public function handle()
     {
 
         // Job logic goes here
@@ -84,5 +84,6 @@ class DummyClass extends EsiBase
         //
         // }
 
+        return $this::SUCCESS;
     }
 }

@@ -66,5 +66,7 @@ class Prices extends Command
             $ids = $chunk->pluck('typeID')->toArray();
             History::dispatch($ids)->delay(rand(20, 300));
         });
+
+        return $this::SUCCESS;
     }
 }
