@@ -18,7 +18,7 @@
   "require": {
     "php": "^8.0",
     "laravel/framework": "dev-master",
-    "eveseat/eseye": "dev-5.0.x",
+    "eveseat/eseye": "dev-master",
     "eveseat/services": "dev-5.0.x",
     "guzzlehttp/guzzle": "^7.0",
     "doctrine/dbal": "^3.0",
