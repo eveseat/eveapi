@@ -62,7 +62,7 @@ class Ping extends Command
     /**
      * Execute the console command.
      *
-     * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException|\Illuminate\Container\EntryNotFoundException
+     * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function handle()
     {
@@ -78,8 +78,12 @@ class Ping extends Command
         } catch (RequestFailedException $e) {
 
             $this->error('ESI does not appear to be available: ' . $e->getMessage());
+
+            return $this::FAILURE;
         }
 
         $this->info('ESI appears to be OK');
+
+        return $this::SUCCESS;
     }
 }

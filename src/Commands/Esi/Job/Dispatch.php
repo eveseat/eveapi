@@ -61,88 +61,92 @@ class Dispatch extends Command
         if (! class_exists($class)) {
             $this->error('Invalid job name - the class does not exist!');
 
-            return;
+            return $this::INVALID;
         }
 
         switch (true) {
             case is_subclass_of($class, AbstractAuthCharacterJob::class):
-                $this->handlePrivateCharacterJobs($class);
-                break;
+                return $this->handlePrivateCharacterJobs($class);
             case is_subclass_of($class, AbstractAuthCorporationJob::class):
-                $this->handlePrivateCorporationJobs($class);
-                break;
+                return $this->handlePrivateCorporationJobs($class);
             case is_subclass_of($class, AbstractCharacterJob::class):
-                $this->handlePublicCharacterJobs($class);
-                break;
+                return $this->handlePublicCharacterJobs($class);
             case is_subclass_of($class, AbstractCorporationJob::class):
-                $this->handlePublicCorporationJobs($class);
-                break;
+                return $this->handlePublicCorporationJobs($class);
             default:
-                $this->handleGenericJobs($class);
+                return $this->handleGenericJobs($class);
         }
     }
 
-    private function handlePublicCharacterJobs(string $job)
+    private function handlePublicCharacterJobs(string $job): int
     {
         if (! $this->option('character_id')) {
             $this->error('Missing mandatory character_id for an authenticated character job!');
 
-            return;
+            return $this::INVALID;
         }
 
         $job::dispatch($this->option('character_id'));
 
         $this->info('Job dispatched!');
+
+        return $this::SUCCESS;
     }
 
-    private function handlePrivateCharacterJobs(string $job)
+    private function handlePrivateCharacterJobs(string $job): int
     {
         if (! $this->option('character_id')) {
             $this->error('Missing mandatory character_id for an authenticated character job!');
 
-            return;
+            return $this::INVALID;
         }
 
         $refresh_token = RefreshToken::findOrFail($this->option('character_id'));
         $job::dispatch($refresh_token);
 
         $this->info('Job dispatched!');
+
+        return $this::SUCCESS;
     }
 
-    private function handlePublicCorporationJobs(string $job)
+    private function handlePublicCorporationJobs(string $job): int
     {
         if (! $this->option('corporation_id')) {
             $this->error('Missing mandatory corporation_id for an authenticated corporation job!');
 
-            return;
+            return $this::INVALID;
         }
 
         $job::dispatch($this->option('corporation_id'));
 
         $this->info('Job dispatched!');
+
+        return $this::SUCCESS;
     }
 
-    private function handlePrivateCorporationJobs(string $job)
+    private function handlePrivateCorporationJobs(string $job): int
     {
         if (! $this->option('corporation_id')) {
             $this->error('Missing mandatory corporation_id for an authenticated corporation job!');
 
-            return;
+            return $this::INVALID;
         }
 
         if (! $this->option('character_id')) {
             $this->error('Missing mandatory character_id for an authenticated corporation job!');
 
-            return;
+            return $this::FAILURE;
         }
 
         $refresh_token = RefreshToken::findOrFail($this->option('character_id'));
         $job::dispatch($this->option('corporation_id'), $refresh_token);
 
         $this->info('Job dispatched!');
+
+        return $this::SUCCESS;
     }
 
-    private function handleGenericJobs(string $job)
+    private function handleGenericJobs(string $job): int
     {
         if (! is_subclass_of($job, EsiBase::class))
             $this->warn('The job is not part of Esi stack.');
@@ -150,5 +154,7 @@ class Dispatch extends Command
         $job::dispatch();
 
         $this->info('Job dispatched!');
+
+        return $this::SUCCESS;
     }
 }

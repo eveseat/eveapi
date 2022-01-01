@@ -57,11 +57,13 @@ class Alliances extends Command
 
             $this->info('Queue ' . count($alliance_ids) . ' update jobs.');
 
-            return;
+            return $this::SUCCESS;
         }
 
         // otherwise, queue a job which will pull alliance IDs list and queue update jobs which will pull alliance related data.
         AlliancesJob::dispatch();
+
+        return $this::SUCCESS;
     }
 
     /**

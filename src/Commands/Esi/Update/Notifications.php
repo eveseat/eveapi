@@ -61,5 +61,7 @@ class Notifications extends Command
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
+
+        return $this::SUCCESS;
     }
 }

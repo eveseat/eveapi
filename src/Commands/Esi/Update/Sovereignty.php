@@ -56,5 +56,7 @@ class Sovereignty extends Command
         Structures::dispatch();
 
         $this->info('New sovereignty jobs have been queued.');
+
+        return $this::SUCCESS;
     }
 }

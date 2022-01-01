@@ -62,7 +62,7 @@ class Contracts extends Command
         if (! ContractDetail::where('status', '<>', 'deleted')->whereIn('contract_id', $contract_ids)->exists()) {
             $this->enqueueContractsListJobs();
 
-            return;
+            return $this::SUCCESS;
         }
 
         // collect contract from character related to asked contracts
@@ -70,6 +70,8 @@ class Contracts extends Command
 
         // collect contract from corporation related to asked contracts
         $this->enqueueDetailedCorporationContractsJobs($contract_ids);
+
+        return $this::SUCCESS;
     }
 
     private function enqueueContractsListJobs()

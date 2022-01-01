@@ -114,7 +114,7 @@ class Sde extends Command
 
             $this->warn('Exiting');
 
-            return;
+            return $this::SUCCESS;
         }
 
         // Request the json from eveseat/resources
@@ -125,7 +125,7 @@ class Sde extends Command
 
             $this->warn('Unable to reach the resources endpoint.');
 
-            return;
+            return $this::FAILURE;
         }
 
         // Check if we should attempt getting the
@@ -155,7 +155,7 @@ class Sde extends Command
             $this->warn('You are already running the latest SDE version.');
             $this->warn('If you want to install it again, run this command with --force argument.');
 
-            return;
+            return $this::SUCCESS;
         }
 
         // Ask for a confirmation before installing an existing SDE version
@@ -167,7 +167,7 @@ class Sde extends Command
 
                 $this->info('Nothing has been updated.');
 
-                return;
+                return $this::SUCCESS;
             }
         }
 
@@ -194,14 +194,14 @@ class Sde extends Command
 
             $this->warn('Exiting');
 
-            return;
+            return $this::SUCCESS;
         }
 
         if (! $this->isStorageOk()) {
 
             $this->error('Storage path is not OK. Please check permissions');
 
-            return;
+            return $this::INVALID;
         }
 
         // Download the SDE's
@@ -223,6 +223,7 @@ class Sde extends Command
             ->set('el', 'console')
             ->set('ev', $this->json->version)));
 
+        return $this::SUCCESS;
     }
 
     /**

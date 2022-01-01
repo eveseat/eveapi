@@ -108,5 +108,7 @@ class Stations extends Command
         $stations->chunk(100)->each(function ($chunk) {
             StationsJob::dispatch($chunk->toArray());
         });
+
+        return $this::SUCCESS;
     }
 }
