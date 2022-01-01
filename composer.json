@@ -19,7 +19,7 @@
     "php": "^8.0",
     "laravel/framework": "dev-master",
     "eveseat/eseye": "dev-master",
-    "eveseat/services": "dev-5.0.x",
+    "eveseat/services": "5.0.x-dev",
     "guzzlehttp/guzzle": "^7.0",
     "doctrine/dbal": "^3.0",
     "softcreatr/jsonpath": "^0.7",
