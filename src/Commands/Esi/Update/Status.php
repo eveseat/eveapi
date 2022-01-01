@@ -54,5 +54,7 @@ class Status extends Command
     {
 
         Esi::dispatch()->onQueue('high');
+
+        return $this::SUCCESS;
     }
 }
