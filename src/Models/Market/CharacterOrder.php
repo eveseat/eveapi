@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Market;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
@@ -31,6 +30,12 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CharacterOrder.
  *
  * @package Seat\Eveapi\Models\Market
+ *
+ * @OA\Schema(
+ *     description="Character Order",
+ *     title="CharacterOrder",
+ *     type="object"
+ * )
  *
  * @OA\Property(
  *     type="integer",
@@ -123,11 +128,6 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  *     description="The type to which order is referring"
  * )
  */
-#[OA\Schema(
-    title: 'CharacterOrder',
-    description: 'Character Order',
-    type: 'object'
-)]
 class CharacterOrder extends Model
 {
     /**

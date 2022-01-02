@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
@@ -31,6 +30,12 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  * Class KillmailVictim.
  *
  * @package Seat\Eveapi\Models\Killmails
+ *
+ * @OA\Schema(
+ *     description="Killmail Victim",
+ *     title="KillmailVictim",
+ *     type="object"
+ * )
  *
  * @OA\Property(
  *     type="integer",
@@ -92,11 +97,6 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  *     description="The z coordinate where the kill occurs"
  * )
  */
-#[OA\Schema(
-    title: 'KillmailVictim',
-    description: 'Killmail Victim',
-    type: 'object'
-)]
 class KillmailVictim extends Model
 {
     /**

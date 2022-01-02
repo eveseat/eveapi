@@ -23,13 +23,18 @@
 namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 
 /**
  * Class UniverseName.
  *
  * @package Seat\Eveapi\Models\Universe
+ *
+ * @OA\Schema(
+ *      description="Universe Name",
+ *      title="UniverseName",
+ *      type="object"
+ * )
  *
  * @OA\Property(
  *      property="entity_id",
@@ -51,11 +56,6 @@ use Seat\Eveapi\Models\Character\CharacterAffiliation;
  *      description="The entity type"
  * )
  */
-#[OA\Schema(
-    title: 'UniverseName',
-    description: 'Universe Name',
-    type: 'object'
-)]
 class UniverseName extends Model
 {
     /**
