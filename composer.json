@@ -17,7 +17,7 @@
   "prefer-stable": true,
   "require": {
     "php": "^8.0",
-    "laravel/framework": "dev-master",
+    "laravel/framework": "^8.0",
     "eveseat/eseye": "dev-master",
     "eveseat/services": "5.0.x-dev",
     "guzzlehttp/guzzle": "^7.0",
