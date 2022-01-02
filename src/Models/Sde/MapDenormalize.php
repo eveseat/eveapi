@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
 use Seat\Eveapi\Traits\IsReadOnly;
 
@@ -30,12 +31,6 @@ use Seat\Eveapi\Traits\IsReadOnly;
  * Class MapDenormalize.
  *
  * @package Seat\Eveapi\Models\Sde
- *
- * @OA\Schema(
- *     description="Map Denormalize",
- *     title="MapDenormalize",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -130,6 +125,11 @@ use Seat\Eveapi\Traits\IsReadOnly;
  *     property="orbitIndex"
  * )
  */
+#[OA\Schema(
+    title: 'MapDenormalize',
+    description: 'Map Denormalize',
+    type: 'object'
+)]
 class MapDenormalize extends Model
 {
     use IsReadOnly;

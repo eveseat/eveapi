@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
@@ -43,12 +44,6 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
  * Class CorporationInfo.
  *
  * @package Seat\Eveapi\Models\Corporation
- *
- * @OA\Schema(
- *      description="Corporation Sheet",
- *      title="CorporationInfo",
- *      type="object"
- * )
  *
  * @OA\Property(
  *     type="string",
@@ -133,6 +128,11 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
  *     description="The shares attached to the corporation"
  * )
  */
+#[OA\Schema(
+    title: 'CorporationInfo',
+    description: 'Corporation Sheet',
+    type: 'object'
+)]
 class CorporationInfo extends Model
 {
     /**

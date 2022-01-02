@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
@@ -31,12 +32,6 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CharacterWalletTransaction.
  *
  * @package Seat\Eveapi\Models\Wallet
- *
- * @OA\Schema(
- *     description="Corporation Wallet Transaction",
- *     title="CorporationWalletTransaction",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -100,6 +95,11 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  *     ref="#/components/schemas/InvType"
  * )
  */
+#[OA\Schema(
+    title: 'CorporationWalletTransaction',
+    description: 'Corporation Wallet Transaction',
+    type: 'object'
+)]
 class CharacterWalletTransaction extends Model
 {
     /**

@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Web\Models\User;
@@ -33,12 +34,6 @@ use Seat\Web\Models\User;
  * Class RefreshToken.
  *
  * @package Seat\Eveapi\Models
- *
- * @OA\Schema(
- *     description="EVE Online SSO Refresh Token",
- *     title="RefreshToken",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -102,6 +97,12 @@ use Seat\Web\Models\User;
  *     property="deleted_at"
  * )
  */
+
+#[OA\Schema(
+    title: 'RefreshToken',
+    description: 'EVE Online SSO Refresh Token',
+    type: 'object'
+)]
 class RefreshToken extends Model
 {
     use SoftDeletes {
