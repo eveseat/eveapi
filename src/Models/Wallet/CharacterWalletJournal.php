@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
@@ -30,12 +31,6 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  * Class CharacterWalletJournal.
  *
  * @package Seat\Eveapi\Models\Wallet
- *
- * @OA\Schema(
- *     description="Character Wallet Journal",
- *     title="CharacterWalletJournal",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -123,6 +118,11 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  *     ref="#/components/schemas/UniverseName"
  * )
  */
+#[OA\Schema(
+    title: 'CharacterWalletJournal',
+    description: 'Character Wallet Journal',
+    type: 'object'
+)]
 class CharacterWalletJournal extends Model
 {
     /**

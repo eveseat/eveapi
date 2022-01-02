@@ -23,18 +23,13 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterCorporationHistory.
  *
  * @package Seat\Eveapi\Models\Character
- *
- * @OA\Schema(
- *     description="Character Corporation History",
- *     title="CharacterCorporationHistory",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="string",
@@ -62,6 +57,11 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  *     description="Sorting key"
  * )
  */
+#[OA\Schema(
+    title: 'CharacterCorporationHistory',
+    description: 'Character Corporation History',
+    type: 'object'
+)]
 class CharacterCorporationHistory extends Model
 {
     /**

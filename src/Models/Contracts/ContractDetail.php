@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\Constellation;
 use Seat\Eveapi\Models\Sde\Region;
 use Seat\Eveapi\Models\Sde\SolarSystem;
@@ -34,12 +35,6 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class ContractDetail.
  *
  * @package Seat\Eveapi\Models\Contacts
- *
- * @OA\Schema(
- *     description="Contract Detail",
- *     title="ContractDetail",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -187,6 +182,11 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  *     ref="#/components/schemas/UniverseStructure"
  * )
  */
+#[OA\Schema(
+    title: 'ContractDetail',
+    description: 'Contract Detail',
+    type: 'object'
+)]
 class ContractDetail extends Model
 {
     /**

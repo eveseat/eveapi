@@ -23,18 +23,13 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CorporationContact.
  *
  * @package Seat\Eveapi\Models\Contacts
- *
- * @OA\Schema(
- *     description="Corporation Contact",
- *     title="CorporationContact",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -76,6 +71,11 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  *     @OA\Items(type="string")
  * )
  */
+#[OA\Schema(
+    title: 'CorporationContact',
+    description: 'Corporation Contact',
+    type: 'object'
+)]
 class CorporationContact extends Model
 {
 

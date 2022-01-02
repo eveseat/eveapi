@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvGroup;
 use Seat\Eveapi\Models\Sde\InvType;
@@ -34,12 +35,6 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CharacterAsset.
  *
  * @package Seat\Eveapi\Models\Assets
- *
- * @OA\Schema(
- *     description="Character Asset",
- *     title="CharacterAsset",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -125,6 +120,11 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  *     ref="#/components/schemas/InvType"
  * )
  */
+#[OA\Schema(
+    title: 'CharacterAsset',
+    description: 'Character Asset',
+    type: 'object'
+)]
 class CharacterAsset extends Model
 {
     /**

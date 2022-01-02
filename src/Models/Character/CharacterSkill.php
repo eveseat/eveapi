@@ -23,18 +23,13 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class CharacterSkill.
  *
  * @package Seat\Eveapi\Models\Character
- *
- * @OA\Schema(
- *     description="Character Skill",
- *     title="CharacterSkill",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -60,6 +55,11 @@ use Seat\Eveapi\Models\Sde\InvType;
  *     description="The inventory type information"
  * )
  */
+#[OA\Schema(
+    title: 'CharacterSkill',
+    description: 'Character Skill',
+    type: 'object'
+)]
 class CharacterSkill extends Model
 {
     /**

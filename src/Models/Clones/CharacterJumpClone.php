@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Clones;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
@@ -30,12 +31,6 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CharacterJumpClone.
  *
  * @package Seat\Eveapi\Models\Clones
- *
- * @OA\Schema(
- *     description="Character Jump Clone",
- *     title="CharacterJumpClone",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -71,6 +66,11 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  *     @OA\Items(type="integer")
  * )
  */
+#[OA\Schema(
+    title: 'CharacterJumpClone',
+    description: 'Character Jump Clone',
+    type: 'object'
+)]
 class CharacterJumpClone extends Model
 {
     /**
