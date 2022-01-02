@@ -23,18 +23,13 @@
 namespace Seat\Eveapi\Models\Skills;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class CharacterSkillQueue.
  *
  * @package Seat\Eveapi\Models\Skills
- *
- * @OA\Schema(
- *     description="Character Skill Queue",
- *     title="CharacterSkillQueue",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="string",
@@ -85,6 +80,11 @@ use Seat\Eveapi\Models\Sde\InvType;
  *     ref="#/components/schemas/InvType"
  * )
  */
+#[OA\Schema(
+    title: 'CharacterSkillQueue',
+    description: 'Character Skill Queue',
+    type: 'object'
+)]
 class CharacterSkillQueue extends Model
 {
     /**

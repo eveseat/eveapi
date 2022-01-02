@@ -23,18 +23,13 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 
 /**
  * Class KillmailDetail.
  *
  * @package Seat\Eveapi\Models\Killmails
- *
- * @OA\Schema(
- *     description="Killmail Detail",
- *     title="KillmailDetail",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     property="killmail_time",
@@ -62,6 +57,11 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
  *     description="The war identifier in which the kill involves"
  * )
  */
+#[OA\Schema(
+    title: 'KillmailDetail',
+    description: 'Killmail Detail',
+    type: 'object'
+)]
 class KillmailDetail extends Model
 {
     /**

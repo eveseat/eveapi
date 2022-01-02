@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
@@ -31,12 +32,6 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
  * Class UniverseStructure.
  *
  * @package Seat\Eveapi\Models\Universe
- *
- * @OA\Schema(
- *     description="Universe Structure",
- *     title="UniverseStructure",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     property="structure_id",
@@ -51,6 +46,11 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
  *     description="Structure name"
  * )
  */
+#[OA\Schema(
+    title: 'UniverseStructure',
+    description: 'Universe Structure',
+    type: 'object'
+)]
 class UniverseStructure extends Model
 {
 

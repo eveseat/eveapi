@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
@@ -30,12 +31,6 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  * Class KillmailAttacker.
  *
  * @package Seat\Eveapi\Models\Killmails
- *
- * @OA\Schema(
- *     description="Killmail Attacker",
- *     title="KillmailAttacker",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     property="attacker_hash",
@@ -101,6 +96,11 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  *     description="The weapon inventory type identifier used by the attacker"
  * )
  */
+#[OA\Schema(
+    title: 'KillmailAttacker',
+    description: 'Killmail Attacker',
+    type: 'object'
+)]
 class KillmailAttacker extends Model
 {
     protected $casts = [

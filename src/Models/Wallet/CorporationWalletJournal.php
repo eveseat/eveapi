@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
@@ -30,12 +31,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  * Class CorporationWalletJournal.
  *
  * @package Seat\Eveapi\Models\Wallet
- *
- * @OA\Schema(
- *     description="Corporation Wallet Journal",
- *     title="CorporationWalletJournal",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -129,6 +124,11 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  *     ref="#/components/schemas/UniverseName"
  * )
  */
+#[OA\Schema(
+    title: 'CorporationWalletJournal',
+    description: 'Corporation Wallet Journal',
+    type: 'object'
+)]
 class CorporationWalletJournal extends Model
 {
     use CanUpsertIgnoreReplace;

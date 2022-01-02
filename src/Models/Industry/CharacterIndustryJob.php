@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\RamActivity;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
@@ -31,12 +32,6 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CharacterIndustryJob.
  *
  * @package Seat\Eveapi\Models\Industry
- *
- * @OA\Schema(
- *     description="Character Industry Jobs",
- *     title="CharacterIndustryJob",
- *     type="object"
- * )
  *
  * @OA\Property(
  *     type="integer",
@@ -183,6 +178,11 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  *     ref="#/components/schemas/InvType"
  * )
  */
+#[OA\Schema(
+    title: 'CharacterIndustryJob',
+    description: 'Character Industry Jobs',
+    type: 'object'
+)]
 class CharacterIndustryJob extends Model
 {
     /**
