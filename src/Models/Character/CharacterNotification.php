@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Symfony\Component\Yaml\Yaml;
 
@@ -31,6 +30,12 @@ use Symfony\Component\Yaml\Yaml;
  * Class CharacterNotification.
  *
  * @package Seat\Eveapi\Models\Character
+ *
+ * @OA\Schema(
+ *     description="Character Notification",
+ *     title="CharacterNotification",
+ *     type="object"
+ * )
  *
  * @OA\Property(
  *     type="integer",
@@ -91,11 +96,6 @@ use Symfony\Component\Yaml\Yaml;
  *     description="The date-time when notification has been updated into SeAT"
  * )
  */
-#[OA\Schema(
-    title: 'CharacterNotification',
-    description: 'Character Notification',
-    type: 'object'
-)]
 class CharacterNotification extends Model
 {
     /**

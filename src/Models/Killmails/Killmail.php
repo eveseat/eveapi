@@ -23,31 +23,42 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
-use OpenApi\Attributes as OAT;
 
 /**
  * Class Killmail.
  *
  * @package Seat\Eveapi\Models\Killmails
  *
- * @OA\Property(
- *     property="killmail_id",
- *     type="integer",
- *     format="int64",
- *     description="The unique Killmail identifier"
- * )
- * @OA\Property(
- *     property="killmail_hash",
- *     type="string",
- *     description="The killmail hash"
+ * @OA\Schema(
+ *     description="Killmail informations",
+ *     title="Killmail",
+ *     type="object",
+ *     @OA\Property(
+ *       property="killmail_id",
+ *       type="integer",
+ *       format="int64",
+ *       description="The unique Killmail identifier"
+ *     ),
+ *     @OA\Property(
+ *       property="killmail_hash",
+ *       type="string",
+ *       description="The killmail hash"
+ *     ),
+ *     @OA\Property(
+ *       property="detail",
+ *       ref="#/components/schemas/KillmailDetail"
+ *     ),
+ *     @OA\Property(
+ *       property="victim",
+ *       ref="#/components/schemas/KillmailVictim"
+ *     ),
+ *     @OA\Property(
+ *       property="attackers",
+ *       type="array",
+ *       @OA\Items(ref="#/components/schemas/KillmailAttacker")
+ *     )
  * )
  */
-#[OA\Schema(
-    title: 'Killmail',
-    description: 'Killmail informations',
-    type: 'object'
-)]
 class Killmail extends Model
 {
     /**
@@ -73,10 +84,6 @@ class Killmail extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    #[OAT\Property(
-        property: 'detail',
-        ref: '#/components/schemas/KillmailDetail'
-    )]
     public function detail()
     {
         return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id')->withDefault([
@@ -88,10 +95,6 @@ class Killmail extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    #[OAT\Property(
-        property: 'victim',
-        ref: '#/components/schemas/KillmailVictim'
-    )]
     public function victim()
     {
         return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id')->withDefault([
@@ -104,11 +107,6 @@ class Killmail extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    #[OAT\Property(
-        property: 'attackers',
-        type: 'array',
-        items: new OAT\Items(ref: '#/components/schemas/KillmailAttacker')
-    )]
     public function attackers()
     {
         return $this->hasMany(KillmailAttacker::class, 'killmail_id', 'killmail_id');

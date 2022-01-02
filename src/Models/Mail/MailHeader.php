@@ -23,13 +23,18 @@
 namespace Seat\Eveapi\Models\Mail;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class MailHeader.
  *
  * @package Seat\Eveapi\Models\Character
+ *
+ * @OA\Schema(
+ *     description="Mail Header",
+ *     title="MailHeader",
+ *     type="object"
+ * )
  *
  * @OA\Property(
  *     type="integer",
@@ -77,11 +82,6 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  *     @OA\Items(ref="#/components/schemas/MailRecipient")
  * )
  */
-#[OA\Schema(
-    title: 'MailHeader',
-    description: 'Mail Header',
-    type: 'object'
-)]
 class MailHeader extends Model
 {
 

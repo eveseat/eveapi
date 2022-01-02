@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Fittings\Insurance;
 use Seat\Eveapi\Models\Market\Price;
 use Seat\Eveapi\Traits\IsReadOnly;
@@ -32,6 +31,12 @@ use Seat\Eveapi\Traits\IsReadOnly;
  * Class InvType.
  *
  * @package Seat\Eveapi\Models\Sde
+ *
+ * @OA\Schema(
+ *     description="Inventory Type",
+ *     title="InvType",
+ *     type="object"
+ * )
  *
  * @OA\Property(
  *     type="integer",
@@ -125,11 +130,6 @@ use Seat\Eveapi\Traits\IsReadOnly;
  *     property="graphicID"
  * )
  */
-#[OA\Schema(
-    title: 'InvType',
-    description: 'Inventory Type',
-    type: 'object'
-)]
 class InvType extends Model
 {
     use IsReadOnly;

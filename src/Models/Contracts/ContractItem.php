@@ -23,13 +23,18 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 
 /**
  * Class ContractItem.
  *
  * @package Seat\Eveapi\Models\Contacts
+ *
+ * @OA\Schema(
+ *     description="Contract Item",
+ *     title="ContractItem",
+ *     type="object"
+ * )
  *
  * @OA\Property(
  *     property="type_id",
@@ -61,11 +66,6 @@ use Seat\Eveapi\Models\Sde\InvType;
  *     description="Determine if the item is contained in a parent item"
  * )
  */
-#[OA\Schema(
-    title: 'ContractItem',
-    description: 'Contract Item',
-    type: 'object'
-)]
 class ContractItem extends Model
 {
     /**

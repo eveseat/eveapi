@@ -23,12 +23,17 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 
 /**
  * Class ContractBid.
  *
  * @package Seat\Eveapi\Models\Contacts
+ *
+ * @OA\Schema(
+ *     description="Contract Bid",
+ *     title="ContractBid",
+ *     type="object"
+ * )
  *
  * @OA\Property(
  *     property="bidder_id",
@@ -50,11 +55,6 @@ use OpenApi\Annotations as OA;
  *     description="Amount of placed bid"
  * )
  */
-#[OA\Schema(
-    title: 'ContractBid',
-    description: 'Contract Bid',
-    type: 'object'
-)]
 class ContractBid extends Model
 {
     /**
