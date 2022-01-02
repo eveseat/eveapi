@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Sde\InvGroup;
 use Seat\Eveapi\Models\Sde\InvType;
@@ -36,6 +35,12 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  * Class CorporationAsset.
  *
  * @package Seat\Eveapi\Models\Assets
+ *
+ * @OA\Schema(
+ *     description="Corporation Asset",
+ *     title="CorporationAsset",
+ *     type="object"
+ * )
  *
  * @OA\Property(
  *     type="integer",
@@ -121,11 +126,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  *     ref="#/components/schemas/InvType"
  * )
  */
-#[OA\Schema(
-    title: 'CorporationAsset',
-    description: 'Corporation Asset',
-    type: 'object'
-)]
 class CorporationAsset extends Model
 {
     use CanUpsertIgnoreReplace;

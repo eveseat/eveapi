@@ -23,13 +23,18 @@
 namespace Seat\Eveapi\Models\Mail;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class MailRecipient.
  *
  * @package Seat\Eveapi\Models\Mail
+ *
+ * @OA\Schema(
+ *     description="Mail Recipient",
+ *     title="MailRecipient",
+ *     type="object"
+ * )
  *
  * @OA\Property(
  *     type="integer",
@@ -45,11 +50,6 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  *     description="The recipient qualifier"
  * )
  */
-#[OA\Schema(
-    title: 'MailRecipient',
-    description: 'Mail Recipient',
-    type: 'object'
-)]
 class MailRecipient extends Model
 {
     /**

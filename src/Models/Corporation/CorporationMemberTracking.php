@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
@@ -35,6 +34,12 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CorporationMemberTracking.
  *
  * @package Seat\Eveapi\Models\Corporation
+ *
+ * @OA\Schema(
+ *      description="Corporation Member Tracking",
+ *      title="CorporationMemberTracking",
+ *      type="object"
+ * )
  *
  * @OA\Property(
  *     type="integer",
@@ -84,11 +89,6 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  *     ref="#/components/schemas/InvType"
  * )
  */
-#[OA\Schema(
-    title: 'CorporationMemberTracking',
-    description: 'Corporation Member Tracking',
-    type: 'object'
-)]
 class CorporationMemberTracking extends Model
 {
     /**
