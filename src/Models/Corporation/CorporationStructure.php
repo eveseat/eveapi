@@ -32,6 +32,112 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  * Class CorporationStructure.
  *
  * @package Seat\Eveapi\Models\Corporation
+ *
+ * @OA\Schema(
+ *     description="Corporation Structure",
+ *     title="CorporationStructure",
+ *     type="object"
+ * )
+ *
+ * @OA\Property(
+ *     property="structure_id",
+ *     description="Structure unique identifier",
+ *     type="integer",
+ *     format="int64"
+ * )
+ *
+ * @OA\Property(
+ *     property="profile_id",
+ *     description="Security profile unique identifier applied to the tructure",
+ *     type="integer"
+ * )
+ *
+ * @OA\Property(
+ *     property="fuel_expires",
+ *     description="Date/time when the structure will reach out of fuel",
+ *     type="string",
+ *     format="date-time"
+ * )
+ *
+ * @OA\Property(
+ *     property="state_timer_start",
+ *     description="Date/Time when the current structure state has started",
+ *     type="string",
+ *     format="date-time"
+ * )
+ *
+ * @OA\Property(
+ *     property="state_timer_end",
+ *     description="Date/Time when the current structure state will be over",
+ *     type="string",
+ *     format="date-time"
+ * )
+ *
+ * @OA\Property(
+ *     property="unanchors_at",
+ *     description="Date/Time when the structure will be unanchored - if applicable",
+ *     type="string",
+ *     format="date-time"
+ * )
+ *
+ * @OA\Property(
+ *     property="state",
+ *     description="Current structure state",
+ *     type="string",
+ *     enum={"anchor_vulnerable", "anchoring", "armor_reinforce", "armor_vulnerable", "fitting_invulnerable", "hull_reinforce", "hull_vulnerable", "online_deprecated", "onlining_vulnerable", "shield_vulnerable", "unanchored", "unknown"}
+ * )
+ *
+ * @OA\Property(
+ *     property="reinforce_weekday",
+ *     description="Current structure reinforce weekday",
+ *     type="integer"
+ * )
+ *
+ * @OA\Property(
+ *     property="reinforce_hour",
+ *     description="Current structure reinforce hour",
+ *     type="integer"
+ * )
+ *
+ * @OA\Property(
+ *     property="next_reinforce_weekday",
+ *     description="Next weekday when the structure will be reinforceable",
+ *     type="integer"
+ * )
+ *
+ * @OA\Property(
+ *     property="next_reinforce_hour",
+ *     description="Next hour when the structure will be reinforceable",
+ *     type="integer"
+ * )
+ *
+ * @OA\Property(
+ *     property="next_reinforce_apply",
+ *     description="Date/Time when the structure will be reinforceable",
+ *     type="string",
+ *     format="date-time"
+ * )
+ *
+ * @OA\Property(
+ *     property="info",
+ *     ref="#/components/schemas/UniverseStructure"
+ * )
+ *
+ * @OA\Property(
+ *     property="type",
+ *     ref="#/components/schemas/InvType"
+ * )
+ *
+ * @OA\Property(
+ *     property="services",
+ *     type="array",
+ *     @OA\Items(ref="#/components/schemas/CorporationStructureService")
+ * )
+ *
+ * @OA\Property(
+ *     property="solar_system",
+ *     ref="#/components/schemas/SolarSystem"
+ * )
  */
 class CorporationStructure extends Model
 {
@@ -40,6 +146,11 @@ class CorporationStructure extends Model
     const DGM_SERVICE_MODULE_ACTIVATION_FUEL_NEED = 2110;
 
     const DGM_STRUCTURE_SERVICE_ROLE_BONUS = 2339;
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['corporation_id', 'type_id', 'system_id', 'created_at', 'updated_at'];
 
     /**
      * @var bool
