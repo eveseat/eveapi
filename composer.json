@@ -23,6 +23,7 @@
     "guzzlehttp/guzzle": "^7.0",
     "doctrine/dbal": "^3.0",
     "softcreatr/jsonpath": "^0.7",
+    "zircote/swagger-php": "^3.0",
     "ext-json": "*",
     "ext-posix": "*",
     "ext-redis": "*"
