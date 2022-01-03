@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Fittings\Insurance;
 use Seat\Eveapi\Models\Market\Price;
 use Seat\Eveapi\Traits\IsReadOnly;

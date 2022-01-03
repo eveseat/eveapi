@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
 use Seat\Eveapi\Traits\IsReadOnly;
 

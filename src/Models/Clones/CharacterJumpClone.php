@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Clones;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 

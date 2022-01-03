@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
