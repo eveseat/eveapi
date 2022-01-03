@@ -38,12 +38,12 @@ class Alliance extends Bus
     /**
      * @var int
      */
-    private $alliance_id;
+    private int $alliance_id;
 
     /**
      * @var \Seat\Eveapi\Models\RefreshToken
      */
-    private $token;
+    private RefreshToken $token;
 
     /**
      * Alliance constructor.
@@ -72,8 +72,8 @@ class Alliance extends Bus
             $this->addAuthenticatedJobs();
 
         Info::withChain($this->jobs->toArray())
-            ->dispatch($this->alliance_id)
-            ->delay(now()->addSeconds(rand(120, 600)));
+            ->delay(now()->addSeconds(rand(120, 600)))
+            ->dispatch($this->alliance_id);
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
         // https://github.com/eveseat/seat/issues/731

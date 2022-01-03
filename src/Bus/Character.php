@@ -73,12 +73,12 @@ class Character extends Bus
     /**
      * @var int
      */
-    private $character_id;
+    private int $character_id;
 
     /**
      * @var \Seat\Eveapi\Models\RefreshToken
      */
-    private $token;
+    private RefreshToken $token;
 
     /**
      * Character constructor.
@@ -108,8 +108,8 @@ class Character extends Bus
 
         // Character
         Info::withChain($this->jobs->toArray())
-            ->dispatch($this->character_id)
-            ->delay(now()->addSeconds(rand(10, 120)));
+            ->delay(now()->addSeconds(rand(10, 120)))
+            ->dispatch($this->character_id);
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
         // https://github.com/eveseat/seat/issues/731
