@@ -29,6 +29,45 @@ use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
  * Class SolarSystem.
  *
  * @package Seat\Eveapi\Models\Sde
+ *
+ * @OA\Schema(
+ *     title="SolarSystem",
+ *     type="object",
+ *     description="Solar System"
+ * )
+ *
+ * @OA\Property(
+ *     property="system_id",
+ *     description="Solar System Unique Identifier",
+ *     type="integer",
+ *     format="int64"
+ * )
+ *
+ * @OA\Property(
+ *     property="constellation_id",
+ *     description="Constellation Unique Identifier",
+ *     type="integer",
+ *     format="int64"
+ * )
+ *
+ * @OA\Property(
+ *     property="region_id",
+ *     description="Region Unique Identifier",
+ *     type="integer",
+ *     format="int64"
+ * )
+ *
+ * @OA\Property(
+ *     property="name",
+ *     description="Solar System name",
+ *     type="string"
+ * )
+ *
+ * @OA\Propertu(
+ *     property="security",
+ *     description="Solar System Security Level",
+ *     type="double"
+ * )
  */
 class SolarSystem extends Model
 {

@@ -29,10 +29,32 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  * Class CorporationStructureService.
  *
  * @package Seat\Eveapi\Models\Corporation
+ *
+ * @OA\Schema(
+ *     title="CorporationStructureService",
+ *     description="Corporation Structure Service",
+ *     type="object"
+ * )
+ *
+ * @OA\Property(
+ *     property="name",
+ *     type="string"
+ * )
+ *
+ * @OA\Property(
+ *     property="state",
+ *     type="string",
+ *     enum={"online", "offline", "cleanup"}
+ * )
  */
 class CorporationStructureService extends Model
 {
     use HasCompositePrimaryKey;
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['structure_id', 'created_at', 'updated_at'];
 
     /**
      * @var bool
