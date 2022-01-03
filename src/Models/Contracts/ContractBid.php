@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Annotations as OA;
 
 /**
  * Class ContractBid.
