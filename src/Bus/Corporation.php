@@ -71,12 +71,12 @@ class Corporation extends Bus
     /**
      * @var int
      */
-    private $corporation_id;
+    private int $corporation_id;
 
     /**
      * @var \Seat\Eveapi\Models\RefreshToken
      */
-    private $token;
+    private RefreshToken $token;
 
     /**
      * Corporation constructor.
@@ -106,8 +106,8 @@ class Corporation extends Bus
 
         // Corporation
         Info::withChain($this->jobs->toArray())
-            ->dispatch($this->corporation_id)
-            ->delay(now()->addSeconds(rand(120, 300)));
+            ->delay(now()->addSeconds(rand(120, 300)))
+            ->dispatch($this->corporation_id);
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
         // https://github.com/eveseat/seat/issues/731
