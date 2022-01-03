@@ -209,7 +209,7 @@ class CharacterAsset extends Model
     public function container()
     {
 
-        return $this->belongsTo(CharacterAsset::class, 'location_id', 'item_id')
+        return $this->belongsTo(CharacterAsset::class, 'item_id', 'location_id')
             ->withDefault();
     }
 

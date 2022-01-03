@@ -212,7 +212,7 @@ class CorporationAsset extends Model
     public function container()
     {
 
-        return $this->belongsTo(CorporationAsset::class, 'location_id', 'item_id')
+        return $this->belongsTo(CorporationAsset::class, 'item_id', 'location_id')
             ->withDefault();
     }
 
