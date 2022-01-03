@@ -10,7 +10,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "Seat\\Eveapi\\": "src/"
+      "Seat\\Eveapi\\": "src/",
+      "Seat\\Eveapi\\Database\\Seeders\\": "src/database/seeders/"
     }
   },
   "minimum-stability": "dev",
