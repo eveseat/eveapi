@@ -85,28 +85,33 @@ trait Utils
             'map_name' => 'Unknown',
         ];
 
-        $possible_celestials = MapDenormalize::where('solarSystemID', $solar_system_id)
-            ->whereNotNull('itemName')
-            ->where('x', '<>', '0.0')// Exclude the systems star.
-            ->whereIn('groupID', [6, 7, 8, 9, 10])
-            ->get();
+        // ensure provided system is an int32
+        // otherwise, we know this can't be a "standard celestial".
+        if ($solar_system_id <= 2147483647) {
 
-        foreach ($possible_celestials as $celestial) {
+            $possible_celestials = MapDenormalize::where('solarSystemID', $solar_system_id)
+                ->whereNotNull('itemName')
+                ->where('x', '<>', '0.0')// Exclude the systems star.
+                ->whereIn('groupID', [6, 7, 8, 9, 10])
+                ->get();
 
-            // See: http://math.stackexchange.com/a/42642
-            $distance = sqrt(
-                pow(($x - $celestial->x), 2) + pow(($y - $celestial->y), 2) + pow(($z - $celestial->z), 2));
+            foreach ($possible_celestials as $celestial) {
 
-            // Are we there yet?
-            if ($distance < $closest_distance) {
+                // See: http://math.stackexchange.com/a/42642
+                $distance = sqrt(
+                    pow(($x - $celestial->x), 2) + pow(($y - $celestial->y), 2) + pow(($z - $celestial->z), 2));
 
-                // Update the current closest distance
-                $closest_distance = $distance;
+                // Are we there yet?
+                if ($distance < $closest_distance) {
 
-                $response = [
-                    'map_id'   => $celestial->itemID,
-                    'map_name' => $celestial->itemName,
-                ];
+                    // Update the current closest distance
+                    $closest_distance = $distance;
+
+                    $response = [
+                        'map_id' => $celestial->itemID,
+                        'map_name' => $celestial->itemName,
+                    ];
+                }
             }
         }
 
