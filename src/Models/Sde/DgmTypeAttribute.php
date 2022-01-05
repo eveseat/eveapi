@@ -50,4 +50,9 @@ class DgmTypeAttribute extends Model
      * @var string
      */
     protected $primaryKey = ['typeID', 'attributeID'];
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }

@@ -177,6 +177,11 @@ class MapDenormalize extends Model
     protected $primaryKey = 'itemID';
 
     /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * @var object
      */
     private $moon_indicators;
