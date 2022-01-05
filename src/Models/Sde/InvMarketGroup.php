@@ -26,23 +26,11 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class RamActivity.
- *
- * @package Seat\Eveapi\Models\Sde
+ * Class InvMarketGroup.
  */
-class RamActivity extends Model
+class InvMarketGroup extends Model
 {
     use IsReadOnly;
-
-    /**
-     * @var string
-     */
-    protected $table = 'ramActivities';
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'activityID';
 
     /**
      * @var bool
@@ -50,7 +38,43 @@ class RamActivity extends Model
     public $incrementing = false;
 
     /**
+     * @var string
+     */
+    protected $table = 'invMarketGroups';
+
+    /**
+     * @var string
+     */
+    protected $primaryKey = 'marketGroupID';
+
+    /**
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function types()
+    {
+        return $this->hasMany(InvType::class, 'marketGroupID', 'marketGroupID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent()
+    {
+
+        return $this->belongsTo(InvMarketGroup::class, 'parentGroupID', 'marketGroupID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function child()
+    {
+
+        return $this->hasOne(InvMarketGroup::class, 'parentGroupID', 'marketGroupID');
+    }
 }

@@ -158,6 +158,11 @@ class InvType extends Model
     protected $primaryKey = 'typeID';
 
     /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function materials()
