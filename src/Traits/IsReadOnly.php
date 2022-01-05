@@ -38,8 +38,8 @@ trait IsReadOnly
 
     /**
      * @param  array  $attributes
-     *
      * @return \Illuminate\Database\Eloquent\Model|$this
+     *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public static function create(array $attributes = [])
@@ -51,10 +51,10 @@ trait IsReadOnly
     }
 
     /**
-     * @param array $attributes
-     * @param array $values
-     *
+     * @param  array  $attributes
+     * @param  array  $values
      * @return \Illuminate\Database\Eloquent\Model|static
+     *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public static function firstOrCreate(array $attributes = [], array $values = [])
@@ -69,6 +69,7 @@ trait IsReadOnly
      * @param  array  $options
      *
      * @eturn bool
+     *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public function save(array $options = [])
@@ -82,8 +83,8 @@ trait IsReadOnly
     /**
      * @param  array  $attributes
      * @param  array  $options
-     *
      * @return bool
+     *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public function update(array $attributes = [], array $options = [])
@@ -96,6 +97,7 @@ trait IsReadOnly
 
     /**
      * @return bool|null
+     *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public function delete()
@@ -108,6 +110,7 @@ trait IsReadOnly
 
     /**
      * @return bool|null
+     *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public function forceDelete()
@@ -119,7 +122,7 @@ trait IsReadOnly
     }
 
     /**
-     * @param bool $new_value
+     * @param  bool  $new_value
      * @return $this
      */
     public function bypassReadOnly(bool $new_value = true)
