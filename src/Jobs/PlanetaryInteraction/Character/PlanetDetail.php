@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
-use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetContent;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetExtractor;
