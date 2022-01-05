@@ -50,6 +50,7 @@ use Seat\Eveapi\Commands\Seat\Buckets\ListCommand;
 use Seat\Eveapi\Commands\Seat\Buckets\Update;
 use Seat\Eveapi\Commands\Seat\Cache\Clear;
 use Seat\Eveapi\Commands\Seat\Tokens\Upgrade;
+use Seat\Eveapi\Database\Seeders\ScheduleSeeder;
 use Seat\Eveapi\Helpers\EseyeSetup;
 use Seat\Eveapi\Listeners\EsiFailedCall;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
@@ -100,6 +101,7 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     {
 
         $this->mergeConfigFrom(__DIR__ . '/Config/eveapi.scopes.php', 'eveapi.scopes');
+        $this->registerDatabaseSeeders(ScheduleSeeder::class);
 
         // Eseye Singleton
         $this->app->singleton('esi-client', function () {
