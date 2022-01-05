@@ -48,4 +48,9 @@ class InvGroup extends Model
      * @var string
      */
     protected $primaryKey = 'groupID';
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }

@@ -50,6 +50,11 @@ class StaStation extends Model
     protected $primaryKey = 'stationID';
 
     /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * @return int
      */
     public function getStructureIdAttribute()

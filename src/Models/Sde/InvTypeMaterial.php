@@ -23,17 +23,18 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Eveapi\Traits\IsReadOnly;
 
 /**
- * Class ChrFaction.
+ * Class InvControlTowerResources.
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class ChrFaction extends Model
+class InvTypeMaterial extends Model
 {
-
     use IsReadOnly;
+    use HasCompositePrimaryKey;
 
     /**
      * @var bool
@@ -43,11 +44,15 @@ class ChrFaction extends Model
     /**
      * @var string
      */
-    protected $table = 'chrFactions';
+    protected $table = 'invTypeMaterials';
 
     /**
      * @var string
      */
-    protected $primaryKey = 'factionID';
+    protected $primaryKey = ['typeID', 'materialTypeID'];
 
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }
