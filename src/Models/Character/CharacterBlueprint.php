@@ -27,7 +27,6 @@ use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CharacterBluePrints.
@@ -36,8 +35,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  */
 class CharacterBlueprint extends Model
 {
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */

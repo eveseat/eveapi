@@ -27,7 +27,6 @@ use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
 /**
@@ -37,7 +36,6 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
  */
 class CorporationBlueprint extends Model
 {
-    use CanUpsertIgnoreReplace;
     use HasCompositePrimaryKey;
 
     /**

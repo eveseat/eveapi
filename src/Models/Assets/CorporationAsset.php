@@ -30,7 +30,6 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CorporationAsset.
@@ -129,8 +128,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  */
 class CorporationAsset extends Model
 {
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var array
      */
