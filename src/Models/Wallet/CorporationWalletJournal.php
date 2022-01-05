@@ -24,8 +24,7 @@ namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Annotations as OA;
-use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
+use Seat\Eveapi\Models\Universe\UniverseName;;
 
 /**
  * Class CorporationWalletJournal.
@@ -132,8 +131,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  */
 class CorporationWalletJournal extends Model
 {
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var array
      */
