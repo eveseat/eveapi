@@ -100,7 +100,7 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
      */
     public function getStructuresIdToResolve(): array
     {
-        return CharacterAsset::where('character_id', $this->getCharacterId())
+        $locations = CharacterAsset::where('character_id', $this->getCharacterId())
             ->whereIn('location_flag', ['Deliveries', 'Hangar'])
             ->whereIn('location_type', ['item', 'other'])
             // according to ESI - structure ID has to start at a certain range
@@ -114,13 +114,14 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
             })
             ->select('location_id')
             ->distinct()
-            // Until CCP can sort out this endpoint, pick 15 random locations
-            // and try to get those names. We hard cap it at 15 otherwise we
-            // will quickly kill the error limit, resulting in a ban.
-            ->inRandomOrder()
-            ->limit(15)
-            ->get()
-            ->pluck('location_id')
-            ->all();
+            ->get();
+
+        // Until CCP can sort out this endpoint, pick 15 random locations
+        // and try to get those names. We hard cap it at 15 otherwise we
+        // will quickly kill the error limit, resulting in a ban.
+        if ($locations->count() > 15)
+            $locations = $locations->random(15);
+
+        return $locations->pluck('location_id')->all();
     }
 }
