@@ -25,53 +25,61 @@ namespace Seat\Eveapi\Database\Seeders\Sde;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Seat\Eveapi\Exception\InvalidSdeSeederException;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
+/**
+ * SdeSeeder.
+ *
+ * Used as a facade to seed all SDE related tables.
+ */
 class SdeSeeder extends Seeder
 {
     /**
      * @var string
      */
+    private string $sde_repository = 'https://www.fuzzwork.co.uk/dump/:version/';
+
+    /**
+     * @var string
+     */
     private string $version = 'latest';
 
+    /**
+     * @throws \Seat\Eveapi\Exception\InvalidSdeSeederException
+     */
     public function run()
     {
         // extract sde file/seeder mapping from config
-        $sde_mapping = [
-            'mapDenormalize' => MapDenormalizeSeeder::class,
-            'dgmTypeAttributes' => DgmTypeAttributesSeeder::class,
-            'invControlTowerResources' => InvControlTowerResourcesSeeder::class,
-            'invGroups' => InvGroupsSeeder::class,
-            'invMarketGroups' => InvMarketGroupsSeeder::class,
-            'invTypes' => InvTypesSeeder::class,
-            'invTypeMaterials' => InvTypeMaterialsSeeder::class,
-            'ramActivities' => RamActivitiesSeeder::class,
-            'staStations' => StaStationsSeeder::class,
-        ];
+        $sde_seeders = config('seat.sde.seeders', []);
 
+        $this->command->info('Checking configuration...');
         if (! $this->isStorageOk())
             throw new DirectoryNotFoundException('Storage path is not OK. Please check permissions.');
 
         $this->command->info('Downloading static files...');
-        $this->downloadStaticFiles(array_keys($sde_mapping));
+        $this->downloadStaticFiles($sde_seeders);
 
         $this->command->info('Seeding SDE into Database...');
-        $this->call(array_values($sde_mapping));
+        $this->call($sde_seeders);
     }
 
     /**
      * Download the EVE Sde from Fuzzwork and save it
      * in the storage_path/sde folder.
+     *
+     * @param array $seeders
+     * @throws \Seat\Eveapi\Exception\InvalidSdeSeederException
      */
-    private function downloadStaticFiles($files)
+    private function downloadStaticFiles(array $seeders)
     {
-        $bar = $this->getProgressBar(count($files));
+        foreach ($seeders as $seeder) {
 
-        foreach ($files as $file) {
+            if (! is_subclass_of($seeder, AbstractSdeSeeder::class))
+                throw new InvalidSdeSeederException($seeder . ' must extend ' . AbstractSdeSeeder::class . 'to be able to use SDE seeder.');
 
-            $url = str_replace(':version', $this->version, 'https://www.fuzzwork.co.uk/dump/:version/') .
-                $file . '.csv';
-            $destination = storage_path('sde/' . $file . '.csv');
+            $url = $this->getSdeFileRemoteUri($seeder);
+            $destination = $this->getSdeFileLocalUri($seeder);
 
             $file_handler = fopen($destination, 'w');
 
@@ -81,15 +89,15 @@ class SdeSeeder extends Seeder
 
             fclose($file_handler);
 
-            if ($result->status() != 200)
-                $this->command->error('Unable to download: ' . $url .
-                    '. The HTTP response was: ' . $result->status());
+            if ($result->status() == 200) {
+                $this->command->getOutput()->writeln("<comment>Downloaded:</comment> {$seeder::getSdeName()}");
 
-            $bar->advance();
+                continue;
+            }
+
+            $this->command->error('Unable to download: ' . $url .
+                '. The HTTP response was: ' . $result->status());
         }
-
-        $bar->finish();
-        $this->command->line('');
     }
 
     /**
@@ -101,7 +109,7 @@ class SdeSeeder extends Seeder
     private function isStorageOk(): bool
     {
         $storage = storage_path('sde/');
-        $this->command->line('SDE storage path is: "' . $storage . '"');
+        $this->command->getOutput()->writeln("<comment>SDE storage path is:</comment> {$storage}");
 
         if (File::isWritable(storage_path())) {
 
@@ -116,18 +124,24 @@ class SdeSeeder extends Seeder
     }
 
     /**
-     * Get a new progress bar to display based on the
-     * amount of iterations we expect to use.
+     * Determine the SDE remote URI for the provided seeder.
      *
-     * @param $iterations
-     * @return \Symfony\Component\Console\Helper\ProgressBar
+     * @param string $seeder
+     * @return string
      */
-    private function getProgressBar($iterations)
+    private function getSdeFileRemoteUri(string $seeder): string
     {
-        $bar = $this->command->getOutput()->createProgressBar($iterations);
+        return str_replace(':version', $this->version, $this->sde_repository) . $seeder::getSdeName() . '.csv';
+    }
 
-        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% %memory:6s%');
-
-        return $bar;
+    /**
+     * Determine the SDE local URI for the provided seeder.
+     *
+     * @param string $seeder
+     * @return string
+     */
+    private function getSdeFileLocalUri(string $seeder): string
+    {
+        return storage_path('sde/' . $seeder::getSdeName() . '.csv');
     }
 }

@@ -22,63 +22,43 @@
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Facades\Excel;
+use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 use Seat\Eveapi\Mapping\Sde\InvTypeMapping;
 
-class InvTypesSeeder extends Seeder
+class InvTypesSeeder extends AbstractSdeSeeder
 {
-    public function run()
+    /**
+     * Define seeder related SDE table structure.
+     *
+     * @param \Illuminate\Database\Schema\Blueprint $table
+     * @return void
+     */
+    protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $this->createTable();
-
-        $this->seedTable();
+        $table->integer('typeID')->primary();
+        $table->integer('groupID');
+        $table->string('typeName', 100);
+        $table->text('description')->nullable();
+        $table->double('mass')->nullable();
+        $table->double('volume')->nullable();
+        $table->double('capacity')->nullable();
+        $table->integer('portionSize')->nullable();
+        $table->integer('raceID')->nullable();
+        $table->double('basePrice')->nullable();
+        $table->boolean('published')->default(false);
+        $table->integer('marketGroupID')->nullable();
+        $table->integer('iconID')->nullable();
+        $table->integer('graphicID')->nullable();
     }
 
     /**
-     * Create mapDenormalize table structure.
+     * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return void
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
      */
-    private function createTable()
+    protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        Schema::dropIfExists('invTypes');
-
-        Schema::create('invTypes', function (Blueprint $table) {
-            $table->integer('typeID')->primary();
-            $table->integer('groupID');
-            $table->string('typeName', 100);
-            $table->text('description')->nullable();
-            $table->double('mass')->nullable();
-            $table->double('volume')->nullable();
-            $table->double('capacity')->nullable();
-            $table->integer('portionSize')->nullable();
-            $table->integer('raceID')->nullable();
-            $table->double('basePrice')->nullable();
-            $table->boolean('published')->default(false);
-            $table->integer('marketGroupID')->nullable();
-            $table->integer('iconID')->nullable();
-            $table->integer('graphicID')->nullable();
-        });
-    }
-
-    /**
-     * Seed table with csv content.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function seedTable()
-    {
-        $file = storage_path('sde/invTypes.csv');
-
-        if (! file_exists($file))
-            throw new FileNotFoundException("Unable to retrieve $file.");
-
-        Excel::import(new InvTypeMapping(), $file);
+        return new InvTypeMapping();
     }
 }

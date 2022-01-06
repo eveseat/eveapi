@@ -22,69 +22,57 @@
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Facades\Excel;
+use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 use Seat\Eveapi\Mapping\Sde\MapDenormalizeMapping;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 
-class MapDenormalizeSeeder extends Seeder
+class MapDenormalizeSeeder extends AbstractSdeSeeder
 {
-    public function run()
+    /**
+     * Define seeder related SDE table structure.
+     *
+     * @param \Illuminate\Database\Schema\Blueprint $table
+     * @return void
+     */
+    protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $this->createTable();
+        $table->integer('itemID')->primary();
+        $table->integer('typeID')->nullable();
+        $table->integer('groupID')->nullable();
+        $table->integer('solarSystemID')->nullable();
+        $table->integer('constellationID')->nullable();
+        $table->integer('regionID')->nullable();
+        $table->integer('orbitID')->nullable();
+        $table->double('x')->nullable();
+        $table->double('y')->nullable();
+        $table->double('z')->nullable();
+        $table->double('radius')->nullable();
+        $table->string('itemName', 100)->nullable();
+        $table->double('security')->nullable();
+        $table->integer('celestialIndex')->nullable();
+        $table->integer('orbitIndex')->nullable();
+    }
 
-        $this->seedTable();
+    /**
+     * The mapping instance which must be used to seed table with SDE dump.
+     *
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
+     */
+    protected function getMappingClass(): AbstractFuzzworkMapping
+    {
+        return new MapDenormalizeMapping();
+    }
 
+    /**
+     * Determine actions which have to be executed after the seeding process.
+     *
+     * @return void
+     */
+    protected function after(): void
+    {
         $this->explodeMap();
-    }
-
-    /**
-     * Create mapDenormalize table structure.
-     *
-     * @return void
-     */
-    private function createTable()
-    {
-        Schema::dropIfExists('mapDenormalize');
-
-        Schema::create('mapDenormalize', function (Blueprint $table) {
-            $table->integer('itemID')->primary();
-            $table->integer('typeID')->nullable();
-            $table->integer('groupID')->nullable();
-            $table->integer('solarSystemID')->nullable();
-            $table->integer('constellationID')->nullable();
-            $table->integer('regionID')->nullable();
-            $table->integer('orbitID')->nullable();
-            $table->double('x')->nullable();
-            $table->double('y')->nullable();
-            $table->double('z')->nullable();
-            $table->double('radius')->nullable();
-            $table->string('itemName', 100)->nullable();
-            $table->double('security')->nullable();
-            $table->integer('celestialIndex')->nullable();
-            $table->integer('orbitIndex')->nullable();
-        });
-    }
-
-    /**
-     * Seed table with csv content.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function seedTable()
-    {
-        $file = storage_path('sde/mapDenormalize.csv');
-
-        if (! file_exists($file))
-            throw new FileNotFoundException("Unable to retrieve $file.");
-
-        Excel::import(new MapDenormalizeMapping(), $file);
     }
 
     /**
