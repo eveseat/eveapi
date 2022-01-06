@@ -22,58 +22,38 @@
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Facades\Excel;
+use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 use Seat\Eveapi\Mapping\Sde\InvGroupMapping;
 
-class InvGroupsSeeder extends Seeder
+class InvGroupsSeeder extends AbstractSdeSeeder
 {
-    public function run()
+    /**
+     * Define seeder related SDE table structure.
+     *
+     * @param \Illuminate\Database\Schema\Blueprint $table
+     * @return void
+     */
+    protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $this->createTable();
-
-        $this->seedTable();
+        $table->integer('groupID')->primary();
+        $table->integer('categoryID');
+        $table->string('groupName', 100);
+        $table->integer('iconID')->nullable();
+        $table->boolean('useBasePrice');
+        $table->boolean('anchored');
+        $table->boolean('anchorable');
+        $table->boolean('fittableNonSingleton');
+        $table->boolean('published');
     }
 
     /**
-     * Create mapDenormalize table structure.
+     * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return void
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
      */
-    private function createTable()
+    protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        Schema::dropIfExists('invGroups');
-
-        Schema::create('invGroups', function (Blueprint $table) {
-            $table->integer('groupID')->primary();
-            $table->integer('categoryID');
-            $table->string('groupName', 100);
-            $table->integer('iconID')->nullable();
-            $table->boolean('useBasePrice');
-            $table->boolean('anchored');
-            $table->boolean('anchorable');
-            $table->boolean('fittableNonSingleton');
-            $table->boolean('published');
-        });
-    }
-
-    /**
-     * Seed table with csv content.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function seedTable()
-    {
-        $file = storage_path('sde/invGroups.csv');
-
-        if (! file_exists($file))
-            throw new FileNotFoundException("Unable to retrieve $file.");
-
-        Excel::import(new InvGroupMapping(), $file);
+        return new InvGroupMapping();
     }
 }

@@ -22,54 +22,34 @@
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Facades\Excel;
+use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 use Seat\Eveapi\Mapping\Sde\InvMarketGroupMapping;
 
-class InvMarketGroupsSeeder extends Seeder
+class InvMarketGroupsSeeder extends AbstractSdeSeeder
 {
-    public function run()
+    /**
+     * Define seeder related SDE table structure.
+     *
+     * @param \Illuminate\Database\Schema\Blueprint $table
+     * @return void
+     */
+    protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $this->createTable();
-
-        $this->seedTable();
+        $table->integer('marketGroupID')->primary();
+        $table->integer('parentGroupID')->nullable();
+        $table->string('marketGroupName', 100);
+        $table->string('description', 250)->nullable();
+        $table->integer('iconID')->nullable();
     }
 
     /**
-     * Create mapDenormalize table structure.
+     * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return void
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
      */
-    private function createTable()
+    protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        Schema::dropIfExists('invMarketGroups');
-
-        Schema::create('invMarketGroups', function (Blueprint $table) {
-            $table->integer('marketGroupID')->primary();
-            $table->integer('parentGroupID')->nullable();
-            $table->string('marketGroupName', 100);
-            $table->string('description', 250)->nullable();
-            $table->integer('iconID')->nullable();
-        });
-    }
-
-    /**
-     * Seed table with csv content.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function seedTable()
-    {
-        $file = storage_path('sde/invMarketGroups.csv');
-
-        if (! file_exists($file))
-            throw new FileNotFoundException("Unable to retrieve $file.");
-
-        Excel::import(new InvMarketGroupMapping(), $file);
+        return new InvMarketGroupMapping();
     }
 }

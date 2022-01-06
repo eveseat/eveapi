@@ -22,67 +22,47 @@
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Facades\Excel;
+use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 use Seat\Eveapi\Mapping\Sde\StaStationMapping;
 
-class StaStationsSeeder extends Seeder
+class StaStationsSeeder extends AbstractSdeSeeder
 {
-    public function run()
+    /**
+     * Define seeder related SDE table structure.
+     *
+     * @param \Illuminate\Database\Schema\Blueprint $table
+     * @return void
+     */
+    protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $this->createTable();
-
-        $this->seedTable();
+        $table->integer('stationID')->primary();
+        $table->double('security');
+        $table->double('dockingCostPerVolume');
+        $table->double('maxShipVolumeDockable');
+        $table->double('officeRentalCost');
+        $table->integer('operationID');
+        $table->integer('stationTypeID');
+        $table->bigInteger('corporationID');
+        $table->integer('solarSystemID');
+        $table->integer('constellationID');
+        $table->integer('regionID');
+        $table->string('stationName', 100);
+        $table->double('x');
+        $table->double('y');
+        $table->double('z');
+        $table->double('reprocessingEfficiency');
+        $table->double('reprocessingStationsTake');
+        $table->integer('reprocessingHangarFlag');
     }
 
     /**
-     * Create mapDenormalize table structure.
+     * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return void
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
      */
-    private function createTable()
+    protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        Schema::dropIfExists('staStations');
-
-        Schema::create('staStations', function (Blueprint $table) {
-            $table->integer('stationID')->primary();
-            $table->double('security');
-            $table->double('dockingCostPerVolume');
-            $table->double('maxShipVolumeDockable');
-            $table->double('officeRentalCost');
-            $table->integer('operationID');
-            $table->integer('stationTypeID');
-            $table->bigInteger('corporationID');
-            $table->integer('solarSystemID');
-            $table->integer('constellationID');
-            $table->integer('regionID');
-            $table->string('stationName', 100);
-            $table->double('x');
-            $table->double('y');
-            $table->double('z');
-            $table->double('reprocessingEfficiency');
-            $table->double('reprocessingStationsTake');
-            $table->integer('reprocessingHangarFlag');
-        });
-    }
-
-    /**
-     * Seed table with csv content.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function seedTable()
-    {
-        $file = storage_path('sde/staStations.csv');
-
-        if (! file_exists($file))
-            throw new FileNotFoundException("Unable to retrieve $file.");
-
-        Excel::import(new StaStationMapping(), $file);
+        return new StaStationMapping();
     }
 }

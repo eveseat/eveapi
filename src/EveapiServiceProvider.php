@@ -82,6 +82,9 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         // Register ESI configuration
         $this->add_esi_config();
 
+        // Register SDE seeders
+        $this->add_sde_seeders();
+
         // Update api config
         $this->configure_api();
 
@@ -171,6 +174,21 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         $this->publishes([
             __DIR__ . '/Config/esi.php' => config_path('esi.php'),
         ], ['config', 'seat']);
+    }
+
+    private function add_sde_seeders()
+    {
+        $this->registerSdeSeeders([
+            \Seat\Eveapi\Database\Seeders\Sde\MapDenormalizeSeeder::class,
+            \Seat\Eveapi\Database\Seeders\Sde\DgmTypeAttributesSeeder::class,
+            \Seat\Eveapi\Database\Seeders\Sde\InvControlTowerResourcesSeeder::class,
+            \Seat\Eveapi\Database\Seeders\Sde\InvGroupsSeeder::class,
+            \Seat\Eveapi\Database\Seeders\Sde\InvMarketGroupsSeeder::class,
+            \Seat\Eveapi\Database\Seeders\Sde\InvTypesSeeder::class,
+            \Seat\Eveapi\Database\Seeders\Sde\InvTypeMaterialsSeeder::class,
+            \Seat\Eveapi\Database\Seeders\Sde\RamActivitiesSeeder::class,
+            \Seat\Eveapi\Database\Seeders\Sde\StaStationsSeeder::class,
+        ]);
     }
 
     /**
