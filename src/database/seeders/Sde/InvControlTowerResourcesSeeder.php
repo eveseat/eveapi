@@ -22,57 +22,37 @@
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Facades\Excel;
+use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 use Seat\Eveapi\Mapping\Sde\InvControlTowerResourceMapping;
 
-class InvControlTowerResourcesSeeder extends Seeder
+class InvControlTowerResourcesSeeder extends AbstractSdeSeeder
 {
-    public function run()
+    /**
+     * Define seeder related SDE table structure.
+     *
+     * @param \Illuminate\Database\Schema\Blueprint $table
+     * @return void
+     */
+    protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $this->createTable();
+        $table->integer('controlTowerTypeID');
+        $table->integer('resourceTypeID');
+        $table->integer('purpose');
+        $table->double('quantity');
+        $table->double('minSecurityLevel')->nullable();
+        $table->integer('factionID')->nullable();
 
-        $this->seedTable();
+        $table->primary(['controlTowerTypeID', 'resourceTypeID']);
     }
 
     /**
-     * Create mapDenormalize table structure.
+     * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return void
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
      */
-    private function createTable()
+    protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        Schema::dropIfExists('invControlTowerResources');
-
-        Schema::create('invControlTowerResources', function (Blueprint $table) {
-            $table->integer('controlTowerTypeID');
-            $table->integer('resourceTypeID');
-            $table->integer('purpose');
-            $table->double('quantity');
-            $table->double('minSecurityLevel')->nullable();
-            $table->integer('factionID')->nullable();
-
-            $table->primary(['controlTowerTypeID', 'resourceTypeID']);
-        });
-    }
-
-    /**
-     * Seed table with csv content.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function seedTable()
-    {
-        $file = storage_path('sde/invControlTowerResources.csv');
-
-        if (! file_exists($file))
-            throw new FileNotFoundException("Unable to retrieve $file.");
-
-        Excel::import(new InvControlTowerResourceMapping(), $file);
+        return new InvControlTowerResourceMapping();
     }
 }

@@ -22,54 +22,23 @@
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Facades\Excel;
+use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 use Seat\Eveapi\Mapping\Sde\InvTypeMaterialMapping;
 
-class InvTypeMaterialsSeeder extends Seeder
+class InvTypeMaterialsSeeder extends AbstractSdeSeeder
 {
-    public function run()
+    protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $this->createTable();
+        $table->integer('typeID');
+        $table->integer('materialTypeID');
+        $table->integer('quantity');
 
-        $this->seedTable();
+        $table->primary(['typeID', 'materialTypeID']);
     }
 
-    /**
-     * Create mapDenormalize table structure.
-     *
-     * @return void
-     */
-    private function createTable()
+    protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        Schema::dropIfExists('invTypeMaterials');
-
-        Schema::create('invTypeMaterials', function (Blueprint $table) {
-            $table->integer('typeID');
-            $table->integer('materialTypeID');
-            $table->integer('quantity');
-
-            $table->primary(['typeID', 'materialTypeID']);
-        });
-    }
-
-    /**
-     * Seed table with csv content.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function seedTable()
-    {
-        $file = storage_path('sde/invTypeMaterials.csv');
-
-        if (! file_exists($file))
-            throw new FileNotFoundException("Unable to retrieve $file.");
-
-        Excel::import(new InvTypeMaterialMapping(), $file);
+        return new InvTypeMaterialMapping();
     }
 }

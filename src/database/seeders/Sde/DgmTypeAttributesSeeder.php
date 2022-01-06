@@ -22,55 +22,35 @@
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Facades\Excel;
+use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 use Seat\Eveapi\Mapping\Sde\DgmTypeAttributeMapping;
 
-class DgmTypeAttributesSeeder extends Seeder
+class DgmTypeAttributesSeeder extends AbstractSdeSeeder
 {
-    public function run()
+    /**
+     * Define seeder related SDE table structure.
+     *
+     * @param \Illuminate\Database\Schema\Blueprint $table
+     * @return void
+     */
+    protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $this->createTable();
+        $table->integer('typeID');
+        $table->integer('attributeID');
+        $table->integer('valueInt')->nullable();
+        $table->double('valueFloat')->nullable();
 
-        $this->seedTable();
+        $table->primary(['typeID', 'attributeID']);
     }
 
     /**
-     * Create mapDenormalize table structure.
+     * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return void
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
      */
-    private function createTable()
+    protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        Schema::dropIfExists('dgmTypeAttributes');
-
-        Schema::create('dgmTypeAttributes', function (Blueprint $table) {
-            $table->integer('typeID');
-            $table->integer('attributeID');
-            $table->integer('valueInt')->nullable();
-            $table->double('valueFloat')->nullable();
-
-            $table->primary(['typeID', 'attributeID']);
-        });
-    }
-
-    /**
-     * Seed table with csv content.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function seedTable()
-    {
-        $file = storage_path('sde/dgmTypeAttributes.csv');
-
-        if (! file_exists($file))
-            throw new FileNotFoundException("Unable to retrieve $file.");
-
-        Excel::import(new DgmTypeAttributeMapping(), $file);
+        return new DgmTypeAttributeMapping();
     }
 }
