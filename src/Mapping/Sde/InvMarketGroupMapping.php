@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Mapping\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use Maatwebsite\Excel\Concerns\WithValidation;
 use Seat\Eveapi\Models\Sde\InvMarketGroup;
 
 /**
@@ -33,7 +34,7 @@ use Seat\Eveapi\Models\Sde\InvMarketGroup;
  *
  * @url https://www.fuzzwork.co.uk
  */
-class InvMarketGroupMapping extends AbstractFuzzworkMapping
+class InvMarketGroupMapping extends AbstractFuzzworkMapping implements WithValidation
 {
     /**
      * @param  array  $row
@@ -48,5 +49,49 @@ class InvMarketGroupMapping extends AbstractFuzzworkMapping
             'description'     => $row[3],
             'iconID'          => $row[4],
         ]))->bypassReadOnly();
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            '0' => 'integer|min:1|required',
+            '1' => 'integer|min:1|nullable',
+            '2' => 'string|max:100|required',
+            '3' => 'string|max:250|nullable',
+            '4' => 'integer|min:0|required',
+        ];
+    }
+
+    public function customValidationAttributes()
+    {
+        return [
+            '0' => 'marketGroupID',
+            '1' => 'parentGroupID',
+            '2' => 'marketGroupName',
+            '3' => 'description',
+            '4' => 'iconID',
+        ];
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            '0.integer' => self::INTEGER_VALIDATION_MESSAGE,
+            '0.min' => self::MIN_VALIDATION_MESSAGE,
+            '0.required' => self::REQUIRED_VALIDATION_MESSAGE,
+            '1.integer' => self::INTEGER_VALIDATION_MESSAGE,
+            '1.min' => self::MIN_VALIDATION_MESSAGE,
+            '2.string' => self::STRING_VALIDATION_MESSAGE,
+            '2.max' => self::MAX_VALIDATION_MESSAGE,
+            '2.required' => self::REQUIRED_VALIDATION_MESSAGE,
+            '3.string' => self::STRING_VALIDATION_MESSAGE,
+            '3.max' => self::MAX_VALIDATION_MESSAGE,
+            '4.integer' => self::INTEGER_VALIDATION_MESSAGE,
+            '4.min' => self::MIN_VALIDATION_MESSAGE,
+            '4.required' => self::REQUIRED_VALIDATION_MESSAGE,
+        ];
     }
 }
