@@ -70,6 +70,8 @@ class History extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $orders = $this->retrieve([

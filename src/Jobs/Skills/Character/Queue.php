@@ -70,6 +70,8 @@ class Queue extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $this->greatest_position = -1;
 
         $skill_queue = $this->retrieve([

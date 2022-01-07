@@ -71,6 +71,8 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
      */
     public function handle()
     {
+        parent::handle();
+
         $structure_ids = $this->getStructuresIdToResolve();
 
         foreach ($structure_ids as $structure_id) {

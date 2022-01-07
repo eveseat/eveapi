@@ -80,6 +80,8 @@ class Transactions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         CorporationWalletBalance::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($balance) {
 

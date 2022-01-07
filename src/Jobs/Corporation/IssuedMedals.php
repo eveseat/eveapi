@@ -76,6 +76,8 @@ class IssuedMedals extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $medals = $this->retrieve([

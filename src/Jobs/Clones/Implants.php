@@ -67,6 +67,7 @@ class Implants extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $implants = $this->retrieve([
             'character_id' => $this->getCharacterId(),

@@ -65,6 +65,7 @@ class Attendees extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $this->updateAttendees('character', $this->getCharacterId());
     }

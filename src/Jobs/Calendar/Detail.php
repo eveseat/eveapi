@@ -69,6 +69,7 @@ class Detail extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $event_ids = CharacterCalendarEvent::where('character_id', $this->getCharacterId())
             ->whereNotIn('event_id', function ($query) {

@@ -65,6 +65,8 @@ class Fittings extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $fittings = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

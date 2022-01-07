@@ -73,6 +73,7 @@ class Titles extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $titles = $this->retrieve([
             'character_id' => $this->getCharacterId(),

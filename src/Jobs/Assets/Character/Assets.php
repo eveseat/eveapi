@@ -90,6 +90,7 @@ class Assets extends AbstractAuthCharacterJob
      */
     public function handle(): void
     {
+        parent::handle();
 
         while (true) {
 

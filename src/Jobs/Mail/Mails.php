@@ -66,6 +66,8 @@ class Mails extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         // get last known mail ID to detect when parity has been reached
         $last_known_mail = MailRecipient::where('recipient_id', $this->getCharacterId())
             ->orderBy('mail_id', 'desc')

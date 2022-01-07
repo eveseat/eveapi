@@ -65,6 +65,8 @@ class Orders extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $orders = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

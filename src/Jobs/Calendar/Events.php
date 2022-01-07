@@ -73,6 +73,8 @@ class Events extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         // Perform a walk backwards to get all of the
         // entries as far back as possible. When the response from
         // ESI is empty, we can assume we have everything.

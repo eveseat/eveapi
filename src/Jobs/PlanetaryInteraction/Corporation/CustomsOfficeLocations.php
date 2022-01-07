@@ -74,6 +74,8 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $customs_offices = CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->get();
 
         collect($customs_offices)->chunk(1000)->each(function ($chunk) {

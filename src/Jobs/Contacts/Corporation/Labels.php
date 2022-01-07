@@ -66,6 +66,8 @@ class Labels extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $labels = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

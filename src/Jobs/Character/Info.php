@@ -63,6 +63,7 @@ class Info extends AbstractCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $character_info = $this->retrieve([
             'character_id' => $this->getCharacterId(),

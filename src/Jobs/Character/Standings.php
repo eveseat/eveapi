@@ -67,6 +67,7 @@ class Standings extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $standings = $this->retrieve([
             'character_id' => $this->getCharacterId(),
