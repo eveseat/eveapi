@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Market;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class Price.
@@ -33,9 +32,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  */
 class Price extends Model
 {
-
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */

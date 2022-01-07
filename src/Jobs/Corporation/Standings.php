@@ -96,10 +96,7 @@ class Standings extends AbstractAuthCorporationJob
 
                 CorporationStanding::upsert($records->toArray(), [
                     'corporation_id',
-                    'from_type',
                     'from_id',
-                    'standing',
-                    'updated_at',
                 ]);
             });
 
