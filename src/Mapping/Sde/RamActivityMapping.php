@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Mapping\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use Maatwebsite\Excel\Concerns\WithValidation;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use Seat\Eveapi\Models\Sde\RamActivity;
@@ -35,7 +36,7 @@ use Seat\Eveapi\Models\Sde\RamActivity;
  *
  * @url https://www.fuzzwork.co.uk
  */
-class RamActivityMapping extends AbstractFuzzworkMapping
+class RamActivityMapping extends AbstractFuzzworkMapping implements WithValidation
 {
     /**
      * @param  \PhpOffice\PhpSpreadsheet\Cell\Cell  $cell
@@ -68,5 +69,49 @@ class RamActivityMapping extends AbstractFuzzworkMapping
             'description'  => $row[3],
             'published'    => $row[4],
         ]))->bypassReadOnly();
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            '0' => 'integer|min:0|required',
+            '1' => 'string|max:250|required',
+            '2' => 'string|max:10|nullable',
+            '3' => 'string|max:250|required',
+            '4' => 'boolean|required',
+        ];
+    }
+
+    public function customValidationAttributes()
+    {
+        return [
+            '0' => 'activityID',
+            '1' => 'activityName',
+            '2' => 'iconNo',
+            '3' => 'description',
+            '4' => 'published',
+        ];
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            '0.integer' => self::INTEGER_VALIDATION_MESSAGE,
+            '0.min' => self::MIN_VALIDATION_MESSAGE,
+            '0.required' => self::REQUIRED_VALIDATION_MESSAGE,
+            '1.string' => self::STRING_VALIDATION_MESSAGE,
+            '1.max' => self::MAX_VALIDATION_MESSAGE,
+            '1.required' => self::REQUIRED_VALIDATION_MESSAGE,
+            '2.string' => self::STRING_VALIDATION_MESSAGE,
+            '2.max' => self::MAX_VALIDATION_MESSAGE,
+            '3.string' => self::STRING_VALIDATION_MESSAGE,
+            '3.max' => self::MAX_VALIDATION_MESSAGE,
+            '3.required' => self::REQUIRED_VALIDATION_MESSAGE,
+            '4.boolean' => self::BOOLEAN_VALIDATION_MESSAGE,
+            '4.required' => self::REQUIRED_VALIDATION_MESSAGE,
+        ];
     }
 }

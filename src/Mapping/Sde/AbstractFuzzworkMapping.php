@@ -44,6 +44,15 @@ abstract class AbstractFuzzworkMapping extends DefaultValueBinder implements ToM
 {
     use RemembersRowNumber;
 
+    const STRING_VALIDATION_MESSAGE = '<comment>:attribute</comment> must be a valid string : :input !';
+    const INTEGER_VALIDATION_MESSAGE = '<comment>:attribute</comment> must be a valid integer : :input !';
+    const NUMERIC_VALIDATION_MESSAGE = '<comment>:attribute</comment> must be a valid integer : :input !';
+    const BOOLEAN_VALIDATION_MESSAGE = '<comment>:attribute</comment> must be a boolean : :input !';
+    const MIN_VALIDATION_MESSAGE = '<comment>:attribute</comment> must be positive : :input !';
+    const MAX_VALIDATION_MESSAGE = '<comment>:attribute</comment> must count :max characters or less !';
+    const BETWEEN_VALIDATION_MESSAGE = '<comment>:attribute</comment> must be a number between :min and :max : :input !';
+    const REQUIRED_VALIDATION_MESSAGE = '<comment>:attribute</comment> must be a valid integer : :input !';
+
     /**
      * @return array
      */

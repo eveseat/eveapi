@@ -27,6 +27,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 
 abstract class AbstractSdeSeeder extends Seeder
@@ -112,6 +113,18 @@ abstract class AbstractSdeSeeder extends Seeder
         if (! file_exists($path))
             throw new FileNotFoundException("Unable to retrieve $path.");
 
-        Excel::import($this->getMappingClass(), $path);
+        try {
+            Excel::import($this->getMappingClass(), $path);
+        } catch (ValidationException $e) {
+            $failures = $e->failures();
+
+            foreach ($failures as $failure) {
+                $this->command->error("An error has been encountered at row {$failure->row()}.");
+
+                foreach ($failure->errors() as $error) {
+                    $this->command->getOutput()->writeln($error);
+                }
+            }
+        }
     }
 }
