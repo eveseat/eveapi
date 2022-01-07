@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Mapping\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use Maatwebsite\Excel\Concerns\WithValidation;
 use Seat\Eveapi\Models\Sde\InvTypeMaterial;
 
 /**
@@ -33,7 +34,7 @@ use Seat\Eveapi\Models\Sde\InvTypeMaterial;
  *
  * @url https://www.fuzzwork.co.uk
  */
-class InvTypeMaterialMapping extends AbstractFuzzworkMapping
+class InvTypeMaterialMapping extends AbstractFuzzworkMapping implements WithValidation
 {
     /**
      * @param  array  $row
@@ -46,5 +47,41 @@ class InvTypeMaterialMapping extends AbstractFuzzworkMapping
             'materialTypeID' => $row[1],
             'quantity'       => $row[2],
         ]))->bypassReadOnly();
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            '0' => 'integer|min:1|required',
+            '1' => 'integer|min:1|required',
+            '2' => 'integer|min:1|required',
+        ];
+    }
+
+    public function customValidationAttributes()
+    {
+        return [
+            '0' => 'typeID',
+            '1' => 'materialTypeID',
+            '2' => 'quantity',
+        ];
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            '0.integer' => self::INTEGER_VALIDATION_MESSAGE,
+            '0.min' => self::MIN_VALIDATION_MESSAGE,
+            '0.required' => self::REQUIRED_VALIDATION_MESSAGE,
+            '1.integer' => self::INTEGER_VALIDATION_MESSAGE,
+            '1.min' => self::MIN_VALIDATION_MESSAGE,
+            '1.required' => self::REQUIRED_VALIDATION_MESSAGE,
+            '2.integer' => self::INTEGER_VALIDATION_MESSAGE,
+            '2.min' => self::MIN_VALIDATION_MESSAGE,
+            '2.required' => self::REQUIRED_VALIDATION_MESSAGE,
+        ];
     }
 }
