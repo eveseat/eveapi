@@ -22,9 +22,11 @@
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
 
+use Composer\InstalledVersions;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use OutOfBoundsException;
 use Seat\Eveapi\Exception\InvalidSdeSeederException;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
@@ -81,9 +83,18 @@ class SdeSeeder extends Seeder
             $url = $this->getSdeFileRemoteUri($seeder);
             $destination = $this->getSdeFileLocalUri($seeder);
 
+            try {
+                $version = InstalledVersions::getPrettyVersion('eveseat/eveapi');
+            } catch (OutOfBoundsException $e) {
+                $version = 'dev';
+            }
+
             $file_handler = fopen($destination, 'w');
 
             $result = Http::withOptions([
+                'headers' => [
+                    'User-Agent' => sprintf('SeAT/%s (Instance contact: %s; Repository: https://github.com/eveseat/seat)', $version, setting('admin_contact', true)),
+                ],
                 'sink' => $file_handler,
             ])->get($url);
 
