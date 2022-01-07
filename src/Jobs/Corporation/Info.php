@@ -62,6 +62,8 @@ class Info extends AbstractCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $corporation = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

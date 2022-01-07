@@ -77,6 +77,8 @@ class ObserverDetails extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
             ->get()->each(function ($observer) {
 

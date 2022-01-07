@@ -67,6 +67,7 @@ class Fatigue extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $fatigue = $this->retrieve([
             'character_id' => $this->getCharacterId(),

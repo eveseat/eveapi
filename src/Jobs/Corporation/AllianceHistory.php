@@ -61,6 +61,8 @@ class AllianceHistory extends AbstractCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $history = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

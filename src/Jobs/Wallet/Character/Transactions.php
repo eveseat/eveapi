@@ -72,6 +72,7 @@ class Transactions extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         // Perform a journal walk backwards to get all of the
         // entries as far back as possible. When the response from

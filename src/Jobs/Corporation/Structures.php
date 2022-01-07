@@ -98,6 +98,8 @@ class Structures extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $structures = $this->retrieve([

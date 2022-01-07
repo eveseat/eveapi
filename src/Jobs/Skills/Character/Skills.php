@@ -67,6 +67,8 @@ class Skills extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $character_skills = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

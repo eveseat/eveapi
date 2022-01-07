@@ -96,6 +96,8 @@ class Assets extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $assets = $this->retrieve([

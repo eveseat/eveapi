@@ -66,6 +66,8 @@ class Members extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $members = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

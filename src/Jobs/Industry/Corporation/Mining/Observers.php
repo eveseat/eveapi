@@ -78,6 +78,8 @@ class Observers extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $mining_observers = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

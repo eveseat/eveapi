@@ -65,6 +65,8 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
      */
     public function handle()
     {
+        parent::handle();
+
         $structure_ids = $this->getStructuresIdToResolve();
 
         foreach ($structure_ids as $structure_id) {

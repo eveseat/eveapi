@@ -71,6 +71,8 @@ class MembersLimit extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $limit = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

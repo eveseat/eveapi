@@ -77,6 +77,8 @@ class History extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $orders = $this->retrieve([

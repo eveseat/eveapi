@@ -68,6 +68,7 @@ class Medals extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $medals = $this->retrieve([
             'character_id' => $this->getCharacterId(),

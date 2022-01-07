@@ -68,6 +68,7 @@ class AgentsResearch extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $agents_research = $this->retrieve([
             'character_id' => $this->getCharacterId(),

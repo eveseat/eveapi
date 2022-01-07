@@ -79,6 +79,8 @@ class Names extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.
         CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')

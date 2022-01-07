@@ -97,6 +97,8 @@ class Blueprints extends AbstractAuthCorporationJob
      */
     public function handle(): void
     {
+        parent::handle();
+
         while (true) {
 
             $blueprints = $this->retrieve([

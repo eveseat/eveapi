@@ -149,6 +149,14 @@ class ScheduleSeeder extends Seeder
             'ping_before'       => null,
             'ping_after'        => null,
         ],
+        [   // Horizon remove batches older than 48 hours | Once a day
+            'command'           => 'queue:prune-batches --hours=48',
+            'expression'        => '0 3 * * *',
+            'allow_overlap'     => false,
+            'allow_maintenance' => false,
+            'ping_before'       => null,
+            'ping_after'        => null,
+        ],
     ];
 
     /**

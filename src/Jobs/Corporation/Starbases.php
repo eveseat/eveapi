@@ -96,6 +96,8 @@ class Starbases extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $starbases = $this->retrieve([

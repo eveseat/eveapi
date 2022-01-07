@@ -85,6 +85,8 @@ class Roles extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $roles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
