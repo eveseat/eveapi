@@ -61,7 +61,7 @@ class InvMarketGroupMapping extends AbstractFuzzworkMapping implements WithValid
             '1' => 'integer|min:1|nullable',
             '2' => 'string|max:100|required',
             '3' => 'string|max:250|nullable',
-            '4' => 'integer|min:0|required',
+            '4' => 'integer|min:0|nullable',
         ];
     }
 
