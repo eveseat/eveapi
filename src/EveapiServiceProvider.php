@@ -22,41 +22,9 @@
 
 namespace Seat\Eveapi;
 
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Queue\Events\JobExceptionOccurred;
-use Seat\Eveapi\Commands\Esi\Job\Dispatch;
-use Seat\Eveapi\Commands\Esi\Meta\Ping;
-use Seat\Eveapi\Commands\Esi\Update\Affiliations;
-use Seat\Eveapi\Commands\Esi\Update\Alliances;
-use Seat\Eveapi\Commands\Esi\Update\Characters;
-use Seat\Eveapi\Commands\Esi\Update\Contracts;
-use Seat\Eveapi\Commands\Esi\Update\Corporations;
-use Seat\Eveapi\Commands\Esi\Update\Insurances;
-use Seat\Eveapi\Commands\Esi\Update\Killmails;
-use Seat\Eveapi\Commands\Esi\Update\Notifications;
-use Seat\Eveapi\Commands\Esi\Update\Prices;
-use Seat\Eveapi\Commands\Esi\Update\PublicInfo;
-use Seat\Eveapi\Commands\Esi\Update\Sovereignty;
-use Seat\Eveapi\Commands\Esi\Update\Stations;
-use Seat\Eveapi\Commands\Esi\Update\Status as EsiStatus;
-use Seat\Eveapi\Commands\Eve\Update\Sde;
-use Seat\Eveapi\Commands\Eve\Update\Status as EveStatus;
-use Seat\Eveapi\Commands\Make\Job\Esi;
-use Seat\Eveapi\Commands\Seat\Admin\Diagnose;
-use Seat\Eveapi\Commands\Seat\Admin\Maintenance;
-use Seat\Eveapi\Commands\Seat\Buckets\Balance;
-use Seat\Eveapi\Commands\Seat\Buckets\Info;
-use Seat\Eveapi\Commands\Seat\Buckets\ListCommand;
-use Seat\Eveapi\Commands\Seat\Buckets\Update;
-use Seat\Eveapi\Commands\Seat\Cache\Clear;
-use Seat\Eveapi\Commands\Seat\Tokens\Upgrade;
-use Seat\Eveapi\Database\Seeders\ScheduleSeeder;
 use Seat\Eveapi\Helpers\EseyeSetup;
-use Seat\Eveapi\Listeners\EsiFailedCall;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\RefreshToken;
-use Seat\Eveapi\Observers\CharacterAffiliationObserver;
-use Seat\Eveapi\Observers\RefreshTokenObserver;
 use Seat\Services\AbstractSeatPlugin;
 
 /**
@@ -104,7 +72,10 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     {
 
         $this->mergeConfigFrom(__DIR__ . '/Config/eveapi.scopes.php', 'eveapi.scopes');
-        $this->registerDatabaseSeeders(ScheduleSeeder::class);
+        $this->registerDatabaseSeeders([
+            \Seat\Eveapi\Database\Seeders\ScheduleSeeder::class,
+            \Seat\Eveapi\Database\Seeders\Sde\SdeSeeder::class,
+        ]);
 
         // Eseye Singleton
         $this->app->singleton('esi-client', function () {
@@ -117,42 +88,42 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     {
         $this->commands([
             // Buckets
-            Info::class,
-            Balance::class,
-            Update::class,
-            ListCommand::class,
+            \Seat\Eveapi\Commands\Seat\Buckets\Info::class,
+            \Seat\Eveapi\Commands\Seat\Buckets\Balance::class,
+            \Seat\Eveapi\Commands\Seat\Buckets\Update::class,
+            \Seat\Eveapi\Commands\Seat\Buckets\ListCommand::class,
 
             // SeAT
-            Clear::class,
-            Diagnose::class,
-            Maintenance::class,
+            \Seat\Eveapi\Commands\Seat\Cache\Clear::class,
+            \Seat\Eveapi\Commands\Seat\Admin\Diagnose::class,
+            \Seat\Eveapi\Commands\Seat\Admin\Maintenance::class,
 
-            // Dev
-            Esi::class,
+            // Makes
+            \Seat\Eveapi\Commands\Make\Job\Esi::class,
 
             // Sde
-            Sde::class,
+            \Seat\Eveapi\Commands\Eve\Update\Sde::class,
 
             // Esi
-            Ping::class,
-            Characters::class,
-            Corporations::class,
-            Notifications::class,
-            PublicInfo::class,
-            Affiliations::class,
-            Prices::class,
-            Insurances::class,
-            Stations::class,
-            Sovereignty::class,
-            Alliances::class,
-            Contracts::class,
-            Killmails::class,
-            Dispatch::class,
-            EsiStatus::class,
-            EveStatus::class,
+            \Seat\Eveapi\Commands\Esi\Meta\Ping::class,
+            \Seat\Eveapi\Commands\Esi\Update\Characters::class,
+            \Seat\Eveapi\Commands\Esi\Update\Corporations::class,
+            \Seat\Eveapi\Commands\Esi\Update\Notifications::class,
+            \Seat\Eveapi\Commands\Esi\Update\PublicInfo::class,
+            \Seat\Eveapi\Commands\Esi\Update\Affiliations::class,
+            \Seat\Eveapi\Commands\Esi\Update\Prices::class,
+            \Seat\Eveapi\Commands\Esi\Update\Insurances::class,
+            \Seat\Eveapi\Commands\Esi\Update\Stations::class,
+            \Seat\Eveapi\Commands\Esi\Update\Sovereignty::class,
+            \Seat\Eveapi\Commands\Esi\Update\Alliances::class,
+            \Seat\Eveapi\Commands\Esi\Update\Contracts::class,
+            \Seat\Eveapi\Commands\Esi\Update\Killmails::class,
+            \Seat\Eveapi\Commands\Esi\Job\Dispatch::class,
+            \Seat\Eveapi\Commands\Esi\Update\Status::class,
+            \Seat\Eveapi\Commands\Eve\Update\Status::class,
 
             // SSO
-            Upgrade::class,
+            \Seat\Eveapi\Commands\Seat\Tokens\Upgrade::class,
         ]);
     }
 
@@ -206,8 +177,8 @@ class EveapiServiceProvider extends AbstractSeatPlugin
      */
     private function addObservers()
     {
-        CharacterAffiliation::observe(CharacterAffiliationObserver::class);
-        RefreshToken::observe(RefreshTokenObserver::class);
+        CharacterAffiliation::observe(\Seat\Eveapi\Observers\CharacterAffiliationObserver::class);
+        RefreshToken::observe(\Seat\Eveapi\Observers\RefreshTokenObserver::class);
     }
 
     /**
@@ -217,9 +188,9 @@ class EveapiServiceProvider extends AbstractSeatPlugin
      */
     private function addListeners()
     {
-        $events = $this->app->make(Dispatcher::class);
+        $events = $this->app->make(\Illuminate\Contracts\Events\Dispatcher::class);
 
-        $events->listen(JobExceptionOccurred::class, EsiFailedCall::class);
+        $events->listen(\Illuminate\Queue\Events\JobExceptionOccurred::class, \Seat\Eveapi\Listeners\EsiFailedCall::class);
     }
 
     /**
