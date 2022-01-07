@@ -78,9 +78,6 @@ class Prices extends EsiBase
 
             Price::upsert($records->toArray(), [
                 'type_id',
-                'average_price',
-                'adjusted_price',
-                'updated_at',
             ]);
         });
     }

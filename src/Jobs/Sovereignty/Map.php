@@ -78,10 +78,6 @@ class Map extends EsiBase
 
             SovereigntyMap::upsert($records->toArray(), [
                 'system_id',
-                'alliance_id',
-                'corporation_id',
-                'faction_id',
-                'updated_at',
             ]);
 
         });
