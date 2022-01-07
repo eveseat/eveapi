@@ -68,6 +68,7 @@ class Clones extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $clone = $this->retrieve([
             'character_id' => $this->getCharacterId(),

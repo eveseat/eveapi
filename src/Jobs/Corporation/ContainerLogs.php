@@ -77,6 +77,8 @@ class ContainerLogs extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $logs = $this->retrieve([

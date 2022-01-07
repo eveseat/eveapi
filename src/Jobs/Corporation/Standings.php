@@ -71,6 +71,8 @@ class Standings extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $standings = $this->retrieve([

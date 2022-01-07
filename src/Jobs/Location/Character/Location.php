@@ -64,6 +64,8 @@ class Location extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $location = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

@@ -64,6 +64,8 @@ class MailingLists extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $mailing_lists = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

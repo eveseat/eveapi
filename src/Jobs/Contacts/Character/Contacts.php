@@ -91,6 +91,7 @@ class Contacts extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         while (true) {
 

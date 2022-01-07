@@ -22,6 +22,8 @@
 
 namespace Seat\Eveapi\Jobs;
 
+use Illuminate\Bus\Batchable;
+
 /**
  * Class AbstractCorporationJob.
  *
@@ -29,6 +31,8 @@ namespace Seat\Eveapi\Jobs;
  */
 abstract class AbstractCorporationJob extends EsiBase
 {
+    use Batchable;
+
     /**
      * @var int The corporation ID to which the job is related.
      */
@@ -68,5 +72,16 @@ abstract class AbstractCorporationJob extends EsiBase
             $tags[] = $this->getCorporationId();
 
         return $tags;
+    }
+
+    public function handle()
+    {
+        if ($this->batchId && $this->batch()->cancelled())
+            return;
+
+        logger()->debug('Corporation job is processing...', [
+            'name' => static::class,
+            'corporation_id' => $this->corporation_id,
+        ]);
     }
 }

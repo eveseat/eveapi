@@ -89,6 +89,8 @@ class Locations extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         // all items which need to be singleton
 
         // Get the assets for this character, chunked in a number of blocks

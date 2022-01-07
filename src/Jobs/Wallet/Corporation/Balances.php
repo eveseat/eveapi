@@ -71,6 +71,8 @@ class Balances extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $balances = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

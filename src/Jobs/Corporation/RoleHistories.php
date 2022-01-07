@@ -76,6 +76,8 @@ class RoleHistories extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $roles = $this->retrieve([

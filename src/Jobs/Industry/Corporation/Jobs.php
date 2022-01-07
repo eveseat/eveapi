@@ -84,6 +84,8 @@ class Jobs extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $industry_jobs = $this->retrieve([

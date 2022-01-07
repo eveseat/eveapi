@@ -96,6 +96,8 @@ class CustomsOffices extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $customs_offices = $this->retrieve([

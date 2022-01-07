@@ -71,6 +71,8 @@ class MembersTitles extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $member_titles = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

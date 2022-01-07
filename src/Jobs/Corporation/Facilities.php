@@ -71,6 +71,8 @@ class Facilities extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $facilities = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);

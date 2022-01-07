@@ -95,6 +95,8 @@ class Shareholders extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $shareholders = $this->retrieve([

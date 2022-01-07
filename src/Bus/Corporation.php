@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Bus;
 
+use Illuminate\Bus\Batch;
 use Seat\Eveapi\Jobs\Assets\Corporation\Assets;
 use Seat\Eveapi\Jobs\Assets\Corporation\Locations;
 use Seat\Eveapi\Jobs\Assets\Corporation\Names;
@@ -59,7 +60,9 @@ use Seat\Eveapi\Jobs\Universe\CorporationStructures;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Balances;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Journals;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Transactions;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\RefreshToken;
+use Throwable;
 
 /**
  * Class Corporation.
@@ -105,9 +108,35 @@ class Corporation extends Bus
             $this->addAuthenticatedJobs();
 
         // Corporation
-        Info::withChain($this->jobs->toArray())
-            ->delay(now()->addSeconds(rand(120, 300)))
-            ->dispatch($this->corporation_id);
+        $corporation = CorporationInfo::firstOrNew(
+            ['corporation_id' => $this->corporation_id],
+            ['name' => "Unknown Corporation: {$this->corporation_id}"]
+        );
+
+        $batch = \Illuminate\Support\Facades\Bus::batch($this->jobs->toArray())
+            ->then(function (Batch $batch) {
+                logger()->debug('Corporation batch successfully completed.', [
+                    'id' => $batch->id,
+                    'name' => $batch->name,
+                ]);
+            })->catch(function (Batch $batch, Throwable $throwable) {
+                logger()->error('An error occurred during Corporation batch processing.', [
+                    'id' => $batch->id,
+                    'name' => $batch->name,
+                    'error' => $throwable->getMessage(),
+                    'trace' => $throwable->getTrace(),
+                ]);
+            })->finally(function (Batch $batch) {
+                logger()->info('Corporation batch executed.', [
+                    'id' => $batch->id,
+                    'name' => $batch->name,
+                    'stats' => [
+                        'success' => $batch->totalJobs - $batch->failedJobs,
+                        'failed' => $batch->failedJobs,
+                        'total' => $batch->totalJobs,
+                    ],
+                ]);
+            })->onQueue('corporations')->name($corporation->name)->dispatch();
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
         // https://github.com/eveseat/seat/issues/731
@@ -120,6 +149,7 @@ class Corporation extends Bus
      */
     protected function addPublicJobs()
     {
+        $this->jobs->add(new Info($this->corporation_id));
         $this->jobs->add(new AllianceHistory($this->corporation_id));
     }
 

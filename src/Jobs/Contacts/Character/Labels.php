@@ -67,6 +67,7 @@ class Labels extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $labels = $this->retrieve([
             'character_id' => $this->getCharacterId(),

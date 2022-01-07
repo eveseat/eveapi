@@ -84,6 +84,7 @@ class Locations extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.

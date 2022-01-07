@@ -95,6 +95,7 @@ class Blueprints extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         // Start an infinite loop for the paged requests.
         while (true) {

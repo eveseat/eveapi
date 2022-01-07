@@ -70,6 +70,8 @@ class Mining extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
             $mining = $this->retrieve([

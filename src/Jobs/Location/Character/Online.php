@@ -64,6 +64,8 @@ class Online extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $online = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

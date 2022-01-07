@@ -72,6 +72,8 @@ class Jobs extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $industry_jobs = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

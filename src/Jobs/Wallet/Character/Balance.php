@@ -64,6 +64,8 @@ class Balance extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $balance = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

@@ -72,6 +72,8 @@ class Extractions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $mining_extractions = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
