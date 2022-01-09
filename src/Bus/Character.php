@@ -79,9 +79,9 @@ class Character extends Bus
     private int $character_id;
 
     /**
-     * @var \Seat\Eveapi\Models\RefreshToken
+     * @var \Seat\Eveapi\Models\RefreshToken|null
      */
-    private RefreshToken $token;
+    private ?RefreshToken $token;
 
     /**
      * Character constructor.
@@ -115,7 +115,7 @@ class Character extends Bus
             ['name' => "Unknown Character : {$this->character_id}"]
         );
 
-        \Illuminate\Support\Facades\Bus::batch($this->jobs->toArray())
+        \Illuminate\Support\Facades\Bus::batch([$this->jobs->toArray()])
             ->then(function (Batch $batch) {
                 logger()->debug('Character batch successfully completed.', [
                     'id' => $batch->id,
