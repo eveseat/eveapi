@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Alliances;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAllianceJob;
 use Seat\Eveapi\Models\Alliances\AllianceMember;
 
 /**
@@ -30,13 +30,8 @@ use Seat\Eveapi\Models\Alliances\AllianceMember;
  *
  * @package Seat\Eveapi\Jobs\Alliances
  */
-class Members extends EsiBase
+class Members extends AbstractAllianceJob
 {
-    /**
-     * @var int
-     */
-    protected $alliance_id;
-
     /**
      * @var string
      */
@@ -51,23 +46,6 @@ class Members extends EsiBase
      * @var string
      */
     protected $version = 'v1';
-
-    /**
-     * @var array
-     */
-    protected $tags = ['alliance'];
-
-    /**
-     * Members constructor.
-     *
-     * @param  int  $alliance_id
-     */
-    public function __construct(int $alliance_id)
-    {
-        $this->alliance_id = $alliance_id;
-
-        array_push($this->tags, $alliance_id);
-    }
 
     /**
      * @throws \Throwable
