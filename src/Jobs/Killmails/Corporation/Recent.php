@@ -26,6 +26,7 @@ use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Jobs\Killmails\Detail;
 use Seat\Eveapi\Models\Killmails\Killmail;
 use Seat\Eveapi\Models\Killmails\KillmailDetail;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Recent.
@@ -70,6 +71,18 @@ class Recent extends AbstractAuthCorporationJob
     protected $page = 1;
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $killmail_jobs;
+
+    public function __construct(int $corporation_id, RefreshToken $token)
+    {
+        parent::__construct($corporation_id, $token);
+
+        $this->killmail_jobs = collect();
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -95,11 +108,14 @@ class Recent extends AbstractAuthCorporationJob
                 ]);
 
                 if (! KillmailDetail::find($killmail->killmail_id))
-                    dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
+                    $this->killmail_jobs->add(new Detail($killmail->killmail_id, $killmail->killmail_hash));
             });
 
             if (! $this->nextPage($killmails->pages))
                 break;
         }
+
+        if ($this->killmail_jobs->isNotEmpty())
+            $this->batch()->add($this->killmail_jobs->toArray());
     }
 }
