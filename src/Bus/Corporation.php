@@ -77,9 +77,9 @@ class Corporation extends Bus
     private int $corporation_id;
 
     /**
-     * @var \Seat\Eveapi\Models\RefreshToken
+     * @var \Seat\Eveapi\Models\RefreshToken|null
      */
-    private RefreshToken $token;
+    private ?RefreshToken $token;
 
     /**
      * Corporation constructor.
@@ -113,7 +113,7 @@ class Corporation extends Bus
             ['name' => "Unknown Corporation: {$this->corporation_id}"]
         );
 
-        $batch = \Illuminate\Support\Facades\Bus::batch($this->jobs->toArray())
+        $batch = \Illuminate\Support\Facades\Bus::batch([$this->jobs->toArray()])
             ->then(function (Batch $batch) {
                 logger()->debug('Corporation batch successfully completed.', [
                     'id' => $batch->id,
