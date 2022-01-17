@@ -136,6 +136,11 @@ class InvType extends Model
     use IsReadOnly;
 
     /**
+     * Maximum value a skill of rank 1 may have when level 5 has been reached.
+     */
+    const MAX_SKILL_SKILLPOINTS = 256000;
+
+    /**
      * @var bool
      */
     public $incrementing = false;
@@ -161,6 +166,16 @@ class InvType extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * The maximum amount of skillpoints when level 5 has been reached for current skill.
+     *
+     * @return int
+     */
+    public function getMaximumSkillpointsAttribute()
+    {
+        return round($this->dogma_attributes->where('attributeID', DgmTypeAttribute::SKILL_RANK_ID)->first()->valueFloat) * self::MAX_SKILL_SKILLPOINTS;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
