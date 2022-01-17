@@ -35,6 +35,11 @@ class InvGroup extends Model
     use IsReadOnly;
 
     /**
+     * The skill category id.
+     */
+    const SKILL_CATEGORY_ID = 16;
+
+    /**
      * @var bool
      */
     public $incrementing = false;
@@ -53,4 +58,12 @@ class InvGroup extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function types()
+    {
+        return $this->hasMany(InvType::class, 'groupID', 'groupID');
+    }
 }
