@@ -111,7 +111,7 @@ class Maintenance implements ShouldQueue
 
         // Need to find all corps that dont have a reason to be kept (no chars with tokens and not part of an alliance that has an active member)
         Alliance::doesntHave('corporations.characters.refresh_token')->each(function ($alliance) {
-            $alliance->corporations()->whereNotBetween('corporation_id', [1000000, 1999999])->delete();
+            $alliance->corporations()->whereNotBetween('alliance_members.corporation_id', [1000000, 1999999])->delete();
         });
 
         // Now delete all the corps that have no alliance and no active tokens
