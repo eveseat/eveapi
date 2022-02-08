@@ -94,25 +94,17 @@ class CharacterSkillQueue extends Model
     protected $hidden = ['id', 'character_id', 'skill_id', 'created_at', 'updated_at'];
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'start_date' => 'datetime',
+        'finish_date' => 'datetime',
+    ];
+
+    /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @param $value
-     */
-    public function setStartDateAttribute($value)
-    {
-        $this->attributes['start_date'] = is_null($value) ? null : carbon($value);
-    }
-
-    /**
-     * @param $value
-     */
-    public function setFinishDateAttribute($value)
-    {
-        $this->attributes['finish_date'] = is_null($value) ? null : carbon($value);
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
