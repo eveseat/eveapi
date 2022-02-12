@@ -23,85 +23,27 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
-/**
- * Class KillmailAttacker.
- *
- * @package Seat\Eveapi\Models\Killmails
- *
- * @OA\Schema(
- *     description="Killmail Attacker",
- *     title="KillmailAttacker",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     property="attacker_hash",
- *     type="string",
- *     description="A hash composite of character_id, corporation_id, alliance_id and faction_id fields"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="character_id",
- *     description="The character identifier"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="corporation_id",
- *     description="The corporation identifier to which the attacker depends"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="alliance_id",
- *     description="The alliance identifier to which the attacker depends"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="faction_id",
- *     description="The faction identifier to which the attacker depends (if factional warfare)"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="float",
- *     property="security_status",
- *     description="The attacker security status"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="final_blow",
- *     description="True if the attacker did the final blow"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="damage_done",
- *     description="The amount of damage the attacker applied"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="ship_type_id",
- *     description="The ship inventory type identifier into which attacker was"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="weapon_type_id",
- *     description="The weapon inventory type identifier used by the attacker"
- * )
- */
+#[OA\Schema(
+    title: 'KillmailAttacker',
+    description: 'Killmail Attacker',
+    properties: [
+        new OA\Property(property: 'attacker_hash', description: 'A hash composite of character_id, corporation_id, alliance_id and faction_id fields', type: 'string'),
+        new OA\Property(property: 'character_id', description: 'The character identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'corporation_id', description: 'The corporation identifier to which the attacker depends', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'alliance_id', description: 'The alliance identifier to which the attacker depends', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'faction_id', description: 'The faction identifier to which the attacker depends', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'security_status', description: 'The attacker security status', type: 'number', format: 'float'),
+        new OA\Property(property: 'final_blow', description: 'True if the attacker did the final blow', type: 'boolean'),
+        new OA\Property(property: 'damage_done', description: 'The amount of damage the attacker applied', type: 'integer'),
+        new OA\Property(property: 'ship_type_id', description: 'The ship inventory type identifier into which attacker was', type: 'integer'),
+        new OA\Property(property: 'weapon_type_id', description: 'The weapon inventory type identifier used by the attacker', type: 'integer')
+    ],
+    type: 'object'
+)]
 class KillmailAttacker extends Model
 {
     protected $casts = [

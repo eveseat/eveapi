@@ -23,40 +23,19 @@
 namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 
-/**
- * Class UniverseName.
- *
- * @package Seat\Eveapi\Models\Universe
- *
- * @OA\Schema(
- *      description="Universe Name",
- *      title="UniverseName",
- *      type="object"
- * )
- *
- * @OA\Property(
- *      property="entity_id",
- *      type="integer",
- *      format="int64",
- *      description="The entity identifier"
- * )
- *
- * @OA\Property(
- *      property="name",
- *      type="string",
- *      description="The entity name"
- * )
- *
- * @OA\Property(
- *      property="category",
- *      type="string",
- *      enum={"alliance","character","constellation","corporation","inventory_type","region","solar_system","station","faction"},
- *      description="The entity type"
- * )
- */
+#[OA\Schema(
+    title: 'UniverseName',
+    description: 'Universe Name',
+    properties: [
+        new OA\Property(property: 'entity_id', description: 'The entity identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'name', description: 'The entity name', type: 'string'),
+        new OA\Property(property: 'category', description: 'The entity type', type: 'string', enum: ['alliance', 'character', 'constellation', 'corporation', 'inventory_type', 'region', 'solar_system', 'station', 'faction'])
+    ],
+    type: 'object'
+)]
 class UniverseName extends Model
 {
     /**

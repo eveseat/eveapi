@@ -23,46 +23,20 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 
-/**
- * Class KillmailDetail.
- *
- * @package Seat\Eveapi\Models\Killmails
- *
- * @OA\Schema(
- *     description="Killmail Detail",
- *     title="KillmailDetail",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     property="killmail_time",
- *     type="string",
- *     format="date-time",
- *     description="The date-time when kill append"
- * )
- *
- * @OA\Property(
- *     property="solar_system_id",
- *     type="integer",
- *     description="The solar system identifier in which the kill occurs"
- * )
- *
- * @OA\Property(
- *     property="moon_id",
- *     type="integer",
- *     description="The moon identifier near to which the kill occurs"
- * )
- *
- * @OA\Property(
- *     property="war_id",
- *     type="integer",
- *     format="int64",
- *     description="The war identifier in which the kill involves"
- * )
- */
+#[OA\Schema(
+    title: 'KillmailDetail',
+    description: 'Killmail Detail',
+    properties: [
+        new OA\Property(property: 'killmail_time', description: 'The date-time when kill append', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'solar_system_id', description: 'The Solar System Identifier in which the kill occurs', type: 'integer'),
+        new OA\Property(property: 'moon_id', description: 'The moon identifier near to which the kill occurs', type: 'integer'),
+        new OA\Property(property: 'war_id', description: 'The war identifier in which the kill involves', type: 'integer', format: 'int64')
+    ],
+    type: 'object'
+)]
 class KillmailDetail extends Model
 {
     /**

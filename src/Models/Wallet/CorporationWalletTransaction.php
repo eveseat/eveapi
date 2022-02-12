@@ -23,84 +23,28 @@
 namespace Seat\Eveapi\Models\Wallet;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
-/**
- * Class CharacterWalletTransaction.
- *
- * @package Seat\Eveapi\Models\Wallet
- *
- * @OA\Schema(
- *     description="Corporation Wallet Transaction",
- *     title="CorporationWalletTransaction",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="division",
- *     description="Wallet key of the division to fetch journals from"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="transaction_id",
- *     description="Unique transaction ID"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="date",
- *     description="Date and time of transaction"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="location_id",
- *     description="The place where the transaction has been made"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="unit_price",
- *     description="Amount paid per unit"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="quantity"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="is_buy",
- *     description="True if the transaction is related to a buy order"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="journal_ref_id",
- *     description="-1 if there is no corresponding wallet journal entry"
- * )
- *
- * @OA\Property(
- *     property="party",
- *     ref="#/components/schemas/UniverseName"
- * )
- *
- * @OA\Property(
- *     property="type",
- *     ref="#/components/schemas/InvType"
- * )
- */
+#[OA\Schema(
+    title: 'CorporationWalletTransaction',
+    description: 'Corporation Wallet Transaction',
+    properties: [
+        new OA\Property(property: 'division', description: 'Wallet key of the division to fetch journals from', type: 'integer'),
+        new OA\Property(property: 'transaction_id', description: 'Unique transaction ID', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'date', description: 'The transaction date/time', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'location_id', description: 'The place where the transaction has been made', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'unit_price', description: 'Amount paid per unit', type: 'number', format: 'double'),
+        new OA\Property(property: 'quantity', type: 'integer'),
+        new OA\Property(property: 'is_buy', description: 'True if the transaction is related to a buy order', type: 'boolean'),
+        new OA\Property(property: 'journal_ref_id', description: '-1 if there is no corresponding wallet journal entry', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'party', ref: '#/components/schemas/UniverseName'),
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType')
+    ],
+    type: 'object'
+)]
 class CorporationWalletTransaction extends Model
 {
     /**
