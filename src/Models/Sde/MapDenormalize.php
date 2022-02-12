@@ -23,114 +23,32 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
 use Seat\Eveapi\Traits\IsReadOnly;
 
-/**
- * Class MapDenormalize.
- *
- * @package Seat\Eveapi\Models\Sde
- *
- * @OA\Schema(
- *     description="Map Denormalize",
- *     title="MapDenormalize",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="itemID",
- *     description="The entity ID"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="typeID",
- *     description="The type of the entity"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="groupID",
- *     description="The group to which the entity is related"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="solarSystemID",
- *     description="The system to which the entity is attached"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="constellationID",
- *     description="The constellation to which the entity is attached"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="regionID",
- *     description="The region to which the entity is attached"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="orbitID",
- *     description="The orbit to which the entity is depending"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="x",
- *     description="x position on the map"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="y",
- *     description="y position on the map"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="z",
- *     description="z position on the map"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="radius",
- *     description="The radius of the entity"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="itemName",
- *     description="The entity name"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="security",
- *     description="The security status of the system to which entity is attached"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="celestialIndex",
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="orbitIndex"
- * )
- */
+#[OA\Schema(
+    title: 'MapDenormalize',
+    description: 'Map Denormalize',
+    properties: [
+        new OA\Property(property: 'itemID', description: 'The entity ID', type: 'integer'),
+        new OA\Property(property: 'typeID', description: 'The type of the entity', type: 'integer'),
+        new OA\Property(property: 'groupID', description: 'The group to which the entity is related', type: 'integer'),
+        new OA\Property(property: 'solarSystemID', description: 'The system to which the entity is attached', type: 'integer'),
+        new OA\Property(property: 'constellationID', description: 'The constellation to which the entity is attached', type: 'integer'),
+        new OA\Property(property: 'regionID', description: 'The region to which the entity is attached', type: 'integer'),
+        new OA\Property(property: 'orbitID', description: 'The orbit to which the entity is attached', type: 'integer'),
+        new OA\Property(property: 'x', description: 'x position on the map', type: 'number', format: 'double'),
+        new OA\Property(property: 'y', description: 'y position on the map', type: 'number', format: 'double'),
+        new OA\Property(property: 'z', description: 'z position on the map', type: 'number', format: 'double'),
+        new OA\Property(property: 'radius', description: 'The radius of the entity', type: 'number', format: 'double'),
+        new OA\Property(property: 'itemName', description: 'The entity name', type: 'string'),
+        new OA\Property(property: 'security', description: 'The security status of the system to which entity is attached', type: 'number', format: 'double'),
+        new OA\Property(property: 'celestialIndex', type: 'integer'),
+        new OA\Property(property: 'orbitIndex', type: 'integer')
+    ],
+    type: 'object'
+)]
 class MapDenormalize extends Model
 {
     use IsReadOnly;

@@ -23,44 +23,20 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 
-/**
- * Class CharacterSkill.
- *
- * @package Seat\Eveapi\Models\Character
- *
- * @OA\Schema(
- *     description="Character Skill",
- *     title="CharacterSkill",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="skillpoints_in_skill",
- *     description="The amount of skill point actually learned for that skill"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="trained_skill_level",
- *     description="The level up to which the skill as been learned"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="active_skill_level",
- *     description="The level actually training"
- * )
- *
- * @OA\Property(
- *     property="type",
- *     ref="#/components/schemas/InvType",
- *     description="The inventory type information"
- * )
- */
+#[OA\Schema(
+    title: 'CharacterSkill',
+    description: 'Character Skill',
+    properties: [
+        new OA\Property(property: 'skillpoints_in_skill', description: 'The amount of skill point actually learned for that skill', type: 'integer'),
+        new OA\Property(property: 'trained_skill_level', description: 'The level up to which the skill as been learned', type: 'integer'),
+        new OA\Property(property: 'active_skill_level', description: 'The level actually training', type: 'integer'),
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType', description: 'The inventory type information')
+    ],
+    type: 'object'
+)]
 class CharacterSkill extends Model
 {
     /**

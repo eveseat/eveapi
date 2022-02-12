@@ -23,69 +23,23 @@
 namespace Seat\Eveapi\Models\Skills;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 
-/**
- * Class CharacterSkillQueue.
- *
- * @package Seat\Eveapi\Models\Skills
- *
- * @OA\Schema(
- *     description="Character Skill Queue",
- *     title="CharacterSkillQueue",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="finish_date",
- *     description="The date-time when the skill training will end"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="start_date",
- *     description="The date-time when the skill training start"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="finished_level",
- *     description="The level at which the skill will be at end of the training"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="queue_position",
- *     description="The position in the queue"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="training_start_sp",
- *     description="The skillpoint amount in the skill when training start"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="level_end_sp",
- *     description="The skillpoint amount earned at end of the level training"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="level_start_sp",
- *     description="The skillpoint amount from which the training level is starting"
- * )
- *
- * @OA\Property(
- *     property="type",
- *     ref="#/components/schemas/InvType"
- * )
- */
+#[OA\Schema(
+    title: 'CharacterSkillQueue',
+    description: 'Character Skill Queue',
+    properties: [
+        new OA\Property(property: 'finish_date', description: 'The date/time when the skill training will end', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'finished_level', description: 'The level at which the skill will be at end of the training', type: 'integer'),
+        new OA\Property(property: 'queue_position', description: 'The position in the queue', type: 'integer'),
+        new OA\Property(property: 'training_start_sp', description: 'The skillpoint amount in the skill when training start', type: 'integer'),
+        new OA\Property(property: 'level_end_sp', description: 'The skillpoint amount earned at end of the level training', type: 'integer'),
+        new OA\Property(property: 'level_start_sp', description: 'The skillpoint amount from which the training level is starting', type: 'integer'),
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType')
+    ],
+    type: 'object'
+)]
 class CharacterSkillQueue extends Model
 {
     /**
