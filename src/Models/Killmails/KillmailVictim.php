@@ -23,81 +23,26 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
-/**
- * Class KillmailVictim.
- *
- * @package Seat\Eveapi\Models\Killmails
- *
- * @OA\Schema(
- *     description="Killmail Victim",
- *     title="KillmailVictim",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="character_id",
- *     description="The killed character identified"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="corporation_id",
- *     description="The killed character corporation identifier"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="alliance_id",
- *     description="The killed character alliance identifier (if any)"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="faction_id",
- *     description="The killed character faction identifier (if factional warfare)"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="damage_taken",
- *     description="The damage amount the killed character get"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="ship_type_id",
- *     description="The destroyed ship inventory type identifier"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="x",
- *     description="The x coordinate where the kill occurs"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="y",
- *     description="The y coordinate where the kill occurs"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="z",
- *     description="The z coordinate where the kill occurs"
- * )
- */
+#[OA\Schema(
+    title: 'KillmailVictim',
+    description: 'Killmail Victim',
+    properties: [
+        new OA\Property(property: 'character_id', description: 'The killed character identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'corporation_id', description: 'The killed character corporation identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'alliance_id', description: 'The killed character alliance identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'faction_id', description: 'The killed character faction identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'damage_taken', description: 'The damage amount the killed character get', type: 'integer'),
+        new OA\Property(property: 'ship_type_id', description: 'The destroyed ship inventory type identifier', type: 'integer'),
+        new OA\Property(property: 'x', description: 'The x coordinate where the kill occurs', type: 'number', format: 'double'),
+        new OA\Property(property: 'y', description: 'The y coordinate where the kill occurs', type: 'number', format: 'double'),
+        new OA\Property(property: 'z', description: 'The z coordinate where the kill occurs', type: 'number', format: 'double')
+    ],
+    type: 'object'
+)]
 class KillmailVictim extends Model
 {
     /**

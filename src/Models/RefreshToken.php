@@ -25,83 +25,9 @@ namespace Seat\Eveapi\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 
-/**
- * Class RefreshToken.
- *
- * @package Seat\Eveapi\Models
- *
- * @OA\Schema(
- *     description="EVE Online SSO Refresh Token",
- *     title="RefreshToken",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     minimum=90000000,
- *     description="Character ID to which the token is tied",
- *     property="character_id"
- * )
- * @OA\Property(
- *     type="integer",
- *     format="uint8",
- *     minimum=1,
- *     description="Refresh Token SSO Version",
- *     property="version"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     description="Refresh token hash",
- *     property="refresh_token"
- * )
- *
- * @OA\Property(
- *     type="array",
- *     description="Scopes granted for this token",
- *     property="scopes",
- *     @OA\Items(type="string")
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     description="The datetime UTC when the token expires",
- *     property="expires_on"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     description="The short life access token",
- *     property="token"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     description="The date-time when the token has been created into SeAT",
- *     property="created_at"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     description="The date-time when the token has been updated into SeAT",
- *     property="updated_at"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     description="The date-time when the token has been disabled",
- *     property="deleted_at"
- * )
- */
 class RefreshToken extends Model
 {
     use SoftDeletes {

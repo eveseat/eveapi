@@ -23,30 +23,18 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 
-/**
- * Class CorporationStructureService.
- *
- * @package Seat\Eveapi\Models\Corporation
- *
- * @OA\Schema(
- *     title="CorporationStructureService",
- *     description="Corporation Structure Service",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     property="name",
- *     type="string"
- * )
- *
- * @OA\Property(
- *     property="state",
- *     type="string",
- *     enum={"online", "offline", "cleanup"}
- * )
- */
+#[OA\Schema(
+    title: 'CorporationStructureService',
+    description: 'Corporation Structure Service',
+    properties: [
+        new OA\Property(property: 'name', type: 'string'),
+        new OA\Property(property: 'state', type: 'string', enum: ['online', 'offline', 'cleanup'])
+    ],
+    type: 'object'
+)]
 class CorporationStructureService extends Model
 {
     use HasCompositePrimaryKey;

@@ -23,60 +23,22 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
-/**
- * Class CharacterContact.
- *
- * @package Seat\Eveapi\Models\Contacts
- *
- * @OA\Schema(
- *     description="Character Contact",
- *     title="CharacterContact",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="contact_id",
- *     description="The entity ID"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="float",
- *     property="standing",
- *     description="The standing between -10 and 10"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     enum={"character","corporation","alliance","faction"},
- *     property="contact_type",
- *     description="The entity type"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="is_watched",
- *     description="True if the contact is in the watchlist"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="is_blocked",
- *     description="True if the contact is in the blacklist"
- * )
- *
- * @OA\Property(
- *     property="labels",
- *     type="array",
- *     description="Labels attached to the the contact",
- *     @OA\Items(type="string")
- * )
- */
+#[OA\Schema(
+    title: 'CharacterContact',
+    description: 'Character Contact',
+    properties: [
+        new OA\Property(property: 'contact_id', description: 'The entity ID', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'standing', description: 'The standing between -10 and 10', type: 'number', format: 'float'),
+        new OA\Property(property: 'contact_type', description: 'The entity type', type: 'string', enum: ['character', 'corporation', 'alliance', 'faction']),
+        new OA\Property(property: 'is_watched', description: 'True if the contact is in the watchlist', type: 'boolean'),
+        new OA\Property(property: 'is_blocked', description: 'True if the contact is in the blacklist', type: 'boolean'),
+        new OA\Property(property: 'labels', description: 'Labels attached to the contact', type: 'array', items: new OA\Items(type: 'string'))
+    ],
+    type: 'object'
+)]
 class CharacterContact extends Model
 {
 

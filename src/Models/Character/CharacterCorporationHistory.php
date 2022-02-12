@@ -23,46 +23,20 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
-/**
- * Class CharacterCorporationHistory.
- *
- * @package Seat\Eveapi\Models\Character
- *
- * @OA\Schema(
- *     description="Character Corporation History",
- *     title="CharacterCorporationHistory",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="start_date",
- *     description="The date-time from which the character was inside the corporation"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="corporation_id",
- *     description="The corporation ID into which the character was"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="is_deleted",
- *     description="True if the corporation has been close"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="record_id",
- *     description="Sorting key"
- * )
- */
+#[OA\Schema(
+    title: 'CharacterCorporationHistory',
+    description: 'Character Corporation History',
+    properties: [
+        new OA\Property(property: 'start_date', description: 'The date/time from which the character was inside the corporation', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'corporation_id', description: 'The corporation ID into which the character was', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'is_deleted', description: 'True if the corporation has been close', type: 'boolean'),
+        new OA\Property(property: 'record_id', description: 'Sorting key', type: 'integer')
+    ],
+    type: 'object'
+)]
 class CharacterCorporationHistory extends Model
 {
     /**
