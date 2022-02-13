@@ -35,7 +35,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
         new OA\Property(property: 'timestamp', description: 'The date/time when the mail has been sent', type: 'string', format: 'date-time'),
         new OA\Property(property: 'boolean', description: 'True if the mail has been red', type: 'boolean'),
         new OA\Property(property: 'body', description: 'The mail content', type: 'string'),
-        new OA\Property(property: 'recipients', description: 'A list of recipients', items: new OA\Items(ref: '#/components/schemas/MailRecipient'))
+        new OA\Property(property: 'recipients', description: 'A list of recipients', type: 'array', items: new OA\Items(ref: '#/components/schemas/MailRecipient'))
     ],
     type: 'object'
 )]
