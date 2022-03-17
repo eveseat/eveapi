@@ -110,7 +110,6 @@ class Assets extends AbstractAuthCorporationJob
                 $chunk->each(function ($asset) {
 
                     $model = CorporationAsset::firstOrNew([
-                        'corporation_id' => $this->getCorporationId(),
                         'item_id' => $asset->item_id,
                     ]);
 
