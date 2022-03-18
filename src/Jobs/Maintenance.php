@@ -72,6 +72,7 @@ class Maintenance implements ShouldQueue
     {
 
         $this->cleanup_tables();
+        $this->rebuild_indexes();
 
         if (setting('cleanup_data', true) == 'yes') {
             $this->cleanup_characters();
@@ -83,7 +84,7 @@ class Maintenance implements ShouldQueue
      * Partially truncates tables that typically contain
      * a lot of data.
      */
-    public function cleanup_tables()
+    private function cleanup_tables()
     {
 
         logger()->info('Performing tables maintenance');
@@ -96,9 +97,17 @@ class Maintenance implements ShouldQueue
 
         // Prune ESI statuses older than a week
         EsiStatus::where('created_at', '<', carbon('now')->subWeek(1))->delete();
+    }
 
-        // ask database to rebuild index in order to properly reduce their space usage on drive
-        DB::statement('OPTIMIZE TABLE failed_jobs, server_status, esi_status');
+    /**
+     * Rebuild all database indexes.
+     *
+     * @return void
+     */
+    private function rebuild_indexes()
+    {
+        $name = DB::connection()->getDatabaseName();
+        DB::statement("REINDEX DATABASE {$name}");
     }
 
     private function cleanup_characters()
