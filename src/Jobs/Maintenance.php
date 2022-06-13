@@ -98,7 +98,14 @@ class Maintenance implements ShouldQueue
         EsiStatus::where('created_at', '<', carbon('now')->subWeek(1))->delete();
 
         // ask database to rebuild index in order to properly reduce their space usage on drive
-        DB::statement('OPTIMIZE TABLE failed_jobs, server_status, esi_status, character_assets, character_wallet_journals, contract_details');
+        // optimize status and failed tables
+        DB::statement('OPTIMIZE TABLE failed_jobs, server_status, esi_status');
+
+        // optimize character tables
+        DB::statement('OPTIMIZE TABLE character_assets, character_fitting_items, character_wallet_journals, character_wallet_transactions');
+
+        // optimize contract tables
+        DB::statement('OPTIMIZE TABLE contract_details, contract_items');
     }
 
     private function cleanup_characters()
