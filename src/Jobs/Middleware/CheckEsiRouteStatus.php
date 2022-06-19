@@ -25,9 +25,7 @@ namespace Seat\Eveapi\Jobs\Middleware;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Jobs\Status\Esi;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-
+use Seat\Eseye\Exceptions\RequestFailedException;
 /**
  * Class CheckEsiRouteStatus.
  *
@@ -77,12 +75,11 @@ class CheckEsiRouteStatus
             // Need to probe the status endpoint in order to determine if it is up.
             logger()->debug('middleware: esistatus: probing endpoint ' . $endpoint);
             try {
-                $client = new Client([
-                    'timeout' => 30,
-                ]);
+                $client = app('esi-client')->get();
+                $client->setVersion('');
+                $client->setQueryString(['version' => 'latest']);
 
-                $result = $client->get(self::ROUTE);
-                $data = json_decode($result->getBody());
+                $data = $client->invoke('get', '/status.json');
 
                 foreach($data as $path) {
                     if ($path->route == $endpoint) {
@@ -92,7 +89,7 @@ class CheckEsiRouteStatus
 
                 return "missing";
 
-           } catch (RequestException $e) {
+           } catch (RequestFailedException $e) {
                 return 'inaccessible';
            }
 
