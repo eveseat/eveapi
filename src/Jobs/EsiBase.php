@@ -32,6 +32,7 @@ use Seat\Eveapi\Exception\PermanentInvalidTokenException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Exception\UnavailableEveServersException;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiRateLimit;
+use Seat\Eveapi\Jobs\Middleware\CheckEsiRouteStatus;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiStatus;
 use Seat\Eveapi\Jobs\Middleware\CheckServerStatus;
 use Seat\Eveapi\Models\RefreshToken;
@@ -147,6 +148,7 @@ abstract class EsiBase extends AbstractJob
             new CheckEsiStatus,
             new CheckEsiRateLimit,
             new CheckServerStatus,
+            new CheckEsiRouteStatus,
         ];
     }
 
@@ -193,6 +195,14 @@ abstract class EsiBase extends AbstractJob
     public function getScope(): string
     {
         return $this->scope ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndpoint(): string
+    {
+        return $this->endpoint;
     }
 
     /**
