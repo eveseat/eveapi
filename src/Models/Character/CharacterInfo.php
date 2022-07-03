@@ -115,6 +115,16 @@ class CharacterInfo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function loyalty_points()
+    {
+
+        return $this->hasMany(CharacterLoyaltyPoints::class,
+            'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function assets()
     {
 

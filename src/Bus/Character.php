@@ -33,6 +33,7 @@ use Seat\Eveapi\Jobs\Character\Blueprints;
 use Seat\Eveapi\Jobs\Character\CorporationHistory;
 use Seat\Eveapi\Jobs\Character\Fatigue;
 use Seat\Eveapi\Jobs\Character\Info;
+use Seat\Eveapi\Jobs\Character\LoyaltyPoints;
 use Seat\Eveapi\Jobs\Character\Medals;
 use Seat\Eveapi\Jobs\Character\Roles;
 use Seat\Eveapi\Jobs\Character\Standings;
@@ -163,6 +164,7 @@ class Character extends Bus
         $this->jobs->add(new Balance($this->token));
         $this->jobs->add(new Journal($this->token));
         $this->jobs->add(new Transactions($this->token));
+        $this->jobs->add(new LoyaltyPoints($this->token));
 
         // collect intel information
         $this->jobs->add(new Standings($this->token));
