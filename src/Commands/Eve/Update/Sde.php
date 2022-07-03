@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Commands\Eve\Update;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,6 @@ use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 use Seat\Services\Settings\Seat;
-use GuzzleHttp\Exception\ConnectException;
 
 /**
  * Class Sde.
@@ -214,7 +214,7 @@ class Sde extends Command
         if($download_success) {
             Seat::set('installed_sde', $this->json->version);
         } else {
-            $this->line('Could not update the full SDE, leaving the installed version at '.Seat::get('installed_sde'));
+            $this->line('Could not update the full SDE, leaving the installed version at ' . Seat::get('installed_sde'));
         }
 
         $this->line('SDE Update Command Complete');
@@ -315,7 +315,7 @@ class Sde extends Command
 
             try {
                 $result = $this->getGuzzle()->request('GET', $url, [
-                    'sink' => $file_handler,]);
+                    'sink' => $file_handler, ]);
 
                 if ($result->getStatusCode() != 200) {
                     $download_success = false;
