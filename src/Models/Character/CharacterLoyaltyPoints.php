@@ -40,7 +40,7 @@ class CharacterLoyaltyPoints extends Model
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function character()
     {
@@ -51,7 +51,7 @@ class CharacterLoyaltyPoints extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function corporation()
     {
