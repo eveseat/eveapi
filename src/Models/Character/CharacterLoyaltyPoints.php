@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
-use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CharacterAffiliation.
@@ -37,7 +36,6 @@ class CharacterLoyaltyPoints extends Model
      * @var bool
      */
     protected static $unguarded = true;
-
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -20,11 +20,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-use Doctrine\DBAL\Types\StringType;
-use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddLpTable extends Migration
@@ -37,7 +34,7 @@ class AddLpTable extends Migration
     public function up()
     {
         Schema::create('character_loyalty_points', function (Blueprint $table) {
-            $table->bigIncrements("id");
+            $table->bigIncrements('id');
             $table->bigInteger('character_id');
             $table->bigInteger('corporation_id');
             $table->integer('loyalty_points')->unsigned();
