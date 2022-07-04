@@ -27,6 +27,7 @@ use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Character\CharacterLoyaltyPoints;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\Contacts\CorporationLabel;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
@@ -288,6 +289,16 @@ class CorporationInfo extends Model
                 'category' => 'character',
                 'name'     => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function loyalty_point_owners()
+    {
+
+        return $this->hasMany(CharacterLoyaltyPoints::class,
+            'corporation_id', 'corporation_id');
     }
 
     /**
