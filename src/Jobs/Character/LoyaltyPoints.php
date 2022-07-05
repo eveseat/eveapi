@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Jobs\Character;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Jobs\Corporation\Info as CorporationInfoJob;
 use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\Character\CharacterLoyaltyPoints;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
@@ -77,6 +76,7 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
         //if the character doesn't exist, stop here
         if (is_null($character)){
             $this->fail();
+
             return;
         }
 
@@ -92,13 +92,13 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
         $loyalty_points = collect($loyalty_points);
 
         //store the lp data
-        $character->loyaltyPoints()->sync($loyalty_points->mapWithkeys(function ($corporation_loyalty){
+        $character->loyaltyPoints()->sync($loyalty_points->mapWithkeys(function ($corporation_loyalty) {
             //load npc corp data if we don't know the corporation. Per default, seat never loads data about npy corporations
             if(! CorporationInfo::where('corporation_id', $corporation_loyalty->corporation_id)->exists()){
                 CorporationInfoJob::dispatch($corporation_loyalty->corporation_id);
             }
 
-            return [$corporation_loyalty->corporation_id => ["amount"=> $corporation_loyalty->loyalty_points]];
+            return [$corporation_loyalty->corporation_id => ['amount'=> $corporation_loyalty->loyalty_points]];
         }));
 
     }

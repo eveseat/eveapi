@@ -27,7 +27,6 @@ use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\Character\CharacterLoyaltyPoints;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\Contacts\CorporationLabel;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
@@ -182,10 +181,10 @@ class CorporationInfo extends Model
      */
     public function loyaltyPointOwners()
     {
-        return $this->belongsToMany(CharacterInfo::class, 'character_loyalty_points','corporation_id','character_id')
+        return $this->belongsToMany(CharacterInfo::class, 'character_loyalty_points', 'corporation_id', 'character_id')
             ->withPivot('amount')
-            ->as("loyalty_points")
-            ->withTimestamps();;
+            ->as('loyalty_points')
+            ->withTimestamps();
     }
 
     /**

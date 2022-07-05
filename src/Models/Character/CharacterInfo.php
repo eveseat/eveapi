@@ -81,9 +81,9 @@ class CharacterInfo extends Model
      */
     public function loyaltyPoints()
     {
-        return $this->belongsToMany(CorporationInfo::class, 'character_loyalty_points','character_id','corporation_id')
+        return $this->belongsToMany(CorporationInfo::class, 'character_loyalty_points', 'character_id', 'corporation_id')
             ->withPivot('amount')
-            ->as("loyalty_points")
+            ->as('loyalty_points')
             ->withTimestamps();
     }
 

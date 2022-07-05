@@ -37,7 +37,7 @@ class AddLpTable extends Migration
             $table->bigInteger('character_id');
             $table->bigInteger('corporation_id');
             $table->integer('amount')->unsigned();
-            $table->index("character_id");
+            $table->index('character_id');
             $table->timestamps();
         });
     }
