@@ -31,6 +31,7 @@ use Seat\Eveapi\Models\Clones\CharacterJumpClone;
 use Seat\Eveapi\Models\Contacts\CharacterContact;
 use Seat\Eveapi\Models\Contacts\CharacterLabel;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Corporation\CorporationTitle;
 use Seat\Eveapi\Models\Fittings\CharacterFitting;
 use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
@@ -76,6 +77,17 @@ class CharacterInfo extends Model
     public $incrementing = false;
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function loyaltyPoints()
+    {
+        return $this->belongsToMany(CorporationInfo::class, 'character_loyalty_points','character_id','corporation_id')
+            ->withPivot('amount')
+            ->as("loyalty_points")
+            ->withTimestamps();
+    }
+
+    /**
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -109,16 +121,6 @@ class CharacterInfo extends Model
     {
 
         return $this->hasMany(CharacterAgentResearch::class,
-            'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function loyalty_points()
-    {
-
-        return $this->hasMany(CharacterLoyaltyPoints::class,
             'character_id', 'character_id');
     }
 

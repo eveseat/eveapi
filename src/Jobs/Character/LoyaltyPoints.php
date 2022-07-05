@@ -75,8 +75,10 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
         $character = CharacterInfo::find($character_id);
 
         //if the character doesn't exist, stop here
-        if (is_null($character))
+        if (is_null($character)){
+            $this->fail();
             return;
+        }
 
         //load lp data
         $loyalty_points = $this->retrieve([
@@ -84,32 +86,20 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
         ]);
 
         //don't run the job if the data is only cached
-        if ($loyalty_points->isCachedLoad() && $character->loyalty_points()->count() > 0) return;
+        //if ($loyalty_points->isCachedLoad() && $character->loyalty_points()->count() > 0) return;
 
         //get the lp data as collection
         $loyalty_points = collect($loyalty_points);
 
-        //go over each corporation where the character has lp
-        $loyalty_points->each(function ($corporation_loyalty_points) use ($character_id) {
-            //load npy corp data if we don't know the corporation. Per default, seat never loads data about npy corporations
-            if(! CorporationInfo::where('corporation_id', $corporation_loyalty_points->corporation_id)->exists()){
-                CorporationInfoJob::dispatch($corporation_loyalty_points->corporation_id);
+        //store the lp data
+        $character->loyaltyPoints()->sync($loyalty_points->mapWithkeys(function ($corporation_loyalty){
+            //load npc corp data if we don't know the corporation. Per default, seat never loads data about npy corporations
+            if(! CorporationInfo::where('corporation_id', $corporation_loyalty->corporation_id)->exists()){
+                CorporationInfoJob::dispatch($corporation_loyalty->corporation_id);
             }
 
-            //store the data
-            CharacterLoyaltyPoints::updateOrCreate(
-                [
-                    'character_id'=>$character_id,
-                    'corporation_id'=>$corporation_loyalty_points->corporation_id,
-                ],
-                [
-                    'loyalty_points'=>$corporation_loyalty_points->loyalty_points,
-                ]
-            );
-        });
+            return [$corporation_loyalty->corporation_id => ["amount"=> $corporation_loyalty->loyalty_points]];
+        }));
 
-        //I can't get the lp of a corp to exactly 0 and the documentation doesn't state what happens when you reach 0. I can imagine 2 cases: we get data with amount=0, or it disappears from the list.
-        //remove lp data from corporations that don't appear in the esi data anymore
-        CharacterLoyaltyPoints::where('character_id', $character_id)->whereNotIn('corporation_id', $loyalty_points->pluck('corporation_id'))->delete();
     }
 }

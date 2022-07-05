@@ -178,6 +178,17 @@ class CorporationInfo extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function loyaltyPointOwners()
+    {
+        return $this->belongsToMany(CharacterInfo::class, 'character_loyalty_points','corporation_id','character_id')
+            ->withPivot('amount')
+            ->as("loyalty_points")
+            ->withTimestamps();;
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function alliance()
@@ -289,16 +300,6 @@ class CorporationInfo extends Model
                 'category' => 'character',
                 'name'     => trans('web::seat.unknown'),
             ]);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function loyalty_point_owners()
-    {
-
-        return $this->hasMany(CharacterLoyaltyPoints::class,
-            'corporation_id', 'corporation_id');
     }
 
     /**

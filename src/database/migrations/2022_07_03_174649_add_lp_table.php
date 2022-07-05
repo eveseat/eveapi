@@ -34,10 +34,10 @@ class AddLpTable extends Migration
     public function up()
     {
         Schema::create('character_loyalty_points', function (Blueprint $table) {
-            $table->bigIncrements('id');
             $table->bigInteger('character_id');
             $table->bigInteger('corporation_id');
-            $table->integer('loyalty_points')->unsigned();
+            $table->integer('amount')->unsigned();
+            $table->index("character_id");
             $table->timestamps();
         });
     }
