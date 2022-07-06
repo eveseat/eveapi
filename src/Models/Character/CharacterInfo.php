@@ -79,9 +79,10 @@ class CharacterInfo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function loyaltyPoints()
+    public function loyalty_points()
     {
         return $this->belongsToMany(CorporationInfo::class, 'character_loyalty_points', 'character_id', 'corporation_id')
+            ->using(CharacterLoyaltyPoints::class)
             ->withPivot('amount')
             ->as('loyalty_points')
             ->withTimestamps();

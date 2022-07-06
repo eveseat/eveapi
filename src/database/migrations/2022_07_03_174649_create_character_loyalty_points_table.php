@@ -24,7 +24,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddLpTable extends Migration
+class CreateCharacterLoyaltyPointsTable extends Migration
 {
     /**
      * Run the migrations.

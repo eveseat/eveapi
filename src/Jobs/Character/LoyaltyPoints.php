@@ -92,7 +92,7 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
         $loyalty_points = collect($loyalty_points);
 
         //store the lp data
-        $character->loyaltyPoints()->sync($loyalty_points->mapWithkeys(function ($corporation_loyalty) {
+        $character->loyalty_points()->sync($loyalty_points->mapWithkeys(function ($corporation_loyalty) {
             //load npc corp data if we don't know the corporation. Per default, seat never loads data about npy corporations
             if(! CorporationInfo::where('corporation_id', $corporation_loyalty->corporation_id)->exists()){
                 CorporationInfoJob::dispatch($corporation_loyalty->corporation_id);
