@@ -22,10 +22,10 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Jobs\Status\Esi;
 
-use Seat\Eseye\Exceptions\RequestFailedException;
 /**
  * Class CheckEsiRouteStatus.
  *
@@ -36,7 +36,7 @@ class CheckEsiRouteStatus
 
     const ROUTE_STATUS_DURATION = 300;
 
-    const ROUTE = "https://esi.evetech.net/status.json?version=latest";
+    const ROUTE = 'https://esi.evetech.net/status.json?version=latest';
 
     /**
      * @param  \Seat\Eveapi\Jobs\EsiBase  $job
@@ -47,9 +47,9 @@ class CheckEsiRouteStatus
     public function handle($job, $next)
     {
         // bypass control if the class is not related to ESI or is the ESI ping job
-        if (is_subclass_of($job, EsiBase::class) && !($job instanceof Esi)) {
+        if (is_subclass_of($job, EsiBase::class) && ! ($job instanceof Esi)) {
             logger()->debug('middleware: esistatus: checking for ' . $job->getEndpoint());
-            
+
             if (! $this->isRouteOnline($job->getEndpoint())) {
                 logger()->warning(
                     sprintf('ESI route seems to be unavailable. Job %s has been aborted.',
@@ -68,10 +68,10 @@ class CheckEsiRouteStatus
     private function isRouteOnline($endpoint): bool
     {
 
-        $cacheKey = "esi-route-status:" . $endpoint;
+        $cacheKey = 'esi-route-status:' . $endpoint;
 
         // Get the latest ESI status.
-        $status = cache()->remember( $cacheKey, self::ROUTE_STATUS_DURATION, function () use ($endpoint){
+        $status = cache()->remember($cacheKey, self::ROUTE_STATUS_DURATION, function () use ($endpoint) {
             // Need to probe the status endpoint in order to determine if it is up.
             logger()->debug('middleware: esistatus: probing endpoint ' . $endpoint);
             try {
@@ -87,7 +87,7 @@ class CheckEsiRouteStatus
                     }
                 }
 
-                return "missing";
+                return 'missing';
 
            } catch (RequestFailedException $e) {
                 return 'inaccessible';
@@ -99,7 +99,6 @@ class CheckEsiRouteStatus
 
         // If the status is OK, yay.
 
-        return ($status == 'green' or $status == 'yellow');
+        return $status == 'green' or $status == 'yellow';
     }
-
 }
