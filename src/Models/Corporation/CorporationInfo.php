@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Character\CharacterLoyaltyPoints;
 use Seat\Eveapi\Models\Contacts\CorporationContact;
 use Seat\Eveapi\Models\Contacts\CorporationLabel;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
@@ -175,6 +176,18 @@ class CorporationInfo extends Model
     public function scopePlayer($query)
     {
         return $query->whereNotBetween('corporation_id', [1000000, 1999999]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function loyalty_point_owners()
+    {
+        return $this->belongsToMany(CharacterInfo::class, 'character_loyalty_points', 'corporation_id', 'character_id')
+            ->using(CharacterLoyaltyPoints::class)
+            ->withPivot('amount')
+            ->as('loyalty_points')
+            ->withTimestamps();
     }
 
     /**
