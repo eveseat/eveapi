@@ -31,6 +31,7 @@ use Seat\Eveapi\Models\Clones\CharacterJumpClone;
 use Seat\Eveapi\Models\Contacts\CharacterContact;
 use Seat\Eveapi\Models\Contacts\CharacterLabel;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Corporation\CorporationTitle;
 use Seat\Eveapi\Models\Fittings\CharacterFitting;
 use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
@@ -91,6 +92,18 @@ class CharacterInfo extends Model
             $user_class = config('auth.providers.users.model');
             self::$user_instance = new $user_class;
         }
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function loyalty_points()
+    {
+        return $this->belongsToMany(CorporationInfo::class, 'character_loyalty_points', 'character_id', 'corporation_id')
+            ->using(CharacterLoyaltyPoints::class)
+            ->withPivot('amount')
+            ->as('loyalty_points')
+            ->withTimestamps();
     }
 
     /**
