@@ -107,13 +107,15 @@ class Titles extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        $titles = $this->retrieve([
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($titles->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationTitle::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
+
+        $titles = $response->getBody();
 
         collect($titles)->each(function ($title) {
 

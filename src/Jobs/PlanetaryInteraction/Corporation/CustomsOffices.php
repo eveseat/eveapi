@@ -100,32 +100,34 @@ class CustomsOffices extends AbstractAuthCorporationJob
 
         while (true) {
 
-            $customs_offices = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($customs_offices->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->count() > 0)
                 return;
 
-            collect($customs_offices)->each(function ($customs_office) {
+            $offices = $response->getBody();
+
+            collect($offices)->each(function ($office) {
 
                 $model = CorporationCustomsOffice::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'office_id'      => $customs_office->office_id,
+                    'office_id'      => $office->office_id,
                 ]);
 
-                CustomsOfficeMapping::make($model, $customs_office, [
+                CustomsOfficeMapping::make($model, $office, [
                     'corporation_id' => function () {
                         return $this->getCorporationId();
                     },
                 ])->save();
 
-                $this->known_structures->push($customs_office->office_id);
+                $this->known_structures->push($office->office_id);
 
             });
 
-            if (! $this->nextPage($customs_offices->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

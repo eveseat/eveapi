@@ -100,11 +100,13 @@ class Names extends AbstractAuthCorporationJob
 
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
-                $names = $this->retrieve([
+                $response = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
                 ]);
 
-                collect($names)->each(function ($name) {
+                $names = collect($response->getBody());
+
+                $names->each(function ($name) {
 
                     // "None" seems to indidate that no name is set.
                     if ($name->name === 'None')

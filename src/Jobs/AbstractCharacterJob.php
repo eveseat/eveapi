@@ -42,10 +42,13 @@ abstract class AbstractCharacterJob extends EsiBase
      * AbstractCharacterJob constructor.
      *
      * @param  int  $character_id
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __construct(int $character_id)
     {
         $this->character_id = $character_id;
+
+        parent::__construct();
     }
 
     /**

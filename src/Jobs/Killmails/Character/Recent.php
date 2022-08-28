@@ -89,11 +89,13 @@ class Recent extends AbstractAuthCharacterJob
     {
         while (true) {
 
-            $killmails = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($killmails->isCachedLoad()) return;
+            if ($response->isFromCache()) return;
+
+            $killmails = $response->getBody();
 
             collect($killmails)->each(function ($killmail) {
 
@@ -107,7 +109,7 @@ class Recent extends AbstractAuthCharacterJob
                     $this->killmail_jobs->add(new Detail($killmail->killmail_id, $killmail->killmail_hash));
             });
 
-            if (! $this->nextPage($killmails->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

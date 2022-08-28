@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi;
 
-use Seat\Eveapi\Helpers\EseyeSetup;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\AbstractSeatPlugin;
@@ -47,9 +46,6 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         // Inform Laravel how to load migrations
         $this->add_migrations();
 
-        // Register ESI configuration
-        $this->add_esi_config();
-
         // Register SDE seeders
         $this->add_sde_seeders();
 
@@ -71,17 +67,10 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     public function register()
     {
 
-        $this->mergeConfigFrom(__DIR__ . '/Config/eveapi.scopes.php', 'eveapi.scopes');
         $this->registerDatabaseSeeders([
             \Seat\Eveapi\Database\Seeders\ScheduleSeeder::class,
             \Seat\Eveapi\Database\Seeders\Sde\SdeSeeder::class,
         ]);
-
-        // Eseye Singleton
-        $this->app->singleton('esi-client', function () {
-
-            return new EseyeSetup;
-        });
     }
 
     private function addCommands()
@@ -135,16 +124,6 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     private function add_migrations()
     {
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations/');
-    }
-
-    /**
-     * Publish esi configuration file - so user can tweak it.
-     */
-    private function add_esi_config()
-    {
-        $this->publishes([
-            __DIR__ . '/Config/esi.php' => config_path('esi.php'),
-        ], ['config', 'seat']);
     }
 
     private function add_sde_seeders()

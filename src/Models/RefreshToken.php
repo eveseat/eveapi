@@ -22,13 +22,16 @@
 
 namespace Seat\Eveapi\Models;
 
-use Carbon\Carbon;
+use DateInterval;
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+use Seat\Services\Contracts\EsiToken;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 
-class RefreshToken extends Model
+class RefreshToken extends Model implements EsiToken
 {
     use SoftDeletes {
         SoftDeletes::runSoftDelete as protected traitRunSoftDelete;
@@ -163,5 +166,90 @@ class RefreshToken extends Model
 
         // trigger softDeleted event.
         $this->fireModelEvent('softDeleted', false);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccessToken(): string
+    {
+        return $this->token ?? '';
+    }
+
+    /**
+     * @param  string  $token
+     * @return $this
+     */
+    public function setAccessToken(string $token): EsiToken
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefreshToken(): string
+    {
+        return $this->refresh_token;
+    }
+
+    /**
+     * @param  string  $token
+     * @return $this
+     */
+    public function setRefreshToken(string $token): EsiToken
+    {
+        $this->refresh_token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getExpiresOn(): DateTime
+    {
+        return $this->expires_on;
+    }
+
+    /**
+     * @param  \DateTime  $expires
+     * @return $this
+     */
+    public function setExpiresOn(DateTime $expires): EsiToken
+    {
+        $this->expires_on = $expires;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getScopes(): array
+    {
+        return $this->scopes;
+    }
+
+    /**
+     * @param  string  $scope
+     * @return bool
+     */
+    public function hasScope(string $scope): bool
+    {
+        return in_array($scope, $this->scopes);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpired(): bool
+    {
+        $now = new DateTime();
+        $now->sub(new DateInterval('PT1M'));
+
+        return $now->diff($this->expires_on)->invert === 1;
     }
 }

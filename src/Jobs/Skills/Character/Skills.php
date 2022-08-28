@@ -69,24 +69,26 @@ class Skills extends AbstractAuthCharacterJob
     {
         parent::handle();
 
-        $character_skills = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($character_skills->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CharacterSkill::where('character_id', $this->getCharacterId())->count() > 0) return;
+
+        $skills = $response->getBody();
 
         CharacterInfo::firstOrCreate(['character_id' => $this->getCharacterId()]);
 
         CharacterInfoSkill::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
-            'total_sp'       => $character_skills->total_sp,
-            'unallocated_sp' => property_exists($character_skills, 'unallocated_sp') ?
-                $character_skills->unallocated_sp : 0,
+            'total_sp'       => $skills->total_sp,
+            'unallocated_sp' => property_exists($skills, 'unallocated_sp') ?
+                $skills->unallocated_sp : 0,
         ])->save();
 
-        collect($character_skills->skills)->each(function ($character_skill) {
+        collect($skills->skills)->each(function ($character_skill) {
 
             $model = CharacterSkill::firstOrNew([
                 'character_id' => $this->getCharacterId(),
@@ -102,7 +104,7 @@ class Skills extends AbstractAuthCharacterJob
 
         // delete skills which have been removed
         CharacterSkill::where('character_id', $this->getCharacterId())
-            ->whereNotIn('skill_id', collect($character_skills->skills)->pluck('skill_id')->flatten()->all())
+            ->whereNotIn('skill_id', collect($skills->skills)->pluck('skill_id')->flatten()->all())
             ->delete();
     }
 }

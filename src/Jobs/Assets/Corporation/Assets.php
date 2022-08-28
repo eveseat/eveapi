@@ -100,14 +100,16 @@ class Assets extends AbstractAuthCorporationJob
 
         while (true) {
 
-            $assets = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($assets->isCachedLoad() && CorporationAsset::where('corporation_id', $this->getCorporationId())->count() > 0)
+            if ($response->isFromCache() && CorporationAsset::where('corporation_id', $this->getCorporationId())->count() > 0)
                 return;
 
-            collect($assets)->chunk(1000)->each(function ($chunk) {
+            $assets = collect($response->getBody());
+
+            $assets->chunk(1000)->each(function ($chunk) {
 
                 $chunk->each(function ($asset) {
 
@@ -125,10 +127,9 @@ class Assets extends AbstractAuthCorporationJob
 
             // Update the list of known item_id's which should be
             // excluded from the database cleanup later.
-            $this->known_assets->push(collect($assets)
-                ->pluck('item_id')->flatten()->all());
+            $this->known_assets->push($assets->pluck('item_id')->flatten()->all());
 
-            if (! $this->nextPage($assets->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

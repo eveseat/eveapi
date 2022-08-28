@@ -106,16 +106,16 @@ class Journals extends AbstractAuthCorporationJob
                 // ESI is empty, we can assume we have everything.
                 while (true) {
 
-                    $journal = $this->retrieve([
+                    $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
                         'division'       => $balance->division,
                     ]);
 
-                    if ($journal->isCachedLoad() &&
+                    if ($response->isFromCache() &&
                         CorporationWalletJournal::where('corporation_id', $this->getCorporationId())->count() > 0)
                         return;
 
-                    $entries = collect($journal);
+                    $entries = collect($response->getBody());
 
                     // If we have no more entries, break the loop.
                     if ($entries->count() === 0)
@@ -155,7 +155,7 @@ class Journals extends AbstractAuthCorporationJob
                     });
 
                     // in case the last known entry has been reached or we non longer have pages, terminate the job.
-                    if (! $this->nextPage($journal->pages) || $this->at_last_entry)
+                    if (! $this->nextPage($response->getPagesCount()) || $this->at_last_entry)
                         break;
                 }
 

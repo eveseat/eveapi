@@ -69,13 +69,15 @@ class Labels extends AbstractAuthCharacterJob
     {
         parent::handle();
 
-        $labels = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($labels->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CharacterLabel::where('character_id', $this->getCharacterId())->count() > 0)
             return;
+
+        $labels = $response->getBody();
 
         collect($labels)->each(function ($label) {
 

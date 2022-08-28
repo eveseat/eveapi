@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Middleware;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Services\Contracts\EsiClient;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Jobs\Status\Esi;
 
@@ -35,8 +36,6 @@ class CheckEsiRouteStatus
 {
 
     const ROUTE_STATUS_DURATION = 300;
-
-    const ROUTE = 'https://esi.evetech.net/status.json?version=latest';
 
     /**
      * @param  \Seat\Eveapi\Jobs\EsiBase  $job
@@ -75,15 +74,16 @@ class CheckEsiRouteStatus
             // Need to probe the status endpoint in order to determine if it is up.
             logger()->debug('middleware: esistatus: probing endpoint ' . $endpoint);
             try {
-                $client = app('esi-client')->get();
+                $client = app()->make(EsiClient::class);
                 $client->setVersion('');
                 $client->setQueryString(['version' => 'latest']);
+                $response = $client->invoke('get', '/status.json');
 
-                $data = $client->invoke('get', '/status.json');
+                $data = $response->getBody();
 
                 foreach($data as $path) {
                     if ($path->route == $endpoint) {
-                        return isset($path->status) ? $path->status : 'invalid';
+                        return $path->status ?? 'invalid';
                     }
                 }
 

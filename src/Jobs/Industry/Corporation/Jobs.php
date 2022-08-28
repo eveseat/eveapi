@@ -88,13 +88,15 @@ class Jobs extends AbstractAuthCorporationJob
 
         while (true) {
 
-            $industry_jobs = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($industry_jobs->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CorporationIndustryJob::where('corporation_id', $this->getCorporationId())->count() > 0)
                 return;
+
+            $industry_jobs = $response->getBody();
 
             collect($industry_jobs)->each(function ($job) {
 
@@ -113,7 +115,7 @@ class Jobs extends AbstractAuthCorporationJob
                 ])->save();
             });
 
-            if (! $this->nextPage($industry_jobs->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 return;
         }
     }

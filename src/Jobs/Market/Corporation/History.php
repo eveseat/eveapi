@@ -81,13 +81,15 @@ class History extends AbstractAuthCorporationJob
 
         while (true) {
 
-            $orders = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($orders->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CorporationOrder::where('corporation_id', $this->getCorporationId())->count() > 0)
                 return;
+
+            $orders = $response->getBody();
 
             collect($orders)->each(function ($order) {
 
@@ -112,7 +114,7 @@ class History extends AbstractAuthCorporationJob
                 ])->save();
             });
 
-            if (! $this->nextPage($orders->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 return;
         }
     }
