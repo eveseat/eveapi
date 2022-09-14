@@ -100,16 +100,18 @@ class Blueprints extends AbstractAuthCharacterJob
         // Start an infinite loop for the paged requests.
         while (true) {
 
-            $blueprints = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($blueprints->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CharacterBlueprint::where('character_id', $this->getCharacterId())->count() > 0)
                 return;
 
+            $blueprints = collect($response->getBody());
+
             // Process the blueprints from the response
-            collect($blueprints)->chunk(100)->each(function ($chunk) {
+            $blueprints->chunk(100)->each(function ($chunk) {
 
                 $chunk->each(function ($blueprint) {
 
@@ -126,10 +128,10 @@ class Blueprints extends AbstractAuthCharacterJob
             });
 
             // Add item ID's we should remove from the database.
-            $this->cleanup_ids->push(collect($blueprints)->pluck('item_id'));
+            $this->cleanup_ids->push($blueprints->pluck('item_id'));
 
             // Check for pages left.
-            if (! $this->nextPage($blueprints->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

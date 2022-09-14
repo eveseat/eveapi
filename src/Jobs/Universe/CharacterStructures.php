@@ -74,13 +74,15 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
             try {
 
                 // attempt to resolve the structure
-                $structure = $this->retrieve([
+                $response = $this->retrieve([
                     'structure_id' => $structure_id,
                 ]);
 
                 $model = UniverseStructure::firstOrNew([
                     'structure_id' => $structure_id,
                 ]);
+
+                $structure = $response->getBody();
 
                 UniverseStructureMapping::make($model, $structure, [
                     'structure_id' => function () use ($structure_id) {

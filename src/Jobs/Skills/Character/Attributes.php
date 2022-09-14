@@ -67,11 +67,13 @@ class Attributes extends AbstractAuthCharacterJob
     {
         parent::handle();
 
-        $attributes = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($attributes->isCachedLoad() && CharacterAttribute::find($this->getCharacterId())) return;
+        if ($response->isFromCache() && CharacterAttribute::find($this->getCharacterId())) return;
+
+        $attributes = $response->getBody();
 
         $model = CharacterAttribute::firstOrNew([
             'character_id' => $this->getCharacterId(),

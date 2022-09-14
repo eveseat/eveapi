@@ -105,11 +105,13 @@ class Locations extends AbstractAuthCharacterJob
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
                 try {
-                    $locations = $this->retrieve([
+                    $response = $this->retrieve([
                         'character_id' => $this->getCharacterId(),
                     ]);
 
-                    collect($locations)->each(function ($location) {
+                    $locations = collect($response->getBody());
+
+                    $locations->each(function ($location) {
 
                         $asset_data = CharacterAsset::where('character_id', $this->getCharacterId())
                             ->where('item_id', $location->item_id)
@@ -160,11 +162,13 @@ class Locations extends AbstractAuthCharacterJob
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
                 try {
-                    $locations = $this->retrieve([
+                    $response = $this->retrieve([
                         'character_id' => $this->getCharacterId(),
                     ]);
 
-                    collect($locations)->each(function ($location) {
+                    $locations = collect($response->getBody());
+
+                    $locations->each(function ($location) {
 
                         $asset_data = CharacterAsset::where('character_id', $this->getCharacterId())
                             ->where('item_id', $location->item_id)

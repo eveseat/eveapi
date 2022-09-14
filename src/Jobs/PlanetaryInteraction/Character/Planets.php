@@ -82,11 +82,13 @@ class Planets extends AbstractAuthCharacterJob
     {
         parent::handle();
 
-        $planets = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if (! $planets->isCachedLoad()) {
+        if (! $response->isFromCache()) {
+
+            $planets = $response->getBody();
 
             collect($planets)->each(function ($planet) {
 

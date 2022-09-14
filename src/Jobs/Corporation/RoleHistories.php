@@ -80,13 +80,15 @@ class RoleHistories extends AbstractAuthCorporationJob
 
         while (true) {
 
-            $roles = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($roles->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CorporationRoleHistory::where('corporation_id', $this->getCorporationId())->count() > 0)
                 return;
+
+            $roles = $response->getBody();
 
             collect($roles)->each(function ($role) {
 
@@ -122,7 +124,7 @@ class RoleHistories extends AbstractAuthCorporationJob
 
             });
 
-            if (! $this->nextPage($roles->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

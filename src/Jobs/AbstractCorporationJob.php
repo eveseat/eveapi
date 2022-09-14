@@ -42,10 +42,14 @@ abstract class AbstractCorporationJob extends EsiBase
      * AbstractCorporationJob constructor.
      *
      * @param  int  $corporation_id
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __construct(int $corporation_id)
     {
         $this->corporation_id = $corporation_id;
+
+        parent::__construct();
     }
 
     /**

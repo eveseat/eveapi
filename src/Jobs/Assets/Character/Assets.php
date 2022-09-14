@@ -94,14 +94,16 @@ class Assets extends AbstractAuthCharacterJob
 
         while (true) {
 
-            $assets = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($assets->isCachedLoad() && CharacterAsset::where('character_id', $this->getCharacterId())->count() > 0)
+            if ($response->isFromCache() && CharacterAsset::where('character_id', $this->getCharacterId())->count() > 0)
                 return;
 
-            collect($assets)->each(function ($asset) {
+            $assets = collect($response->getBody());
+
+            $assets->each(function ($asset) {
 
                 $model = CharacterAsset::firstOrNew([
                     'item_id' => $asset->item_id,
@@ -118,7 +120,7 @@ class Assets extends AbstractAuthCharacterJob
                 $this->known_assets->push($asset->item_id);
             });
 
-            if (! $this->nextPage($assets->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

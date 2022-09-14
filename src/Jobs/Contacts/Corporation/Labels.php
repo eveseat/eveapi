@@ -68,13 +68,15 @@ class Labels extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        $labels = $this->retrieve([
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($labels->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationLabel::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
+
+        $labels = $response->getBody();
 
         collect($labels)->each(function ($label) {
 

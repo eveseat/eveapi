@@ -74,13 +74,15 @@ class History extends AbstractAuthCharacterJob
 
         while (true) {
 
-            $orders = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($orders->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CharacterOrder::where('character_id', $this->getCharacterId())->count() > 0)
                 return;
+
+            $orders = $response->getBody();
 
             collect($orders)->each(function ($order) {
 
@@ -102,7 +104,7 @@ class History extends AbstractAuthCharacterJob
                 ])->save();
             });
 
-            if (! $this->nextPage($orders->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 return;
         }
     }
