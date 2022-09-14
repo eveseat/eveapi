@@ -95,13 +95,15 @@ class Contacts extends AbstractAuthCharacterJob
 
         while (true) {
 
-            $contacts = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($contacts->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CharacterContact::where('character_id', $this->getCharacterId())->count() > 0)
                 return;
+
+            $contacts = $response->getBody();
 
             collect($contacts)->each(function ($contact) {
 
@@ -120,7 +122,7 @@ class Contacts extends AbstractAuthCharacterJob
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
 
-            if (! $this->nextPage($contacts->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

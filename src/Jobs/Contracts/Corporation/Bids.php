@@ -126,14 +126,16 @@ class Bids extends AbstractAuthCorporationJob
 
                 while (true) {
                     try {
-                        $bids = $this->retrieve([
+                        $response = $this->retrieve([
                             'corporation_id' => $this->getCorporationId(),
                             'contract_id' => $this->contract_id,
                         ]);
 
-                        if ($bids->isCachedLoad() &&
+                        if ($response->isFromCache() &&
                             ContractBid::where('contract_id', $this->contract_id)->count() > 0)
                             return;
+
+                        $bids = $response->getBody();
 
                         collect($bids)->each(function ($bid) {
 
@@ -147,7 +149,7 @@ class Bids extends AbstractAuthCorporationJob
                             ]);
                         });
 
-                        if (! $this->nextPage($bids->pages))
+                        if (! $this->nextPage($response->getPagesCount()))
                             break;
 
                     } catch (RequestFailedException $e) {

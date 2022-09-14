@@ -76,7 +76,8 @@ class Esi extends EsiBase
 
         try {
 
-            $status = $this->retrieve()->raw;
+            $response = $this->retrieve();
+            $status = $response->getBody()->scalar;
 
         } catch (Exception $exception) {
 

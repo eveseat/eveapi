@@ -23,9 +23,8 @@
 namespace Seat\Eveapi\Commands\Esi\Meta;
 
 use Illuminate\Console\Command;
-use Seat\Eseye\Cache\NullCache;
-use Seat\Eseye\Configuration;
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Services\Contracts\EsiClient;
 
 /**
  * Class Ping.
@@ -49,14 +48,20 @@ class Ping extends Command
     protected $description = 'Perform an ESI status check';
 
     /**
+     * @var \Seat\Services\Contracts\EsiClient
+     */
+    private EsiClient $esi;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(EsiClient $client)
     {
-
         parent::__construct();
+
+        $this->esi = $client;
     }
 
     /**
@@ -66,14 +71,9 @@ class Ping extends Command
      */
     public function handle()
     {
-
-        $esi = app('esi-client')->get();
-        $esi->setVersion('');   // meta URI lives in /
-        Configuration::getInstance()->cache = NullCache::class;
-
         try {
 
-            $esi->invoke('get', '/ping');
+            $this->esi->setVersion('')->invoke('get', '/ping');
 
         } catch (RequestFailedException $e) {
 

@@ -73,13 +73,15 @@ class Facilities extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        $facilities = $this->retrieve([
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($facilities->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationFacility::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
+
+        $facilities = $response->getBody();
 
         collect($facilities)->each(function ($facility) {
 

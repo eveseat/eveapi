@@ -53,14 +53,14 @@ class Members extends AbstractAllianceJob
     public function handle()
     {
 
-        $corporations = $this->retrieve([
+        $response = $this->retrieve([
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if ($corporations->isCachedLoad() && AllianceMember::where('alliance_id', $this->alliance_id)->count() > 0)
+        if ($response->isFromCache() && AllianceMember::where('alliance_id', $this->alliance_id)->count() > 0)
             return;
 
-        $corporation_ids = collect($corporations);
+        $corporation_ids = collect($response->getBody());
 
         $corporation_ids->each(function ($corporation_id) {
 

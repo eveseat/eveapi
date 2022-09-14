@@ -70,14 +70,16 @@ class Medals extends AbstractAuthCharacterJob
     {
         parent::handle();
 
-        $medals = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($medals->isCachedLoad() && CharacterMedal::where('character_id', $this->getCharacterId())->count() > 0)
+        if ($response->isFromCache() && CharacterMedal::where('character_id', $this->getCharacterId())->count() > 0)
             return;
 
-        collect($medals)->each(function ($medal) {
+        $medals = collect($response->getBody());
+
+        $medals->each(function ($medal) {
 
             $model = CharacterMedal::firstOrNew([
                 'character_id' => $this->getCharacterId(),

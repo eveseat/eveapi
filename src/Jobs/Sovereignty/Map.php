@@ -59,9 +59,11 @@ class Map extends EsiBase
      */
     public function handle()
     {
-        $systems = $this->retrieve();
+        $response = $this->retrieve();
 
-        if ($systems->isCachedLoad() && SovereigntyMap::count() > 0) return;
+        if ($response->isFromCache() && SovereigntyMap::count() > 0) return;
+
+        $systems = $response->getBody();
 
         collect($systems)->chunk(1000)->each(function ($chunk) {
 

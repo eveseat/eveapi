@@ -70,35 +70,37 @@ class Clones extends AbstractAuthCharacterJob
     {
         parent::handle();
 
-        $clone = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($clone->isCachedLoad() && CharacterClone::where('character_id', $this->getCharacterId())->count() > 0)
+        if ($response->isFromCache() && CharacterClone::where('character_id', $this->getCharacterId())->count() > 0)
             return;
+
+        $clone_informations = $response->getBody();
 
         // Populate current clone information
         CharacterClone::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
-            'last_clone_jump_date'     => isset($clone->last_clone_jump_date) ?
-                carbon($clone->last_clone_jump_date) : null,
-            'home_location_id'         => isset($clone->home_location) ?
-                $clone->home_location->location_id : null,
-            'home_location_type'       => isset($clone->home_location) ?
-                $clone->home_location->location_type : null,
-            'last_station_change_date' => isset($clone->last_station_change_date) ?
-                carbon($clone->last_station_change_date) : null,
+            'last_clone_jump_date'     => isset($clone_informations->last_clone_jump_date) ?
+                carbon($clone_informations->last_clone_jump_date) : null,
+            'home_location_id'         => isset($clone_informations->home_location) ?
+                $clone_informations->home_location->location_id : null,
+            'home_location_type'       => isset($clone_informations->home_location) ?
+                $clone_informations->home_location->location_type : null,
+            'last_station_change_date' => isset($clone_informations->last_station_change_date) ?
+                carbon($clone_informations->last_station_change_date) : null,
         ])->save();
 
         // Populate jump clone information
-        collect($clone->jump_clones)->each(function ($jump_clone) {
+        collect($clone_informations->jump_clones)->each(function ($jump_clone) {
 
             CharacterJumpClone::firstOrNew([
                 'character_id'  => $this->getCharacterId(),
                 'jump_clone_id' => $jump_clone->jump_clone_id,
             ])->fill([
-                'name'          => isset($jump_clone->name) ? $jump_clone->name : null,
+                'name'          => $jump_clone->name ?? null,
                 'location_id'   => $jump_clone->location_id,
                 'location_type' => $jump_clone->location_type,
                 'implants'      => $jump_clone->implants,
@@ -107,7 +109,7 @@ class Clones extends AbstractAuthCharacterJob
 
         // Remove invalid jump clones
         CharacterJumpClone::where('character_id', $this->getCharacterId())
-            ->whereNotIn('jump_clone_id', collect($clone->jump_clones)
+            ->whereNotIn('jump_clone_id', collect($clone_informations->jump_clones)
                 ->pluck('jump_clone_id')->flatten()->all())
             ->delete();
     }
