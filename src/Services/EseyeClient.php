@@ -73,6 +73,7 @@ class EseyeClient implements EsiClient
 
     /**
      * @return \Seat\Services\Contracts\EsiToken
+     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Seat\Eseye\Exceptions\InvalidAuthenticationException
      */
@@ -176,7 +177,6 @@ class EseyeClient implements EsiClient
      * @param  string  $method
      * @param  string  $uri
      * @param  array  $uri_data
-     *
      * @return \Seat\Services\Contracts\EsiResponse
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
@@ -210,6 +210,7 @@ class EseyeClient implements EsiClient
 
     /**
      * @return \Psr\Log\LoggerInterface
+     *
      * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function getLogger(): LoggerInterface
@@ -219,6 +220,7 @@ class EseyeClient implements EsiClient
 
     /**
      * @return \Psr\SimpleCache\CacheInterface
+     *
      * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function getCache(): CacheInterface

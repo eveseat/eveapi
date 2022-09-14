@@ -27,9 +27,9 @@ use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Seat\Services\Contracts\EsiToken;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Services\Contracts\EsiToken;
 
 class RefreshToken extends Model implements EsiToken
 {

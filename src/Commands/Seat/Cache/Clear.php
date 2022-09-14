@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Commands\Seat\Cache;
 
 use Exception;
-use File;
 use Illuminate\Console\Command;
 use Predis\Client;
 use Seat\Services\Contracts\EsiClient;

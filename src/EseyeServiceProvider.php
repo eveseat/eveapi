@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of SeAT
  *
@@ -21,11 +22,11 @@
 
 namespace Seat\Eveapi;
 
-use Seat\Services\Contracts\EsiClient;
-use Seat\Services\Contracts\EsiToken;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Services\EseyeClient;
 use Seat\Services\AbstractSeatPlugin;
+use Seat\Services\Contracts\EsiClient;
+use Seat\Services\Contracts\EsiToken;
 
 class EseyeServiceProvider extends AbstractSeatPlugin
 {

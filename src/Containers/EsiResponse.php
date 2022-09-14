@@ -104,6 +104,7 @@ class EsiResponse implements \Seat\Services\Contracts\EsiResponse
 
     /**
      * @return bool
+     *
      * @throws \Exception
      */
     public function expired(): bool

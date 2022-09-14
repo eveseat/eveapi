@@ -39,6 +39,6 @@ return [
             'scheme' => env('EVE_SSO_SCHEME', 'https'),
             'host'   => env('EVE_SSO_HOST', 'login.eveonline.com'),
             'port'   => env('EVE_SSO_PORT', 443),
-        ] ,
+        ],
     ],
 ];

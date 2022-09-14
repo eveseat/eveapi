@@ -23,9 +23,9 @@
 namespace Seat\Eveapi\Jobs\Middleware;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Services\Contracts\EsiClient;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Jobs\Status\Esi;
+use Seat\Services\Contracts\EsiClient;
 
 /**
  * Class CheckEsiRouteStatus.

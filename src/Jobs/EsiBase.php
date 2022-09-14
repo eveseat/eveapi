@@ -26,8 +26,6 @@ use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
-use Seat\Services\Contracts\EsiClient;
-use Seat\Services\Contracts\EsiResponse;
 use Seat\Eveapi\Exception\PermanentInvalidTokenException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Exception\UnavailableEveServersException;
@@ -35,6 +33,8 @@ use Seat\Eveapi\Jobs\Middleware\CheckEsiRateLimit;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiRouteStatus;
 use Seat\Eveapi\Jobs\Middleware\CheckServerStatus;
 use Seat\Eveapi\Models\RefreshToken;
+use Seat\Services\Contracts\EsiClient;
+use Seat\Services\Contracts\EsiResponse;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 
@@ -346,7 +346,6 @@ abstract class EsiBase extends AbstractJob
      * sent to allow for monitoring of endpoint changes.
      *
      * @param  \Seat\Services\Contracts\EsiResponse  $response
-     *
      */
     public function warning(EsiResponse $response): void
     {
