@@ -82,13 +82,15 @@ class Detail extends AbstractAuthCharacterJob
         $event_ids->each(function ($event_id) {
 
             try {
-                $detail = $this->retrieve([
+                $response = $this->retrieve([
                     'character_id' => $this->getCharacterId(),
                     'event_id' => $event_id,
                 ]);
 
-                if ($detail->isCachedLoad() && CharacterCalendarEventDetail::where('event_id', $event_id)->count() > 0)
+                if ($response->isFromCache() && CharacterCalendarEventDetail::where('event_id', $event_id)->count() > 0)
                     return;
+
+                $detail = $response->getBody();
 
                 $model = CharacterCalendarEventDetail::firstOrNew([
                     'event_id' => $event_id,

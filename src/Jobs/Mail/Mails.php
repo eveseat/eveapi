@@ -73,15 +73,17 @@ class Mails extends AbstractAuthCharacterJob
             ->orderBy('mail_id', 'desc')
             ->first();
 
-        $mail = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($mail->isCachedLoad() &&
+        if ($response->isFromCache() &&
             MailRecipient::where('recipient_id', $this->getCharacterId())->count() > 0)
             return;
 
-        collect($mail)->each(function ($header) use ($last_known_mail) {
+        $mails = $response->getBody();
+
+        collect($mails)->each(function ($header) use ($last_known_mail) {
 
             if (! is_null($last_known_mail) && ($last_known_mail->mail_id == $header->mail_id))
                 return false;
@@ -117,7 +119,7 @@ class Mails extends AbstractAuthCharacterJob
 
             // pull related body if header is new
             if ($mail_header->wasRecentlyCreated) {
-                $body = $this->eseye()->setVersion('v1')->invoke('get', '/characters/{character_id}/mail/{mail_id}/', [
+                $body = $this->esi->setVersion('v1')->invoke('get', '/characters/{character_id}/mail/{mail_id}/', [
                     'character_id' => $this->getCharacterId(),
                     'mail_id'      => $header->mail_id,
                 ]);
@@ -125,7 +127,7 @@ class Mails extends AbstractAuthCharacterJob
                 MailBody::firstOrCreate([
                     'mail_id' => $header->mail_id,
                 ], [
-                    'body'    => $body->body,
+                    'body'    => $body->getBody()->body,
                 ]);
             }
         });

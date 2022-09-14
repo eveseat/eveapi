@@ -75,13 +75,15 @@ class Standings extends AbstractAuthCorporationJob
 
         while (true) {
 
-            $standings = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($standings->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CorporationStanding::where('corporation_id', $this->getCorporationId())->count() > 0)
                 return;
+
+            $standings = $response->getBody();
 
             collect($standings)->chunk(100)->each(function ($chunk) {
 
@@ -102,7 +104,7 @@ class Standings extends AbstractAuthCorporationJob
                 ]);
             });
 
-            if (! $this->nextPage($standings->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

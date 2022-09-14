@@ -81,13 +81,15 @@ class ContainerLogs extends AbstractAuthCorporationJob
 
         while (true) {
 
-            $logs = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($logs->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CorporationContainerLog::where('corporation_id', $this->getCorporationId())->count() > 0)
                 return;
+
+            $logs = $response->getBody();
 
             collect($logs)->each(function ($log) {
 
@@ -105,7 +107,7 @@ class ContainerLogs extends AbstractAuthCorporationJob
 
             });
 
-            if (! $this->nextPage($logs->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

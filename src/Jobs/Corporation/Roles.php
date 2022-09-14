@@ -87,13 +87,15 @@ class Roles extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        $roles = $this->retrieve([
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($roles->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationRole::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
+
+        $roles = $response->getBody();
 
         $returned_characters_ids = collect();
 

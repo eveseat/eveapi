@@ -82,21 +82,21 @@ class Events extends AbstractAuthCharacterJob
 
             $this->query_string = ['from_event' => $this->from_id];
 
-            $events = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($events->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CharacterCalendarEvent::where('character_id', $this->getCharacterId())->count() > 0)
                 return;
 
-            $response = collect($events);
+            $events = collect($response->getBody());
 
             // if we have no more entries, break the loop.
-            if ($response->count() === 0)
+            if ($events->count() === 0)
                 break;
 
-            $response->each(function ($event) {
+            $events->each(function ($event) {
 
                 $model = CharacterCalendarEvent::firstOrNew([
                     'character_id' => $this->getCharacterId(),
@@ -110,7 +110,7 @@ class Events extends AbstractAuthCharacterJob
                 ])->save();
             });
 
-            $this->from_id = $response->min('event_id') - 1;
+            $this->from_id = $events->min('event_id') - 1;
         }
     }
 }

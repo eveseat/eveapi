@@ -140,13 +140,15 @@ class PlanetDetail extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $planet_detail = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
             'planet_id'    => $this->planet_id,
         ]);
 
+        $planet = $response->getBody();
+
         // seed database with pins
-        collect($planet_detail->pins)->each(function ($pin) {
+        collect($planet->pins)->each(function ($pin) {
 
             CharacterPlanetPin::firstOrNew([
                 'character_id' => $this->getCharacterId(),
@@ -241,7 +243,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
             }
         });
 
-        collect($planet_detail->links)->each(function ($link) {
+        collect($planet->links)->each(function ($link) {
 
             CharacterPlanetLink::firstOrNew([
                 'character_id' => $this->getCharacterId(),
@@ -260,7 +262,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
 
         });
 
-        collect($planet_detail->routes)->each(function ($route) {
+        collect($planet->routes)->each(function ($route) {
 
             CharacterPlanetRoute::firstOrNew([
                 'character_id' => $this->getCharacterId(),

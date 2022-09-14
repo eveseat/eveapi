@@ -56,12 +56,14 @@ class Info extends AbstractAllianceJob
     public function handle()
     {
 
-        $info = $this->retrieve([
+        $response = $this->retrieve([
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if ($info->isCachedLoad() && Alliance::find($this->alliance_id))
+        if ($response->isFromCache() && Alliance::find($this->alliance_id))
             return;
+
+        $info = $response->getBody();
 
         $model = Alliance::firstOrNew([
             'alliance_id' => $this->alliance_id,

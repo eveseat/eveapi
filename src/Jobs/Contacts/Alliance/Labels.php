@@ -66,13 +66,15 @@ class Labels extends AbstractAuthAllianceJob
      */
     public function handle()
     {
-        $labels = $this->retrieve([
+        $response = $this->retrieve([
             'alliance_id' => $this->getAllianceId(),
         ]);
 
-        if ($labels->isCachedLoad() &&
+        if ($response->isFromCache() &&
             AllianceLabel::where('alliance_id', $this->getAllianceId())->count() > 0)
             return;
+
+        $labels = $response->getBody();
 
         collect($labels)->each(function ($label) {
 

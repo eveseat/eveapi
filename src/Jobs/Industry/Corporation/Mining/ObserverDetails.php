@@ -84,16 +84,18 @@ class ObserverDetails extends AbstractAuthCorporationJob
 
                 while (true) {
 
-                    $detail = $this->retrieve([
+                    $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
                         'observer_id'    => $observer->observer_id,
                     ]);
 
-                    if ($detail->isCachedLoad() &&
+                    if ($response->isFromCache() &&
                         CorporationIndustryMiningObserverData::where('corporation_id', $this->getCorporationId())->count() > 0)
                         return;
 
-                    collect($detail)->each(function ($data) use ($observer) {
+                    $observers = $response->getBody();
+
+                    collect($observers)->each(function ($data) use ($observer) {
 
                         CorporationIndustryMiningObserverData::firstOrNew([
                             'corporation_id'          => $this->getCorporationId(),
@@ -108,7 +110,7 @@ class ObserverDetails extends AbstractAuthCorporationJob
 
                     });
 
-                    if (! $this->nextPage($detail->pages))
+                    if (! $this->nextPage($response->getPagesCount()))
                         break;
 
                 }

@@ -90,7 +90,7 @@ class Upgrade extends Command
                     try{
                         $token_headers = [
                             'headers' => [
-                                'Authorization' => 'Basic ' . base64_encode(config('esi.eseye_client_id') . ':' . config('esi.eseye_client_secret')),
+                                'Authorization' => 'Basic ' . base64_encode(config('eseye.esi.auth.client_id') . ':' . config('eseye.esi.auth.client_secret')),
                                 'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact eveseat slack or github. https://github.com/eveseat/seat',
                                 'Content-Type' => 'application/x-www-form-urlencoded',
                                 'Host' => 'login.eveonline.com',

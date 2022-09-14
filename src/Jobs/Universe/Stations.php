@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Universe;
 
-use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Mapping\Structures\UniverseStationMapping;
 use Seat\Eveapi\Models\Universe\UniverseStation;
@@ -67,6 +66,8 @@ class Stations extends EsiBase
      */
     public function __construct(array $station_ids)
     {
+        parent::__construct();
+
         $this->station_ids = $station_ids;
     }
 
@@ -78,16 +79,16 @@ class Stations extends EsiBase
     public function handle()
     {
         foreach ($this->station_ids as $station_id) {
-            $station = $this->retrieve(['station_id' => $station_id]);
+            $response = $this->retrieve(['station_id' => $station_id]);
 
-            $this->updateStructure($station);
+            $this->updateStructure($response->getBody());
         }
     }
 
     /**
-     * @param  \Seat\Eseye\Containers\EsiResponse  $structure
+     * @param  object  $structure
      */
-    private function updateStructure(EsiResponse $structure)
+    private function updateStructure(object $structure)
     {
 
         $model = UniverseStation::firstOrNew([

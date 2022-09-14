@@ -94,13 +94,15 @@ class Contacts extends AbstractAuthCorporationJob
 
         while (true) {
 
-            $contacts = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($contacts->isCachedLoad() &&
+            if ($response->isFromCache() &&
                 CorporationContact::where('corporation_id', $this->getCorporationId())->count() > 0)
                 return;
+
+            $contacts = $response->getBody();
 
             collect($contacts)->each(function ($contact) {
 
@@ -118,7 +120,7 @@ class Contacts extends AbstractAuthCorporationJob
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
 
-            if (! $this->nextPage($contacts->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

@@ -93,11 +93,13 @@ class Recent extends AbstractAuthCorporationJob
     {
         while (true) {
 
-            $killmails = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($killmails->isCachedLoad()) return;
+            if ($response->isFromCache()) return;
+
+            $killmails = $response->getBody();
 
             collect($killmails)->each(function ($killmail) {
 
@@ -111,7 +113,7 @@ class Recent extends AbstractAuthCorporationJob
                     $this->killmail_jobs->add(new Detail($killmail->killmail_id, $killmail->killmail_hash));
             });
 
-            if (! $this->nextPage($killmails->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 
