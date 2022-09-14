@@ -68,7 +68,7 @@ class Queue extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character skill queue";
+        return 'Retrieve character skill queue';
     }
 
     /**

@@ -90,7 +90,7 @@ class Blueprints extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character blueprints";
+        return 'Retrieve character blueprints';
     }
 
     /**

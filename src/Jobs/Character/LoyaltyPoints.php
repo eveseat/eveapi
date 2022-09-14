@@ -64,7 +64,7 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character Loyalty Points";
+        return 'Retrieve character Loyalty Points';
     }
 
     /**

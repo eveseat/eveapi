@@ -57,7 +57,7 @@ class Insurances extends EsiBase
      */
     public function displayName(): string
     {
-        return "Discover ships insurances...";
+        return 'Discover ships insurances...';
     }
 
     /**

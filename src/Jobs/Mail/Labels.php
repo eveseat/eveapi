@@ -62,7 +62,7 @@ class Labels extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character mail labels";
+        return 'Retrieve character mail labels';
     }
 
     /**

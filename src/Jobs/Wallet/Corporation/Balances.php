@@ -67,7 +67,7 @@ class Balances extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation wallet balances";
+        return 'Retrieve corporation wallet balances';
     }
 
     /**

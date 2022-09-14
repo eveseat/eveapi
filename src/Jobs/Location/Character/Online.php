@@ -62,7 +62,7 @@ class Online extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character status";
+        return 'Retrieve character status';
     }
 
     /**

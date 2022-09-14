@@ -75,7 +75,7 @@ class Names extends EsiBase
      */
     public function displayName(): string
     {
-        return "Discover universe entity names...";
+        return 'Discover universe entity names...';
     }
 
     /**

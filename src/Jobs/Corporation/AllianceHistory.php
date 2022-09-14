@@ -57,7 +57,7 @@ class AllianceHistory extends AbstractCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation alliance history";
+        return 'Retrieve corporation alliance history';
     }
 
     /**

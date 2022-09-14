@@ -57,7 +57,7 @@ class Map extends EsiBase
      */
     public function displayName(): string
     {
-        return "Discover universe map...";
+        return 'Discover universe map...';
     }
 
     /**

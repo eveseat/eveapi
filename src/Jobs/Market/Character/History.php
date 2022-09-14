@@ -68,7 +68,7 @@ class History extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character orders history";
+        return 'Retrieve character orders history';
     }
 
     /**

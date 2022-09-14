@@ -63,7 +63,7 @@ class Clones extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character clones";
+        return 'Retrieve character clones';
     }
 
     /**

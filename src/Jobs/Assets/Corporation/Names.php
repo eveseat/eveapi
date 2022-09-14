@@ -75,7 +75,7 @@ class Names extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation assets name";
+        return 'Retrieve corporation assets name';
     }
 
     /**

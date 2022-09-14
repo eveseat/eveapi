@@ -62,7 +62,7 @@ class Standings extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character standings";
+        return 'Retrieve character standings';
     }
 
     /**

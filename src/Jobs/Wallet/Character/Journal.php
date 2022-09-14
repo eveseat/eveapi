@@ -78,7 +78,7 @@ class Journal extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character wallet journal";
+        return 'Retrieve character wallet journal';
     }
 
     /**

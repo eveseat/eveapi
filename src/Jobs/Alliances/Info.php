@@ -53,7 +53,7 @@ class Info extends AbstractAllianceJob
      */
     public function displayName(): string
     {
-        return "Retrieve alliance information";
+        return 'Retrieve alliance information';
     }
 
     /**

@@ -62,7 +62,7 @@ class MailingLists extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character mailing lists";
+        return 'Retrieve character mailing lists';
     }
 
     /**

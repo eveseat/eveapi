@@ -63,7 +63,7 @@ class Fittings extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character fittings";
+        return 'Retrieve character fittings';
     }
 
     /**

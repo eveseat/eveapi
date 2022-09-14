@@ -66,7 +66,7 @@ class Esi extends EsiBase
      */
     public function displayName(): string
     {
-        return "Get ESI network delay";
+        return 'Get ESI network delay';
     }
 
     /**

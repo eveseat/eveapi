@@ -62,7 +62,7 @@ class Fatigue extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character Jump Fatigue";
+        return 'Retrieve character Jump Fatigue';
     }
 
     /**

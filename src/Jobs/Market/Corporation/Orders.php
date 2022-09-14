@@ -73,7 +73,7 @@ class Orders extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation active orders";
+        return 'Retrieve corporation active orders';
     }
 
     /**

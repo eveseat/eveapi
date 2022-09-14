@@ -67,7 +67,7 @@ class MemberTracking extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation members";
+        return 'Retrieve corporation members';
     }
 
     /**

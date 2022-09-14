@@ -63,7 +63,7 @@ class Attributes extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character attributes";
+        return 'Retrieve character attributes';
     }
 
     /**

@@ -93,7 +93,7 @@ class Blueprints extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation blueprints";
+        return 'Retrieve corporation blueprints';
     }
 
     /**

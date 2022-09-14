@@ -63,7 +63,7 @@ class Notifications extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character notifications";
+        return 'Retrieve character notifications';
     }
 
     /**

@@ -71,7 +71,7 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
      */
     public function displayName(): string
     {
-        return "Retrieve corporation structures";
+        return 'Retrieve corporation structures';
     }
 
     /**

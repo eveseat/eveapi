@@ -76,7 +76,7 @@ class Transactions extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation wallet transactions";
+        return 'Retrieve corporation wallet transactions';
     }
 
     /**

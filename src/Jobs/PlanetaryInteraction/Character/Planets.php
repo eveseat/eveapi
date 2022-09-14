@@ -78,7 +78,7 @@ class Planets extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character planets";
+        return 'Retrieve character planets';
     }
 
     /**

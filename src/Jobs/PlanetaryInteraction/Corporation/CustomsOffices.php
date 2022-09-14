@@ -92,7 +92,7 @@ class CustomsOffices extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation POCOs";
+        return 'Retrieve corporation POCOs';
     }
 
     /**

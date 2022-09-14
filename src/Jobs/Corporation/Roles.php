@@ -81,7 +81,7 @@ class Roles extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation roles";
+        return 'Retrieve corporation roles';
     }
 
     /**

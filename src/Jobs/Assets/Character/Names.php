@@ -77,7 +77,7 @@ class Names extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character assets name";
+        return 'Retrieve character assets name';
     }
 
     /**

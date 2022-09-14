@@ -62,7 +62,7 @@ class Ship extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character active ship";
+        return 'Retrieve character active ship';
     }
 
     /**

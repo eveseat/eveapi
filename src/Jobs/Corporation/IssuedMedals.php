@@ -72,7 +72,7 @@ class IssuedMedals extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation issued medals";
+        return 'Retrieve corporation issued medals';
     }
 
     /**

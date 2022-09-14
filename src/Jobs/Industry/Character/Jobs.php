@@ -70,7 +70,7 @@ class Jobs extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character industry jobs";
+        return 'Retrieve character industry jobs';
     }
 
     /**

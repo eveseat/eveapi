@@ -67,7 +67,7 @@ class Divisions extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation divisions";
+        return 'Retrieve corporation divisions';
     }
 
     /**

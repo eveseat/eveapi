@@ -68,7 +68,7 @@ class Mining extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character mining ledger";
+        return 'Retrieve character mining ledger';
     }
 
     /**

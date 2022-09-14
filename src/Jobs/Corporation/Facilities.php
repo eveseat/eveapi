@@ -67,7 +67,7 @@ class Facilities extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation facilities";
+        return 'Retrieve corporation facilities';
     }
 
     /**

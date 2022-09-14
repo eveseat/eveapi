@@ -65,7 +65,7 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
      */
     public function displayName(): string
     {
-        return "Retrieve character structures";
+        return 'Retrieve character structures';
     }
 
     /**

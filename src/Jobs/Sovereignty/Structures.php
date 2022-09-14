@@ -58,7 +58,7 @@ class Structures extends EsiBase
      */
     public function displayName(): string
     {
-        return "Discover universe structures...";
+        return 'Discover universe structures...';
     }
 
     /**

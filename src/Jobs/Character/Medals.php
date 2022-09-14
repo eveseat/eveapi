@@ -63,7 +63,7 @@ class Medals extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character Medals";
+        return 'Retrieve character Medals';
     }
 
     /**

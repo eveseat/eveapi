@@ -65,7 +65,7 @@ class Detail extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character event details";
+        return 'Retrieve character event details';
     }
 
     /**

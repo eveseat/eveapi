@@ -80,7 +80,7 @@ class Locations extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character asset locations";
+        return 'Retrieve character asset locations';
     }
 
     /**

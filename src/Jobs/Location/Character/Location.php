@@ -62,7 +62,7 @@ class Location extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character location";
+        return 'Retrieve character location';
     }
 
     /**

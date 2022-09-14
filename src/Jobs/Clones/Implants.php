@@ -62,7 +62,7 @@ class Implants extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character implants";
+        return 'Retrieve character implants';
     }
 
     /**

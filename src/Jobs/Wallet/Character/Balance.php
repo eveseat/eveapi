@@ -62,7 +62,7 @@ class Balance extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character wallet balance";
+        return 'Retrieve character wallet balance';
     }
 
     /**

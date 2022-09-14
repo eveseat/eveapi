@@ -67,7 +67,7 @@ class Standings extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation standings";
+        return 'Retrieve corporation standings';
     }
 
     /**

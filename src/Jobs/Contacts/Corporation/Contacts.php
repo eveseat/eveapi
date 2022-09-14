@@ -86,7 +86,7 @@ class Contacts extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation contacts";
+        return 'Retrieve corporation contacts';
     }
 
     /**

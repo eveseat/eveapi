@@ -77,7 +77,7 @@ class History extends EsiBase
      */
     public function displayName(): string
     {
-        return "Discover region orders history...";
+        return 'Discover region orders history...';
     }
 
     /**

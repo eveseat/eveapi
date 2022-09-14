@@ -73,7 +73,7 @@ class ContainerLogs extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation container logs";
+        return 'Retrieve corporation container logs';
     }
 
     /**

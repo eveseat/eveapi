@@ -73,7 +73,7 @@ class History extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation orders history";
+        return 'Retrieve corporation orders history';
     }
 
     /**

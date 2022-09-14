@@ -87,7 +87,7 @@ class Detail extends EsiBase
      */
     public function displayName(): string
     {
-        return "Retrieve killmail details";
+        return 'Retrieve killmail details';
     }
 
     /**

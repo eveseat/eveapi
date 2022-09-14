@@ -138,7 +138,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character planet infrastructure";
+        return 'Retrieve character planet infrastructure';
     }
 
     /**

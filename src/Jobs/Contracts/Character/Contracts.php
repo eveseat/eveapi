@@ -68,7 +68,7 @@ class Contracts extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character contracts";
+        return 'Retrieve character contracts';
     }
 
     /**

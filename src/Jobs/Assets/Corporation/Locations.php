@@ -85,7 +85,7 @@ class Locations extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation asset locations";
+        return 'Retrieve corporation asset locations';
     }
 
     /**

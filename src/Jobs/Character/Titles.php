@@ -68,7 +68,7 @@ class Titles extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character titles";
+        return 'Retrieve character titles';
     }
 
     /**

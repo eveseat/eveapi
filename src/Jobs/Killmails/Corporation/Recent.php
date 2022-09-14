@@ -87,7 +87,7 @@ class Recent extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation killmails";
+        return 'Retrieve corporation killmails';
     }
 
     /**

@@ -68,7 +68,7 @@ class Contracts extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation contracts";
+        return 'Retrieve corporation contracts';
     }
 
     /**

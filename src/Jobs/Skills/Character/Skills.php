@@ -65,7 +65,7 @@ class Skills extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character skills";
+        return 'Retrieve character skills';
     }
 
     /**

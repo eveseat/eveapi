@@ -52,7 +52,7 @@ class CorporationHistory extends AbstractCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character employment history";
+        return 'Retrieve character employment history';
     }
 
     /**

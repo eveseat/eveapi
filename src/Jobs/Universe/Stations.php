@@ -76,7 +76,7 @@ class Stations extends EsiBase
      */
     public function displayName(): string
     {
-        return "Discover universe NPC outposts...";
+        return 'Discover universe NPC outposts...';
     }
 
     /**

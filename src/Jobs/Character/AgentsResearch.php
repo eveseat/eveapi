@@ -63,7 +63,7 @@ class AgentsResearch extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character Research Agents";
+        return 'Retrieve character Research Agents';
     }
 
     /**

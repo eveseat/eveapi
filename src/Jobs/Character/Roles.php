@@ -62,7 +62,7 @@ class Roles extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character corporation roles";
+        return 'Retrieve character corporation roles';
     }
 
     /**

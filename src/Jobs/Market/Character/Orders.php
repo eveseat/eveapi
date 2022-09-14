@@ -63,7 +63,7 @@ class Orders extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character active orders";
+        return 'Retrieve character active orders';
     }
 
     /**

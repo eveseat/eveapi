@@ -58,7 +58,7 @@ class Info extends AbstractCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation profile";
+        return 'Retrieve corporation profile';
     }
 
     /**

@@ -106,7 +106,7 @@ class Items extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation contract items";
+        return 'Retrieve corporation contract items';
     }
 
     /**

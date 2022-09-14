@@ -92,7 +92,7 @@ class Assets extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation assets";
+        return 'Retrieve corporation assets';
     }
 
     /**

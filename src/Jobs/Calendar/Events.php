@@ -68,7 +68,7 @@ class Events extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character events";
+        return 'Retrieve character events';
     }
 
     /**

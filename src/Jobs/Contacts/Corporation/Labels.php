@@ -62,7 +62,7 @@ class Labels extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation contact labels";
+        return 'Retrieve corporation contact labels';
     }
 
     /**

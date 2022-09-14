@@ -70,7 +70,7 @@ class Transactions extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character wallet transactions";
+        return 'Retrieve character wallet transactions';
     }
 
     /**

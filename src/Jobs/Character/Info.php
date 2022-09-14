@@ -58,7 +58,7 @@ class Info extends AbstractCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character profile";
+        return 'Retrieve character profile';
     }
 
     /**

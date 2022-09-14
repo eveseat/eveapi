@@ -64,7 +64,7 @@ class Mails extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character mails";
+        return 'Retrieve character mails';
     }
 
     /**

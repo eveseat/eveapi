@@ -89,7 +89,7 @@ class StarbaseDetails extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation POS fitting";
+        return 'Retrieve corporation POS fitting';
     }
 
     /**

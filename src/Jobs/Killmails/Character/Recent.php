@@ -85,7 +85,7 @@ class Recent extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character killmails";
+        return 'Retrieve character killmails';
     }
 
     /**

@@ -72,7 +72,7 @@ class RoleHistories extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation role histories";
+        return 'Retrieve corporation role histories';
     }
 
     /**

@@ -67,7 +67,7 @@ class MembersTitles extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation assigned titles";
+        return 'Retrieve corporation assigned titles';
     }
 
     /**

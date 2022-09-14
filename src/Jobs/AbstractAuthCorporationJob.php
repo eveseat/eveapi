@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs;
 
-use Exception;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;

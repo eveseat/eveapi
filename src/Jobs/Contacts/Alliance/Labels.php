@@ -62,7 +62,7 @@ class Labels extends AbstractAuthAllianceJob
      */
     public function displayName(): string
     {
-        return "Retrieve alliance contact labels";
+        return 'Retrieve alliance contact labels';
     }
 
     /**

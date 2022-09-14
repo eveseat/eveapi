@@ -63,7 +63,7 @@ class Attendees extends AbstractAuthCharacterJob
      */
     public function displayName(): string
     {
-        return "Retrieve character event attendees";
+        return 'Retrieve character event attendees';
     }
 
     /**

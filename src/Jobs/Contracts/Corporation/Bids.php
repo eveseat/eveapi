@@ -105,7 +105,7 @@ class Bids extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation contract bids";
+        return 'Retrieve corporation contract bids';
     }
 
     /**

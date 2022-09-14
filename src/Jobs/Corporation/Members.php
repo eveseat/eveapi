@@ -62,7 +62,7 @@ class Members extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation members count";
+        return 'Retrieve corporation members count';
     }
 
     /**

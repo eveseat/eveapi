@@ -80,7 +80,7 @@ class Jobs extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation industry jobs";
+        return 'Retrieve corporation industry jobs';
     }
 
     /**

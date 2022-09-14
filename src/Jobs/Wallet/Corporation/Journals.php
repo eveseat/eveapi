@@ -84,7 +84,7 @@ class Journals extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation wallet journal";
+        return 'Retrieve corporation wallet journal';
     }
 
     /**

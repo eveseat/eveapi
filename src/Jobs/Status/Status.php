@@ -70,7 +70,7 @@ class Status extends EsiBase
      */
     public function displayName(): string
     {
-        return "Retrieve EVE Online Server status";
+        return 'Retrieve EVE Online Server status';
     }
 
     /**

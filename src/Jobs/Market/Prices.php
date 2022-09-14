@@ -57,7 +57,7 @@ class Prices extends EsiBase
      */
     public function displayName(): string
     {
-        return "Discover universe aggregated prices...";
+        return 'Discover universe aggregated prices...';
     }
 
     /**

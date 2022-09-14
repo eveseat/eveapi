@@ -52,7 +52,7 @@ class Members extends AbstractAllianceJob
      */
     public function displayName(): string
     {
-        return "Retrieve alliance members";
+        return 'Retrieve alliance members';
     }
 
     /**

@@ -68,7 +68,7 @@ class Extractions extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation mining extractions";
+        return 'Retrieve corporation mining extractions';
     }
 
     /**

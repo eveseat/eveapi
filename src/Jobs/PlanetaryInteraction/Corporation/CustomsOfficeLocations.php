@@ -70,7 +70,7 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
      */
     public function displayName(): string
     {
-        return "Retrieve corporation POCO locations";
+        return 'Retrieve corporation POCO locations';
     }
 
     /**
