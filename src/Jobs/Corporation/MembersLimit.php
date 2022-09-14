@@ -63,6 +63,14 @@ class MembersLimit extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'member'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation members limit";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

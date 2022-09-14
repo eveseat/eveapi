@@ -23,15 +23,16 @@
 namespace Seat\Eveapi\Jobs;
 
 use Exception;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenVersion;
 use Seat\Eveapi\Jobs\Middleware\IgnoreNpcCorporation;
 use Seat\Eveapi\Jobs\Middleware\RequireCorporationRole;
-use Seat\Eveapi\Jobs\Middleware\WithoutOverlapping;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 use Seat\Eveapi\Models\RefreshToken;
+use Throwable;
 
 /**
  * Class AbstractAuthenticatedCorporationJob.
@@ -78,17 +79,17 @@ abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
             new IgnoreNpcCorporation,
             new RequireCorporationRole,
             (new WithoutOverlapping($this->getToken()->character_id))
-                ->releaseAfter(WithoutOverlapping::ANTI_RACE_DELAY)
-                ->expireAfter(WithoutOverlapping::ACCESS_TOKEN_EXPIRY_DELAY),
+                ->releaseAfter($this::ANTI_RACE_DELAY)
+                ->expireAfter($this::ACCESS_TOKEN_EXPIRY_DELAY),
         ]);
     }
 
     /**
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      *
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function failed(Exception $exception)
+    public function failed(Throwable $exception)
     {
         if (is_a($exception, RequestFailedException::class)) {
             if ($exception->getError() == self::CHARACTER_NOT_IN_CORPORATION) {

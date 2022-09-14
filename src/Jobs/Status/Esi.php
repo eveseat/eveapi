@@ -62,6 +62,14 @@ class Esi extends EsiBase
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Get ESI network delay";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

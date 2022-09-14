@@ -53,6 +53,14 @@ class Insurances extends EsiBase
     protected $tags = ['public'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Discover ships insurances...";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

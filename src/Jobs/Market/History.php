@@ -73,6 +73,14 @@ class History extends EsiBase
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Discover region orders history...";
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @throws \Seat\Services\Exceptions\SettingException

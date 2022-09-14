@@ -53,6 +53,14 @@ class Prices extends EsiBase
     protected $tags = ['public', 'market'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Discover universe aggregated prices...";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

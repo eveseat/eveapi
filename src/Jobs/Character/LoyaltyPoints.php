@@ -60,6 +60,14 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
     protected $tags = ['character', 'loyalty points'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character Loyalty Points";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

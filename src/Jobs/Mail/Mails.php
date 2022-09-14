@@ -60,6 +60,14 @@ class Mails extends AbstractAuthCharacterJob
     protected $tags = ['mail'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character mails";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

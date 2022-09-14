@@ -82,6 +82,14 @@ class Assets extends AbstractAuthCharacterJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character assets";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

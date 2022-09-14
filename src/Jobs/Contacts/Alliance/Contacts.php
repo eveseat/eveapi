@@ -82,6 +82,14 @@ class Contacts extends AbstractAuthAllianceJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve alliance contacts";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

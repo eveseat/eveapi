@@ -58,6 +58,14 @@ class Standings extends AbstractAuthCharacterJob
     protected $tags = ['character'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character standings";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

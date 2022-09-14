@@ -58,6 +58,14 @@ class Labels extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'contact'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation contact labels";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

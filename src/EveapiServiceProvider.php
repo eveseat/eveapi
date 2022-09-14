@@ -22,6 +22,14 @@
 
 namespace Seat\Eveapi;
 
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Support\Facades\Queue;
+use Seat\Eveapi\Events\EsiJobCompleted;
+use Seat\Eveapi\Events\ProcessingEsiJob;
+use Seat\Eveapi\Jobs\AbstractAllianceJob;
+use Seat\Eveapi\Jobs\AbstractCharacterJob;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\AbstractSeatPlugin;
@@ -170,6 +178,27 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         $events = $this->app->make(\Illuminate\Contracts\Events\Dispatcher::class);
 
         $events->listen(\Illuminate\Queue\Events\JobExceptionOccurred::class, \Seat\Eveapi\Listeners\EsiFailedCall::class);
+        $events->listen(\Illuminate\Queue\Events\JobQueued::class, \Seat\Eveapi\Listeners\JobQueuedSubscriber::class);
+
+        Queue::before(function (JobProcessing $event) {
+            $class = unserialize($event->job->payload()['data']['command']);
+
+            if ($class instanceof AbstractCharacterJob || $class instanceof AbstractCorporationJob || $class instanceof AbstractAllianceJob) {
+                // in case job was processing - trigger an event which mark it as working
+                ProcessingEsiJob::dispatch(get_class($class), $class->displayName(), $class->getJobScope(), $class->getEntityId());
+            }
+        });
+
+        Queue::after(function (JobProcessed $event) {
+            if (! $event->job->hasFailed()) {
+                $class = unserialize($event->job->payload()['data']['command']);
+
+                if ($class instanceof AbstractCharacterJob || $class instanceof AbstractCorporationJob || $class instanceof AbstractAllianceJob) {
+                    // in case job was successfully completed - trigger an event which mark it as success
+                    EsiJobCompleted::dispatch(get_class($class), $class->displayName(), $class->getJobScope(), $class->getEntityId());
+                }
+            }
+        });
     }
 
     /**

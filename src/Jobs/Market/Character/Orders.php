@@ -59,6 +59,14 @@ class Orders extends AbstractAuthCharacterJob
     protected $tags = ['character', 'market'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character active orders";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

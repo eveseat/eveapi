@@ -102,6 +102,14 @@ class Items extends AbstractAuthCorporationJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation contract items";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

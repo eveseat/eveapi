@@ -72,6 +72,14 @@ class Stations extends EsiBase
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Discover universe NPC outposts...";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

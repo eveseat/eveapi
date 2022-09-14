@@ -58,6 +58,14 @@ class Labels extends AbstractAuthAllianceJob
     protected $tags = ['alliance', 'contact'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve alliance contact labels";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

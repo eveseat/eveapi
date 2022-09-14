@@ -71,6 +71,14 @@ class Names extends EsiBase
     protected $existing_entity_ids;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Discover universe entity names...";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

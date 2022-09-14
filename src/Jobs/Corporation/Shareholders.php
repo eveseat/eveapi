@@ -87,6 +87,14 @@ class Shareholders extends AbstractAuthCorporationJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation Shareholders";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

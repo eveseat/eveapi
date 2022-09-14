@@ -48,6 +48,14 @@ class Members extends AbstractAllianceJob
     protected $version = 'v1';
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve alliance members";
+    }
+
+    /**
      * @throws \Throwable
      */
     public function handle()

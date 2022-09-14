@@ -59,6 +59,14 @@ class Clones extends AbstractAuthCharacterJob
     protected $tags = ['character', 'clone'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character clones";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

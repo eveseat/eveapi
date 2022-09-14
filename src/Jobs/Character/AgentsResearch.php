@@ -59,6 +59,14 @@ class AgentsResearch extends AbstractAuthCharacterJob
     protected $tags = ['character', 'industry'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character Research Agents";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

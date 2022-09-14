@@ -63,6 +63,14 @@ class MembersTitles extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'member', 'role'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation assigned titles";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

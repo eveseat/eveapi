@@ -63,6 +63,14 @@ class Divisions extends AbstractAuthCorporationJob
     protected $tags = ['corporation'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation divisions";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

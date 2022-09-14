@@ -54,6 +54,14 @@ class Info extends AbstractCharacterJob
     protected $tags = ['character'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character profile";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

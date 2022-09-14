@@ -59,6 +59,14 @@ class Notifications extends AbstractAuthCharacterJob
     protected $tags = ['character', 'notification'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character notifications";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

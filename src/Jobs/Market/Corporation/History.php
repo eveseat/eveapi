@@ -69,6 +69,14 @@ class History extends AbstractAuthCorporationJob
     protected $page = 1;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation orders history";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

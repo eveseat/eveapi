@@ -59,6 +59,14 @@ class Fittings extends AbstractAuthCharacterJob
     protected $tags = ['character', 'fitting'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character fittings";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

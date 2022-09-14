@@ -66,6 +66,14 @@ class Jobs extends AbstractAuthCharacterJob
     protected $tags = ['character', 'industry'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character industry jobs";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

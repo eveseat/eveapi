@@ -59,6 +59,14 @@ class Medals extends AbstractAuthCharacterJob
     protected $tags = ['character'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character Medals";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

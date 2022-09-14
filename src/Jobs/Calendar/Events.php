@@ -64,6 +64,14 @@ class Events extends AbstractAuthCharacterJob
     protected $from_id = 0;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character events";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

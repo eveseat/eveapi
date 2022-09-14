@@ -64,6 +64,14 @@ class Queue extends AbstractAuthCharacterJob
     protected $greatest_position;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character skill queue";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

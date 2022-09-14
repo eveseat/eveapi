@@ -53,6 +53,14 @@ class Map extends EsiBase
     protected $tags = ['sovereignty'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Discover universe map...";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

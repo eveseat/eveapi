@@ -73,6 +73,14 @@ class Names extends AbstractAuthCharacterJob
     protected $item_id_limit = 1000;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character assets name";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

@@ -58,6 +58,14 @@ class MailingLists extends AbstractAuthCharacterJob
     protected $tags = ['mail'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character mailing lists";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

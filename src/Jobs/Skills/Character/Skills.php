@@ -61,6 +61,14 @@ class Skills extends AbstractAuthCharacterJob
     protected $tags = ['character', 'skill'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character skills";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

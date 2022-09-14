@@ -64,6 +64,14 @@ class Titles extends AbstractAuthCharacterJob
     private $active_titles;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character titles";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

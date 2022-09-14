@@ -44,6 +44,8 @@ class CheckServerStatus
                     sprintf('EVE Online server seems to be unreachable. Job %s has been abort.',
                         get_class($job)));
 
+                $job->release($job::EVE_UNREACHABLE_RELEASE_TIME);
+
                 return;
             }
         }

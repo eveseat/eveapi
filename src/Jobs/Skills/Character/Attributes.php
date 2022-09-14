@@ -59,6 +59,14 @@ class Attributes extends AbstractAuthCharacterJob
     protected $tags = ['character', 'skill'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character attributes";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

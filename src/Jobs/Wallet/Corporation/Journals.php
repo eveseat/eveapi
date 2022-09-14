@@ -80,6 +80,14 @@ class Journals extends AbstractAuthCorporationJob
     protected $at_last_entry = false;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation wallet journal";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

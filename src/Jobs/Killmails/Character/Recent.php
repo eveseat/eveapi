@@ -81,6 +81,14 @@ class Recent extends AbstractAuthCharacterJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character killmails";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

@@ -63,6 +63,14 @@ class Balances extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'wallet'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation wallet balances";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

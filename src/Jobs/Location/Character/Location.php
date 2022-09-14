@@ -58,6 +58,14 @@ class Location extends AbstractAuthCharacterJob
     protected $tags = ['character', 'meta'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character location";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

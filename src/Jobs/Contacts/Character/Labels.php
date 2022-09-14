@@ -58,6 +58,14 @@ class Labels extends AbstractAuthCharacterJob
     protected $tags = ['character', 'contact'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character contact labels";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

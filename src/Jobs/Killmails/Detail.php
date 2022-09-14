@@ -83,6 +83,14 @@ class Detail extends EsiBase
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve killmail details";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

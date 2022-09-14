@@ -97,6 +97,14 @@ class Titles extends AbstractAuthCorporationJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation titles";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

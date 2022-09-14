@@ -88,6 +88,14 @@ class Starbases extends AbstractAuthCorporationJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation POS";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

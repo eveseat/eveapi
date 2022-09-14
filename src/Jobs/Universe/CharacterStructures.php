@@ -61,6 +61,14 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
     protected $tags = ['character', 'universe', 'structure'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character structures";
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function handle()

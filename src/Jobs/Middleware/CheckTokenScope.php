@@ -44,12 +44,14 @@ class CheckTokenScope
             return;
         }
 
-        // in case the job does not required specific scopes or token got required scope - forward
+        // in case the job does not require specific scopes or token got required scope - forward
         if ($job->getScope() == '' || in_array($job->getScope(), $job->getToken()->scopes)) {
             $next($job);
 
             return;
         }
+
+        $job->fail();
 
         // log event otherwise
         logger()->warning('A job requiring a not granted scope has been queued.', [

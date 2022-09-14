@@ -48,6 +48,14 @@ class CorporationHistory extends AbstractCharacterJob
     protected $tags = ['character'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character employment history";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

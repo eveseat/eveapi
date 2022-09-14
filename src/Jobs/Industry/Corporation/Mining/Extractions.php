@@ -64,6 +64,14 @@ class Extractions extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'industry', 'structure'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation mining extractions";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

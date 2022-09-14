@@ -54,6 +54,14 @@ class Info extends AbstractCorporationJob
     protected $tags = ['corporation'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation profile";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

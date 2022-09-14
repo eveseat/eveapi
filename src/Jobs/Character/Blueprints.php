@@ -86,6 +86,14 @@ class Blueprints extends AbstractAuthCharacterJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character blueprints";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

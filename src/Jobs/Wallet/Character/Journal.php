@@ -74,6 +74,14 @@ class Journal extends AbstractAuthCharacterJob
     protected $at_last_entry = false;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character wallet journal";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

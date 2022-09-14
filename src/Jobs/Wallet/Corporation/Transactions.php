@@ -72,6 +72,14 @@ class Transactions extends AbstractAuthCorporationJob
     protected $from_id = 0;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation wallet transactions";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

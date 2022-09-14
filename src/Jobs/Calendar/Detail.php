@@ -61,6 +61,14 @@ class Detail extends AbstractAuthCharacterJob
     protected $tags = ['calendar'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character event details";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

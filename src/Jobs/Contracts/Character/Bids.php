@@ -95,6 +95,14 @@ class Bids extends AbstractAuthCharacterJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character contract bids";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

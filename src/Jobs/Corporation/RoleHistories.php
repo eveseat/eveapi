@@ -68,6 +68,14 @@ class RoleHistories extends AbstractAuthCorporationJob
     protected $page = 1;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation role histories";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

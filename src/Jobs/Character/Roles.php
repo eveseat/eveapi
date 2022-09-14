@@ -58,6 +58,14 @@ class Roles extends AbstractAuthCharacterJob
     protected $tags = ['character', 'role'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character corporation roles";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

@@ -54,6 +54,14 @@ class Structures extends EsiBase
     protected $tags = ['sovereignty'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Discover universe structures...";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

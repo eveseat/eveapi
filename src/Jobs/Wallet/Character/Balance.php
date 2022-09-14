@@ -58,6 +58,14 @@ class Balance extends AbstractAuthCharacterJob
     protected $tags = ['character', 'wallet'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character wallet balance";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

@@ -64,6 +64,14 @@ class Mining extends AbstractAuthCharacterJob
     protected $page = 1;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character mining ledger";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

@@ -58,6 +58,14 @@ class Labels extends AbstractAuthCharacterJob
     protected $tags = ['mail'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character mail labels";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

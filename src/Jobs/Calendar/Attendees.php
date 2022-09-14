@@ -59,6 +59,14 @@ class Attendees extends AbstractAuthCharacterJob
     protected $tags = ['calendar'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character event attendees";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Exception

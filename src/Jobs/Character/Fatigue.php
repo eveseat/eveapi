@@ -58,6 +58,14 @@ class Fatigue extends AbstractAuthCharacterJob
     protected $tags = ['character'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character Jump Fatigue";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

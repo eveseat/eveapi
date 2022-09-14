@@ -58,6 +58,14 @@ class Implants extends AbstractAuthCharacterJob
     protected $tags = ['character', 'clone'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character implants";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

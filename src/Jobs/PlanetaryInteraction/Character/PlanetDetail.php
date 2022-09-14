@@ -134,6 +134,14 @@ class PlanetDetail extends AbstractAuthCharacterJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character planet infrastructure";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

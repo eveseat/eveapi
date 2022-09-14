@@ -63,6 +63,14 @@ class Standings extends AbstractAuthCorporationJob
     protected $page = 1;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation standings";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

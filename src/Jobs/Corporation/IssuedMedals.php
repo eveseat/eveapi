@@ -68,6 +68,14 @@ class IssuedMedals extends AbstractAuthCorporationJob
     protected $page = 1;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation issued medals";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

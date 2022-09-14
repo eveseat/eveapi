@@ -66,6 +66,14 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'pi'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation POCO locations";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

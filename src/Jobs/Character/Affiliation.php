@@ -75,6 +75,14 @@ class Affiliation extends EsiBase
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return 'Discover characters affiliation...';
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

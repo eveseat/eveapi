@@ -82,6 +82,14 @@ class Contacts extends AbstractAuthCharacterJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character contacts";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

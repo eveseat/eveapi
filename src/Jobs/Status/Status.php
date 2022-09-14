@@ -66,6 +66,14 @@ class Status extends EsiBase
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve EVE Online Server status";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

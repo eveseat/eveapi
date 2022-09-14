@@ -69,6 +69,14 @@ class ObserverDetails extends AbstractAuthCorporationJob
     protected $page = 1;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return get_class($this);
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

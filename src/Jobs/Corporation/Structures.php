@@ -90,6 +90,14 @@ class Structures extends AbstractAuthCorporationJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation structures";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

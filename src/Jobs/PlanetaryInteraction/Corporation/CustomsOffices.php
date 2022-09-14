@@ -88,6 +88,14 @@ class CustomsOffices extends AbstractAuthCorporationJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation POCOs";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

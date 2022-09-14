@@ -66,6 +66,14 @@ class Transactions extends AbstractAuthCharacterJob
     protected $from_id = 0;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character wallet transactions";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

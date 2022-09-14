@@ -49,6 +49,14 @@ class Info extends AbstractAllianceJob
     protected $version = 'v3';
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve alliance information";
+    }
+
+    /**
      * Handle the job.
      *
      * @throws \Throwable

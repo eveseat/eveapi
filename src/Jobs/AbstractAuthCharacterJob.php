@@ -22,9 +22,9 @@
 
 namespace Seat\Eveapi\Jobs;
 
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenVersion;
-use Seat\Eveapi\Jobs\Middleware\WithoutOverlapping;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -60,8 +60,8 @@ abstract class AbstractAuthCharacterJob extends AbstractCharacterJob
             new CheckTokenScope,
             new CheckTokenVersion,
             (new WithoutOverlapping($this->getToken()->character_id))
-                ->releaseAfter(WithoutOverlapping::ANTI_RACE_DELAY)
-                ->expireAfter(WithoutOverlapping::ACCESS_TOKEN_EXPIRY_DELAY),
+                ->releaseAfter($this::ANTI_RACE_DELAY)
+                ->expireAfter($this::ACCESS_TOKEN_EXPIRY_DELAY),
         ]);
     }
 }

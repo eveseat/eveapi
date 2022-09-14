@@ -54,6 +54,14 @@ class Alliances extends EsiBase
     protected $tags = ['alliance'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return 'Discover universe alliance...';
+    }
+
+    /**
      * @throws \Throwable
      */
     public function handle()

@@ -54,6 +54,8 @@ class CheckEsiRouteStatus
                     sprintf('ESI route seems to be unavailable. Job %s has been aborted.',
                         get_class($job)));
 
+                $job->delete();
+
                 return;
             }
         }
@@ -62,6 +64,7 @@ class CheckEsiRouteStatus
     }
 
     /**
+     * @param $endpoint
      * @return bool
      */
     private function isRouteOnline($endpoint): bool

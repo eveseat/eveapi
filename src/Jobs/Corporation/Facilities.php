@@ -63,6 +63,14 @@ class Facilities extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'industry'];
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation facilities";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

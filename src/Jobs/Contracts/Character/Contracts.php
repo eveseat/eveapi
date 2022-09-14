@@ -64,6 +64,14 @@ class Contracts extends AbstractAuthCharacterJob
     protected $page = 1;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character contracts";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

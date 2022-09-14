@@ -64,6 +64,14 @@ class Contracts extends AbstractAuthCorporationJob
     protected $page = 1;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation contracts";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

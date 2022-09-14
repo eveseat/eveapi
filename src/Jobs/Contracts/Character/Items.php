@@ -101,6 +101,14 @@ class Items extends AbstractAuthCharacterJob
     }
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character contract items";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

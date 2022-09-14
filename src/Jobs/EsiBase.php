@@ -26,6 +26,7 @@ use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Events\EsiJobFailed;
 use Seat\Eveapi\Exception\PermanentInvalidTokenException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Exception\UnavailableEveServersException;
@@ -37,6 +38,7 @@ use Seat\Services\Contracts\EsiClient;
 use Seat\Services\Contracts\EsiResponse;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
+use Throwable;
 
 /**
  * Class EsiBase.
@@ -48,6 +50,14 @@ abstract class EsiBase extends AbstractJob
     const RATE_LIMIT = 80;
 
     const RATE_LIMIT_DURATION = 300;
+
+    const EVE_UNREACHABLE_RELEASE_TIME = 120;
+
+    // ANTI_RACE_DELAY prevents rapid job recylcing with low queue depths
+    const ANTI_RACE_DELAY = 10;
+
+    // ACCESS_TOKEN_EXPIRY_DELAY forces lock release after 25m (as access token exipry is 20m)
+    const ACCESS_TOKEN_EXPIRY_DELAY = 25 * 60;
 
     const RATE_LIMIT_KEY = 'esiratelimit';
 
@@ -151,6 +161,13 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
+     * Provide human-readable job name.
+     *
+     * @return string
+     */
+    abstract public function displayName(): string;
+
+    /**
      * @return array
      */
     public function middleware()
@@ -228,9 +245,11 @@ abstract class EsiBase extends AbstractJob
      *
      * @throws \Exception
      */
-    public function failed(Exception $exception)
+    public function failed(Throwable $exception)
     {
         parent::failed($exception);
+
+        EsiJobFailed::dispatch(get_class($this), $this->displayName(), $this->getJobScope(), $this->getEntityId());
 
         // used token is non longer valid, remove it from the system.
         if ($exception instanceof PermanentInvalidTokenException) {
@@ -243,6 +262,44 @@ abstract class EsiBase extends AbstractJob
                 return null;
             });
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getJobScope(): string
+    {
+        $scope = 'global';
+
+        if ($this instanceof AbstractCharacterJob)
+            $scope = 'character';
+
+        if ($this instanceof AbstractCorporationJob)
+            $scope = 'corporation';
+
+        if ($this instanceof AbstractAllianceJob)
+            $scope = 'alliance';
+
+        return $scope;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEntityId(): int
+    {
+        $entity_id = 0;
+
+        if ($this instanceof AbstractCharacterJob)
+            $entity_id = $this->getCharacterId();
+
+        if ($this instanceof AbstractCorporationJob)
+            $entity_id = $this->getCorporationId();
+
+        if ($this instanceof AbstractAllianceJob)
+            $entity_id = $this->getAllianceId();
+
+        return $entity_id;
     }
 
     /**

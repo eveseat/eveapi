@@ -22,11 +22,15 @@
 
 namespace Seat\Eveapi\Listeners;
 
-use Exception;
 use Illuminate\Queue\Events\JobExceptionOccurred;
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Events\EsiJobFailed;
 use Seat\Eveapi\Exception\PermanentInvalidTokenException;
 use Seat\Eveapi\Exception\UnavailableEveServersException;
+use Seat\Eveapi\Jobs\AbstractAllianceJob;
+use Seat\Eveapi\Jobs\AbstractCharacterJob;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Throwable;
 
 /**
  * Class EsiFailedCall.
@@ -41,11 +45,12 @@ class EsiFailedCall
     public function handle(JobExceptionOccurred $event)
     {
         try {
+            $job_class = unserialize($event->job->payload()['data']['command']);
+
             // if esi tell us that used token is permanently invalid
             // remove it from the system and mark job as failed.
             if ($event->exception instanceof PermanentInvalidTokenException) {
-                $esi_job = unserialize($event->job->payload()['data']['command']);
-                $esi_job->getToken()->delete();
+                $job_class->getToken()->delete();
 
                 $event->job->fail($event->exception);
             }
@@ -64,7 +69,11 @@ class EsiFailedCall
                     $event->job->fail($event->exception);
                 }
             }
-        } catch (Exception $exception) {
+
+            if ($job_class instanceof AbstractCharacterJob || $job_class instanceof AbstractCorporationJob || $job_class instanceof AbstractAllianceJob) {
+                EsiJobFailed::dispatch(get_class($job_class), $job_class->displayName(), $job_class->getJobScope(), $job_class->getEntityId());
+            }
+        } catch (Throwable $exception) {
             logger()->error($exception->getMessage());
         }
 

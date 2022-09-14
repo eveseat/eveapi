@@ -71,6 +71,14 @@ class Names extends AbstractAuthCorporationJob
     protected $item_id_limit = 1000;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation assets name";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

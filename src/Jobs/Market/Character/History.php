@@ -64,6 +64,14 @@ class History extends AbstractAuthCharacterJob
     protected $page = 1;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character orders history";
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable

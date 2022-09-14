@@ -76,6 +76,14 @@ class Locations extends AbstractAuthCharacterJob
     private $has_exception = false;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve character asset locations";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void

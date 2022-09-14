@@ -81,6 +81,14 @@ class Locations extends AbstractAuthCorporationJob
     private $has_exception = false;
 
     /**
+     * @return string
+     */
+    public function displayName(): string
+    {
+        return "Retrieve corporation asset locations";
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
