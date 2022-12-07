@@ -50,7 +50,6 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
 use Seat\Services\Traits\NotableTrait;
-use Seat\Web\Models\User;
 
 /**
  * Class CharacterInfo.
@@ -60,6 +59,11 @@ use Seat\Web\Models\User;
 class CharacterInfo extends Model
 {
     use NotableTrait;
+
+    /**
+     * @var \Illuminate\Contracts\Auth\Authenticatable
+     */
+    private static $user_instance;
 
     /**
      * @var bool
@@ -75,6 +79,20 @@ class CharacterInfo extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @param  array  $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // init user instance - so we can apply relationship
+        if (is_null(self::$user_instance)) {
+            $user_class = config('auth.providers.users.model');
+            self::$user_instance = new $user_class;
+        }
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -439,13 +457,11 @@ class CharacterInfo extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
-     *
-     * @deprecated 4.0.0
      */
     public function user()
     {
-        return $this->hasOneThrough(User::class, RefreshToken::class,
-            'character_id', 'id', 'character_id', 'user_id')
+        return $this->hasOneThrough(self::$user_instance::class, RefreshToken::class,
+            'character_id', self::$user_instance->getAuthIdentifierName(), 'character_id', 'user_id')
             ->withDefault([
                 'name' => trans('web::seat.unknown'),
             ]);
@@ -469,18 +485,5 @@ class CharacterInfo extends Model
 
         return $this->hasMany(CharacterWalletTransaction::class,
             'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Seat\Eveapi\Models\Character\CharacterCorporationHistory
-     *
-     * @deprecated 4.0.0
-     */
-    public function getCurrentCorporationAttribute()
-    {
-
-        return CharacterCorporationHistory::where('character_id', $this->character_id)
-            ->orderBy('record_id', 'desc')
-            ->first();
     }
 }

@@ -28,7 +28,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenApi\Annotations as OA;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Web\Models\User;
 
 /**
  * Class RefreshToken.
@@ -112,6 +111,11 @@ class RefreshToken extends Model
     const CURRENT_VERSION = 2;
 
     /**
+     * @var \Illuminate\Contracts\Auth\Authenticatable
+     */
+    private static $user_instance;
+
+    /**
      * @var array
      */
     protected $attributes = [
@@ -153,6 +157,20 @@ class RefreshToken extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @param  array  $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // init user instance - so we can apply relationship
+        if (is_null(self::$user_instance)) {
+            $user_class = config('auth.providers.users.model');
+            self::$user_instance = new $user_class;
+        }
+    }
 
     /**
      * Register a soft deleted model event with the dispatcher.
@@ -201,13 +219,10 @@ class RefreshToken extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     *
-     * @deprecated 4.0.0
      */
     public function user()
     {
-
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(self::$user_instance::class, 'user_id', self::$user_instance->getAuthIdentifierName());
     }
 
     /**
