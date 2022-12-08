@@ -128,17 +128,18 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
     private function add_sde_seeders()
     {
-        $this->registerSdeSeeders([
-            \Seat\Eveapi\Database\Seeders\Sde\MapDenormalizeSeeder::class,
-            \Seat\Eveapi\Database\Seeders\Sde\DgmTypeAttributesSeeder::class,
-            \Seat\Eveapi\Database\Seeders\Sde\InvControlTowerResourcesSeeder::class,
-            \Seat\Eveapi\Database\Seeders\Sde\InvGroupsSeeder::class,
-            \Seat\Eveapi\Database\Seeders\Sde\InvMarketGroupsSeeder::class,
-            \Seat\Eveapi\Database\Seeders\Sde\InvTypesSeeder::class,
-            \Seat\Eveapi\Database\Seeders\Sde\InvTypeMaterialsSeeder::class,
-            \Seat\Eveapi\Database\Seeders\Sde\RamActivitiesSeeder::class,
-            \Seat\Eveapi\Database\Seeders\Sde\StaStationsSeeder::class,
-        ]);
+        // skipped until method is added back into services.
+        // $this->registerSdeSeeders([
+        //     \Seat\Eveapi\Database\Seeders\Sde\MapDenormalizeSeeder::class,
+        //     \Seat\Eveapi\Database\Seeders\Sde\DgmTypeAttributesSeeder::class,
+        //     \Seat\Eveapi\Database\Seeders\Sde\InvControlTowerResourcesSeeder::class,
+        //     \Seat\Eveapi\Database\Seeders\Sde\InvGroupsSeeder::class,
+        //     \Seat\Eveapi\Database\Seeders\Sde\InvMarketGroupsSeeder::class,
+        //     \Seat\Eveapi\Database\Seeders\Sde\InvTypesSeeder::class,
+        //     \Seat\Eveapi\Database\Seeders\Sde\InvTypeMaterialsSeeder::class,
+        //     \Seat\Eveapi\Database\Seeders\Sde\RamActivitiesSeeder::class,
+        //     \Seat\Eveapi\Database\Seeders\Sde\StaStationsSeeder::class,
+        // ]);
     }
 
     /**
