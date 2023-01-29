@@ -59,6 +59,7 @@ class RemoveCorporationIdColumnFromCorporationTitleRolesTable extends Migration
             });
 
         Schema::table('corporation_title_roles', function (Blueprint $table) {
+            $table->dropPrimary('corporation_title_roles_primary_key');
             $table->dropColumn('corporation_id');
 
             $table->unique(['title_id', 'type', 'role']);
@@ -68,7 +69,7 @@ class RemoveCorporationIdColumnFromCorporationTitleRolesTable extends Migration
             $table->bigIncrements('id')->first();
 
             $table->foreign('title_id')
-                ->references('id')
+                ->references('title_id')
                 ->on('corporation_titles')
                 ->onDelete('CASCADE');
         });
