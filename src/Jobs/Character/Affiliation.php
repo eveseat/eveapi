@@ -94,12 +94,12 @@ class Affiliation extends EsiBase
             collect($affiliations)->each(function ($affiliation) {
 
                 //if a character changed corporation, remove his corporation roles
-                $is_same_corp = CharacterAffiliation::where("character_id",$affiliation->character_id)
-                    ->where("corporation_id",$affiliation->corporation_id)
+                $is_same_corp = CharacterAffiliation::where('character_id', $affiliation->character_id)
+                    ->where('corporation_id', $affiliation->corporation_id)
                     ->exists();
-                if(!$is_same_corp){
+                if(! $is_same_corp){
                     //make sure to update observers, so squads get updated
-                    $roles = CorporationRole::where("character_id",$affiliation->character_id)->get();
+                    $roles = CorporationRole::where('character_id', $affiliation->character_id)->get();
                     foreach ($roles as $role){
                         $role->delete();
                     }
