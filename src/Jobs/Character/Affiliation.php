@@ -22,10 +22,8 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-use http\Exception;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
-use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 use Seat\Eveapi\Models\Corporation\CorporationRole;
 
 /**
