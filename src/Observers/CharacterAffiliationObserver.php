@@ -52,7 +52,7 @@ class CharacterAffiliationObserver
     /**
      * @param  \Seat\Eveapi\Models\Character\CharacterAffiliation  $affiliation
      */
-    public function saving(CharacterAffiliation $affiliation){
+    public function saving(CharacterAffiliation $affiliation) {
         //if a character changed corporation, remove his corporation roles
         //it must run in the saving observer so that we can still see the old affiliation
         //first, check if the character changed corporations
