@@ -163,11 +163,11 @@ class Sde extends Command
         $requires_update =
             $this->json->version !== Seat::get('installed_sde') ||
             $this->option('force') == true ||
-            count(array_diff($this->json->tables,$current_tables)) > 0;
+            count(array_diff($this->json->tables, $current_tables)) > 0;
 
         // Avoid an existing SDE to be accidentally installed again
         // except if the user explicitly ask for it
-        if (!$requires_update) {
+        if (! $requires_update) {
 
             $this->warn('You are already running the latest SDE version.');
             $this->warn('If you want to install it again, run this command with --force argument.');
@@ -223,7 +223,7 @@ class Sde extends Command
         $this->explodeMap();
 
         Seat::set('installed_sde', $this->json->version);
-        Seat::set('installed_sde_tables',$this->json->tables);
+        Seat::set('installed_sde_tables', $this->json->tables);
 
         $this->line('SDE Update Command Complete');
 
