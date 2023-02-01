@@ -163,7 +163,7 @@ class Sde extends Command
         $requires_update =
             $this->json->version !== Seat::get('installed_sde') ||
             $this->option('force') == true ||
-            count(array_diff($this->json->tables, $current_tables)) > 0;
+            array_diff($this->json->tables, $current_tables) !== [];
 
         // Avoid an existing SDE to be accidentally installed again
         // except if the user explicitly ask for it
