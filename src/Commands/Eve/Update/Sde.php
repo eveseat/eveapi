@@ -154,14 +154,14 @@ class Sde extends Command
 
         //get currently installed tables
         // after the update introducing this change or a new install, this will be null. To ensure it's properly set, we assume no sde is installed
-        $current_tables = Seat::get('installed_sde_tables') ?? [];
+        $current_tables = setting('installed_sde_tables', true) ?? [];
 
         // Avoid an existing SDE to be accidentally installed again
         // except if there is a newer version
         // except if the user explicitly ask for it,
         // except if new tables are required
         $requires_update =
-            $this->json->version !== Seat::get('installed_sde') ||
+            $this->json->version !== setting('installed_sde', true) ||
             $this->option('force') == true ||
             array_diff($this->json->tables, $current_tables) !== [];
 
@@ -223,7 +223,7 @@ class Sde extends Command
         $this->explodeMap();
 
         Seat::set('installed_sde', $this->json->version);
-        Seat::set('installed_sde_tables', $this->json->tables);
+        setting(['installed_sde_tables', $this->json->tables], true);
 
         $this->line('SDE Update Command Complete');
 
