@@ -30,7 +30,6 @@ use Illuminate\Support\Facades\File;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
-use Seat\Services\Settings\Seat;
 
 /**
  * Class Sde.
@@ -222,7 +221,7 @@ class Sde extends Command
 
         $this->explodeMap();
 
-        Seat::set('installed_sde', $this->json->version);
+        setting(['installed_sde', $this->json->version], true);
         setting(['installed_sde_tables', $this->json->tables], true);
 
         $this->line('SDE Update Command Complete');
