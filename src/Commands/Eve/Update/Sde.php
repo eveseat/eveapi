@@ -30,7 +30,6 @@ use Illuminate\Support\Facades\File;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
-use Seat\Services\Settings\Seat;
 
 /**
  * Class Sde.
@@ -146,11 +145,28 @@ class Sde extends Command
             }
         }
 
+        // add extra tables registered on behalf providers
+        $extra_tables = config('seat.sde.tables', []);
+        //filter duplicates
+        $this->json->tables = array_unique(array_merge($this->json->tables, $extra_tables));
+        sort($this->json->tables, SORT_STRING);
+
+        //get currently installed tables
+        // after the update introducing this change or a new install, this will be null. To ensure it's properly set, we assume no sde is installed
+        $current_tables = setting('installed_sde_tables', true) ?? [];
+
+        // Avoid an existing SDE to be accidentally installed again
+        // except if there is a newer version
+        // except if the user explicitly ask for it,
+        // except if new tables are required
+        $requires_update =
+            $this->json->version !== setting('installed_sde', true) ||
+            $this->option('force') == true ||
+            array_diff($this->json->tables, $current_tables) !== [];
+
         // Avoid an existing SDE to be accidentally installed again
         // except if the user explicitly ask for it
-        if ($this->json->version == Seat::get('installed_sde') &&
-            $this->option('force') == false
-        ) {
+        if (! $requires_update) {
 
             $this->warn('You are already running the latest SDE version.');
             $this->warn('If you want to install it again, run this command with --force argument.');
@@ -170,12 +186,6 @@ class Sde extends Command
                 return;
             }
         }
-
-        // add extra tables registered on behalf providers
-        $extra_tables = config('seat.sde.tables', []);
-
-        $this->json->tables = array_unique(array_merge($this->json->tables, $extra_tables));
-        sort($this->json->tables, SORT_STRING);
 
         // Show a final confirmation with some info on what
         // we are going to be doing.
@@ -211,7 +221,8 @@ class Sde extends Command
 
         $this->explodeMap();
 
-        Seat::set('installed_sde', $this->json->version);
+        setting(['installed_sde', $this->json->version], true);
+        setting(['installed_sde_tables', $this->json->tables], true);
 
         $this->line('SDE Update Command Complete');
 
