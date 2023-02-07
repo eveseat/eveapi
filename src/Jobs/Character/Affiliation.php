@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
+use Illuminate\Bus\Batchable;
 
 /**
  * Class Affiliation.
@@ -32,6 +33,7 @@ use Seat\Eveapi\Models\Character\CharacterAffiliation;
  */
 class Affiliation extends EsiBase
 {
+    use Batchable;
     /**
      * The maximum number of entities we can request affiliation information for.
      */

@@ -29,6 +29,7 @@ use Seat\Eveapi\Jobs\Assets\Character\Names;
 use Seat\Eveapi\Jobs\Calendar\Attendees;
 use Seat\Eveapi\Jobs\Calendar\Detail;
 use Seat\Eveapi\Jobs\Calendar\Events;
+use Seat\Eveapi\Jobs\Character\Affiliation;
 use Seat\Eveapi\Jobs\Character\AgentsResearch;
 use Seat\Eveapi\Jobs\Character\Blueprints;
 use Seat\Eveapi\Jobs\Character\CorporationHistory;
@@ -153,6 +154,7 @@ class Character extends Bus
     {
         $this->jobs->add(new Info($this->character_id));
         $this->jobs->add(new CorporationHistory($this->character_id));
+        $this->jobs->add(new Affiliation([$this->character_id]));
     }
 
     /**
