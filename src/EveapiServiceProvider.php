@@ -69,7 +69,7 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
         $this->registerDatabaseSeeders([
             \Seat\Eveapi\Database\Seeders\ScheduleSeeder::class,
-            \Seat\Eveapi\Database\Seeders\Sde\SdeSeeder::class,
+            // \Seat\Eveapi\Database\Seeders\Sde\SdeSeeder::class, -- Disabled until later implemented again in services
         ]);
     }
 
