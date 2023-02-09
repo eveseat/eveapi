@@ -94,8 +94,6 @@ class History extends EsiBase
                     'region_id' => $region_id,
                 ]);
 
-                if ($response->isFromCache() && Price::count() > 0) return;
-
                 $prices = $response->getBody();
 
                 // search the more recent entry in returned history.

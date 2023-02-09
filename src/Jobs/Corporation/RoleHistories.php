@@ -84,10 +84,6 @@ class RoleHistories extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CorporationRoleHistory::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
-
             $roles = $response->getBody();
 
             collect($roles)->each(function ($role) {

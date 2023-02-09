@@ -98,10 +98,6 @@ class Contacts extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CorporationContact::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
-
             $contacts = $response->getBody();
 
             collect($contacts)->each(function ($contact) {

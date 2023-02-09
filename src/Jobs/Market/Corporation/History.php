@@ -85,10 +85,6 @@ class History extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CorporationOrder::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
-
             $orders = $response->getBody();
 
             collect($orders)->each(function ($order) {

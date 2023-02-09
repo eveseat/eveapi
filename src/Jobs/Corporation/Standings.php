@@ -79,10 +79,6 @@ class Standings extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CorporationStanding::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
-
             $standings = $response->getBody();
 
             collect($standings)->chunk(100)->each(function ($chunk) {

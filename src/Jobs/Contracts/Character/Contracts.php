@@ -80,10 +80,6 @@ class Contracts extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CharacterContract::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
-
             $contracts = $response->getBody();
 
             collect($contracts)->each(function ($contract) {

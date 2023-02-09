@@ -85,10 +85,6 @@ class Transactions extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CharacterWalletTransaction::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
-
             $entries = collect($response->getBody());
 
             // If we have no more entries, break the loop.

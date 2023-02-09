@@ -140,10 +140,6 @@ class Items extends AbstractAuthCharacterJob
                     'contract_id' => $this->contract_id,
                 ]);
 
-                if ($response->isFromCache() &&
-                    ContractItem::where('contract_id', $this->contract_id)->count() > 0)
-                    return;
-
                 $items = $response->getBody();
 
                 collect($items)->each(function ($item) {

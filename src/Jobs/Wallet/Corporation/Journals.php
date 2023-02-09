@@ -111,10 +111,6 @@ class Journals extends AbstractAuthCorporationJob
                         'division'       => $balance->division,
                     ]);
 
-                    if ($response->isFromCache() &&
-                        CorporationWalletJournal::where('corporation_id', $this->getCorporationId())->count() > 0)
-                        return;
-
                     $entries = collect($response->getBody());
 
                     // If we have no more entries, break the loop.

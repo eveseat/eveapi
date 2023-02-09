@@ -89,10 +89,6 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
-
             $locations = $response->getBody();
 
             collect($locations)->each(function ($location) use ($chunk) {
