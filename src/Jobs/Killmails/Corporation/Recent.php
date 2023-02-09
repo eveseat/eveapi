@@ -97,8 +97,6 @@ class Recent extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache()) return;
-
             $killmails = $response->getBody();
 
             collect($killmails)->each(function ($killmail) {

@@ -78,10 +78,6 @@ class History extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CharacterOrder::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
-
             $orders = $response->getBody();
 
             collect($orders)->each(function ($order) {

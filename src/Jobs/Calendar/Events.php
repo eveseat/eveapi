@@ -86,10 +86,6 @@ class Events extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CharacterCalendarEvent::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
-
             $events = collect($response->getBody());
 
             // if we have no more entries, break the loop.

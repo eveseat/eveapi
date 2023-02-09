@@ -104,10 +104,6 @@ class Starbases extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CorporationStarbase::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
-
             $starbases = $response->getBody();
 
             collect($starbases)->each(function ($starbase) {

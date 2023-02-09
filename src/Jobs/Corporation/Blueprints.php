@@ -105,10 +105,6 @@ class Blueprints extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CorporationBlueprint::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
-
             $blueprints = $response->getBody();
 
             collect($blueprints)->chunk(100)->each(function ($chunk) {

@@ -98,9 +98,6 @@ class Assets extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($response->isFromCache() && CharacterAsset::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
-
             $assets = collect($response->getBody());
 
             $assets->each(function ($asset) {

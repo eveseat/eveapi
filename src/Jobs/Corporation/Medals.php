@@ -82,10 +82,6 @@ class Medals extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CorporationMedal::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
-
             $medals = $response->getBody();
 
             collect($medals)->each(function ($medal) {

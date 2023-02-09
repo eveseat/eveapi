@@ -106,10 +106,6 @@ class Structures extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($response->isFromCache() &&
-                CorporationStructure::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
-
             $structures = $response->getBody();
 
             collect($structures)->each(function ($structure) {

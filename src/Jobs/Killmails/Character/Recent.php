@@ -93,8 +93,6 @@ class Recent extends AbstractAuthCharacterJob
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($response->isFromCache()) return;
-
             $killmails = $response->getBody();
 
             collect($killmails)->each(function ($killmail) {
