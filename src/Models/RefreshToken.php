@@ -56,12 +56,9 @@ class RefreshToken extends Model implements EsiToken
      */
     protected $casts = [
         'scopes' => 'array',
+        'expires_on' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
-
-    /**
-     * @var array
-     */
-    protected $dates = ['expires_on', 'deleted_at'];
 
     /**
      * @var string
