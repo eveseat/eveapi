@@ -205,8 +205,8 @@ class CorporationStructure extends Model
      */
     public function getEstimatedPriceAttribute()
     {
-        return $this->type->price->average + $this->items->sum(function ($item) {
-                return $item->type->price->average * $item->quantity;
+        return $this->type->price->adjusted_price + $this->items->sum(function ($item) {
+                return $item->type->price->adjusted_price * $item->quantity;
             });
     }
 
@@ -216,7 +216,7 @@ class CorporationStructure extends Model
     public function getFittingEstimatedPriceAttribute()
     {
         return $this->items->sum(function ($item) {
-            return $item->type->price->average * $item->quantity;
+            return $item->type->price->adjusted_price * $item->quantity;
         });
     }
 
