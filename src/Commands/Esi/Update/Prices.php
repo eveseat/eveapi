@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Market\History;
+use Seat\Eveapi\Jobs\Market\Orders;
 use Seat\Eveapi\Jobs\Market\Prices as PricesJob;
 use Seat\Eveapi\Models\Sde\InvType;
 
@@ -54,17 +55,19 @@ class Prices extends Command
     public function handle()
     {
         // collect all items which can be sold on the market.
-        $types = InvType::whereNotNull('marketGroupID')
-            ->where('published', true)
-            ->select('typeID')
-            ->get();
+//        $types = InvType::whereNotNull('marketGroupID')
+//            ->where('published', true)
+//            ->select('typeID')
+//            ->get();
+//
+//        //PricesJob::dispatch();
+//
+//        // build small batch of a maximum of 200 entries to avoid long running job.
+//        $types->chunk(50)->each(function ($chunk) {
+//            $ids = $chunk->pluck('typeID')->toArray();
+//            History::dispatch($ids)->delay(rand(20, 300));
+//        });
 
-        PricesJob::dispatch();
-
-        // build small batch of a maximum of 200 entries to avoid long running job.
-        $types->chunk(50)->each(function ($chunk) {
-            $ids = $chunk->pluck('typeID')->toArray();
-            History::dispatch($ids)->delay(rand(20, 300));
-        });
+        Orders::dispatchNow();
     }
 }
