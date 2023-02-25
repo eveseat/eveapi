@@ -67,14 +67,15 @@ class Orders extends EsiBase
         ini_set('memory_limit', -1);
 
         $count = MarketOrder::count();
+        $now = carbon();
 
-        while (false) {
+        while (true) {
             $orders = $this->retrieve(["region_id" => setting('market_prices_region_id', true) ?: self::THE_FORGE]);
 
             if ($orders->isCachedLoad() && $count > 0) return;
 
-            collect($orders)->chunk(1000)->each(function ($chunk) {
-                $records = $chunk->map(function ($order) {
+            collect($orders)->chunk(1000)->each(function ($chunk) use ($now) {
+                $records = $chunk->map(function ($order) use ($now) {
                     return [
                         'order_id' => $order->order_id,
                         'duration' => $order->duration,
@@ -87,7 +88,9 @@ class Orders extends EsiBase
                         'system_id' => $order->system_id,
                         'type_id' => $order->type_id,
                         'volume_remaining' => $order->volume_remain,
-                        'volume_total' => $order->volume_total
+                        'volume_total' => $order->volume_total,
+                        'updated_at'=>$now,
+                        'created_at'=>$now
                     ];
                 });
 
