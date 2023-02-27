@@ -24,7 +24,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMarketOrdersTable extends Migration
+class AddMarketOrdersData extends Migration
 {
     /**
      * Run the migrations.
@@ -49,6 +49,11 @@ class CreateMarketOrdersTable extends Migration
             $table->integer("volume_total")->unsigned();
             $table->timestamps();
         });
+
+        Schema::table('market_prices', function (Blueprint $table){
+            $table->decimal("sell_price",30,2)->default(0);
+            $table->decimal("buy_price",30,2)->default(0);
+        });
     }
 
     /**
@@ -59,5 +64,10 @@ class CreateMarketOrdersTable extends Migration
     public function down()
     {
         Schema::drop('market_orders');
+
+        Schema::table('market_prices', function (Blueprint $table){
+            $table->dropColumn('sell_price');
+            $table->dropColumn('buy_price');
+        });
     }
 }

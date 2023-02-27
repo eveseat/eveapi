@@ -28,7 +28,7 @@ use Seat\Eveapi\Models\Market\Price;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class Prices.
+ * Class Orders.
  *
  * @package Seat\Eveapi\Jobs\Market
  */
@@ -63,9 +63,6 @@ class Orders extends EsiBase
      */
     public function handle()
     {
-        // this job need a ton of memory. temporarily unlock memory limit as a hack fix
-        ini_set('memory_limit', -1);
-
         $count = MarketOrder::count();
         $now = carbon();
 
@@ -74,7 +71,7 @@ class Orders extends EsiBase
 
             if ($orders->isCachedLoad() && $count > 0) return;
 
-            collect($orders)->chunk(1000)->each(function ($chunk) use ($now) {
+            collect($orders)->chunk(100)->each(function ($chunk) use ($now) {
                 $records = $chunk->map(function ($order) use ($now) {
                     return [
                         'order_id' => $order->order_id,
@@ -96,12 +93,26 @@ class Orders extends EsiBase
 
                 MarketOrder::upsert($records->toArray(), [
                     'order_id',
+                    'duration',
+                    'is_buy_order',
+                    'issued',
+                    'location_id',
+                    'min_volume',
+                    'price',
+                    'range',
+                    'system_id',
+                    'type_id',
+                    'volume_remaining',
+                    'volume_total',
+                    'updated_at'
                 ]);
             });
 
             if (! $this->nextPage($orders->pages)) break;
         }
 
+        // remove old orders
+        // if this ever gets changed to retain old orders, add an expiry check in the OrderAggregates job.
         MarketOrder::whereRaw("ADDDATE(issued,INTERVAL duration DAY) < CURRENT_DATE()")->delete();
     }
 }
