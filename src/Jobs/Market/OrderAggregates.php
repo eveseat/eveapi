@@ -38,12 +38,14 @@ class OrderAggregates extends AbstractJob
 
     public function handle()
     {
+        //the time only needs to be loaded once instead of every time in the loop
         $now = carbon();
 
+        //update sell orders
         MarketOrder::selectRaw("type_id, MIN(price) as sell_price")
             ->groupBy("type_id")
             ->where("is_buy_order",false)
-            ->chunk(500, function ($types) use ($now) {
+            ->chunk(1000, function ($types) use ($now) {
                 $types = $types->map(function ($type) use ($now) {
                     return [
                         "type_id"=>$type->type_id,
@@ -61,10 +63,11 @@ class OrderAggregates extends AbstractJob
                 );
             });
 
+        //update buy orders
         MarketOrder::selectRaw("type_id, MAX(price) as buy_price")
             ->groupBy("type_id")
             ->where("is_buy_order",true)
-            ->chunk(500, function ($types) use ($now) {
+            ->chunk(1000, function ($types) use ($now) {
                 $types = $types->map(function ($type) use ($now) {
                     return [
                         "type_id"=>$type->type_id,

@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Jobs\Market;
 
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\MarketOrder;
-use Seat\Eveapi\Models\Market\Price;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -63,15 +62,23 @@ class Orders extends EsiBase
      */
     public function handle()
     {
+        //the order count, region_id and time can be cached to speed up execution of the loop
         $count = MarketOrder::count();
         $now = carbon();
+        $region_id = setting('market_prices_region_id', true) ?: self::THE_FORGE;
 
+        //load all market data
         while (true) {
-            $orders = $this->retrieve(["region_id" => setting('market_prices_region_id', true) ?: self::THE_FORGE]);
+            //retrieve one page of market orders
+            $orders = $this->retrieve(["region_id" => $region_id]);
 
+            //if the orders are cached, skip this
             if ($orders->isCachedLoad() && $count > 0) return;
 
+            //map the ESI format to the database format, insert updated_at and created_at times
+            //if the batch size is increased to 1000, it crashed
             collect($orders)->chunk(100)->each(function ($chunk) use ($now) {
+                //map the ESI format to the database format
                 $records = $chunk->map(function ($order) use ($now) {
                     return [
                         'order_id' => $order->order_id,
@@ -91,6 +98,7 @@ class Orders extends EsiBase
                     ];
                 });
 
+                //update data in the db
                 MarketOrder::upsert($records->toArray(), [
                     'order_id',
                     'duration',
@@ -108,6 +116,7 @@ class Orders extends EsiBase
                 ]);
             });
 
+            //if there are more pages with orders, continue loading them
             if (! $this->nextPage($orders->pages)) break;
         }
 
