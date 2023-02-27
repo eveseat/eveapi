@@ -70,7 +70,7 @@ class Prices extends Command
         });
 
         Orders::withChain([
-            new OrderAggregates()
+            new OrderAggregates(),
         ])->dispatch();
     }
 }

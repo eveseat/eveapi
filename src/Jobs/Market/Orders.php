@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2023 Leon Jacobs
+ * Copyright (C) 2015 to 2022 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@
 
 namespace Seat\Eveapi\Jobs\Market;
 
+use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\MarketOrder;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class Orders.
@@ -70,7 +70,7 @@ class Orders extends EsiBase
         //load all market data
         while (true) {
             //retrieve one page of market orders
-            $orders = $this->retrieve(["region_id" => $region_id]);
+            $orders = $this->retrieve(['region_id' => $region_id]);
 
             //if the orders are cached, skip this
             if ($orders->isCachedLoad() && $count > 0) return;
@@ -94,7 +94,7 @@ class Orders extends EsiBase
                         'volume_remaining' => $order->volume_remain,
                         'volume_total' => $order->volume_total,
                         'updated_at'=>$now,
-                        'created_at'=>$now
+                        'created_at'=>$now,
                     ];
                 });
 
@@ -112,7 +112,7 @@ class Orders extends EsiBase
                     'type_id',
                     'volume_remaining',
                     'volume_total',
-                    'updated_at'
+                    'updated_at',
                 ]);
             });
 
@@ -122,6 +122,6 @@ class Orders extends EsiBase
 
         // remove old orders
         // if this ever gets changed to retain old orders, add an expiry check in the OrderAggregates job.
-        MarketOrder::whereRaw("ADDDATE(issued,INTERVAL duration DAY) < CURRENT_DATE()")->delete();
+        MarketOrder::whereRaw('ADDDATE(issued,INTERVAL duration DAY) < CURRENT_DATE()')->delete();
     }
 }
