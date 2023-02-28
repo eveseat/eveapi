@@ -25,6 +25,8 @@ namespace Seat\Eveapi\Models\Market;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
+use Seat\Eveapi\Models\Universe\UniverseStation;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
@@ -72,5 +74,21 @@ class MarketOrder extends Model
     {
         return $this->hasOne(SolarSystem::class, 'system_id', 'system_id')
             ->withDefault();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function structure()
+    {
+        return $this->hasOne(UniverseStructure::class, 'structure_id', 'location_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function station()
+    {
+        return $this->hasOne(UniverseStation::class, 'station_id', 'location_id');
     }
 }
