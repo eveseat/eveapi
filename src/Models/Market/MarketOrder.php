@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Market;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
@@ -62,5 +63,14 @@ class MarketOrder extends Model
     public function type()
     {
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function solar_system()
+    {
+        return $this->hasOne(SolarSystem::class, 'system_id', 'system_id')
+            ->withDefault();
     }
 }
