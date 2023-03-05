@@ -81,6 +81,7 @@ class Orders extends EsiBase
                 //map the ESI format to the database format
                 $records = $chunk->map(function ($order) use ($now) {
                     $issued = carbon($order->issued);
+
                     return [
                         'order_id' => $order->order_id,
                         'duration' => $order->duration,
@@ -115,7 +116,7 @@ class Orders extends EsiBase
                     'volume_remaining',
                     'volume_total',
                     'updated_at',
-                    'expiry'
+                    'expiry',
                 ]);
             });
 
