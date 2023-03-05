@@ -66,6 +66,7 @@ class MarketOrder extends Model
         'issued',
         'expiry',
     ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
