@@ -73,18 +73,20 @@ class Orders extends EsiBase
             $orders = $this->retrieve(['region_id' => $region_id]);
 
             //if the orders are cached, skip this
-            if ($orders->isCachedLoad() && $count > 0) return;
+            //if ($orders->isCachedLoad() && $count > 0) return;
 
             //map the ESI format to the database format, insert updated_at and created_at times
             //if the batch size is increased to 1000, it crashed
             collect($orders)->chunk(100)->each(function ($chunk) use ($now) {
                 //map the ESI format to the database format
                 $records = $chunk->map(function ($order) use ($now) {
+                    $issued = carbon($order->issued);
                     return [
                         'order_id' => $order->order_id,
                         'duration' => $order->duration,
                         'is_buy_order' => $order->is_buy_order,
-                        'issued' => carbon($order->issued),
+                        'issued' => $issued,
+                        'expiry' => $issued->addDays($order->duration),
                         'location_id' => $order->location_id,
                         'min_volume' => $order->min_volume,
                         'price' => $order->price,
@@ -113,6 +115,7 @@ class Orders extends EsiBase
                     'volume_remaining',
                     'volume_total',
                     'updated_at',
+                    'expiry'
                 ]);
             });
 
@@ -122,6 +125,6 @@ class Orders extends EsiBase
 
         // remove old orders
         // if this ever gets changed to retain old orders, add an expiry check in the OrderAggregates job.
-        MarketOrder::whereRaw('ADDDATE(issued,INTERVAL duration DAY) < CURRENT_DATE()')->delete();
+        MarketOrder::whereRaw('expiry < CURRENT_DATE()')->delete();
     }
 }

@@ -39,6 +39,7 @@ class AddMarketOrdersData extends Migration
             $table->smallInteger('duration')->unsigned();
             $table->boolean('is_buy_order');
             $table->dateTime('issued');
+            $table->dateTime('expiry');
             $table->bigInteger('location_id');
             $table->integer('min_volume')->unsigned();
             $table->decimal('price', 30, 2);
