@@ -33,7 +33,6 @@ use Seat\Eveapi\Models\Market\MarketOrder;
  */
 class Orders extends EsiBase
 {
-    const THE_FORGE = 10000002;
 
     /**
      * @var string
@@ -62,23 +61,23 @@ class Orders extends EsiBase
      */
     public function handle()
     {
-        //the order count, region_id and time can be cached to speed up execution of the loop
+        // the order count, region_id and time can be cached to speed up execution of the loop
         $count = MarketOrder::count();
         $now = carbon();
-        $region_id = setting('market_prices_region_id', true) ?: self::THE_FORGE;
+        $region_id = setting('market_prices_region_id', true) ?: \Seat\Eveapi\Jobs\Market\History::THE_FORGE;
 
         //load all market data
         while (true) {
             //retrieve one page of market orders
             $orders = $this->retrieve(['region_id' => $region_id]);
 
-            //if the orders are cached, skip this
+            // if the orders are cached, skip this
             //if ($orders->isCachedLoad() && $count > 0) return;
 
-            //map the ESI format to the database format, insert updated_at and created_at times
-            //if the batch size is increased to 1000, it crashed
+            // map the ESI format to the database format, insert updated_at and created_at times
+            // if the batch size is increased to 1000, it crashed
             collect($orders)->chunk(100)->each(function ($chunk) use ($now) {
-                //map the ESI format to the database format
+                // map the ESI format to the database format
                 $records = $chunk->map(function ($order) use ($now) {
                     $issued = carbon($order->issued);
 
@@ -96,12 +95,12 @@ class Orders extends EsiBase
                         'type_id' => $order->type_id,
                         'volume_remaining' => $order->volume_remain,
                         'volume_total' => $order->volume_total,
-                        'updated_at'=>$now,
-                        'created_at'=>$now,
+                        'updated_at' => $now,
+                        'created_at' => $now,
                     ];
                 });
 
-                //update data in the db
+                // update data in the db
                 MarketOrder::upsert($records->toArray(), [
                     'order_id',
                     'duration',
@@ -120,12 +119,12 @@ class Orders extends EsiBase
                 ]);
             });
 
-            //if there are more pages with orders, continue loading them
+            // if there are more pages with orders, continue loading them
             if (! $this->nextPage($orders->pages)) break;
         }
 
         // remove old orders
         // if this ever gets changed to retain old orders, add an expiry check in the OrderAggregates job.
-        MarketOrder::whereRaw('expiry < CURRENT_DATE()')->delete();
+        MarketOrder::where('expiry', '<=', $now)->delete();
     }
 }

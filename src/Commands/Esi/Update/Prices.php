@@ -55,7 +55,7 @@ class Prices extends Command
      */
     public function handle()
     {
-        //collect all items which can be sold on the market.
+        // collect all items which can be sold on the market.
         $types = InvType::whereNotNull('marketGroupID')
             ->where('published', true)
             ->select('typeID')

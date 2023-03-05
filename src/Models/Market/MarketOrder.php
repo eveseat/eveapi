@@ -60,6 +60,13 @@ class MarketOrder extends Model
     protected $table = 'market_orders';
 
     /**
+     * @var array
+     */
+    protected $dates = [
+        'issued',
+        'expiry',
+    ];
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function type()
