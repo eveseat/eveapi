@@ -61,9 +61,7 @@ class Orders extends EsiBase
      */
     public function handle()
     {
-        // the order count, region_id and time can be cached to speed up execution of the loop
-        $count = MarketOrder::count();
-        $now = carbon();
+        // the region_id cached to speed up execution of the loop
         $region_id = setting('market_prices_region_id', true) ?: \Seat\Eveapi\Jobs\Market\History::THE_FORGE;
 
         //load all market data
@@ -76,9 +74,9 @@ class Orders extends EsiBase
 
             // map the ESI format to the database format, insert updated_at and created_at times
             // if the batch size is increased to 1000, it crashed
-            collect($orders)->chunk(100)->each(function ($chunk) use ($now) {
+            collect($orders)->chunk(100)->each(function ($chunk) {
                 // map the ESI format to the database format
-                $records = $chunk->map(function ($order) use ($now) {
+                $records = $chunk->map(function ($order) {
                     $issued = carbon($order->issued);
 
                     return [
@@ -95,8 +93,6 @@ class Orders extends EsiBase
                         'type_id' => $order->type_id,
                         'volume_remaining' => $order->volume_remain,
                         'volume_total' => $order->volume_total,
-                        'updated_at' => $now,
-                        'created_at' => $now,
                     ];
                 });
 
@@ -125,6 +121,6 @@ class Orders extends EsiBase
 
         // remove old orders
         // if this ever gets changed to retain old orders, add an expiry check in the OrderAggregates job.
-        MarketOrder::where('expiry', '<=', $now)->delete();
+        MarketOrder::where('expiry', '<=', now())->delete();
     }
 }

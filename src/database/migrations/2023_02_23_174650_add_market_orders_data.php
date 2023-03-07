@@ -48,7 +48,6 @@ class AddMarketOrdersData extends Migration
             $table->bigInteger('type_id')->unsigned()->index();
             $table->integer('volume_remaining')->unsigned();
             $table->integer('volume_total')->unsigned();
-            $table->timestamps();
         });
 
         Schema::table('market_prices', function (Blueprint $table) {
