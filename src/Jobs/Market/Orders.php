@@ -72,7 +72,7 @@ class Orders extends EsiBase
             // if the orders are cached, skip this
             //if ($orders->isCachedLoad() && $count > 0) return;
 
-            // map the ESI format to the database format, insert updated_at and created_at times
+            // map the ESI format to the database format
             // if the batch size is increased to 1000, it crashed
             collect($orders)->chunk(100)->each(function ($chunk) {
                 // map the ESI format to the database format
@@ -110,7 +110,6 @@ class Orders extends EsiBase
                     'type_id',
                     'volume_remaining',
                     'volume_total',
-                    'updated_at',
                     'expiry',
                 ]);
             });
