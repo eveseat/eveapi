@@ -56,7 +56,6 @@ use Seat\Eveapi\Jobs\Market\Corporation\History;
 use Seat\Eveapi\Jobs\Market\Corporation\Orders;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOfficeLocations;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOffices;
-use Seat\Eveapi\Jobs\Universe\CorporationStructures;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Balances;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Journals;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Transactions;
@@ -208,6 +207,5 @@ class Corporation extends Bus
         $this->jobs->add(new ContainerLogs($this->corporation_id, $this->token));
         $this->jobs->add(new Locations($this->corporation_id, $this->token));
         $this->jobs->add(new Names($this->corporation_id, $this->token));
-        $this->jobs->add(new CorporationStructures($this->corporation_id, $this->token));
     }
 }

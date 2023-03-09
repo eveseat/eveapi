@@ -23,6 +23,8 @@
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Assets\AssetMapping;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\RefreshToken;
@@ -92,19 +94,27 @@ class Assets extends AbstractAuthCharacterJob
     {
         parent::handle();
 
+        $structure_batch = new StructureBatch();
+        $character_id = $this->getCharacterId();
+
         while (true) {
 
             $response = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
+                'character_id' => $character_id
             ]);
 
             $assets = collect($response->getBody());
 
-            $assets->each(function ($asset) {
+            $assets->each(function ($asset) use ($character_id, $structure_batch){
 
                 $model = CharacterAsset::firstOrNew([
                     'item_id' => $asset->item_id,
                 ]);
+
+                //make sure that the location is loaded if it is in a station or citadel
+                if(in_array($asset->location_flag,["Hangar","Deliveries"]) && in_array($asset->location_type,["item","other"])){
+                    $structure_batch->addStructure($asset->location_id,$character_id);
+                }
 
                 AssetMapping::make($model, $asset, [
                     'character_id' => function () {
@@ -125,5 +135,8 @@ class Assets extends AbstractAuthCharacterJob
         CharacterAsset::where('character_id', $this->getCharacterId())
             ->whereNotIn('item_id', $this->known_assets->flatten()->all())
             ->delete();
+
+        // schedule jobs for structures
+        $structure_batch->submitJobs();
     }
 }
