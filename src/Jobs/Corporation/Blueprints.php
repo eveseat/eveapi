@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\BlueprintMapping;
 use Seat\Eveapi\Models\Corporation\CorporationBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
@@ -99,6 +100,8 @@ class Blueprints extends AbstractAuthCorporationJob
     {
         parent::handle();
 
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
             $response = $this->retrieve([
@@ -107,9 +110,10 @@ class Blueprints extends AbstractAuthCorporationJob
 
             $blueprints = $response->getBody();
 
-            collect($blueprints)->chunk(100)->each(function ($chunk) {
+            collect($blueprints)->chunk(100)->each(function ($chunk) use ($structure_batch) {
 
-                $chunk->each(function ($blueprint) {
+                $chunk->each(function ($blueprint) use ($structure_batch) {
+                    $structure_batch->addStructure($blueprint->location_id,$this->getToken()->character_id);
 
                     $model = CorporationBlueprint::firstOrNew([
                         'item_id'        => $blueprint->item_id,
@@ -134,5 +138,7 @@ class Blueprints extends AbstractAuthCorporationJob
         CorporationBlueprint::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('item_id', $this->known_blueprints->flatten()->all())
             ->delete();
+
+        $structure_batch->submitJobs();
     }
 }

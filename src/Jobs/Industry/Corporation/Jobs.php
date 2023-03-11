@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Industry\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\JobMapping;
 use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
 
@@ -86,6 +87,8 @@ class Jobs extends AbstractAuthCorporationJob
     {
         parent::handle();
 
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
             $response = $this->retrieve([
@@ -94,7 +97,8 @@ class Jobs extends AbstractAuthCorporationJob
 
             $industry_jobs = $response->getBody();
 
-            collect($industry_jobs)->each(function ($job) {
+            collect($industry_jobs)->each(function ($job) use ($structure_batch) {
+                $structure_batch->addStructure($job->location_id,$this->getCharacterId());
 
                 $model = CorporationIndustryJob::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
@@ -112,7 +116,9 @@ class Jobs extends AbstractAuthCorporationJob
             });
 
             if (! $this->nextPage($response->getPagesCount()))
-                return;
+                break;
         }
+
+        $structure_batch->submitJobs();
     }
 }
