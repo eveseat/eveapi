@@ -37,6 +37,7 @@ use Seat\Eveapi\Jobs\Middleware\CheckServerStatus;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
+use Throwable;
 
 /**
  * Class EsiBase.
@@ -212,11 +213,11 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      *
      * @throws \Exception
      */
-    public function failed(Exception $exception)
+    public function failed(Throwable $exception)
     {
         parent::failed($exception);
 
