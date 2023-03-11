@@ -60,7 +60,7 @@ class MarketOrder extends Model
     protected $table = 'market_orders';
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $timestamps = false;
 
