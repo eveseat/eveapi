@@ -23,7 +23,7 @@
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
-use Seat\Eveapi\Jobs\Universe\StructureBatch;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Assets\AssetMapping;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\RefreshToken;
