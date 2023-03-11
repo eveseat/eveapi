@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\BlueprintMapping;
 use Seat\Eveapi\Models\Character\CharacterBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
@@ -97,19 +98,26 @@ class Blueprints extends AbstractAuthCharacterJob
     {
         parent::handle();
 
+        $structure_batch = new StructureBatch();
+        $character_id = $this->getCharacterId();
+
         // Start an infinite loop for the paged requests.
         while (true) {
 
             $response = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
+                'character_id' => $character_id,
             ]);
 
             $blueprints = collect($response->getBody());
 
             // Process the blueprints from the response
-            $blueprints->chunk(100)->each(function ($chunk) {
+            $blueprints->chunk(100)->each(function ($chunk) use ($character_id, $structure_batch) {
 
-                $chunk->each(function ($blueprint) {
+                $chunk->each(function ($blueprint) use ($character_id, $structure_batch) {
+
+                    if($blueprint->location_flag === "Hangar") {
+                        $structure_batch->addStructure($blueprint->location_id, $character_id);
+                    }
 
                     $model = CharacterBlueprint::firstOrNew([
                         'item_id'      => $blueprint->item_id,
@@ -132,6 +140,7 @@ class Blueprints extends AbstractAuthCharacterJob
         }
 
         $this->cleanup();
+        $structure_batch->submitJobs();
     }
 
     /**

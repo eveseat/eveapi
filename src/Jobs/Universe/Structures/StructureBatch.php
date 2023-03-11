@@ -4,6 +4,7 @@ namespace Seat\Eveapi\Jobs\Universe\Structures;
 
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStation;
+use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 class StructureBatch
 {
@@ -32,6 +33,9 @@ class StructureBatch
         foreach ($this->citadels as $citadel=>$character){
             $token = RefreshToken::find($character);
             if(!$token) continue;
+
+            if (UniverseStructure::find($citadel)!==null) continue;
+
             Citadels::dispatch([$citadel],$token);
         }
 
