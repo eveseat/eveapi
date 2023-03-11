@@ -112,7 +112,7 @@ class Assets extends AbstractAuthCharacterJob
                 ]);
 
                 //make sure that the location is loaded if it is in a station or citadel
-                if(in_array($asset->location_flag,["Hangar","Deliveries"]) && in_array($asset->location_type,["item","other"])){
+                if(in_array($asset->location_flag,["Hangar","Deliveries"]) && in_array($asset->location_type,["item","other","station"])){
                     $structure_batch->addStructure($asset->location_id,$character_id);
                 }
 
