@@ -48,7 +48,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
         new OA\Property(property: 'info', ref: '#/components/schemas/UniverseStructure'),
         new OA\Property(property: 'type', ref: '#/components/schemas/InvType'),
         new OA\Property(property: 'services', type: 'array', items: new OA\Items(ref: '#/components/schemas/CorporationStructureService')),
-        new OA\Property(property: 'solar_system', ref: '#/components/schemas/SolarSystem')
+        new OA\Property(property: 'solar_system', ref: '#/components/schemas/SolarSystem'),
     ],
     type: 'object'
 )]

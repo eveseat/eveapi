@@ -35,7 +35,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
         new OA\Property(property: 'name', description: 'Clone name if set', type: 'string'),
         new OA\Property(property: 'location_id', description: 'The structure into which the clone resides', type: 'integer', format: 'int64'),
         new OA\Property(property: 'location_type', description: 'The structure type qualifier', type: 'string', enum: ['station', 'structure']),
-        new OA\Property(property: 'implants', description: 'A list of type ID', type: 'array', items: new OA\Items(type: 'integer'))
+        new OA\Property(property: 'implants', description: 'A list of type ID', type: 'array', items: new OA\Items(type: 'integer')),
     ],
     type: 'object'
 )]

@@ -39,7 +39,7 @@ use Symfony\Component\Yaml\Yaml;
         new OA\Property(property: 'is_read', description: 'True if the notification has been red', type: 'boolean'),
         new OA\Property(property: 'object', description: 'The notification content', type: 'string'),
         new OA\Property(property: 'created_at', description: 'The date/time when notification has been created into SeAT', type: 'string', format: 'date-time'),
-        new OA\Property(property: 'updated_at', description: 'The date/time when notification has been updated into SeAT', type: 'string', format: 'date-time')
+        new OA\Property(property: 'updated_at', description: 'The date/time when notification has been updated into SeAT', type: 'string', format: 'date-time'),
     ],
     type: 'object'
 )]

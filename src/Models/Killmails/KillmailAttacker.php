@@ -40,7 +40,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
         new OA\Property(property: 'final_blow', description: 'True if the attacker did the final blow', type: 'boolean'),
         new OA\Property(property: 'damage_done', description: 'The amount of damage the attacker applied', type: 'integer'),
         new OA\Property(property: 'ship_type_id', description: 'The ship inventory type identifier into which attacker was', type: 'integer'),
-        new OA\Property(property: 'weapon_type_id', description: 'The weapon inventory type identifier used by the attacker', type: 'integer')
+        new OA\Property(property: 'weapon_type_id', description: 'The weapon inventory type identifier used by the attacker', type: 'integer'),
     ],
     type: 'object'
 )]

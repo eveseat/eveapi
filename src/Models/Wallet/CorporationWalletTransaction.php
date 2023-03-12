@@ -41,7 +41,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
         new OA\Property(property: 'is_buy', description: 'True if the transaction is related to a buy order', type: 'boolean'),
         new OA\Property(property: 'journal_ref_id', description: '-1 if there is no corresponding wallet journal entry', type: 'integer', format: 'int64'),
         new OA\Property(property: 'party', ref: '#/components/schemas/UniverseName'),
-        new OA\Property(property: 'type', ref: '#/components/schemas/InvType')
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType'),
     ],
     type: 'object'
 )]

@@ -22,9 +22,9 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
+use Illuminate\Bus\Batchable;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
-use Illuminate\Bus\Batchable;
 
 /**
  * Class Affiliation.

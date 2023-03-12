@@ -39,7 +39,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
         new OA\Property(property: 'ship_type_id', description: 'The destroyed ship inventory type identifier', type: 'integer'),
         new OA\Property(property: 'x', description: 'The x coordinate where the kill occurs', type: 'number', format: 'double'),
         new OA\Property(property: 'y', description: 'The y coordinate where the kill occurs', type: 'number', format: 'double'),
-        new OA\Property(property: 'z', description: 'The z coordinate where the kill occurs', type: 'number', format: 'double')
+        new OA\Property(property: 'z', description: 'The z coordinate where the kill occurs', type: 'number', format: 'double'),
     ],
     type: 'object'
 )]

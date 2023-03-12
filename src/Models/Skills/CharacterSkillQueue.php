@@ -36,7 +36,7 @@ use Seat\Eveapi\Models\Sde\InvType;
         new OA\Property(property: 'training_start_sp', description: 'The skillpoint amount in the skill when training start', type: 'integer'),
         new OA\Property(property: 'level_end_sp', description: 'The skillpoint amount earned at end of the level training', type: 'integer'),
         new OA\Property(property: 'level_start_sp', description: 'The skillpoint amount from which the training level is starting', type: 'integer'),
-        new OA\Property(property: 'type', ref: '#/components/schemas/InvType')
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType'),
     ],
     type: 'object'
 )]

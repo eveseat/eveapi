@@ -31,7 +31,7 @@ class InvTypesSeeder extends AbstractSdeSeeder
     /**
      * Define seeder related SDE table structure.
      *
-     * @param \Illuminate\Database\Schema\Blueprint $table
+     * @param  \Illuminate\Database\Schema\Blueprint  $table
      * @return void
      */
     protected function getSdeTableDefinition(Blueprint $table): void

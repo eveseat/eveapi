@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
         new OA\Property(property: 'start_date', description: 'The date/time from which the character was inside the corporation', type: 'string', format: 'date-time'),
         new OA\Property(property: 'corporation_id', description: 'The corporation ID into which the character was', type: 'integer', format: 'int64'),
         new OA\Property(property: 'is_deleted', description: 'True if the corporation has been close', type: 'boolean'),
-        new OA\Property(property: 'record_id', description: 'Sorting key', type: 'integer')
+        new OA\Property(property: 'record_id', description: 'Sorting key', type: 'integer'),
     ],
     type: 'object'
 )]

@@ -46,7 +46,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
         new OA\Property(property: 'marketGroupID', description: 'The group into which the item is available on market', type: 'integer'),
         new OA\Property(property: 'iconID', type: 'integer'),
         new OA\Property(property: 'soundID', type: 'integer'),
-        new OA\Property(property: 'graphicID', type: 'integer')
+        new OA\Property(property: 'graphicID', type: 'integer'),
     ],
     type: 'object'
 )]

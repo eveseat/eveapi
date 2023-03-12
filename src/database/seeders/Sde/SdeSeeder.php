@@ -70,7 +70,8 @@ class SdeSeeder extends Seeder
      * Download the EVE Sde from Fuzzwork and save it
      * in the storage_path/sde folder.
      *
-     * @param array $seeders
+     * @param  array  $seeders
+     *
      * @throws \Seat\Eveapi\Exception\InvalidSdeSeederException
      */
     private function downloadStaticFiles(array $seeders)
@@ -137,7 +138,7 @@ class SdeSeeder extends Seeder
     /**
      * Determine the SDE remote URI for the provided seeder.
      *
-     * @param string $seeder
+     * @param  string  $seeder
      * @return string
      */
     private function getSdeFileRemoteUri(string $seeder): string
@@ -148,7 +149,7 @@ class SdeSeeder extends Seeder
     /**
      * Determine the SDE local URI for the provided seeder.
      *
-     * @param string $seeder
+     * @param  string  $seeder
      * @return string
      */
     private function getSdeFileLocalUri(string $seeder): string

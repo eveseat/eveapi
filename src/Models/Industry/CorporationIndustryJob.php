@@ -53,7 +53,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
         new OA\Property(property: 'completed_character_id', description: 'The character who deliver the job', type: 'integer', format: 'int64'),
         new OA\Property(property: 'successful_runs', description: 'The amount of completed runs', type: 'integer'),
         new OA\Property(property: 'blueprint', ref: '#/components/schemas/InvType', description: 'The used blueprint type'),
-        new OA\Property(property: 'product', ref: '#/components/schemas/InvType', description: 'The output type')
+        new OA\Property(property: 'product', ref: '#/components/schemas/InvType', description: 'The output type'),
     ],
     type: 'object'
 )]

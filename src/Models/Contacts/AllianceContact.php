@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
         new OA\Property(property: 'contact_id', description: 'The entity ID', type: 'integer', format: 'int64'),
         new OA\Property(property: 'standing', description: 'The standing between -10 and 10', type: 'number', format: 'float'),
         new OA\Property(property: 'contact_type', description: 'The entity type', type: 'string', enum: ['character', 'corporation', 'alliance', 'faction']),
-        new OA\Property(property: 'labels', description: 'Labels attached to the contact', type: 'array', items: new OA\Items(type: 'string'))
+        new OA\Property(property: 'labels', description: 'Labels attached to the contact', type: 'array', items: new OA\Items(type: 'string')),
     ],
     type: 'object'
 )]

@@ -40,7 +40,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
         new OA\Property(property: 'base_id', description: 'The structure to which the main location of this character is set', type: 'integer', format: 'int64'),
         new OA\Property(property: 'logoff_date', description: 'The last time when the character signed out', type: 'string', format: 'date-time'),
         new OA\Property(property: 'location_id', description: 'The place where the character is', type: 'integer', format: 'int64'),
-        new OA\Property(property: 'ship', ref: '#/components/schemas/InvType', description: 'The ship information')
+        new OA\Property(property: 'ship', ref: '#/components/schemas/InvType', description: 'The ship information'),
     ],
     type: 'object'
 )]

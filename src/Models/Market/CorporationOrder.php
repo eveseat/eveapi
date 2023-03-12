@@ -45,7 +45,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
         new OA\Property(property: 'wallet_division', description: 'The division to which the order is depending', type: 'integer'),
         new OA\Property(property: 'duration', description: 'The number of seconds the order is valid', type: 'integer'),
         new OA\Property(property: 'escrow', type: 'number', format: 'double'),
-        new OA\Property(property: 'type', ref: '#/components/schemas/InvType', description: 'The type to which order is referring')
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType', description: 'The type to which order is referring'),
     ],
     type: 'object'
 )]

@@ -35,7 +35,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
         new OA\Property(property: 'contact_type', description: 'The entity type', type: 'string', enum: ['character', 'corporation', 'alliance', 'faction']),
         new OA\Property(property: 'is_watched', description: 'True if the contact is in the watchlist', type: 'boolean'),
         new OA\Property(property: 'is_blocked', description: 'True if the contact is in the blacklist', type: 'boolean'),
-        new OA\Property(property: 'labels', description: 'Labels attached to the contact', type: 'array', items: new OA\Items(type: 'string'))
+        new OA\Property(property: 'labels', description: 'Labels attached to the contact', type: 'array', items: new OA\Items(type: 'string')),
     ],
     type: 'object'
 )]

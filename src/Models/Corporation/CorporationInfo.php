@@ -57,7 +57,7 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
         new OA\Property(property: 'url', description: 'The corporation homepage link', type: 'string', format: 'uri'),
         new OA\Property(property: 'faction', ref: '#/components/schemas/UniverseName', description: 'The corporation faction, if any'),
         new OA\Property(property: 'home_station_id', description: 'The station into which the corporation has its HQ', type: 'integer', format: 'int64'),
-        new OA\Property(property: 'shares', description: 'The shares attached to the corporation', type: 'number', format: 'double')
+        new OA\Property(property: 'shares', description: 'The shares attached to the corporation', type: 'number', format: 'double'),
     ],
     type: 'object'
 )]

@@ -47,7 +47,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
         new OA\Property(property: 'map_id', description: 'The map identifier into which items is located', type: 'integer'),
         new OA\Property(property: 'map_name', description: 'The map name of the system where the item resides', type: 'string'),
         new OA\Property(property: 'name', description: 'The name of the asset (ie: a ship name)', type: 'string'),
-        new OA\Property(property: 'type', ref: '#/components/schemas/InvType')
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType'),
     ],
     type: 'object'
 )]

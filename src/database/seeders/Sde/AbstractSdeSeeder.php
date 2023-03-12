@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of SeAT
  *
@@ -14,9 +15,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License along
- *  with this program; if not, write to the Free Software Foundation, Inc.,
- *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 namespace Seat\Eveapi\Database\Seeders\Sde;
@@ -37,7 +38,7 @@ abstract class AbstractSdeSeeder extends Seeder
      *
      * @return string
      */
-    final static public function getSdeName(): string
+    final public static function getSdeName(): string
     {
         $class_name = substr(static::class, strrpos(static::class, '\\') + 1);
         $filename = substr($class_name, 0, strpos($class_name, 'Seeder'));
@@ -49,6 +50,7 @@ abstract class AbstractSdeSeeder extends Seeder
      * Download SDE file, create related table and seed it with dump.
      *
      * @return void
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     final public function run()
@@ -63,7 +65,7 @@ abstract class AbstractSdeSeeder extends Seeder
     /**
      * Define seeder related SDE table structure.
      *
-     * @param \Illuminate\Database\Schema\Blueprint $table
+     * @param  \Illuminate\Database\Schema\Blueprint  $table
      * @return void
      */
     abstract protected function getSdeTableDefinition(Blueprint $table): void;
@@ -103,6 +105,7 @@ abstract class AbstractSdeSeeder extends Seeder
      * Use SDE dump related to the active seeder in order to seed table.
      *
      * @return void
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     final protected function seedTable(): void

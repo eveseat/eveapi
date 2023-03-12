@@ -34,7 +34,7 @@ use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
         new OA\Property(property: 'constellation_id', description: 'Constellation Unique Identifier', type: 'integer', format: 'int64'),
         new OA\Property(property: 'region_id', description: 'Region Unique Identifier', type: 'integer', format: 'int64'),
         new OA\Property(property: 'name', description: 'Solar System name', type: 'string'),
-        new OA\Property(property: 'security', description: 'Solar System Security Level', type: 'double')
+        new OA\Property(property: 'security', description: 'Solar System Security Level', type: 'double'),
     ],
     type: 'object'
 )]

@@ -32,7 +32,7 @@ use Seat\Eveapi\Models\Character\CharacterAffiliation;
     properties: [
         new OA\Property(property: 'entity_id', description: 'The entity identifier', type: 'integer', format: 'int64'),
         new OA\Property(property: 'name', description: 'The entity name', type: 'string'),
-        new OA\Property(property: 'category', description: 'The entity type', type: 'string', enum: ['alliance', 'character', 'constellation', 'corporation', 'inventory_type', 'region', 'solar_system', 'station', 'faction'])
+        new OA\Property(property: 'category', description: 'The entity type', type: 'string', enum: ['alliance', 'character', 'constellation', 'corporation', 'inventory_type', 'region', 'solar_system', 'station', 'faction']),
     ],
     type: 'object'
 )]

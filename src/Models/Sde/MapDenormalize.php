@@ -45,7 +45,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
         new OA\Property(property: 'itemName', description: 'The entity name', type: 'string'),
         new OA\Property(property: 'security', description: 'The security status of the system to which entity is attached', type: 'number', format: 'double'),
         new OA\Property(property: 'celestialIndex', type: 'integer'),
-        new OA\Property(property: 'orbitIndex', type: 'integer')
+        new OA\Property(property: 'orbitIndex', type: 'integer'),
     ],
     type: 'object'
 )]

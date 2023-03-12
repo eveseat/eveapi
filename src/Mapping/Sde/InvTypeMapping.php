@@ -99,7 +99,7 @@ class InvTypeMapping extends AbstractFuzzworkMapping implements WithValidation
             'published',
             'marketGroupID',
             'iconID',
-            'graphicID'
+            'graphicID',
         ];
     }
 

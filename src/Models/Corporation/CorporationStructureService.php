@@ -31,7 +31,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
     description: 'Corporation Structure Service',
     properties: [
         new OA\Property(property: 'name', type: 'string'),
-        new OA\Property(property: 'state', type: 'string', enum: ['online', 'offline', 'cleanup'])
+        new OA\Property(property: 'state', type: 'string', enum: ['online', 'offline', 'cleanup']),
     ],
     type: 'object'
 )]

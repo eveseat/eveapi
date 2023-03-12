@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
         new OA\Property(property: 'killmail_time', description: 'The date-time when kill append', type: 'string', format: 'date-time'),
         new OA\Property(property: 'solar_system_id', description: 'The Solar System Identifier in which the kill occurs', type: 'integer'),
         new OA\Property(property: 'moon_id', description: 'The moon identifier near to which the kill occurs', type: 'integer'),
-        new OA\Property(property: 'war_id', description: 'The war identifier in which the kill involves', type: 'integer', format: 'int64')
+        new OA\Property(property: 'war_id', description: 'The war identifier in which the kill involves', type: 'integer', format: 'int64'),
     ],
     type: 'object'
 )]

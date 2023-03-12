@@ -34,7 +34,7 @@ use Seat\Eveapi\Models\Sde\InvType;
         new OA\Property(property: 'quantity', description: 'The item quantity', type: 'integer'),
         new OA\Property(property: 'raw_quantity', type: 'integer', minimum: 2),
         new OA\Property(property: 'is_singleton', description: 'Determine if the item is stacked', type: 'boolean'),
-        new OA\Property(property: 'is_included', description: 'Determine if the item is contained in a parent item', type: 'boolean')
+        new OA\Property(property: 'is_included', description: 'Determine if the item is contained in a parent item', type: 'boolean'),
     ],
     type: 'object'
 )]

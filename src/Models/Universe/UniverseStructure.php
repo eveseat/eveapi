@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
     description: 'Universe Structure',
     properties: [
         new OA\Property(property: 'structure_id', description: 'Structure identifier', type: 'integer', format: 'int64'),
-        new OA\Property(property: 'name', description: 'Structure name', type: 'string')
+        new OA\Property(property: 'name', description: 'Structure name', type: 'string'),
     ],
     type: 'object'
 )]

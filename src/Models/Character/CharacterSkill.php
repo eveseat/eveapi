@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\Sde\InvType;
         new OA\Property(property: 'skillpoints_in_skill', description: 'The amount of skill point actually learned for that skill', type: 'integer'),
         new OA\Property(property: 'trained_skill_level', description: 'The level up to which the skill as been learned', type: 'integer'),
         new OA\Property(property: 'active_skill_level', description: 'The level actually training', type: 'integer'),
-        new OA\Property(property: 'type', ref: '#/components/schemas/InvType', description: 'The inventory type information')
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType', description: 'The inventory type information'),
     ],
     type: 'object'
 )]
