@@ -69,9 +69,6 @@ class Orders extends EsiBase
             //retrieve one page of market orders
             $orders = $this->retrieve(['region_id' => $region_id]);
 
-            // if the orders are cached, skip this
-            //if ($orders->isCachedLoad() && $count > 0) return;
-
             // map the ESI format to the database format
             // if the batch size is increased to 1000, it crashed
             collect($orders)->chunk(100)->each(function ($chunk) {
