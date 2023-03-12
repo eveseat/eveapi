@@ -100,7 +100,7 @@ class Assets extends AbstractAuthCharacterJob
         while (true) {
 
             $response = $this->retrieve([
-                'character_id' => $character_id
+                'character_id' => $this->getCharacterId()
             ]);
 
             $assets = collect($response->getBody());
