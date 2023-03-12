@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs;
 
-use Exception;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenVersion;
@@ -32,6 +31,7 @@ use Seat\Eveapi\Jobs\Middleware\WithoutOverlapping;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 use Seat\Eveapi\Models\RefreshToken;
+use Throwable;
 
 /**
  * Class AbstractAuthenticatedCorporationJob.
@@ -84,11 +84,11 @@ abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
     }
 
     /**
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      *
      * @throws \Exception
      */
-    public function failed(Exception $exception)
+    public function failed(Throwable $exception)
     {
         if (is_a($exception, RequestFailedException::class)) {
             if ($exception->getError() == self::CHARACTER_NOT_IN_CORPORATION) {
