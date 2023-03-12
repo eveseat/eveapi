@@ -85,7 +85,7 @@ class Contracts extends AbstractAuthCharacterJob
 
             $contracts = $response->getBody();
 
-            collect($contracts)->each(function ($contract) use ($structure_batch){
+            collect($contracts)->each(function ($contract) use ($structure_batch) {
                 if ($contract->start_location_id) {
                     $structure_batch->addStructure($contract->start_location_id, $this->getCharacterId());
                 }

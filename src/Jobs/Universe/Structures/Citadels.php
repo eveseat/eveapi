@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Jobs\Universe\Structures;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Mapping\Structures\UniverseStructureMapping;
-use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
@@ -64,7 +63,7 @@ class Citadels extends AbstractAuthCharacterJob
     private iterable $structure_ids;
 
     /**
-     * @param iterable $structure_ids
+     * @param  iterable  $structure_ids
      */
     public function __construct(iterable $structure_ids, RefreshToken $token)
     {

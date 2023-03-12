@@ -113,6 +113,7 @@ class Orders extends AbstractAuthCorporationJob
 
             if (! $this->nextPage($response->getPagesCount()))
                 $structure_batch->submit();
+
                 return;
         }
     }

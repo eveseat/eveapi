@@ -119,7 +119,7 @@ class Assets extends AbstractAuthCorporationJob
 
                     //make sure that the location is loaded if it is in a station or citadel
                     if (in_array($asset->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS) && in_array($asset->location_type, StructureBatch::RESOLVABLE_LOCATION_TYPES)) {
-                        $structure_batch->addStructure($asset->location_id,$this->getToken()->character_id);
+                        $structure_batch->addStructure($asset->location_id, $this->getToken()->character_id);
                     }
 
                     AssetMapping::make($model, $asset, [
