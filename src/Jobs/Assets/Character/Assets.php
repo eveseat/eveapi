@@ -95,7 +95,6 @@ class Assets extends AbstractAuthCharacterJob
         parent::handle();
 
         $structure_batch = new StructureBatch();
-        $character_id = $this->getCharacterId();
 
         while (true) {
 
@@ -105,7 +104,7 @@ class Assets extends AbstractAuthCharacterJob
 
             $assets = collect($response->getBody());
 
-            $assets->each(function ($asset) use ($character_id, $structure_batch){
+            $assets->each(function ($asset) use ($structure_batch){
 
                 $model = CharacterAsset::firstOrNew([
                     'item_id' => $asset->item_id,
@@ -113,7 +112,7 @@ class Assets extends AbstractAuthCharacterJob
 
                 //make sure that the location is loaded if it is in a station or citadel
                 if (in_array($asset->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS) && in_array($asset->location_type, StructureBatch::RESOLVABLE_LOCATION_TYPES)) {
-                    $structure_batch->addStructure($asset->location_id,$character_id);
+                    $structure_batch->addStructure($asset->location_id,$this->getCharacterId());
                 }
 
                 AssetMapping::make($model, $asset, [
