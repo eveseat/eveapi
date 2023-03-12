@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Jobs\Universe\Structures;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Illuminate\Support\Facades\Bus;
 
 class StructureBatch
 {
@@ -49,6 +50,8 @@ class StructureBatch
 
     public function submitJobs()
     {
+        $jobs = collect();
+
         // schedule citadels
         // group citadels by character
         $character_groups = collect($this->citadels)
@@ -64,20 +67,24 @@ class StructureBatch
             if ($citadels->isEmpty()) continue;
 
             $token = RefreshToken::find($character);
-            if (! $token) continue;
+            if (!$token) continue;
 
-            Citadels::dispatch($citadels, $token);
+            $jobs->add(new Citadels($citadels, $token));
         }
 
         //stations
         collect($this->stations)
             ->keys()
             ->filter(function ($station_id) {
-                return ! UniverseStation::where('station_id', $station_id)->exists();
+                return !UniverseStation::where('station_id', $station_id)->exists();
             })
             ->chunk(self::STATION_BATCH_SIZE)
-            ->each(function ($batch) {
-                Stations::dispatch($batch);
+            ->each(function ($chunk) use ($jobs) {
+                $jobs->add(new Stations($chunk));
             });
+
+        Bus::batch($jobs->toArray())
+            ->name("Station/Citadels")
+            ->dispatch();
     }
 }
