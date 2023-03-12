@@ -84,11 +84,11 @@ class Contracts extends AbstractAuthCorporationJob
             $contracts = $response->getBody();
 
             collect($contracts)->each(function ($contract) use ($structure_batch) {
-                if($contract->start_location_id){
-                    $structure_batch->addStructure($contract->start_location_id,$this->getCharacterId());
+                if ($contract->start_location_id) {
+                    $structure_batch->addStructure($contract->start_location_id, $this->getCharacterId());
                 }
-                if($contract->end_location_id){
-                    $structure_batch->addStructure($contract->end_location_id,$this->getCharacterId());
+                if ($contract->end_location_id) {
+                    $structure_batch->addStructure($contract->end_location_id, $this->getCharacterId());
                 }
 
                 // Update or create the contract details.
@@ -115,7 +115,7 @@ class Contracts extends AbstractAuthCorporationJob
                     dispatch(new Items($this->getCorporationId(), $this->token, $contract->contract_id));
             });
 
-            if (! $this->nextPage($response->getPagesCount())){
+            if (! $this->nextPage($response->getPagesCount())) {
                 $structure_batch->submitJobs();
                 break;
             }

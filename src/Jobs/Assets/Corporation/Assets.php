@@ -100,6 +100,7 @@ class Assets extends AbstractAuthCorporationJob
         parent::handle();
 
         $structure_batch = new StructureBatch();
+        $character_id = $this->token->character_id;
 
         while (true) {
 
@@ -109,17 +110,17 @@ class Assets extends AbstractAuthCorporationJob
 
             $assets = collect($response->getBody());
 
-            $assets->chunk(1000)->each(function ($chunk) use ($structure_batch) {
+            $assets->chunk(1000)->each(function ($chunk) use ($character_id, $structure_batch) {
 
-                $chunk->each(function ($asset) use ($structure_batch) {
+                $chunk->each(function ($asset) use ($character_id, $structure_batch) {
 
                     $model = CorporationAsset::firstOrNew([
                         'item_id' => $asset->item_id,
                     ]);
 
                     //make sure that the location is loaded if it is in a station or citadel
-                    if(in_array($asset->location_flag,["Hangar","Deliveries"]) && in_array($asset->location_type,["item","other","station"])){
-                        $structure_batch->addStructure($asset->location_id,$this->getToken()->character_id);
+                    if (in_array($asset->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS) && in_array($asset->location_type, StructureBatch::RESOLVABLE_LOCATION_TYPES)) {
+                        $structure_batch->addStructure($asset->location_id,$character_id);
                     }
 
                     AssetMapping::make($model, $asset, [

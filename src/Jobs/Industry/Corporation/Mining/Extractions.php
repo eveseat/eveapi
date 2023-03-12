@@ -88,7 +88,7 @@ class Extractions extends AbstractAuthCorporationJob
         $extractions = $response->getBody();
 
         collect($extractions)->each(function ($extraction) use ($structure_batch) {
-            $structure_batch->addStructure($extraction->structure_id,$this->getToken()->character_id);
+            $structure_batch->addStructure($extraction->structure_id, $this->getToken()->character_id);
 
             $model = CorporationIndustryMiningExtraction::firstOrNew([
                 'moon_id' => $extraction->moon_id,

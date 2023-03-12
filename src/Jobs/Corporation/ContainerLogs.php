@@ -92,8 +92,8 @@ class ContainerLogs extends AbstractAuthCorporationJob
 
             collect($logs)->each(function ($log) use ($structure_batch) {
                 // I assume location_flag is the same as in assets
-                if(in_array($log->location_flag,["Hangar","Deliveries"])){
-                    $structure_batch->addStructure($log->location_id,$this->getToken()->character_id);
+                if (in_array($log->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS)) {
+                    $structure_batch->addStructure($log->location_id, $this->getToken()->character_id);
                 }
 
                 $model = CorporationContainerLog::firstOrNew([

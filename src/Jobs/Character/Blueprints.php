@@ -99,23 +99,24 @@ class Blueprints extends AbstractAuthCharacterJob
         parent::handle();
 
         $structure_batch = new StructureBatch();
+        $character_id = $this->getCharacterId();
 
         // Start an infinite loop for the paged requests.
         while (true) {
 
             $response = $this->retrieve([
-                'character_id' => $this->getCharacterId(),
+                'character_id' => $character_id,
             ]);
 
             $blueprints = collect($response->getBody());
 
             // Process the blueprints from the response
-            $blueprints->chunk(100)->each(function ($chunk) use ($structure_batch) {
+            $blueprints->chunk(100)->each(function ($chunk) use ($character_id, $structure_batch) {
 
-                $chunk->each(function ($blueprint) use ($structure_batch) {
+                $chunk->each(function ($blueprint) use ($character_id, $structure_batch) {
 
-                    if($blueprint->location_flag === "Hangar") {
-                        $structure_batch->addStructure($blueprint->location_id, $this->getCharacterId());
+                    if (in_array($blueprint->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS)) {
+                        $structure_batch->addStructure($blueprint->location_id, $character_id);
                     }
 
                     $model = CharacterBlueprint::firstOrNew([
