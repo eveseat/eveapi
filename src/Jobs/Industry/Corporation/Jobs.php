@@ -98,7 +98,7 @@ class Jobs extends AbstractAuthCorporationJob
             $industry_jobs = $response->getBody();
 
             collect($industry_jobs)->each(function ($job) use ($structure_batch) {
-                $structure_batch->addStructure($job->location_id,$this->getCharacterId());
+                $structure_batch->addStructure($job->location_id, $this->getCharacterId());
 
                 $model = CorporationIndustryJob::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),

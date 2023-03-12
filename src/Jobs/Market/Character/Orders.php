@@ -81,7 +81,7 @@ class Orders extends AbstractAuthCharacterJob
         $structure_batch = new StructureBatch();
 
         collect($orders)->each(function ($order) use ($structure_batch) {
-            $structure_batch->addStructure($order->location_id,$this->getCharacterId());
+            $structure_batch->addStructure($order->location_id, $this->getCharacterId());
 
             $model = CharacterOrder::firstOrNew([
                 'character_id' => $this->getCharacterId(),

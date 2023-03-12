@@ -113,7 +113,7 @@ class Blueprints extends AbstractAuthCorporationJob
             collect($blueprints)->chunk(100)->each(function ($chunk) use ($structure_batch) {
 
                 $chunk->each(function ($blueprint) use ($structure_batch) {
-                    $structure_batch->addStructure($blueprint->location_id,$this->getToken()->character_id);
+                    $structure_batch->addStructure($blueprint->location_id, $this->getToken()->character_id);
 
                     $model = CorporationBlueprint::firstOrNew([
                         'item_id'        => $blueprint->item_id,

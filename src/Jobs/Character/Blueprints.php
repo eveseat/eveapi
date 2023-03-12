@@ -115,7 +115,7 @@ class Blueprints extends AbstractAuthCharacterJob
 
                 $chunk->each(function ($blueprint) use ($character_id, $structure_batch) {
 
-                    if($blueprint->location_flag === "Hangar") {
+                    if (in_array($blueprint->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS)) {
                         $structure_batch->addStructure($blueprint->location_id, $character_id);
                     }
 

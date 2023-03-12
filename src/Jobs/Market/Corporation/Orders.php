@@ -90,7 +90,7 @@ class Orders extends AbstractAuthCorporationJob
 
             $orders = $response->getBody();
 
-            collect($orders)->each(function ($order) use ($structure_batch){
+            collect($orders)->each(function ($order) use ($structure_batch) {
                 $structure_batch->addStructure($order->location_id, $this->getToken()->character_id);
 
                 $model = CorporationOrder::firstOrNew([

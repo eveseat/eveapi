@@ -10,9 +10,9 @@ class StructureBatch
 {
     const CITADEL_BATCH_SIZE = 100;
     const STATION_BATCH_SIZE = 100;
-
     const START_UPWELL_RANGE = 100000000;
-
+const RESOLVABLE_LOCATION_FLAGS = ['Hangar', 'Deliveries'];
+const RESOLVABLE_LOCATION_TYPES = ['item', 'other', 'station'];
     private array $citadels = [];
     private array $stations = [];
 
@@ -32,21 +32,21 @@ class StructureBatch
         // schedule citadels
         foreach ($this->citadels as $citadel=>$character){
             $token = RefreshToken::find($character);
-            if(!$token) continue;
+            if (! $token) continue;
 
-            if (UniverseStructure::find($citadel)!==null) continue;
+            if (UniverseStructure::find($citadel) !== null) continue;
 
-            Citadels::dispatch([$citadel],$token);
+            Citadels::dispatch([$citadel], $token);
         }
 
         //stations
         collect($this->stations)
             ->keys()
             ->filter(function ($station_id){
-                return !UniverseStation::where("station_id",$station_id)->exists();
+                return ! UniverseStation::where('station_id', $station_id)->exists();
             })
             ->chunk(self::STATION_BATCH_SIZE)
-            ->each(function ($batch){
+            ->each(function ($batch) {
                 Stations::dispatch($batch);
             });
     }
