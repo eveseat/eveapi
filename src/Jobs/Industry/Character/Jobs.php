@@ -87,7 +87,7 @@ class Jobs extends AbstractAuthCharacterJob
         $industry_jobs = $response->getBody();
 
         collect($industry_jobs)->each(function ($job) use ($structure_batch) {
-            $structure_batch->addStructure($job->facility_id, $this->getCharacterId());
+            $structure_batch->addStructure($job->facility_id);
 
             $model = CharacterIndustryJob::firstOrNew([
                 'character_id' => $this->getCharacterId(),
@@ -104,6 +104,6 @@ class Jobs extends AbstractAuthCharacterJob
             ])->save();
         });
 
-        $structure_batch->submitJobs();
+        $structure_batch->submitJobs($this->getToken());
     }
 }

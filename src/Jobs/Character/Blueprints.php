@@ -115,7 +115,7 @@ class Blueprints extends AbstractAuthCharacterJob
                 $chunk->each(function ($blueprint) use ($structure_batch) {
 
                     if (in_array($blueprint->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS)) {
-                        $structure_batch->addStructure($blueprint->location_id, $this->getCharacterId());
+                        $structure_batch->addStructure($blueprint->location_id);
                     }
 
                     $model = CharacterBlueprint::firstOrNew([
@@ -139,7 +139,7 @@ class Blueprints extends AbstractAuthCharacterJob
         }
 
         $this->cleanup();
-        $structure_batch->submitJobs();
+        $structure_batch->submitJobs($this->getToken());
     }
 
     /**

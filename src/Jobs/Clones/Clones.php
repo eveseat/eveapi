@@ -96,11 +96,11 @@ class Clones extends AbstractAuthCharacterJob
                 carbon($clone_informations->last_station_change_date) : null,
         ])->save();
 
-        $structure_batch->addStructure($clone_informations->home_location->location_id, $this->getCharacterId());
+        $structure_batch->addStructure($clone_informations->home_location->location_id);
 
         // Populate jump clone information
         collect($clone_informations->jump_clones)->each(function ($jump_clone) use ($structure_batch) {
-            $structure_batch->addStructure($jump_clone->location_id, $this->getCharacterId());
+            $structure_batch->addStructure($jump_clone->location_id);
 
             CharacterJumpClone::firstOrNew([
                 'character_id'  => $this->getCharacterId(),
@@ -119,6 +119,6 @@ class Clones extends AbstractAuthCharacterJob
                 ->pluck('jump_clone_id')->flatten()->all())
             ->delete();
 
-        $structure_batch->submitJobs();
+        $structure_batch->submitJobs($this->getToken());
     }
 }

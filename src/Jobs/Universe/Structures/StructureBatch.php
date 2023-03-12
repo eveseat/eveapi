@@ -29,60 +29,46 @@ use Illuminate\Support\Facades\Bus;
 
 class StructureBatch
 {
-    const CITADEL_BATCH_SIZE = 100;
-    const STATION_BATCH_SIZE = 100;
-    const START_UPWELL_RANGE = 100000000;
+    const START_CITADEL_RANGE = 100000000;
     const RESOLVABLE_LOCATION_FLAGS = ['Hangar', 'Deliveries'];
     const RESOLVABLE_LOCATION_TYPES = ['item', 'other', 'station'];
-    private array $citadels = [];
-    private array $stations = [];
 
-    public function addStructure($structure_id, $character_id)
+    private $structures = [];
+
+    public function addStructure($structure_id)
     {
-        if ($structure_id >= self::START_UPWELL_RANGE) {
-            //by storing it in an array, we get rid of duplicates
-            $this->citadels[$structure_id] = $character_id;
-        } else {
-            //by storing it in an array, we get rid of duplicates
-            $this->stations[$structure_id] = $character_id;
-        }
+        // use an array to filter out duplicates
+        $this->structures[$structure_id] = true;
     }
 
-    public function submitJobs()
+    public function submitJobs(RefreshToken $token)
     {
+        //sort by whether it is a citadel or station
+        [$stations, $citadels] = collect($this->structures)
+            ->keys()
+            ->partition(function (int $id) {
+                return $id < self::START_CITADEL_RANGE;
+            });
+
+        //filter out duplicates
+        $stations = $stations->filter(function ($station_id){
+            return UniverseStation::find($station_id) === null;
+        });
+        $citadels = $citadels->filter(function ($citadel_id){
+            return UniverseStructure::find($citadel_id) === null;
+        });
+
+        // only schedule the batch if there are actual structures to load
         $jobs = collect();
-
-        // schedule citadels
-        // group citadels by character
-        $character_groups = collect($this->citadels)
-            ->mapToGroups(function ($character, $citadel) {
-                return [$character => $citadel];
-            });
-        foreach ($character_groups as $character => $citadels) {
-            //only load unknown structures
-            $citadels = $citadels->filter(function ($citadel) {
-                return UniverseStructure::find($citadel) === null;
-            });
-            // if all citadels in this group are know, there is no need to load the citadel data
-            if ($citadels->isEmpty()) continue;
-
-            $token = RefreshToken::find($character);
-            if (!$token) continue;
-
+        if($stations->isNotEmpty()){
+            $jobs->add(new Stations($stations));
+        }
+        if($citadels->isNotEmpty()){
             $jobs->add(new Citadels($citadels, $token));
         }
+        if($jobs->isEmpty()) return;
 
-        //stations
-        collect($this->stations)
-            ->keys()
-            ->filter(function ($station_id) {
-                return !UniverseStation::where('station_id', $station_id)->exists();
-            })
-            ->chunk(self::STATION_BATCH_SIZE)
-            ->each(function ($chunk) use ($jobs) {
-                $jobs->add(new Stations($chunk));
-            });
-
+        // submit batch
         Bus::batch($jobs->toArray())
             ->name("Station/Citadels")
             ->dispatch();

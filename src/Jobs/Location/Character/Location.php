@@ -80,8 +80,8 @@ class Location extends AbstractAuthCharacterJob
 
         if ($station_id !== null || $citadel_id !== null) {
             $structure_batch = new StructureBatch();
-            $structure_batch->addStructure($station_id ?? $citadel_id, $this->getCharacterId());
-            $structure_batch->submitJobs();
+            $structure_batch->addStructure($station_id ?? $citadel_id);
+            $structure_batch->submitJobs($this->getToken());
         }
 
         CharacterLocation::firstOrNew([
