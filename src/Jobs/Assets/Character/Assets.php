@@ -23,7 +23,6 @@
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
-
 use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Assets\AssetMapping;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
@@ -99,12 +98,12 @@ class Assets extends AbstractAuthCharacterJob
         while (true) {
 
             $response = $this->retrieve([
-                'character_id' => $this->getCharacterId()
+                'character_id' => $this->getCharacterId(),
             ]);
 
             $assets = collect($response->getBody());
 
-            $assets->each(function ($asset) use ($structure_batch){
+            $assets->each(function ($asset) use ($structure_batch) {
 
                 $model = CharacterAsset::firstOrNew([
                     'item_id' => $asset->item_id,
