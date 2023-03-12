@@ -71,13 +71,17 @@ class MemberTracking extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $members = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($members->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationMemberTracking::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
+
+        $members = $response->getBody();
 
         collect($members)->each(function ($member) {
 

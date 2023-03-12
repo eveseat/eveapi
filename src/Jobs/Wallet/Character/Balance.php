@@ -64,11 +64,15 @@ class Balance extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $balance = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($balance->isCachedLoad() && CharacterWalletBalance::find($this->getCharacterId())) return;
+        if ($response->isFromCache() && CharacterWalletBalance::find($this->getCharacterId())) return;
+
+        $balance = $response->getBody();
 
         CharacterWalletBalance::firstOrNew([
             'character_id' => $this->getCharacterId(),

@@ -98,15 +98,15 @@ class Structures extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $structures = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($structures->isCachedLoad() &&
-                CorporationStructure::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $structures = $response->getBody();
 
             collect($structures)->each(function ($structure) {
 
@@ -173,7 +173,7 @@ class Structures extends AbstractAuthCorporationJob
                 $this->known_structures->push($structure->structure_id);
             });
 
-            if (! $this->nextPage($structures->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

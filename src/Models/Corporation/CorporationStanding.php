@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
 
 /**
  * Class CorporationStanding.
@@ -33,8 +32,6 @@ use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
  */
 class CorporationStanding extends Model
 {
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */

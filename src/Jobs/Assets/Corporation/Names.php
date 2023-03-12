@@ -79,6 +79,8 @@ class Names extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.
         CorporationAsset::join('invTypes', 'type_id', '=', 'typeID')
@@ -98,11 +100,13 @@ class Names extends AbstractAuthCorporationJob
 
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
-                $names = $this->retrieve([
+                $response = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
                 ]);
 
-                collect($names)->each(function ($name) {
+                $names = collect($response->getBody());
+
+                $names->each(function ($name) {
 
                     // "None" seems to indidate that no name is set.
                     if ($name->name === 'None')

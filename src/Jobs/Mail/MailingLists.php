@@ -64,15 +64,19 @@ class MailingLists extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $mailing_lists = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($mailing_lists->isCachedLoad() &&
+        if ($response->isFromCache() &&
             MailMailingList::where('character_id', $this->getCharacterId())->count() > 0)
             return;
 
-        collect($mailing_lists)->each(function ($list) {
+        $lists = $response->getBody();
+
+        collect($lists)->each(function ($list) {
 
             MailMailingList::firstOrCreate([
                 'character_id'    => $this->getCharacterId(),

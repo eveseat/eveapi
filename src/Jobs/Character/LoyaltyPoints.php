@@ -81,15 +81,12 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
         }
 
         //load lp data
-        $loyalty_points = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $character_id,
         ]);
 
-        //don't run the job if the data is only cached
-        //if ($loyalty_points->isCachedLoad() && $character->loyalty_points()->count() > 0) return;
-
         //get the lp data as collection
-        $loyalty_points = collect($loyalty_points);
+        $loyalty_points = collect($response->getBody());
 
         //store the lp data
         $character->loyalty_points()->sync($loyalty_points->mapWithkeys(function ($corporation_loyalty) {

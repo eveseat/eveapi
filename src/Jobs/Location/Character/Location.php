@@ -64,11 +64,15 @@ class Location extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $location = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($location->isCachedLoad() && CharacterLocation::find($this->getCharacterId())) return;
+        if ($response->isFromCache() && CharacterLocation::find($this->getCharacterId())) return;
+
+        $location = $response->getBody();
 
         CharacterLocation::firstOrNew([
             'character_id' => $this->getCharacterId(),

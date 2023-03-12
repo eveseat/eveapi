@@ -22,6 +22,8 @@
 
 namespace Seat\Eveapi\Bus;
 
+use Illuminate\Support\Collection;
+
 /**
  * Interface Bus.
  *
@@ -32,7 +34,7 @@ abstract class Bus
     /**
      * @var \Illuminate\Support\Collection
      */
-    protected $jobs;
+    protected Collection $jobs;
 
     /**
      * Bus constructor.

@@ -37,6 +37,11 @@ class DgmTypeAttribute extends Model
     use HasCompositePrimaryKey;
 
     /**
+     * The attribute ID which contains skill rank.
+     */
+    const SKILL_RANK_ID = 275;
+
+    /**
      * @var bool
      */
     public $incrementing = false;
@@ -50,4 +55,9 @@ class DgmTypeAttribute extends Model
      * @var string
      */
     protected $primaryKey = ['typeID', 'attributeID'];
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }

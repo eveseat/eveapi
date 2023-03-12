@@ -48,4 +48,9 @@ class RamActivity extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }

@@ -74,13 +74,11 @@ class Contracts extends AbstractAuthCorporationJob
     {
         while (true) {
 
-            $contracts = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($contracts->isCachedLoad() &&
-                CorporationContract::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $contracts = $response->getBody();
 
             collect($contracts)->each(function ($contract) {
 
@@ -108,7 +106,7 @@ class Contracts extends AbstractAuthCorporationJob
                     dispatch(new Items($this->getCorporationId(), $this->token, $contract->contract_id));
             });
 
-            if (! $this->nextPage($contracts->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

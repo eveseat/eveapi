@@ -20,7 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\database\seeds;
+namespace Seat\Eveapi\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -144,6 +144,14 @@ class ScheduleSeeder extends Seeder
         [   // Stations Data | Once a day
             'command'           => 'esi:update:stations',
             'expression'        => '0 1 * * *',
+            'allow_overlap'     => false,
+            'allow_maintenance' => false,
+            'ping_before'       => null,
+            'ping_after'        => null,
+        ],
+        [   // Horizon remove batches older than 48 hours | Once a day
+            'command'           => 'queue:prune-batches --hours=48',
+            'expression'        => '0 3 * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,

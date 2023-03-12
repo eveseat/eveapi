@@ -89,6 +89,8 @@ class Locations extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         // all items which need to be singleton
 
         // Get the assets for this character, chunked in a number of blocks
@@ -110,11 +112,13 @@ class Locations extends AbstractAuthCorporationJob
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
                 try {
-                    $locations = $this->retrieve([
+                    $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
                     ]);
 
-                    collect($locations)->each(function ($location) {
+                    $locations = collect($response->getBody());
+
+                    $locations->each(function ($location) {
 
                         $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
                             ->where('item_id', $location->item_id)
@@ -165,11 +169,13 @@ class Locations extends AbstractAuthCorporationJob
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
                 try {
-                    $locations = $this->retrieve([
+                    $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
                     ]);
 
-                    collect($locations)->each(function ($location) {
+                    $locations = collect($response->getBody());
+
+                    $locations->each(function ($location) {
 
                         $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
                             ->where('item_id', $location->item_id)

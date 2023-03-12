@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
-use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetContent;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanetExtractor;
@@ -141,13 +140,15 @@ class PlanetDetail extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $planet_detail = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
             'planet_id'    => $this->planet_id,
         ]);
 
+        $planet = $response->getBody();
+
         // seed database with pins
-        collect($planet_detail->pins)->each(function ($pin) {
+        collect($planet->pins)->each(function ($pin) {
 
             CharacterPlanetPin::firstOrNew([
                 'character_id' => $this->getCharacterId(),
@@ -242,7 +243,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
             }
         });
 
-        collect($planet_detail->links)->each(function ($link) {
+        collect($planet->links)->each(function ($link) {
 
             CharacterPlanetLink::firstOrNew([
                 'character_id' => $this->getCharacterId(),
@@ -261,7 +262,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
 
         });
 
-        collect($planet_detail->routes)->each(function ($route) {
+        collect($planet->routes)->each(function ($route) {
 
             CharacterPlanetRoute::firstOrNew([
                 'character_id' => $this->getCharacterId(),
@@ -343,23 +344,15 @@ class PlanetDetail extends AbstractAuthCharacterJob
     {
         // retrieve all waypoints which have not been returned by API.
         // We will run a delete statement on those selected rows in order to avoid any deadlock.
-        $existing_waypoints = CharacterPlanetRouteWaypoint::where('character_id', $this->getCharacterId())
-            ->where('planet_id', $this->planet_id)
-            ->whereNotIn(DB::raw('CONCAT(route_id, ":", pin_id)'), $this->planet_waypoints
-                ->map(function ($item) {
-                    return sprintf('%s:%s', $item['route_id'], $item['pin_id']);
-                })->toArray()
-            )
-            ->get();
+        $this->planet_waypoints->groupBy('route_id')->each(function ($pins) {
+            $route = $pins->first();
 
-        CharacterPlanetRouteWaypoint::where('character_id', $this->getCharacterId())
-            ->where('planet_id', $this->planet_id)
-            ->whereIn(DB::raw('CONCAT(route_id, ":", pin_id)'), $existing_waypoints
-                ->map(function ($item) {
-                    return sprintf('%s:%s', $item->route_id, $item->pin_id);
-                })->toArray()
-            )
-            ->delete();
+            CharacterPlanetRouteWaypoint::where('character_id', $this->getCharacterId())
+                ->where('planet_id', $this->planet_id)
+                ->where('route_id', $route['route_id'])
+                ->whereNotIn('pin_id', $pins->pluck('pin_id'))
+                ->delete();
+        });
     }
 
     /**
@@ -387,22 +380,15 @@ class PlanetDetail extends AbstractAuthCharacterJob
     {
         // retrieve all links which have not been returned by API.
         // We will run a delete statement on those selected rows in order to avoid any deadlock.
-        $existing_links = CharacterPlanetLink::where('character_id', $this->getCharacterId())
-            ->where('planet_id', $this->planet_id)
-            ->whereNotIn(DB::raw('CONCAT(source_pin_id, ":", destination_pin_id)'), $this->planet_links
-                ->map(function ($item) {
-                    return sprintf('%s:%s', $item['source_pin_id'], $item['destination_pin_id']);
-                })->toArray()
-            )
-            ->get();
+        $this->planet_links->groupBy('source_pin_id')->each(function ($links) {
+            $from = $links->first();
 
-        CharacterPlanetLink::where('character_id', $this->getCharacterId())
-            ->where('planet_id', $this->planet_id)
-            ->whereIn(DB::raw('CONCAT(source_pin_id, ":", destination_pin_id)'), $existing_links
-                ->map(function ($item) {
-                    return sprintf('%s:%s', $item->source_pin_id, $item->destination_pin_id);
-                })->toArray())
-            ->delete();
+            CharacterPlanetLink::where('character_id', $this->getCharacterId())
+                ->where('planet_id', $this->planet_id)
+                ->where('source_pin_id', $from['source_pin_id'])
+                ->whereNotIn('destination_pin_id', $links->pluck('destination_pin_id'))
+                ->delete();
+        });
     }
 
     /**
@@ -412,22 +398,14 @@ class PlanetDetail extends AbstractAuthCharacterJob
     {
         // retrieve all contents which have not been returned by API.
         // We will run a delete statement on those selected rows in order to avoid any deadlock.
-        $existing_contents = CharacterPlanetContent::where('character_id', $this->getCharacterId())
-            ->where('planet_id', $this->planet_id)
-            ->whereNotIn(DB::raw('CONCAT(pin_id, ":", type_id)'), $this->planet_contents
-                ->map(function ($item) {
-                    return sprintf('%s:%s', $item['pin_id'], $item['type_id']);
-                })->toArray()
-            )
-            ->get();
+        $this->planet_contents->groupBy('type_id')->each(function ($pins) {
+            $type = $pins->first();
 
-        CharacterPlanetContent::where('character_id', $this->getCharacterId())
-            ->where('planet_id', $this->planet_id)
-            ->whereIn(DB::raw('CONCAT(pin_id, ":", type_id)'), $existing_contents
-                ->map(function ($item) {
-                    return sprintf('%s:%s', $item->pin_id, $item->type_id);
-                })->toArray())
-            ->delete();
+            CharacterPlanetContent::where('character_id', $this->getCharacterId())
+                ->where('type_id', $type['type_id'])
+                ->whereNotIn('pin_id', $pins->pluck('pin_id'))
+                ->delete();
+        });
     }
 
     /**
@@ -437,23 +415,14 @@ class PlanetDetail extends AbstractAuthCharacterJob
     {
         // retrieve all heads which have not been returned by API.
         // We will run a delete statement on those selected rows in order to avoid any deadlock.
-        $existing_heads = CharacterPlanetHead::where('character_id', $this->getCharacterId())
-            ->where('planet_id', $this->planet_id)
-            ->whereNotIn(DB::raw('CONCAT(extractor_id, ":", head_id)'), $this->planet_heads
-                ->map(function ($item) {
-                    return sprintf('%s:%s', $item['extractor_id'], $item['head_id']);
-                })->toArray()
-            )
-            ->get();
+        $this->planet_heads->groupBy('extractor_id')->each(function ($heads) {
+            $extractor = $heads->first();
 
-        CharacterPlanetHead::where('character_id', $this->getCharacterId())
-            ->where('planet_id', $this->planet_id)
-            ->whereIn(DB::raw('CONCAT(extractor_id, ":", head_id)'), $existing_heads
-                ->map(function ($item) {
-                    return sprintf('%s:%s', $item->extractor_id, $item->head_id);
-                })->toArray()
-            )
-            ->delete();
+            CharacterPlanetHead::where('character_id', $this->getCharacterId())
+                ->where('extractor_id', $extractor['extractor_id'])
+                ->whereNotIn('head_id', $heads->pluck('head_id'))
+                ->delete();
+        });
     }
 
     /**

@@ -76,13 +76,11 @@ class Contracts extends AbstractAuthCharacterJob
 
         while (true) {
 
-            $contracts = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($contracts->isCachedLoad() &&
-                CharacterContract::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $contracts = $response->getBody();
 
             collect($contracts)->each(function ($contract) {
 
@@ -110,7 +108,7 @@ class Contracts extends AbstractAuthCharacterJob
                     dispatch(new Items($this->token, $contract->contract_id));
             });
 
-            if (! $this->nextPage($contracts->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

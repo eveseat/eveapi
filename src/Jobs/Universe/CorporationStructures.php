@@ -71,6 +71,8 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
      */
     public function handle()
     {
+        parent::handle();
+
         $structure_ids = $this->getStructuresIdToResolve();
 
         foreach ($structure_ids as $structure_id) {
@@ -78,13 +80,15 @@ class CorporationStructures extends AbstractAuthCorporationJob implements IStruc
             try {
 
                 // attempt to resolve the structure
-                $structure = $this->retrieve([
+                $response = $this->retrieve([
                     'structure_id' => $structure_id,
                 ]);
 
                 $model = UniverseStructure::firstOrNew([
                     'structure_id' => $structure_id,
                 ]);
+
+                $structure = $response->getBody();
 
                 UniverseStructureMapping::make($model, $structure, [
                     'structure_id' => function () use ($structure_id) {

@@ -67,16 +67,19 @@ class Standings extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $standings = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($standings->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CharacterStanding::where('character_id', $this->getCharacterId())->count() > 0)
             return;
 
-        collect($standings)->each(function ($standing) {
+        $standings = collect($response->getBody());
+
+        $standings->each(function ($standing) {
 
             CharacterStanding::firstOrNew([
                 'character_id' => $this->getCharacterId(),

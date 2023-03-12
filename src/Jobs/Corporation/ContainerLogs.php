@@ -77,15 +77,15 @@ class ContainerLogs extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $logs = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($logs->isCachedLoad() &&
-                CorporationContainerLog::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $logs = $response->getBody();
 
             collect($logs)->each(function ($log) {
 
@@ -103,7 +103,7 @@ class ContainerLogs extends AbstractAuthCorporationJob
 
             });
 
-            if (! $this->nextPage($logs->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

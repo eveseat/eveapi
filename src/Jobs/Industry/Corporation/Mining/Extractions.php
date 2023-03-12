@@ -72,15 +72,19 @@ class Extractions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $mining_extractions = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($mining_extractions->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationIndustryMiningExtraction::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
 
-        collect($mining_extractions)->each(function ($extraction) {
+        $extractions = $response->getBody();
+
+        collect($extractions)->each(function ($extraction) {
 
             $model = CorporationIndustryMiningExtraction::firstOrNew([
                 'moon_id' => $extraction->moon_id,

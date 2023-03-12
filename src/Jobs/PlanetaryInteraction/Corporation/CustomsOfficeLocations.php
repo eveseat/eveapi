@@ -74,6 +74,8 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $customs_offices = CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->get();
 
         collect($customs_offices)->chunk(1000)->each(function ($chunk) {
@@ -83,13 +85,11 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
                 return $office->office_id;
             })->flatten()->toArray();
 
-            $locations = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($locations->isCachedLoad() &&
-                CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $locations = $response->getBody();
 
             collect($locations)->each(function ($location) use ($chunk) {
 

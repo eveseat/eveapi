@@ -20,34 +20,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Sde;
-
-use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\IsReadOnly;
-
-/**
- * Class ChrFaction.
- *
- * @package Seat\Eveapi\Models\Sde
- */
-class ChrFaction extends Model
-{
-
-    use IsReadOnly;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var string
-     */
-    protected $table = 'chrFactions';
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'factionID';
-
-}
+return [
+    'eseye' => [
+        'driver' => 'file',
+        'path' => storage_path('cache/eseye'),
+    ],
+];

@@ -70,17 +70,21 @@ class Queue extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         $this->greatest_position = -1;
 
-        $skill_queue = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($skill_queue->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CharacterSkillQueue::where('character_id', $this->getCharacterId())->count() > 0)
             return;
 
-        collect($skill_queue)->each(function ($skill) {
+        $skills = $response->getBody();
+
+        collect($skills)->each(function ($skill) {
 
             $model = CharacterSkillQueue::firstOrNew([
                 'character_id' => $this->getCharacterId(),

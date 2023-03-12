@@ -65,13 +65,17 @@ class Orders extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $orders = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($orders->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CharacterOrder::where('character_id', $this->getCharacterId())->count() > 0)
             return;
+
+        $orders = $response->getBody();
 
         collect($orders)->each(function ($order) {
 
