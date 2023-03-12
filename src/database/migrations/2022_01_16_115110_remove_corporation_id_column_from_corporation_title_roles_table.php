@@ -69,7 +69,7 @@ class RemoveCorporationIdColumnFromCorporationTitleRolesTable extends Migration
             $table->bigIncrements('id')->first();
 
             $table->foreign('title_id')
-                ->references('title_id')
+                ->references('id')
                 ->on('corporation_titles')
                 ->onDelete('CASCADE');
         });
