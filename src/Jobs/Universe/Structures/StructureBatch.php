@@ -54,8 +54,9 @@ class StructureBatch
         $stations = $stations->filter(function ($station_id){
             return UniverseStation::find($station_id) === null;
         });
-        $citadels = $citadels->filter(function ($citadel_id){
-            return UniverseStructure::find($citadel_id) === null;
+        $citadels = $citadels->filter(function ($citadel_id) use ($token) {
+            //only dispatch the job if the citadel is unknown AND the character is not acl banned
+            return UniverseStructure::find($citadel_id) === null && CacheCitadelAccessCache::canAccess($token->character_id,$citadel_id);
         });
 
         // only schedule the batch if there are actual structures to load

@@ -79,6 +79,9 @@ class Citadels extends AbstractAuthCharacterJob
         parent::handle();
 
         foreach ($this->structure_ids as $structure_id) {
+            // check if the acl cache allows refetching the structure
+            if(!CacheCitadelAccessCache::canAccess($this->getCharacterId(),$structure_id)) continue;
+
             try {
                 // attempt to resolve the structure
                 $response = $this->retrieve([
@@ -98,10 +101,7 @@ class Citadels extends AbstractAuthCharacterJob
                 ])->save();
 
             } catch (RequestFailedException $e) {
-                logger()->error('Unable to retrieve structure information.', [
-                    'structure ID'   => $structure_id,
-                    'token owner ID' => $this->getCharacterId(),
-                ]);
+                CacheCitadelAccessCache::blockAccess($this->getCharacterId(),$structure_id);
             }
         }
     }
