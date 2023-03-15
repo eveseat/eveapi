@@ -80,7 +80,7 @@ class Citadels extends AbstractAuthCharacterJob
 
         foreach ($this->structure_ids as $structure_id) {
             // check if the acl cache allows refetching the structure
-            if(!CacheCitadelAccessCache::canAccess($this->getCharacterId(),$structure_id)) continue;
+            if(! CacheCitadelAccessCache::canAccess($this->getCharacterId(), $structure_id)) continue;
 
             try {
                 // attempt to resolve the structure
@@ -101,7 +101,7 @@ class Citadels extends AbstractAuthCharacterJob
                 ])->save();
 
             } catch (RequestFailedException $e) {
-                CacheCitadelAccessCache::blockAccess($this->getCharacterId(),$structure_id);
+                CacheCitadelAccessCache::blockAccess($this->getCharacterId(), $structure_id);
             }
         }
     }

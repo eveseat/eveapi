@@ -22,11 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
+use Illuminate\Bus\Batchable;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Mapping\Structures\UniverseStationMapping;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStationService;
-use Illuminate\Bus\Batchable;
 
 /**
  * Class Stations.

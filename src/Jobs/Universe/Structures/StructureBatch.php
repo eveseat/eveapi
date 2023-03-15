@@ -22,10 +22,10 @@
 
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
+use Illuminate\Support\Facades\Bus;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Illuminate\Support\Facades\Bus;
 
 class StructureBatch
 {
@@ -51,12 +51,12 @@ class StructureBatch
             });
 
         //filter out duplicates
-        $stations = $stations->filter(function ($station_id){
+        $stations = $stations->filter(function ($station_id) {
             return UniverseStation::find($station_id) === null;
         });
         $citadels = $citadels->filter(function ($citadel_id) use ($token) {
             //only dispatch the job if the citadel is unknown AND the character is not acl banned
-            return UniverseStructure::find($citadel_id) === null && CacheCitadelAccessCache::canAccess($token->character_id,$citadel_id);
+            return UniverseStructure::find($citadel_id) === null && CacheCitadelAccessCache::canAccess($token->character_id, $citadel_id);
         });
 
         // only schedule the batch if there are actual structures to load
@@ -71,7 +71,7 @@ class StructureBatch
 
         // submit batch
         Bus::batch($jobs->toArray())
-            ->name("Station/Citadels")
+            ->name('Station/Citadels')
             ->dispatch();
     }
 }
