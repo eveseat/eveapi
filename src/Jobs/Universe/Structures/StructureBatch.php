@@ -30,7 +30,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 class StructureBatch
 {
     const START_CITADEL_RANGE = 100000000;
-    const RESOLVABLE_LOCATION_FLAGS = ['Hangar', 'Deliveries'];
+    const RESOLVABLE_LOCATION_FLAGS = ['Hangar', 'Deliveries','OfficeFolder'];
     const RESOLVABLE_LOCATION_TYPES = ['item', 'other', 'station'];
 
     private $structures = [];
