@@ -24,6 +24,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/*
+Do not rename this migration or it will break the update process for seat 4 installs using recursivetree/seat-treelib.
+Since the original PR was aimed at seat 4 and the delayed to seat 5, it was in the meantime included in seat 4 via seat-treelib.
+*/
 class AddMarketOrdersData extends Migration
 {
     /**
