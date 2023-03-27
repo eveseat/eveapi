@@ -95,8 +95,8 @@ class Orders extends EsiBase
                 });
 
                 // update data in the db
-                MarketOrder::upsert($records->toArray(),[
-                    'order_id'
+                MarketOrder::upsert($records->toArray(), [
+                    'order_id',
                 ], [
                     'duration',
                     'is_buy_order',

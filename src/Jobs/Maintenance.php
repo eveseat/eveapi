@@ -89,7 +89,7 @@ class Maintenance implements ShouldQueue
         logger()->info('Performing tables maintenance');
 
         // Prune the failed jobs table
-        FailedJob::where('id', '<', (FailedJob::max('id') - 100))->delete();
+        FailedJob::where('id', '<', FailedJob::max('id') - 100)->delete();
 
         // Prune the server statuses older than a week.
         ServerStatus::where('created_at', '<', carbon('now')->subWeek(1))->delete();
