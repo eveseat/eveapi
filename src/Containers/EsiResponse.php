@@ -122,7 +122,7 @@ class EsiResponse implements \Seat\Services\Contracts\EsiResponse
      */
     public function getPagesCount(): ?int
     {
-        return (int) $this->getHeader('X-Pages') ?: null;
+        return (int) $this->getHeader('X-Pages')[0] ?: null;
     }
 
     /**
