@@ -79,7 +79,7 @@ class EsiResponse implements \Seat\Services\Contracts\EsiResponse
      * This returns an array of strings for each line of the header.
      * If you want the value as a string, use getHeaderLine(name) instead.
      * As per RFC, a single header can be attached to multiple data line - each of them separated by a comma (,) - such header usage like user agent is a good example
-     * As a result, strict implementation must return an array of values
+     * As a result, strict implementation must return an array of values.
      *
      * @param  string  $name
      * @return string[]
