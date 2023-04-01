@@ -76,6 +76,11 @@ class EsiResponse implements \Seat\Services\Contracts\EsiResponse
     }
 
     /**
+     * This returns an array of strings for each line of the header.
+     * If you want the value as a string, use getHeaderLine(name) instead.
+     * As per RFC, a single header can be attached to multiple data line - each of them separated by a comma (,) - such header usage like user agent is a good example
+     * As a result, strict implementation must return an array of values.
+     *
      * @param  string  $name
      * @return string[]
      */
@@ -85,6 +90,9 @@ class EsiResponse implements \Seat\Services\Contracts\EsiResponse
     }
 
     /**
+     * Returns the header as a string
+     * If you want the lines of the header as an array, use getHeader(name) instead.
+     *
      * @param  string  $name
      * @return string
      */
@@ -122,7 +130,7 @@ class EsiResponse implements \Seat\Services\Contracts\EsiResponse
      */
     public function getPagesCount(): ?int
     {
-        return (int) $this->getHeader('X-Pages') ?: null;
+        return (int) $this->getHeaderLine('X-Pages') ?: null;
     }
 
     /**
