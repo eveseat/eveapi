@@ -20,8 +20,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Universe;
+namespace Seat\Eveapi\Jobs\Universe\Structures;
 
+use Illuminate\Bus\Batchable;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Mapping\Structures\UniverseStationMapping;
 use Seat\Eveapi\Models\Universe\UniverseStation;
@@ -34,6 +35,8 @@ use Seat\Eveapi\Models\Universe\UniverseStationService;
  */
 class Stations extends EsiBase
 {
+    use Batchable;
+
     /**
      * @var string
      */
@@ -52,19 +55,19 @@ class Stations extends EsiBase
     /**
      * @var array
      */
-    protected $tags = ['public', 'universe'];
+    protected $tags = ['public', 'universe', 'structure'];
 
     /**
-     * @var array
+     * @var iterable
      */
-    private $station_ids;
+    private iterable $station_ids;
 
     /**
      * Stations constructor.
      *
      * @param  array  $station_ids
      */
-    public function __construct(array $station_ids)
+    public function __construct(iterable $station_ids)
     {
         parent::__construct();
 

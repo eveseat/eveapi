@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Industry\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\JobMapping;
 use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
 
@@ -73,6 +74,7 @@ class Jobs extends AbstractAuthCharacterJob
     public function handle()
     {
         parent::handle();
+        $structure_batch = new StructureBatch();
 
         $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
@@ -84,7 +86,8 @@ class Jobs extends AbstractAuthCharacterJob
 
         $industry_jobs = $response->getBody();
 
-        collect($industry_jobs)->each(function ($job) {
+        collect($industry_jobs)->each(function ($job) use ($structure_batch) {
+            $structure_batch->addStructure($job->facility_id);
 
             $model = CharacterIndustryJob::firstOrNew([
                 'character_id' => $this->getCharacterId(),
@@ -100,5 +103,7 @@ class Jobs extends AbstractAuthCharacterJob
                 },
             ])->save();
         });
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

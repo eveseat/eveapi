@@ -20,20 +20,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Universe;
+namespace Seat\Eveapi\Jobs\Universe\Structures;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Mapping\Structures\UniverseStructureMapping;
-use Seat\Eveapi\Models\Assets\CharacterAsset;
+use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
 /**
- * Class CharacterStructures.
+ * Class Citadels.
  *
  * @package Seat\Eveapi\Jobs\Universe
  */
-class CharacterStructures extends AbstractAuthCharacterJob implements IStructures
+class Citadels extends AbstractAuthCharacterJob
 {
     /**
      * @var string
@@ -58,7 +58,18 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
     /**
      * @var array
      */
-    protected $tags = ['character', 'universe', 'structure'];
+    protected $tags = ['universe', 'structure'];
+
+    private iterable $structure_ids;
+
+    /**
+     * @param  iterable  $structure_ids
+     */
+    public function __construct(iterable $structure_ids, RefreshToken $token)
+    {
+        parent::__construct($token);
+        $this->structure_ids = $structure_ids;
+    }
 
     /**
      * {@inheritdoc}
@@ -67,12 +78,11 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
     {
         parent::handle();
 
-        $structure_ids = $this->getStructuresIdToResolve();
-
-        foreach ($structure_ids as $structure_id) {
+        foreach ($this->structure_ids as $structure_id) {
+            // check if the acl cache allows refetching the structure
+            if(! CacheCitadelAccessCache::canAccess($this->getCharacterId(), $structure_id)) continue;
 
             try {
-
                 // attempt to resolve the structure
                 $response = $this->retrieve([
                     'structure_id' => $structure_id,
@@ -91,41 +101,8 @@ class CharacterStructures extends AbstractAuthCharacterJob implements IStructure
                 ])->save();
 
             } catch (RequestFailedException $e) {
-                logger()->error('Unable to retrieve structure information.', [
-                    'structure ID'   => $structure_id,
-                    'token owner ID' => $this->getCharacterId(),
-                ]);
+                CacheCitadelAccessCache::blockAccess($this->getCharacterId(), $structure_id);
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getStructuresIdToResolve(): array
-    {
-        $locations = CharacterAsset::where('character_id', $this->getCharacterId())
-            ->whereIn('location_flag', ['Deliveries', 'Hangar'])
-            ->whereIn('location_type', ['item', 'other'])
-            // according to ESI - structure ID has to start at a certain range
-            ->where('location_id', '>=', self::START_UPWELL_RANGE)
-            // exclude character assets
-            ->whereNotIn('location_id', function ($query) {
-                $query->select('item_id')
-                    ->from((new CharacterAsset)->getTable())
-                    ->where('character_id', $this->getCharacterId())
-                    ->distinct();
-            })
-            ->select('location_id')
-            ->distinct()
-            ->get();
-
-        // Until CCP can sort out this endpoint, pick 15 random locations
-        // and try to get those names. We hard cap it at 15 otherwise we
-        // will quickly kill the error limit, resulting in a ban.
-        if ($locations->count() > 15)
-            $locations = $locations->random(15);
-
-        return $locations->pluck('location_id')->all();
     }
 }

@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Market\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Financial\OrderMapping;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 
@@ -79,6 +80,8 @@ class Orders extends AbstractAuthCorporationJob
     {
         parent::handle();
 
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
             $response = $this->retrieve([
@@ -87,7 +90,8 @@ class Orders extends AbstractAuthCorporationJob
 
             $orders = $response->getBody();
 
-            collect($orders)->each(function ($order) {
+            collect($orders)->each(function ($order) use ($structure_batch) {
+                $structure_batch->addStructure($order->location_id);
 
                 $model = CorporationOrder::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
@@ -108,6 +112,8 @@ class Orders extends AbstractAuthCorporationJob
             });
 
             if (! $this->nextPage($response->getPagesCount()))
+                $structure_batch->submit();
+
                 return;
         }
     }

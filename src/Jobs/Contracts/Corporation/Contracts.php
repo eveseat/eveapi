@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 
@@ -72,6 +73,8 @@ class Contracts extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
             $response = $this->retrieve([
@@ -80,7 +83,13 @@ class Contracts extends AbstractAuthCorporationJob
 
             $contracts = $response->getBody();
 
-            collect($contracts)->each(function ($contract) {
+            collect($contracts)->each(function ($contract) use ($structure_batch) {
+                if ($contract->start_location_id) {
+                    $structure_batch->addStructure($contract->start_location_id);
+                }
+                if ($contract->end_location_id) {
+                    $structure_batch->addStructure($contract->end_location_id);
+                }
 
                 // Update or create the contract details.
                 $model = ContractDetail::firstOrNew([
@@ -106,8 +115,10 @@ class Contracts extends AbstractAuthCorporationJob
                     dispatch(new Items($this->getCorporationId(), $this->token, $contract->contract_id));
             });
 
-            if (! $this->nextPage($response->getPagesCount()))
+            if (! $this->nextPage($response->getPagesCount())) {
+                $structure_batch->submitJobs($this->getToken());
                 break;
+            }
         }
     }
 }

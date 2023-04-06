@@ -102,7 +102,6 @@ class EveapiServiceProvider extends AbstractSeatPlugin
             \Seat\Eveapi\Commands\Esi\Update\Affiliations::class,
             \Seat\Eveapi\Commands\Esi\Update\Prices::class,
             \Seat\Eveapi\Commands\Esi\Update\Insurances::class,
-            \Seat\Eveapi\Commands\Esi\Update\Stations::class,
             \Seat\Eveapi\Commands\Esi\Update\Sovereignty::class,
             \Seat\Eveapi\Commands\Esi\Update\Alliances::class,
             \Seat\Eveapi\Commands\Esi\Update\Contracts::class,

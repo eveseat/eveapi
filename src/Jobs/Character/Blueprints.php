@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\BlueprintMapping;
 use Seat\Eveapi\Models\Character\CharacterBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
@@ -97,6 +98,8 @@ class Blueprints extends AbstractAuthCharacterJob
     {
         parent::handle();
 
+        $structure_batch = new StructureBatch();
+
         // Start an infinite loop for the paged requests.
         while (true) {
 
@@ -107,9 +110,13 @@ class Blueprints extends AbstractAuthCharacterJob
             $blueprints = collect($response->getBody());
 
             // Process the blueprints from the response
-            $blueprints->chunk(100)->each(function ($chunk) {
+            $blueprints->chunk(100)->each(function ($chunk) use ($structure_batch) {
 
-                $chunk->each(function ($blueprint) {
+                $chunk->each(function ($blueprint) use ($structure_batch) {
+
+                    if (in_array($blueprint->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS)) {
+                        $structure_batch->addStructure($blueprint->location_id);
+                    }
 
                     $model = CharacterBlueprint::firstOrNew([
                         'item_id'      => $blueprint->item_id,
@@ -132,6 +139,7 @@ class Blueprints extends AbstractAuthCharacterJob
         }
 
         $this->cleanup();
+        $structure_batch->submitJobs($this->getToken());
     }
 
     /**

@@ -24,7 +24,9 @@ namespace Seat\Eveapi\Jobs\Market;
 
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Models\Market\MarketOrder;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Orders.
@@ -64,6 +66,8 @@ class Orders extends EsiBase
         // the region_id cached to speed up execution of the loop
         $region_id = setting('market_prices_region_id', true) ?: \Seat\Eveapi\Jobs\Market\History::THE_FORGE;
 
+        $structure_batch = new StructureBatch();
+
         //load all market data
         while (true) {
             //retrieve one page of market orders
@@ -72,10 +76,12 @@ class Orders extends EsiBase
 
             // map the ESI format to the database format
             // if the batch size is increased to 1000, it crashed
-            collect($orders)->chunk(100)->each(function ($chunk) {
+            collect($orders)->chunk(100)->each(function ($chunk) use ($structure_batch) {
                 // map the ESI format to the database format
-                $records = $chunk->map(function ($order) {
+                $records = $chunk->map(function ($order) use ($structure_batch) {
                     $issued = carbon($order->issued);
+
+                    $structure_batch->addStructure($order->location_id);
 
                     return [
                         'order_id' => $order->order_id,
@@ -120,5 +126,8 @@ class Orders extends EsiBase
         // remove old orders
         // if this ever gets changed to retain old orders, add an expiry check in the OrderAggregates job.
         MarketOrder::where('expiry', '<=', now())->delete();
+
+        // This is a public job, but we require a token. since we only have public citadels on the order endpoint, we can use any character
+        $structure_batch->submitJobs(RefreshToken::first());
     }
 }
