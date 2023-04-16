@@ -107,7 +107,7 @@ trait Utils
 
             // See: http://math.stackexchange.com/a/42642
             $distance = sqrt(
-                pow(($x - $celestial->x), 2) + pow(($y - $celestial->y), 2) + pow(($z - $celestial->z), 2));
+                pow($x - $celestial->x, 2) + pow($y - $celestial->y, 2) + pow($z - $celestial->z, 2));
 
             // Are we there yet?
             if ($distance < $closest_distance) {
