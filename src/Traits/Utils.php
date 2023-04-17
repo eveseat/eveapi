@@ -40,9 +40,10 @@ trait Utils
      * @param  float  $x
      * @param  float  $y
      * @param  float  $z
+     * @param  ?int  $group
      * @return array
      */
-    public function find_nearest_celestial(int $solar_system_id, float $x, float $y, float $z): array
+    public function find_nearest_celestial(int $solar_system_id, float $x, float $y, float $z, ?int $group = null): array
     {
 
         // Querying mapDenormalized with [1] we can see
@@ -77,7 +78,7 @@ trait Utils
         $closest_distance = PHP_INT_MAX;
 
         // As a response, we will return an array with
-        // the closest ID and name from mapDenormallized.
+        // the closest ID and name from mapDenormalize.
         // The default response will be the system this
         // location is in.
         $response = [
@@ -85,17 +86,28 @@ trait Utils
             'map_name' => 'Unknown',
         ];
 
+        $searched_groups = [
+            MapDenormalize::SUN,
+            MapDenormalize::PLANET,
+            MapDenormalize::MOON,
+            MapDenormalize::BELT,
+            MapDenormalize::STARGATE,
+        ];
+
+        if (! is_null($group))
+            $searched_groups = [$group];
+
         $possible_celestials = MapDenormalize::where('solarSystemID', $solar_system_id)
             ->whereNotNull('itemName')
             ->where('x', '<>', '0.0')// Exclude the systems star.
-            ->whereIn('groupID', [6, 7, 8, 9, 10])
+            ->whereIn('groupID', $searched_groups)
             ->get();
 
         foreach ($possible_celestials as $celestial) {
 
             // See: http://math.stackexchange.com/a/42642
             $distance = sqrt(
-                pow(($x - $celestial->x), 2) + pow(($y - $celestial->y), 2) + pow(($z - $celestial->z), 2));
+                pow($x - $celestial->x, 2) + pow($y - $celestial->y, 2) + pow($z - $celestial->z, 2));
 
             // Are we there yet?
             if ($distance < $closest_distance) {

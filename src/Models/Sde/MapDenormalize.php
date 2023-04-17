@@ -42,89 +42,75 @@ use Seat\Eveapi\Traits\IsReadOnly;
  *     property="itemID",
  *     description="The entity ID"
  * )
- *
  * @OA\Property(
  *     type="integer",
  *     property="typeID",
  *     description="The type of the entity"
  * )
- *
  * @OA\Property(
  *     type="integer",
  *     property="groupID",
  *     description="The group to which the entity is related"
  * )
- *
  * @OA\Property(
  *     type="integer",
  *     property="solarSystemID",
  *     description="The system to which the entity is attached"
  * )
- *
  * @OA\Property(
  *     type="integer",
  *     property="constellationID",
  *     description="The constellation to which the entity is attached"
  * )
- *
  * @OA\Property(
  *     type="integer",
  *     property="regionID",
  *     description="The region to which the entity is attached"
  * )
- *
  * @OA\Property(
  *     type="integer",
  *     property="orbitID",
  *     description="The orbit to which the entity is depending"
  * )
- *
  * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="x",
  *     description="x position on the map"
  * )
- *
  * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="y",
  *     description="y position on the map"
  * )
- *
  * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="z",
  *     description="z position on the map"
  * )
- *
  * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="radius",
  *     description="The radius of the entity"
  * )
- *
  * @OA\Property(
  *     type="string",
  *     property="itemName",
  *     description="The entity name"
  * )
- *
  * @OA\Property(
  *     type="number",
  *     format="double",
  *     property="security",
  *     description="The security status of the system to which entity is attached"
  * )
- *
  * @OA\Property(
  *     type="integer",
  *     property="celestialIndex",
  * )
- *
  * @OA\Property(
  *     type="integer",
  *     property="orbitIndex"
@@ -134,21 +120,23 @@ class MapDenormalize extends Model
 {
     use IsReadOnly;
 
-    const BELT = 9;
+    const REGION = 3;
 
     const CONSTELLATION = 4;
 
-    const MOON = 8;
-
-    const PLANET = 7;
-
-    const REGION = 3;
-
-    const STATION = 15;
+    const SYSTEM = 5;
 
     const SUN = 6;
 
-    const SYSTEM = 5;
+    const PLANET = 7;
+
+    const MOON = 8;
+
+    const BELT = 9;
+
+    const STARGATE = 10;
+
+    const STATION = 15;
 
     const UBIQUITOUS = 2396;
 
