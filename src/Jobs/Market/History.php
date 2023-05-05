@@ -100,7 +100,6 @@ class History extends EsiBase
 
                     $prices = $response->getBody();
 
-
                     // search the more recent entry in returned history.
                     $price = collect($prices)->where('order_count', '>', 0)
                         ->sortByDesc('date')
