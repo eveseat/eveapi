@@ -57,6 +57,8 @@ class Prices extends Command
         $types = InvType::whereNotNull('marketGroupID')
             ->where('published', true)
             ->select('typeID')
+            ->inRandomOrder()
+            ->limit(60*10)//60 minutes between default schedule invocation, 10 jobs per minute
             ->get();
 
         PricesJob::dispatch();
