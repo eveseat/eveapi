@@ -22,10 +22,10 @@
 
 namespace Seat\Eveapi\Jobs\Market;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\Price;
-use Illuminate\Support\Facades\Redis;
 
 /**
  * Class History.
@@ -81,7 +81,7 @@ class History extends EsiBase
     {
         $region_id = setting('market_prices_region_id', true) ?: self::THE_FORGE;
 
-        while(count($this->type_ids)>0) {
+        while(count($this->type_ids) > 0) {
             //don't go quite to the limit, maybe ccp_round() is involved somewhere along
             Redis::throttle('market-history-throttle')->allow(10)->every(61)->then(function () use ($region_id) {
                 $type_id = array_shift($this->type_ids);
