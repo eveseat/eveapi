@@ -94,11 +94,12 @@ class History extends EsiBase
 
                 try {
                     // for each subsequent item, request ESI order stats using region in settings (The Forge is default).
-                    $prices = $this->retrieve([
+                    $response = $this->retrieve([
                         'region_id' => $region_id,
                     ]);
 
-                    if ($prices->isCachedLoad() && Price::count() > 0) return;
+                    $prices = $response->getBody();
+
 
                     // search the more recent entry in returned history.
                     $price = collect($prices)->where('order_count', '>', 0)
