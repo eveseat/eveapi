@@ -83,7 +83,7 @@ class History extends EsiBase
 
         while(count($this->type_ids) > 0) {
             //don't go quite to the limit, maybe ccp_round() is involved somewhere along
-            Redis::throttle('market-history-throttle')->allow(10)->every(61)->then(function () use ($region_id) {
+            Redis::throttle('market-history-throttle')->allow(300)->every(61)->then(function () use ($region_id) {
                 $type_id = array_shift($this->type_ids);
 
                 $this->query_string = [

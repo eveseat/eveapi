@@ -58,7 +58,7 @@ class Prices extends Command
             ->where('published', true)
             ->select('typeID')
             ->inRandomOrder()
-            ->limit(60 * 10)//60 minutes between default schedule invocation, 10 jobs per minute
+            ->limit(60 * 300)//60 minutes between default schedule invocation, 300 jobs per minute
             ->get();
 
         PricesJob::dispatch();
