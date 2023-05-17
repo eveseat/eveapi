@@ -63,6 +63,8 @@ class Orders extends EsiBase
      */
     public function handle()
     {
+        $job_start_time = now();
+
         // the region_id cached to speed up execution of the loop
         $region_id = setting('market_prices_region_id', true) ?: \Seat\Eveapi\Jobs\Market\History::THE_FORGE;
 
@@ -124,8 +126,8 @@ class Orders extends EsiBase
         }
 
         // remove old orders
-        // if this ever gets changed to retain old orders, add an expiry check in the OrderAggregates job.
-        MarketOrder::where('expiry', '<=', now())->delete();
+        // if they didn't get updated, we can remove them
+        MarketOrder::where('updated_at', '<=', $job_start_time)->delete();
 
         // This is a public job, but we require a token. since we only have public citadels on the order endpoint, we can use any character
         $structure_batch->submitJobs(RefreshToken::first());
