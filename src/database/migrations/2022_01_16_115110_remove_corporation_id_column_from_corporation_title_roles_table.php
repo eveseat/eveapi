@@ -61,6 +61,7 @@ class RemoveCorporationIdColumnFromCorporationTitleRolesTable extends Migration
         Schema::table('corporation_title_roles', function (Blueprint $table) {
             $table->dropPrimary('corporation_title_roles_primary_key');
             $table->dropColumn('corporation_id');
+            $table->integer('title_id')->unsigned()->change();
 
             $table->unique(['title_id', 'type', 'role']);
         });
