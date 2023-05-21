@@ -85,7 +85,7 @@ return [
     'esi-search.search_structures.v1',
     'esi-skills.read_skillqueue.v1',
     'esi-skills.read_skills.v1',
-    'esi-ui.open_window.v1',
+    // 'esi-ui.open_window.v1',
     // 'esi-ui.write_waypoint.v1',
     'esi-universe.read_structures.v1',
     'esi-wallet.read_character_wallet.v1',

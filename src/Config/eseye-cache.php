@@ -23,6 +23,6 @@
 return [
     'eseye' => [
         'driver' => 'file',
-        'path' => storage_path('cache/eseye'),
+        'path' => storage_path('eseye'),
     ],
 ];

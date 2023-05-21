@@ -30,12 +30,6 @@ use Seat\Services\Contracts\EsiToken;
 
 class EseyeServiceProvider extends AbstractSeatPlugin
 {
-    public function boot()
-    {
-        // Publish Eseye Configuration
-        $this->publishEseyeConfig();
-    }
-
     public function register()
     {
         // Register Eseye Configuration
@@ -105,32 +99,31 @@ class EseyeServiceProvider extends AbstractSeatPlugin
     }
 
     /**
-     * Publish Eseye configuration files - so user can tweak them.
-     *
-     * @return void
-     */
-    private function publishEseyeConfig(): void
-    {
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__ . '/Config/eseye.php' => config_path('eseye.php'),
-                __DIR__ . '/Config/eseye-cache.php' => config_path('eseye-cache.php'),
-                __DIR__ . '/Config/eseye-logging.php' => config_path('eseye-logging.php'),
-            ], ['config', 'eseye', 'seat']);
-        }
-    }
-
-    /**
      * Register Eseye config in the stack.
      *
      * @return void
      */
     private function registerEseyeConfig(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/Config/eveapi.scopes.php', 'eveapi.scopes');
-        $this->mergeConfigFrom(__DIR__ . '/Config/eseye.php', 'eseye');
-        $this->mergeConfigFrom(__DIR__ . '/Config/eseye-cache.php', 'cache.stores');
-        $this->mergeConfigFrom(__DIR__ . '/Config/eseye-logging.php', 'logging.channels');
+        $this->mergeConfigFrom($config = __DIR__ . '/Config/eveapi.scopes.php', 'eveapi.scopes');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([$config => config_path('eveapi.scopes')], ['seat', 'eseye', 'config']);
+        }
+
+        $this->mergeConfigFrom($config = __DIR__ . '/Config/eseye.php', 'eseye');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([$config => config_path('eseye.php')], ['seat', 'eseye', 'config']);
+        }
+
+        $this->mergeConfigFrom($config = __DIR__ . '/Config/eseye-cache.php', 'cache.stores');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([$config => config_path('eseye-cache.php')], ['seat', 'eseye', 'config']);
+        }
+
+        $this->mergeConfigFrom($config = __DIR__ . '/Config/eseye-logging.php', 'logging.channels');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([$config => config_path('eseye-logging.php')], ['seat', 'eseye', 'config']);
+        }
     }
 
     /**
