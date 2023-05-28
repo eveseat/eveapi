@@ -43,7 +43,7 @@ abstract class AbstractJob implements ShouldQueue
     /**
      * The duration in seconds how long a job is allowed to execute.
      */
-    public const JOB_EXECUTION_TIMEOUT = 60*60; //1 hour
+    public const JOB_EXECUTION_TIMEOUT = 60 * 60; //1 hour
 
     /**
      * Execute the job.
@@ -83,10 +83,10 @@ abstract class AbstractJob implements ShouldQueue
     public function failed(Exception $exception)
     {
         // Analytics. Report only the Exception class and message.
-        dispatch((new Analytics((new AnalyticsContainer)
+        dispatch(new Analytics((new AnalyticsContainer)
             ->set('type', 'exception')
             ->set('exd', get_class($exception) . ':' . $exception->getMessage())
-            ->set('exf', 1))))->onQueue('default');
+            ->set('exf', 1)))->onQueue('default');
     }
 
     /**

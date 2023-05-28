@@ -37,7 +37,7 @@ class History extends EsiBase
     const THE_FORGE = 10000002;
 
     // override the default from AbstractJob
-    public const JOB_EXECUTION_TIMEOUT = 60*60*24; //1 day
+    public const JOB_EXECUTION_TIMEOUT = 60 * 60 * 24; //1 day
 
     /**
      * Describes how long the rate limit window lasts in seconds before resetting.
