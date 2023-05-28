@@ -48,25 +48,25 @@ class Prices extends Command
      */
     protected $description = 'Schedule updater jobs which will collect market price stats.';
 
+    const HISTORY_BATCH_SIZE = 1000;
+
     /**
      * Execute the console command.
      */
     public function handle()
     {
+        PricesJob::dispatch();
+
         // collect all items which can be sold on the market.
         $types = InvType::whereNotNull('marketGroupID')
             ->where('published', true)
-            ->select('typeID')
-            ->inRandomOrder()
-            ->limit(60 * 300)//60 minutes between default schedule invocation, 300 jobs per minute
-            ->get();
+            ->pluck('typeID');
 
-        PricesJob::dispatch();
-
-        // build small batch of a maximum of 200 entries to avoid long running job.
-        $types->chunk(50)->each(function ($chunk) {
-            $ids = $chunk->pluck('typeID')->toArray();
-            History::dispatch($ids)->delay(rand(20, 300));
+        //this is a guess that's only valid in the best case. In reality, we will probably be a bit slower.
+        $batch_processing_duration = (int) (History::ENDPOINT_RATE_LIMIT_WINDOW / History::ENDPOINT_RATE_LIMIT_CALLS * self::HISTORY_BATCH_SIZE);
+        $types->chunk(self::HISTORY_BATCH_SIZE)->each(function ($chunk, $index) use ($batch_processing_duration) {
+            $ids = $chunk->toArray();
+            History::dispatch($ids)->delay($index * $batch_processing_duration);
         });
     }
 }
