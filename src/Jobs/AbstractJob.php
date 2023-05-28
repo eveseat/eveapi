@@ -41,6 +41,11 @@ abstract class AbstractJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * The duration in seconds how long a job is allowed to execute.
+     */
+    public const JOB_EXECUTION_TIMEOUT = 60*60; //1 hour
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -91,6 +96,8 @@ abstract class AbstractJob implements ShouldQueue
      */
     public function retryUntil()
     {
-        return now()->addSeconds(3600);
+        // using self::JOB_EXECUTION_TIMEOUT makes it that you can't override the constant in class that inherit from AbstractJob.
+        // see https://stackoverflow.com/questions/13613594/overriding-class-constants-vs-properties
+        return now()->addSeconds(static::JOB_EXECUTION_TIMEOUT);
     }
 }

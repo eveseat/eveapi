@@ -36,6 +36,23 @@ class History extends EsiBase
 {
     const THE_FORGE = 10000002;
 
+    // override the default from AbstractJob
+    public const JOB_EXECUTION_TIMEOUT = 60*60*24; //1 day
+
+    /**
+     * Describes how long the rate limit window lasts in seconds before resetting.
+     *
+     * @var int
+     */
+    const ENDPOINT_RATE_LIMIT_WINDOW = 61; // to be on the safe side, we set it to 61 rather than 60
+
+    /**
+     * Describes how many calls can be made in the timespan described in ENDPOINT_RATE_LIMIT_WINDOW.
+     *
+     * @var int
+     */
+    const ENDPOINT_RATE_LIMIT_CALLS = 300;
+
     /**
      * @var string
      */
@@ -83,7 +100,7 @@ class History extends EsiBase
 
         while(count($this->type_ids) > 0) {
             //don't go quite to the limit, maybe ccp_round() is involved somewhere along
-            Redis::throttle('market-history-throttle')->allow(300)->every(61)->then(function () use ($region_id) {
+            Redis::throttle('market-history-throttle')->allow(self::ENDPOINT_RATE_LIMIT_CALLS)->every(self::ENDPOINT_RATE_LIMIT_WINDOW)->then(function () use ($region_id) {
                 $type_id = array_shift($this->type_ids);
 
                 $this->query_string = [
