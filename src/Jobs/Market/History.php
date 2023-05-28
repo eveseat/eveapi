@@ -44,14 +44,14 @@ class History extends EsiBase
      *
      * @var int
      */
-    const ENDPOINT_RATE_LIMIT_WINDOW = 61; // to be on the safe side, we set it to 61 rather than 60
+    const ENDPOINT_RATE_LIMIT_WINDOW = 60; // to be on the safe side, we set it to 61 rather than 60
 
     /**
      * Describes how many calls can be made in the timespan described in ENDPOINT_RATE_LIMIT_WINDOW.
      *
      * @var int
      */
-    const ENDPOINT_RATE_LIMIT_CALLS = 300;
+    const ENDPOINT_RATE_LIMIT_CALLS = 280;
 
     /**
      * @var string
