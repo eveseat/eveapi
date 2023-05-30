@@ -41,7 +41,7 @@ class StructureBatch
         $this->structures[$structure_id] = true;
     }
 
-    public function submitJobs(?RefreshToken $token)
+    public function submitJobs(?RefreshToken $token = null)
     {
         // sort by whether it is a citadel or station
         [$stations, $citadels] = collect($this->structures)
@@ -75,7 +75,7 @@ class StructureBatch
         // submit batch
         if($jobs->isEmpty()) return;
         Bus::batch($jobs->toArray())
-            ->name('Stations/Citadels')
+            ->name('Structures')
             ->dispatch();
     }
 }
