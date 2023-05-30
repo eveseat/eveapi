@@ -22,12 +22,12 @@
 
 namespace Seat\Eveapi\Jobs;
 
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenVersion;
 use Seat\Eveapi\Jobs\Middleware\IgnoreNpcCorporation;
 use Seat\Eveapi\Jobs\Middleware\RequireCorporationRole;
-use Seat\Eveapi\Jobs\Middleware\WithoutOverlapping;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Corporation\CorporationMemberTracking;
 use Seat\Eveapi\Models\RefreshToken;
@@ -78,8 +78,8 @@ abstract class AbstractAuthCorporationJob extends AbstractCorporationJob
             new IgnoreNpcCorporation,
             new RequireCorporationRole,
             (new WithoutOverlapping($this->getToken()->character_id))
-                ->releaseAfter(WithoutOverlapping::ANTI_RACE_DELAY)
-                ->expireAfter(WithoutOverlapping::ACCESS_TOKEN_EXPIRY_DELAY),
+                ->releaseAfter(self::ANTI_RACE_DELAY)
+                ->expireAfter(self::ACCESS_TOKEN_EXPIRY_DELAY),
         ]);
     }
 
