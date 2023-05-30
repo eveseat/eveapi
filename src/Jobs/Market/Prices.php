@@ -59,9 +59,11 @@ class Prices extends EsiBase
      */
     public function handle()
     {
-        $prices = $this->retrieve();
+        $response = $this->retrieve();
 
-        if ($prices->isCachedLoad() && Price::count() > 0) return;
+        if ($response->isFromCache() && Price::count() > 0) return;
+
+        $prices = $response->getBody();
 
         collect($prices)->chunk(1000)->each(function ($chunk) {
 
@@ -78,9 +80,6 @@ class Prices extends EsiBase
 
             Price::upsert($records->toArray(), [
                 'type_id',
-                'average_price',
-                'adjusted_price',
-                'updated_at',
             ]);
         });
     }

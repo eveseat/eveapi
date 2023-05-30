@@ -50,7 +50,7 @@ trait Utils
         // the available different group types in the
         // table is basically:
         //
-        //        groupID	typeName
+        //        groupID |	typeName
         //        ------------------
         //        3	        Region
         //        4	        Constellation
@@ -116,7 +116,7 @@ trait Utils
                 $closest_distance = $distance;
 
                 $response = [
-                    'map_id'   => $celestial->itemID,
+                    'map_id' => $celestial->itemID,
                     'map_name' => $celestial->itemName,
                 ];
             }

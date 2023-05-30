@@ -54,5 +54,7 @@ class Insurances extends Command
         InsurancesJob::dispatch();
 
         $this->info('A new insurance job has been queued.');
+
+        return $this::SUCCESS;
     }
 }

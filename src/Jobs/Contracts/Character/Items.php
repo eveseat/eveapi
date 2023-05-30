@@ -135,14 +135,12 @@ class Items extends AbstractAuthCharacterJob
             ->then(function () {
 
             try {
-                $items = $this->retrieve([
+                $response = $this->retrieve([
                     'character_id' => $this->getCharacterId(),
                     'contract_id' => $this->contract_id,
                 ]);
 
-                if ($items->isCachedLoad() &&
-                    ContractItem::where('contract_id', $this->contract_id)->count() > 0)
-                    return;
+                $items = $response->getBody();
 
                 collect($items)->each(function ($item) {
 

@@ -24,6 +24,8 @@ namespace Seat\Eveapi\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Market\History;
+use Seat\Eveapi\Jobs\Market\OrderAggregates;
+use Seat\Eveapi\Jobs\Market\Orders;
 use Seat\Eveapi\Jobs\Market\Prices as PricesJob;
 use Seat\Eveapi\Models\Sde\InvType;
 
@@ -68,5 +70,11 @@ class Prices extends Command
             $ids = $chunk->toArray();
             History::dispatch($ids)->delay($index * $batch_processing_duration);
         });
+
+        Orders::withChain([
+            new OrderAggregates(),
+        ])->dispatch();
+
+        return $this::SUCCESS;
     }
 }

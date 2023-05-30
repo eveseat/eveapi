@@ -53,4 +53,12 @@ class CorporationTitle extends Model
     {
         return $this->belongsTo(CorporationInfo::class, 'corporation_id', 'corporation_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function roles()
+    {
+        return $this->hasMany(CorporationTitleRole::class, 'title_id', 'id');
+    }
 }

@@ -76,15 +76,15 @@ class IssuedMedals extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $medals = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($medals->isCachedLoad() &&
-                CorporationIssuedMedal::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $medals = $response->getBody();
 
             collect($medals)->each(function ($medal) {
 
@@ -101,7 +101,7 @@ class IssuedMedals extends AbstractAuthCorporationJob
 
             });
 
-            if (! $this->nextPage($medals->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

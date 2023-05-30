@@ -96,15 +96,15 @@ class Starbases extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $starbases = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($starbases->isCachedLoad() &&
-                CorporationStarbase::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $starbases = $response->getBody();
 
             collect($starbases)->each(function ($starbase) {
 
@@ -123,7 +123,7 @@ class Starbases extends AbstractAuthCorporationJob
 
             });
 
-            if (! $this->nextPage($starbases->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

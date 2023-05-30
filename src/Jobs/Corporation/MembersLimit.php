@@ -71,13 +71,17 @@ class MembersLimit extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $limit = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($limit->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationMemberLimits::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
+
+        $limit = $response->getBody();
 
         if (! property_exists($limit, 'scalar'))
             return;

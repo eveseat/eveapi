@@ -64,22 +64,26 @@ class Online extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $online = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($online->isCachedLoad() && CharacterOnline::find($this->getCharacterId())) return;
+        if ($response->isFromCache() && CharacterOnline::find($this->getCharacterId())) return;
+
+        $status = $response->getBody();
 
         CharacterOnline::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
-            'online'      => $online->online,
-            'last_login'  => property_exists($online, 'last_login') ?
-                carbon($online->last_login) : null,
-            'last_logout' => property_exists($online, 'last_logout') ?
-                carbon($online->last_logout) : null,
-            'logins'      => property_exists($online, 'logins') ?
-                $online->logins : null,
+            'online'      => $status->online,
+            'last_login'  => property_exists($status, 'last_login') ?
+                carbon($status->last_login) : null,
+            'last_logout' => property_exists($status, 'last_logout') ?
+                carbon($status->last_logout) : null,
+            'logins'      => property_exists($status, 'logins') ?
+                $status->logins : null,
         ])->save();
     }
 }

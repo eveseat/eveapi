@@ -78,15 +78,19 @@ class Observers extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $mining_observers = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($mining_observers->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
 
-        collect($mining_observers)->each(function ($observer) {
+        $observers = $response->getBody();
+
+        collect($observers)->each(function ($observer) {
 
             CorporationIndustryMiningObserver::firstOrNew([
                 'observer_id'    => $observer->observer_id,
@@ -98,7 +102,7 @@ class Observers extends AbstractAuthCorporationJob
         });
 
         CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('observer_id', collect($mining_observers)
+            ->whereNotIn('observer_id', collect($observers)
                 ->pluck('observer_id')->flatten()->all())
             ->delete();
     }

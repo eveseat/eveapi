@@ -28,9 +28,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
-use Seat\Eseye\Cache\NullCache;
-use Seat\Eseye\Configuration;
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Services\Contracts\EsiClient;
 
 /**
  * Class Diagnose.
@@ -52,6 +51,18 @@ class Diagnose extends Command
      * @var string
      */
     protected $description = 'Diagnose potential SeAT installation problems';
+
+    /**
+     * @var \Seat\Services\Contracts\EsiClient
+     */
+    private EsiClient $esi;
+
+    public function __construct(EsiClient $client)
+    {
+        parent::__construct();
+
+        $this->esi = $client;
+    }
 
     /**
      * Execute the console command.
@@ -142,16 +153,6 @@ class Diagnose extends Command
         else
             $this->info(storage_path() . ' is writable');
 
-        if (! File::isWritable(config('esi.eseye_logfile')))
-            $this->error(config('esi.eseye_logfile') . ' is not writable');
-        else
-            $this->info(config('esi.eseye_logfile') . ' is writable');
-
-        if (! File::isWritable(config('esi.eseye_cache')))
-            $this->error(config('esi.eseye_cache') . ' is not writable');
-        else
-            $this->info(config('esi.eseye_cache') . ' is writable');
-
         if (! File::isWritable(storage_path('sde')))
             $this->error(storage_path('sde') . ' is not writable');
         else
@@ -236,15 +237,10 @@ class Diagnose extends Command
     {
         $this->line(' * Checking ESI Access');
 
-        $esi = app('esi-client')->get();
-        $esi->setVersion('v1');
-        Configuration::getInstance()->cache = NullCache::class;
-
         try {
-
-            $result = $esi->invoke('get', '/status/');
-            $this->info('Server Online Since: ' . $result->start_time);
-            $this->info('Online Players: ' . $result->players);
+            $result = $this->esi->setVersion('v1')->invoke('get', '/status/');
+            $this->info('Server Online Since: ' . $result->getBody()->start_time);
+            $this->info('Online Players: ' . $result->getBody()->players);
 
         } catch (RequestFailedException $e) {
 

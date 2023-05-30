@@ -22,93 +22,27 @@
 
 namespace Seat\Eveapi\Models;
 
-use Carbon\Carbon;
+use DateInterval;
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Web\Models\User;
+use Seat\Services\Contracts\EsiToken;
 
-/**
- * Class RefreshToken.
- *
- * @package Seat\Eveapi\Models
- *
- * @OA\Schema(
- *     description="EVE Online SSO Refresh Token",
- *     title="RefreshToken",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     minimum=90000000,
- *     description="Character ID to which the token is tied",
- *     property="character_id"
- * )
- * @OA\Property(
- *     type="integer",
- *     format="uint8",
- *     minimum=1,
- *     description="Refresh Token SSO Version",
- *     property="version"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     description="Refresh token hash",
- *     property="refresh_token"
- * )
- *
- * @OA\Property(
- *     type="array",
- *     description="Scopes granted for this token",
- *     property="scopes",
- *     @OA\Items(type="string")
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     description="The datetime UTC when the token expires",
- *     property="expires_on"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     description="The short life access token",
- *     property="token"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     description="The date-time when the token has been created into SeAT",
- *     property="created_at"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     description="The date-time when the token has been updated into SeAT",
- *     property="updated_at"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     description="The date-time when the token has been disabled",
- *     property="deleted_at"
- * )
- */
-class RefreshToken extends Model
+class RefreshToken extends Model implements EsiToken
 {
     use SoftDeletes {
         SoftDeletes::runSoftDelete as protected traitRunSoftDelete;
     }
 
     const CURRENT_VERSION = 2;
+
+    /**
+     * @var \Illuminate\Contracts\Auth\Authenticatable
+     */
+    private static $user_instance;
 
     /**
      * @var array
@@ -122,12 +56,9 @@ class RefreshToken extends Model
      */
     protected $casts = [
         'scopes' => 'array',
+        'expires_on' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
-
-    /**
-     * @var array
-     */
-    protected $dates = ['expires_on', 'deleted_at'];
 
     /**
      * @var string
@@ -152,6 +83,20 @@ class RefreshToken extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @param  array  $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // init user instance - so we can apply relationship
+        if (is_null(self::$user_instance)) {
+            $user_class = config('auth.providers.users.model');
+            self::$user_instance = new $user_class;
+        }
+    }
 
     /**
      * Register a soft deleted model event with the dispatcher.
@@ -200,13 +145,10 @@ class RefreshToken extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     *
-     * @deprecated 4.0.0
      */
     public function user()
     {
-
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(self::$user_instance::class, 'user_id', self::$user_instance->getAuthIdentifierName());
     }
 
     /**
@@ -221,5 +163,90 @@ class RefreshToken extends Model
 
         // trigger softDeleted event.
         $this->fireModelEvent('softDeleted', false);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccessToken(): string
+    {
+        return $this->token ?? '';
+    }
+
+    /**
+     * @param  string  $token
+     * @return $this
+     */
+    public function setAccessToken(string $token): EsiToken
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefreshToken(): string
+    {
+        return $this->refresh_token;
+    }
+
+    /**
+     * @param  string  $token
+     * @return $this
+     */
+    public function setRefreshToken(string $token): EsiToken
+    {
+        $this->refresh_token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getExpiresOn(): DateTime
+    {
+        return $this->expires_on;
+    }
+
+    /**
+     * @param  \DateTime  $expires
+     * @return $this
+     */
+    public function setExpiresOn(DateTime $expires): EsiToken
+    {
+        $this->expires_on = $expires;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getScopes(): array
+    {
+        return $this->scopes;
+    }
+
+    /**
+     * @param  string  $scope
+     * @return bool
+     */
+    public function hasScope(string $scope): bool
+    {
+        return in_array($scope, $this->scopes);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpired(): bool
+    {
+        $now = new DateTime();
+        $now->sub(new DateInterval('PT1M'));
+
+        return $now->diff($this->expires_on)->invert === 1;
     }
 }

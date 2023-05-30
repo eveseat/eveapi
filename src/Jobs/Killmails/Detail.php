@@ -74,6 +74,8 @@ class Detail extends EsiBase
      */
     public function __construct(int $killmail_id, string $killmail_hash)
     {
+        parent::__construct();
+
         $this->killmail_id = $killmail_id;
         $this->killmail_hash = $killmail_hash;
 
@@ -89,12 +91,14 @@ class Detail extends EsiBase
      */
     public function handle()
     {
-        $detail = $this->retrieve([
+        $response = $this->retrieve([
             'killmail_id'   => $this->killmail_id,
             'killmail_hash' => $this->killmail_hash,
         ]);
 
-        if ($detail->isCachedLoad() && KillmailDetail::find($this->killmail_id)) return;
+        if ($response->isFromCache() && KillmailDetail::find($this->killmail_id)) return;
+
+        $detail = $response->getBody();
 
         $killmail = KillmailDetail::firstOrCreate([
             'killmail_id'     => $this->killmail_id,

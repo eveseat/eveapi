@@ -63,18 +63,21 @@ class Info extends AbstractCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $character_info = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($character_info->isCachedLoad() && CharacterInfo::find($this->getCharacterId())) return;
+        if ($response->isFromCache() && CharacterInfo::find($this->getCharacterId())) return;
+
+        $info = $response->getBody();
 
         $model = CharacterInfo::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        InfoMapping::make($model, $character_info, [
+        InfoMapping::make($model, $info, [
             'character_id' => function () {
                 return $this->getCharacterId();
             },

@@ -23,79 +23,26 @@
 namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * Class CharacterNotification.
- *
- * @package Seat\Eveapi\Models\Character
- *
- * @OA\Schema(
- *     description="Character Notification",
- *     title="CharacterNotification",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="notification_id",
- *     description="The notification identifier"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="type",
- *     description="The notification type"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="sender_id",
- *     description="The entity who sent the notification"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     enum={"character","corporation","alliance","faction","other"},
- *     property="sender_type",
- *     description="The sender qualifier"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="timestamp",
- *     description="The date-time when notification has been sent"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="is_read",
- *     description="True if the notification has been red"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="object",
- *     description="The notification content"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="created_at",
- *     description="The date-time when notification has been created into SeAT"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="updated_at",
- *     description="The date-time when notification has been updated into SeAT"
- * )
- */
+#[OA\Schema(
+    title: 'CharacterNotification',
+    description: 'Character Notification',
+    properties: [
+        new OA\Property(property: 'notification_id', description: 'The notification identifier', type: 'integer'),
+        new OA\Property(property: 'type', description: 'The notification type', type: 'string'),
+        new OA\Property(property: 'sender_id', description: 'The entity who sent the notification', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'sender_type', description: 'The sender qualifier', type: 'string', enum: ['character', 'corporation', 'alliance', 'faction', 'other']),
+        new OA\Property(property: 'timestamp', description: 'The date/time when notification has been sent', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'is_read', description: 'True if the notification has been red', type: 'boolean'),
+        new OA\Property(property: 'object', description: 'The notification content', type: 'string'),
+        new OA\Property(property: 'created_at', description: 'The date/time when notification has been created into SeAT', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', description: 'The date/time when notification has been updated into SeAT', type: 'string', format: 'date-time'),
+    ],
+    type: 'object'
+)]
 class CharacterNotification extends Model
 {
     /**

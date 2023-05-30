@@ -80,6 +80,8 @@ class Journal extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         // retrieve latest known journal entry for the active character.
         $last_known_entry = CharacterWalletJournal::where('character_id', $this->getCharacterId())
                                                   ->orderBy('date', 'desc')
@@ -92,15 +94,11 @@ class Journal extends AbstractAuthCharacterJob
         // ESI is empty, we can assume we have everything.
         while (true) {
 
-            $journal = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($journal->isCachedLoad() &&
-                CharacterWalletJournal::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
-
-            $entries = collect($journal);
+            $entries = collect($response->getBody());
 
             // If we have no more entries, break the loop.
             if ($entries->count() === 0)
@@ -134,7 +132,7 @@ class Journal extends AbstractAuthCharacterJob
             });
 
             // in case the last known entry has been reached or we non longer have pages, terminate the job.
-            if (! $this->nextPage($journal->pages) || $this->at_last_entry)
+            if (! $this->nextPage($response->getPagesCount()) || $this->at_last_entry)
                 break;
         }
     }

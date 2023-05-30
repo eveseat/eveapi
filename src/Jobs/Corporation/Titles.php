@@ -105,13 +105,17 @@ class Titles extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $titles = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($titles->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationTitle::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
+
+        $titles = $response->getBody();
 
         collect($titles)->each(function ($title) {
 
@@ -130,23 +134,19 @@ class Titles extends AbstractAuthCorporationJob
                 collect($title->{$type})->each(function ($name) use ($title, $type) {
 
                     CorporationTitleRole::firstOrCreate([
-                        'corporation_id' => $this->getCorporationId(),
-                        'title_id'       => $title->title_id,
+                        'title_id'       => $title->id,
                         'type'           => $type,
                         'role'           => $name,
                     ]);
                 });
 
-                CorporationTitleRole::where('corporation_id', $this->getCorporationId())
-                    ->where('title_id', $title->title_id)
+                CorporationTitleRole::where('title_id', $title->id)
                     ->where('type', $type)
                     ->whereNotIn('role', collect($title->{$type})->flatten()->all())
                     ->delete();
-
             });
 
             $this->known_titles->push($title->title_id);
-
         });
 
         CorporationTitle::where('corporation_id', $this->getCorporationId())

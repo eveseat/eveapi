@@ -85,6 +85,8 @@ class History extends EsiBase
      */
     public function __construct(array $type_ids)
     {
+        parent::__construct();
+
         $this->type_ids = $type_ids;
     }
 
@@ -99,7 +101,7 @@ class History extends EsiBase
         $region_id = setting('market_prices_region_id', true) ?: self::THE_FORGE;
 
         while(count($this->type_ids) > 0) {
-            //don't go quite to the limit, maybe ccp_round() is involved somewhere along
+            // don't go quite to the limit, maybe ccp_round() is involved somewhere along
             Redis::throttle('market-history-throttle')->allow(self::ENDPOINT_RATE_LIMIT_CALLS)->every(self::ENDPOINT_RATE_LIMIT_WINDOW)->then(function () use ($region_id) {
                 $type_id = array_shift($this->type_ids);
 
@@ -109,11 +111,11 @@ class History extends EsiBase
 
                 try {
                     // for each subsequent item, request ESI order stats using region in settings (The Forge is default).
-                    $prices = $this->retrieve([
+                    $response = $this->retrieve([
                         'region_id' => $region_id,
                     ]);
-
-                    if ($prices->isCachedLoad() && Price::count() > 0) return;
+                  
+                    $prices = $response->getBody();
 
                     // search the more recent entry in returned history.
                     $price = collect($prices)->where('order_count', '>', 0)

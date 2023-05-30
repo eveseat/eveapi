@@ -70,17 +70,17 @@ class Mining extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $mining = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($mining->isCachedLoad() &&
-                CharacterMining::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $entries = $response->getBody();
 
-            collect($mining)->each(function ($ledger_entry) {
+            collect($entries)->each(function ($ledger_entry) {
 
                 // retrieve daily mined amount for current type, system and character
                 $row = CharacterMining::select(DB::raw('SUM(quantity) as quantity'))
@@ -118,7 +118,7 @@ class Mining extends AbstractAuthCharacterJob
                 }
             });
 
-            if (! $this->nextPage($mining->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }
