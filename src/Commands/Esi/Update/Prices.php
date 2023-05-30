@@ -48,7 +48,7 @@ class Prices extends Command
      */
     protected $description = 'Schedule updater jobs which will collect market price stats.';
 
-    const HISTORY_BATCH_SIZE = 200;
+    const HISTORY_BATCH_SIZE = 250;
 
     /**
      * Execute the console command.
