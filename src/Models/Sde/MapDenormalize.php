@@ -27,6 +27,11 @@ use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
 use Seat\Eveapi\Traits\IsReadOnly;
 
+/**
+ * Class MapDenormalize.
+ *
+ * @package Seat\Eveapi\Models\Sde
+ */
 #[OA\Schema(
     title: 'MapDenormalize',
     description: 'Map Denormalize',
@@ -53,21 +58,23 @@ class MapDenormalize extends Model
 {
     use IsReadOnly;
 
-    const BELT = 9;
+    const REGION = 3;
 
     const CONSTELLATION = 4;
 
-    const MOON = 8;
-
-    const PLANET = 7;
-
-    const REGION = 3;
-
-    const STATION = 15;
+    const SYSTEM = 5;
 
     const SUN = 6;
 
-    const SYSTEM = 5;
+    const PLANET = 7;
+
+    const MOON = 8;
+
+    const BELT = 9;
+
+    const STARGATE = 10;
+
+    const STATION = 15;
 
     const UBIQUITOUS = 2396;
 

@@ -40,16 +40,17 @@ trait Utils
      * @param  float  $x
      * @param  float  $y
      * @param  float  $z
+     * @param  ?int  $group
      * @return array
      */
-    public function find_nearest_celestial(int $solar_system_id, float $x, float $y, float $z): array
+    public function find_nearest_celestial(int $solar_system_id, float $x, float $y, float $z, ?int $group = null): array
     {
 
         // Querying mapDenormalized with [1] we can see
         // the available different group types in the
         // table is basically:
         //
-        //        groupID	typeName
+        //        groupID |	typeName
         //        ------------------
         //        3	        Region
         //        4	        Constellation
@@ -77,7 +78,7 @@ trait Utils
         $closest_distance = PHP_INT_MAX;
 
         // As a response, we will return an array with
-        // the closest ID and name from mapDenormallized.
+        // the closest ID and name from mapDenormalize.
         // The default response will be the system this
         // location is in.
         $response = [
@@ -85,33 +86,39 @@ trait Utils
             'map_name' => 'Unknown',
         ];
 
-        // ensure provided system is an int32
-        // otherwise, we know this can't be a "standard celestial".
-        if ($solar_system_id <= 2147483647) {
+        $searched_groups = [
+            MapDenormalize::SUN,
+            MapDenormalize::PLANET,
+            MapDenormalize::MOON,
+            MapDenormalize::BELT,
+            MapDenormalize::STARGATE,
+        ];
 
-            $possible_celestials = MapDenormalize::where('solarSystemID', $solar_system_id)
-                ->whereNotNull('itemName')
-                ->where('x', '<>', '0.0')// Exclude the systems star.
-                ->whereIn('groupID', [6, 7, 8, 9, 10])
-                ->get();
+        if (! is_null($group))
+            $searched_groups = [$group];
 
-            foreach ($possible_celestials as $celestial) {
+        $possible_celestials = MapDenormalize::where('solarSystemID', $solar_system_id)
+            ->whereNotNull('itemName')
+            ->where('x', '<>', '0.0')// Exclude the systems star.
+            ->whereIn('groupID', $searched_groups)
+            ->get();
 
-                // See: http://math.stackexchange.com/a/42642
-                $distance = sqrt(
-                    pow($x - $celestial->x, 2) + pow($y - $celestial->y, 2) + pow($z - $celestial->z, 2));
+        foreach ($possible_celestials as $celestial) {
 
-                // Are we there yet?
-                if ($distance < $closest_distance) {
+            // See: http://math.stackexchange.com/a/42642
+            $distance = sqrt(
+                pow($x - $celestial->x, 2) + pow($y - $celestial->y, 2) + pow($z - $celestial->z, 2));
 
-                    // Update the current closest distance
-                    $closest_distance = $distance;
+            // Are we there yet?
+            if ($distance < $closest_distance) {
 
-                    $response = [
-                        'map_id' => $celestial->itemID,
-                        'map_name' => $celestial->itemName,
-                    ];
-                }
+                // Update the current closest distance
+                $closest_distance = $distance;
+
+                $response = [
+                    'map_id' => $celestial->itemID,
+                    'map_name' => $celestial->itemName,
+                ];
             }
         }
 

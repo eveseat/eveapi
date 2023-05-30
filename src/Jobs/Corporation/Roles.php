@@ -50,7 +50,7 @@ class Roles extends AbstractAuthCorporationJob
     /**
      * @var string
      */
-    protected $scope = 'esi-characters.read_corporation_roles.v1';
+    protected $scope = 'esi-corporations.read_corporation_membership.v1';
 
     /**
      * @var array

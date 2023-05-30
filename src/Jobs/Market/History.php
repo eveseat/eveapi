@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Market;
 
+use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\Price;
@@ -34,6 +35,23 @@ use Seat\Eveapi\Models\Market\Price;
 class History extends EsiBase
 {
     const THE_FORGE = 10000002;
+
+    // override the default from AbstractJob
+    public const JOB_EXECUTION_TIMEOUT = 60 * 60 * 24; //1 day
+
+    /**
+     * Describes how long the rate limit window lasts in seconds before resetting.
+     *
+     * @var int
+     */
+    const ENDPOINT_RATE_LIMIT_WINDOW = 60; // to be on the safe side, we set it to 61 rather than 60
+
+    /**
+     * Describes how many calls can be made in the timespan described in ENDPOINT_RATE_LIMIT_WINDOW.
+     *
+     * @var int
+     */
+    const ENDPOINT_RATE_LIMIT_CALLS = 280;
 
     /**
      * @var string
@@ -82,47 +100,54 @@ class History extends EsiBase
     {
         $region_id = setting('market_prices_region_id', true) ?: self::THE_FORGE;
 
-        foreach ($this->type_ids as $type_id) {
+        while(count($this->type_ids) > 0) {
+            // don't go quite to the limit, maybe ccp_round() is involved somewhere along
+            Redis::throttle('market-history-throttle')->allow(self::ENDPOINT_RATE_LIMIT_CALLS)->every(self::ENDPOINT_RATE_LIMIT_WINDOW)->then(function () use ($region_id) {
+                $type_id = array_shift($this->type_ids);
 
-            $this->query_string = [
-                'type_id' => $type_id,
-            ];
-
-            try {
-                // for each subsequent item, request ESI order stats using region in settings (The Forge is default).
-                $response = $this->retrieve([
-                    'region_id' => $region_id,
-                ]);
-
-                $prices = $response->getBody();
-
-                // search the more recent entry in returned history.
-                $price = collect($prices)->where('order_count', '>', 0)
-                    ->sortByDesc('date')
-                    ->first();
-
-                if (is_null($price)) {
-                    $price = (object) [
-                        'average'     => 0.0,
-                        'highest'     => 0.0,
-                        'lowest'      => 0.0,
-                        'order_count' => 0,
-                        'volume'      => 0,
-                    ];
-                }
-
-                Price::updateOrCreate([
+                $this->query_string = [
                     'type_id' => $type_id,
-                ], [
-                    'average'     => $price->average,
-                    'highest'     => $price->highest,
-                    'lowest'      => $price->lowest,
-                    'order_count' => $price->order_count,
-                    'volume'      => $price->volume,
-                ]);
-            } catch (RequestFailedException $e) {
-                logger()->error($e->getMessage());
-            }
+                ];
+
+                try {
+                    // for each subsequent item, request ESI order stats using region in settings (The Forge is default).
+                    $response = $this->retrieve([
+                        'region_id' => $region_id,
+                    ]);
+                  
+                    $prices = $response->getBody();
+
+                    // search the more recent entry in returned history.
+                    $price = collect($prices)->where('order_count', '>', 0)
+                        ->sortByDesc('date')
+                        ->first();
+
+                    if (is_null($price)) {
+                        $price = (object) [
+                            'average'     => 0.0,
+                            'highest'     => 0.0,
+                            'lowest'      => 0.0,
+                            'order_count' => 0,
+                            'volume'      => 0,
+                        ];
+                    }
+
+                    Price::updateOrCreate([
+                        'type_id' => $type_id,
+                    ], [
+                        'average'     => $price->average,
+                        'highest'     => $price->highest,
+                        'lowest'      => $price->lowest,
+                        'order_count' => $price->order_count,
+                        'volume'      => $price->volume,
+                    ]);
+                } catch (RequestFailedException $e) {
+                    logger()->error($e->getMessage());
+                }
+            }, function () {
+                // Could not obtain lock...
+                return $this->release(10);
+            });
         }
     }
 }

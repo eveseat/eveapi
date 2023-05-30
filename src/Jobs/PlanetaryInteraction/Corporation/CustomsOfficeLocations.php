@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CorporationCustomsOffice;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Eveapi\Traits\Utils;
 
 /**
@@ -97,7 +98,8 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
                     $chunk->firstWhere('office_id', $location->item_id)->system_id,
                     $location->position->x,
                     $location->position->y,
-                    $location->position->z
+                    $location->position->z,
+                    MapDenormalize::PLANET
                 );
 
                 CorporationCustomsOffice::firstOrNew([
