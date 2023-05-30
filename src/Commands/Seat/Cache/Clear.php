@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Commands\Seat\Cache;
 
 use Exception;
 use Illuminate\Console\Command;
-use Predis\Client;
+use Illuminate\Support\Facades\Redis;
 use Seat\Services\Contracts\EsiClient;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
@@ -113,12 +113,7 @@ class Clear extends Command
 
         try {
 
-            $redis = new Client([
-                'host' => $redis_host,
-                'port' => $redis_port,
-            ]);
-            $redis->flushall();
-            $redis->disconnect();
+            Redis::flushall();
 
         } catch (Exception $e) {
 
