@@ -115,7 +115,7 @@ class Clear extends Command
 
         try {
 
-            Redis::flushDB();
+            Redis::flushall();
 
         } catch (Exception $e) {
 
