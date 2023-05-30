@@ -76,8 +76,8 @@ class Clear extends Command
         $this->line('SeAT Cache Clearing Tool');
         $this->line('');
 
-        if(!$this->option('yes')) {
-            if (!$this->confirm('Are you sure you want to clear ALL caches (file/redis/db)?', true)) {
+        if(! $this->option('yes')) {
+            if (! $this->confirm('Are you sure you want to clear ALL caches (file/redis/db)?', true)) {
 
                 $this->warn('Exiting without clearing cache');
 
