@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Commands\Seat\Cache;
 
 use Exception;
 use Illuminate\Console\Command;
-use Predis\Client;
+use Illuminate\Support\Facades\Redis;
 use Seat\Services\Contracts\EsiClient;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
@@ -41,7 +41,7 @@ class Clear extends Command
      *
      * @var string
      */
-    protected $signature = 'seat:cache:clear {--skip-esi : Do not clear the ESI cache}';
+    protected $signature = 'seat:cache:clear {--skip-esi : Do not clear the ESI cache} {--yes : Do not wait for confirmation}';
 
     /**
      * The console command description.
@@ -76,11 +76,13 @@ class Clear extends Command
         $this->line('SeAT Cache Clearing Tool');
         $this->line('');
 
-        if (! $this->confirm('Are you sure you want to clear ALL caches (file/redis/db)?', true)) {
+        if(!$this->option('yes')) {
+            if (!$this->confirm('Are you sure you want to clear ALL caches (file/redis/db)?', true)) {
 
-            $this->warn('Exiting without clearing cache');
+                $this->warn('Exiting without clearing cache');
 
-            return;
+                return;
+            }
         }
 
         $this->clear_redis_cache();
@@ -113,12 +115,7 @@ class Clear extends Command
 
         try {
 
-            $redis = new Client([
-                'host' => $redis_host,
-                'port' => $redis_port,
-            ]);
-            $redis->flushall();
-            $redis->disconnect();
+            Redis::flushDB();
 
         } catch (Exception $e) {
 
