@@ -48,7 +48,7 @@ class Prices extends Command
      */
     protected $description = 'Schedule updater jobs which will collect market price stats.';
 
-    const HISTORY_BATCH_SIZE = 1000;
+    const HISTORY_BATCH_SIZE = 200;
 
     /**
      * Execute the console command.
@@ -60,13 +60,15 @@ class Prices extends Command
         // collect all items which can be sold on the market.
         $types = InvType::whereNotNull('marketGroupID')
             ->where('published', true)
-            ->pluck('typeID');
+            ->select('typeID');
 
         //this is a guess that's only valid in the best case. In reality, we will probably be a bit slower.
         $batch_processing_duration = (int) (History::ENDPOINT_RATE_LIMIT_WINDOW / History::ENDPOINT_RATE_LIMIT_CALLS * self::HISTORY_BATCH_SIZE);
-        $types->chunk(self::HISTORY_BATCH_SIZE)->each(function ($chunk, $index) use ($batch_processing_duration) {
-            $ids = $chunk->toArray();
-            History::dispatch($ids)->delay($index * $batch_processing_duration);
+
+        $types->chunk(self::HISTORY_BATCH_SIZE, function ($chunk, $index) use ($batch_processing_duration) {
+            $ids = $chunk->pluck('typeID')->toArray();
+
+            History::dispatch($ids)->delay(now()->addMinutes($index)->addSeconds($batch_processing_duration));
         });
     }
 }
