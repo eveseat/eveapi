@@ -41,37 +41,41 @@ class StructureBatch
         $this->structures[$structure_id] = true;
     }
 
-    public function submitJobs(RefreshToken $token)
+    public function submitJobs(?RefreshToken $token)
     {
-        //sort by whether it is a citadel or station
+        // sort by whether it is a citadel or station
         [$stations, $citadels] = collect($this->structures)
             ->keys()
             ->partition(function (int $id) {
                 return $id < self::START_CITADEL_RANGE;
             });
 
-        //filter out duplicates
+        // only schedule the batch if there are actual structures to load. Therefore, we don't directly schedule them and instead store them in a list
+        $jobs = collect();
+
+        //filter out already known stations, schedule the rest
         $stations = $stations->filter(function ($station_id) {
             return UniverseStation::find($station_id) === null;
         });
-        $citadels = $citadels->filter(function ($citadel_id) use ($token) {
-            //only dispatch the job if the citadel is unknown AND the character is not acl banned
-            return UniverseStructure::find($citadel_id) === null && CacheCitadelAccessCache::canAccess($token->character_id, $citadel_id);
-        });
-
-        // only schedule the batch if there are actual structures to load
-        $jobs = collect();
         if($stations->isNotEmpty()){
             $jobs->add(new Stations($stations));
         }
-        if($citadels->isNotEmpty()){
-            $jobs->add(new Citadels($citadels, $token));
+
+        // we can only load citadels if we have a token
+        if($token !== null) {
+            // only dispatch the job if the citadel is unknown AND the character is not acl banned
+            $citadels = $citadels->filter(function ($citadel_id) use ($token) {
+                return UniverseStructure::find($citadel_id) === null && CacheCitadelAccessCache::canAccess($token->character_id, $citadel_id);
+            });
+            if ($citadels->isNotEmpty()) {
+                $jobs->add(new Citadels($citadels, $token));
+            }
         }
-        if($jobs->isEmpty()) return;
 
         // submit batch
+        if($jobs->isEmpty()) return;
         Bus::batch($jobs->toArray())
-            ->name('Station/Citadels')
+            ->name('Stations/Citadels')
             ->dispatch();
     }
 }

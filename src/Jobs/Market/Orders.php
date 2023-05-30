@@ -130,6 +130,6 @@ class Orders extends EsiBase
         MarketOrder::where('updated_at', '<=', $job_start_time)->delete();
 
         // This is a public job, but we require a token. since we only have public citadels on the order endpoint, we can use any character
-        $structure_batch->submitJobs(RefreshToken::first());
+        $structure_batch->submitJobs(null);
     }
 }
