@@ -114,7 +114,7 @@ class History extends EsiBase
                     $response = $this->retrieve([
                         'region_id' => $region_id,
                     ]);
-                  
+
                     $prices = $response->getBody();
 
                     // search the more recent entry in returned history.

@@ -47,12 +47,12 @@ use Throwable;
 abstract class EsiBase extends AbstractJob
 {
     /**
-     * ANTI_RACE_DELAY prevents rapid job recycling with low queue depths
+     * ANTI_RACE_DELAY prevents rapid job recycling with low queue depths.
      */
     const ANTI_RACE_DELAY = 10;
 
     /**
-     * ACCESS_TOKEN_EXPIRY_DELAY forces lock release after 25m (as access token expiry is 20m)
+     * ACCESS_TOKEN_EXPIRY_DELAY forces lock release after 25m (as access token expiry is 20m).
      */
     const ACCESS_TOKEN_EXPIRY_DELAY = 25 * 60;
 
