@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Models\Market\MarketOrder;
-use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Orders.
