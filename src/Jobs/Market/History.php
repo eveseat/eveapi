@@ -51,7 +51,7 @@ class History extends EsiBase
      *
      * @var int
      */
-    const ENDPOINT_RATE_LIMIT_CALLS = 280;
+    const ENDPOINT_RATE_LIMIT_CALLS = 100;
 
     /**
      * @var string
