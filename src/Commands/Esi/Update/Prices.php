@@ -53,16 +53,18 @@ class Prices extends Command
      */
     public function handle()
     {
+        $jobs = collect();
+
         // collect all items which can be sold on the market.
         $types = InvType::whereNotNull('marketGroupID')
             ->where('published', true)
             ->select('typeID');
 
-        $jobs = collect();
+        $batch_jobs_count = (int) ceil($types->count() / History::ENDPOINT_RATE_LIMIT_CALLS);
 
-        $types->chunk(History::ENDPOINT_RATE_LIMIT_CALLS, function ($chunk) use ($jobs) {
-            $type_ids = $chunk->pluck('typeID')->toArray();
-            $jobs->add((new History($type_ids))->delay(now()->addMinute()));
+        $types->chunk(History::ENDPOINT_RATE_LIMIT_CALLS, function ($results, $page) use ($batch_jobs_count, $jobs) {
+            $type_ids = $results->pluck('typeID')->toArray();
+            $jobs->add((new History($type_ids))->setCurrentBatchCount($page)->setTotalBatchCount($batch_jobs_count));
         });
 
         PricesJob::withChain($jobs->toArray())->dispatch();
