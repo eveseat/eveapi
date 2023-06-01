@@ -105,7 +105,6 @@ class History extends EsiBase
      * Add a tag to the job specifying the number of jobs related to the same batch chain.
      *
      * @param $count
-     *
      * @return \Seat\Eveapi\Jobs\Market\History
      */
     public function setTotalBatchCount($count)
@@ -119,7 +118,6 @@ class History extends EsiBase
      * Add a tag to the job specifying the current job number in the overall batch chain.
      *
      * @param $current
-     *
      * @return \Seat\Eveapi\Jobs\Market\History
      */
     public function setCurrentBatchCount($current)
