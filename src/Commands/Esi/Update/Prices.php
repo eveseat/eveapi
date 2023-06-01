@@ -48,27 +48,25 @@ class Prices extends Command
      */
     protected $description = 'Schedule updater jobs which will collect market price stats.';
 
-    const HISTORY_BATCH_SIZE = 250;
-
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        PricesJob::dispatch();
+        $jobs = collect();
 
         // collect all items which can be sold on the market.
         $types = InvType::whereNotNull('marketGroupID')
             ->where('published', true)
             ->select('typeID');
 
-        //this is a guess that's only valid in the best case. In reality, we will probably be a bit slower.
-        $batch_processing_duration = (int) (History::ENDPOINT_RATE_LIMIT_WINDOW / History::ENDPOINT_RATE_LIMIT_CALLS * self::HISTORY_BATCH_SIZE);
+        $batch_jobs_count = (int) ceil($types->count() / History::ENDPOINT_RATE_LIMIT_CALLS);
 
-        $types->chunk(self::HISTORY_BATCH_SIZE, function ($chunk, $index) use ($batch_processing_duration) {
-            $ids = $chunk->pluck('typeID')->toArray();
-
-            History::dispatch($ids)->delay(now()->addMinutes($index)->addSeconds($batch_processing_duration));
+        $types->chunk(History::ENDPOINT_RATE_LIMIT_CALLS, function ($results, $page) use ($batch_jobs_count, $jobs) {
+            $type_ids = $results->pluck('typeID')->toArray();
+            $jobs->add((new History($type_ids))->setCurrentBatchCount($page)->setTotalBatchCount($batch_jobs_count));
         });
+
+        PricesJob::withChain($jobs->toArray())->dispatch();
     }
 }
