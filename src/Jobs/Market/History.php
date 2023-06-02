@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\Market;
 
 use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\Price;
 
@@ -37,21 +38,21 @@ class History extends EsiBase
     const THE_FORGE = 10000002;
 
     // override the default from AbstractJob
-    public const JOB_EXECUTION_TIMEOUT = 60 * 60 * 24; //1 day
+    public const JOB_EXECUTION_TIMEOUT = 60 * 60 * 24; // 1 day
 
     /**
      * Describes how long the rate limit window lasts in seconds before resetting.
      *
      * @var int
      */
-    const ENDPOINT_RATE_LIMIT_WINDOW = 60; // to be on the safe side, we set it to 61 rather than 60
+    const ENDPOINT_RATE_LIMIT_WINDOW = 60;
 
     /**
      * Describes how many calls can be made in the timespan described in ENDPOINT_RATE_LIMIT_WINDOW.
      *
      * @var int
      */
-    const ENDPOINT_RATE_LIMIT_CALLS = 280;
+    const ENDPOINT_RATE_LIMIT_CALLS = 100;
 
     /**
      * @var string
@@ -74,6 +75,18 @@ class History extends EsiBase
     protected $tags = ['public', 'market'];
 
     /**
+     * Override base attempts limit and allow the job to be retried up to 100 times.
+     * This value is tied to the amount of requests which should be done against ESI
+     * in order to process a complete batch.
+     *
+     * Everytime a TemporaryOutageException is thrown, we will release the job back
+     * in the queue. Every release is counting as an attempts.
+     *
+     * @var int
+     */
+    public $tries = 100;
+
+    /**
      * @var array
      */
     private $type_ids;
@@ -91,6 +104,32 @@ class History extends EsiBase
     }
 
     /**
+     * Add a tag to the job specifying the number of jobs related to the same batch chain.
+     *
+     * @param $count
+     * @return \Seat\Eveapi\Jobs\Market\History
+     */
+    public function setTotalBatchCount($count)
+    {
+        $this->tags = array_merge($this->tags, ['batch_size:' . $count]);
+
+        return $this;
+    }
+
+    /**
+     * Add a tag to the job specifying the current job number in the overall batch chain.
+     *
+     * @param $current
+     * @return \Seat\Eveapi\Jobs\Market\History
+     */
+    public function setCurrentBatchCount($current)
+    {
+        $this->tags = array_merge($this->tags, ['batch_current:' . $current]);
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @throws \Seat\Services\Exceptions\SettingException
@@ -101,8 +140,9 @@ class History extends EsiBase
         $region_id = setting('market_prices_region_id', true) ?: self::THE_FORGE;
 
         while(count($this->type_ids) > 0) {
-            // don't go quite to the limit, maybe ccp_round() is involved somewhere along
-            Redis::throttle('market-history-throttle')->allow(self::ENDPOINT_RATE_LIMIT_CALLS)->every(self::ENDPOINT_RATE_LIMIT_WINDOW)->then(function () use ($region_id) {
+            Redis::throttle('market-history-throttle')->block(0)->allow(self::ENDPOINT_RATE_LIMIT_CALLS)->every(self::ENDPOINT_RATE_LIMIT_WINDOW)->then(function () use ($region_id) {
+                logger()->debug(sprintf('[Jobs][%d] History processing -> Remaining types: %d.', $this->job->getJobId(), count($this->type_ids)));
+
                 $type_id = array_shift($this->type_ids);
 
                 $this->query_string = [
@@ -141,12 +181,24 @@ class History extends EsiBase
                         'order_count' => $price->order_count,
                         'volume'      => $price->volume,
                     ]);
+                } catch (TemporaryEsiOutageException $e) {
+                    logger()->error(sprintf('[Jobs][%d] History -> ESI is temporarily unavailable - Retry in 120 seconds.', $this->job->getJobId()));
+
+                    if ($e->getPrevious() instanceof RequestFailedException) {
+                        logger()->debug(sprintf('[Jobs][%d] History -> ESI remaining error count: %d', $this->job->getJobId(), $e->getPrevious()->getEsiResponse()->error_limit));
+                    }
+
+                    $this->release(120); // requeue job in next 2 minutes
                 } catch (RequestFailedException $e) {
                     logger()->error($e->getMessage());
                 }
             }, function () {
-                // Could not obtain lock...
-                return $this->release(10);
+
+                // specify callback to catch LimiterTimeoutException thrown by the throttler when limit is reached
+                // we will only log the state for diagnose since it is expected.
+                logger()->debug(sprintf('[Jobs][%d] History throttled -> Remaining types: %d.', $this->job->getJobId(), count($this->type_ids)));
+
+                return true;
             });
         }
     }

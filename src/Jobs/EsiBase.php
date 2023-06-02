@@ -470,21 +470,21 @@ abstract class EsiBase extends AbstractJob
                 $this->token->save();
             }
 
-            throw new TemporaryEsiOutageException($response->error(), $response->getErrorCode());
+            throw new TemporaryEsiOutageException($response->error(), $response->getErrorCode(), $exception);
         }
 
         // If the token can't login and we get an HTTP 400 together with
         // and error message stating that this is an invalid_token, remove
         // the token from SeAT.
         if ($response->getErrorCode() == 400 && in_array($response->error(), self::PERMANENT_INVALID_TOKEN_MESSAGES))
-            throw new PermanentInvalidTokenException($response->error(), $response->getErrorCode());
+            throw new PermanentInvalidTokenException($response->error(), $response->getErrorCode(), $exception);
 
         if (($response->getErrorCode() == 503 && $response->error() == 'The datasource tranquility is temporarily unavailable') ||
             ($response->getErrorCode() == 504 && $response->error() == 'Timeout contacting tranquility'))
-            throw new UnavailableEveServersException($response->error(), $response->getErrorCode());
+            throw new UnavailableEveServersException($response->error(), $response->getErrorCode(), $exception);
 
         if ($response->getErrorCode() >= 500)
-            throw new TemporaryEsiOutageException($response->error(), $response->getErrorCode());
+            throw new TemporaryEsiOutageException($response->error(), $response->getErrorCode(), $exception);
 
         // Rethrow the exception
         throw $exception;

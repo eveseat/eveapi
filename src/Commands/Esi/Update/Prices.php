@@ -50,30 +50,29 @@ class Prices extends Command
      */
     protected $description = 'Schedule updater jobs which will collect market price stats.';
 
-    const HISTORY_BATCH_SIZE = 1000;
-
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        PricesJob::dispatch();
+        $jobs = collect();
 
         // collect all items which can be sold on the market.
         $types = InvType::whereNotNull('marketGroupID')
             ->where('published', true)
-            ->pluck('typeID');
+            ->select('typeID');
 
-        //this is a guess that's only valid in the best case. In reality, we will probably be a bit slower.
-        $batch_processing_duration = (int) (History::ENDPOINT_RATE_LIMIT_WINDOW / History::ENDPOINT_RATE_LIMIT_CALLS * self::HISTORY_BATCH_SIZE);
-        $types->chunk(self::HISTORY_BATCH_SIZE)->each(function ($chunk, $index) use ($batch_processing_duration) {
-            $ids = $chunk->toArray();
-            History::dispatch($ids)->delay($index * $batch_processing_duration);
+        $batch_jobs_count = (int) ceil($types->count() / History::ENDPOINT_RATE_LIMIT_CALLS);
+
+        $types->chunk(History::ENDPOINT_RATE_LIMIT_CALLS, function ($results, $page) use ($batch_jobs_count, $jobs) {
+            $type_ids = $results->pluck('typeID')->toArray();
+            $jobs->add((new History($type_ids))->setCurrentBatchCount($page)->setTotalBatchCount($batch_jobs_count));
         });
+      
+        $job->add(new Orders());
+        $job->add(new OrderAggregates());
 
-        Orders::withChain([
-            new OrderAggregates(),
-        ])->dispatch();
+        PricesJob::withChain($jobs->toArray())->dispatch();
 
         return $this::SUCCESS;
     }
