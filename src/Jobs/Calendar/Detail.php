@@ -87,9 +87,6 @@ class Detail extends AbstractAuthCharacterJob
                     'event_id' => $event_id,
                 ]);
 
-                if ($response->isFromCache() && CharacterCalendarEventDetail::where('event_id', $event_id)->count() > 0)
-                    return;
-
                 $detail = $response->getBody();
 
                 $model = CharacterCalendarEventDetail::firstOrNew([

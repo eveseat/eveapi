@@ -69,8 +69,6 @@ class Info extends AbstractCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() && CharacterInfo::find($this->getCharacterId())) return;
-
         $info = $response->getBody();
 
         $model = CharacterInfo::firstOrNew([

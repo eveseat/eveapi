@@ -77,10 +77,6 @@ class Balances extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($response->isFromCache() &&
-            CorporationWalletBalance::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
-
         $balances = $response->getBody();
 
         collect($balances)->each(function ($balance) {

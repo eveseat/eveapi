@@ -96,8 +96,6 @@ class Detail extends EsiBase
             'killmail_hash' => $this->killmail_hash,
         ]);
 
-        if ($response->isFromCache() && KillmailDetail::find($this->killmail_id)) return;
-
         $detail = $response->getBody();
 
         $killmail = KillmailDetail::firstOrCreate([

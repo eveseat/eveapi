@@ -86,35 +86,32 @@ class Planets extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if (! $response->isFromCache()) {
+        $planets = $response->getBody();
 
-            $planets = $response->getBody();
+        collect($planets)->each(function ($planet) {
 
-            collect($planets)->each(function ($planet) {
+            CharacterPlanet::firstOrNew([
+                'character_id' => $this->getCharacterId(),
+                'solar_system_id' => $planet->solar_system_id,
+                'planet_id' => $planet->planet_id,
+            ])->fill([
+                'upgrade_level' => $planet->upgrade_level,
+                'num_pins' => $planet->num_pins,
+                'last_update' => carbon($planet->last_update),
+                'planet_type' => $planet->planet_type,
+            ])->save();
 
-                CharacterPlanet::firstOrNew([
-                    'character_id' => $this->getCharacterId(),
-                    'solar_system_id' => $planet->solar_system_id,
-                    'planet_id' => $planet->planet_id,
-                ])->fill([
-                    'upgrade_level' => $planet->upgrade_level,
-                    'num_pins' => $planet->num_pins,
-                    'last_update' => carbon($planet->last_update),
-                    'planet_type' => $planet->planet_type,
-                ])->save();
+        });
 
-            });
+        // Retrieve all waypoints which have not been returned by API.
+        // We will run a delete statement on those selected rows in order to avoid any deadlock.
+        $existing_planets = CharacterPlanet::where('character_id', $this->getCharacterId())
+            ->whereNotIn('planet_id', collect($planets)->pluck('planet_id')->toArray())
+            ->get();
 
-            // Retrieve all waypoints which have not been returned by API.
-            // We will run a delete statement on those selected rows in order to avoid any deadlock.
-            $existing_planets = CharacterPlanet::where('character_id', $this->getCharacterId())
-                ->whereNotIn('planet_id', collect($planets)->pluck('planet_id')->toArray())
-                ->get();
-
-            CharacterPlanet::where('character_id', $this->getCharacterId())
-                ->whereIn('planet_id', $existing_planets->pluck('planet_id')->toArray())
-                ->delete();
-        }
+        CharacterPlanet::where('character_id', $this->getCharacterId())
+            ->whereIn('planet_id', $existing_planets->pluck('planet_id')->toArray())
+            ->delete();
 
         // for all planets, enqueue a job which will collect details
         CharacterPlanet::where('character_id', $this->getCharacterId())

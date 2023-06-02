@@ -84,8 +84,6 @@ class Titles extends AbstractAuthCharacterJob
         if (is_null($character))
             return;
 
-        if ($response->isFromCache() && $character->titles()->count() > 0) return;
-
         $this->active_titles = collect();
 
         $titles = collect($response->getBody());

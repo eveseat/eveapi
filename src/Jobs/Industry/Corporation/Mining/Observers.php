@@ -84,10 +84,6 @@ class Observers extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($response->isFromCache() &&
-            CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
-
         $observers = $response->getBody();
 
         collect($observers)->each(function ($observer) {

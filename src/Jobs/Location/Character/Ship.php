@@ -70,8 +70,6 @@ class Ship extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() && CharacterShip::find($this->getCharacterId())) return;
-
         $ship = $response->getBody();
 
         CharacterShip::firstOrNew([

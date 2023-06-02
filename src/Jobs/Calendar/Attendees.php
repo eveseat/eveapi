@@ -91,11 +91,6 @@ class Attendees extends AbstractAuthCharacterJob
                     'event_id'     => $event->event_id,
                 ]);
 
-                if ($response->isFromCache() &&
-                    CharacterCalendarAttendee::where('character_id', $this->getCharacterId())
-                        ->where('event_id', $event->event_id)->count() > 0)
-                    return;
-
                 $attendees = collect($response->getBody());
 
                 $attendees->each(function ($attendee) use ($event) {

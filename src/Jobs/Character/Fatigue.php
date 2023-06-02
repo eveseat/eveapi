@@ -73,9 +73,6 @@ class Fatigue extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() && CharacterFatigue::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
-
         $fatigue = $response->getBody();
 
         CharacterFatigue::firstOrNew([

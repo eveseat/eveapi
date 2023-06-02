@@ -78,10 +78,6 @@ class Queue extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() &&
-            CharacterSkillQueue::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
-
         $skills = $response->getBody();
 
         collect($skills)->each(function ($skill) {

@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Market;
 
-use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Models\Market\MarketOrder;
@@ -65,7 +64,7 @@ class Orders extends EsiBase
         $job_start_time = now();
 
         // the region_id cached to speed up execution of the loop
-        $region_id = setting('market_prices_region_id', true) ?: \Seat\Eveapi\Jobs\Market\History::THE_FORGE;
+        $region_id = setting('market_prices_region_id', true) ?: History::THE_FORGE;
 
         $structure_batch = new StructureBatch();
 

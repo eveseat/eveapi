@@ -61,9 +61,6 @@ class Alliances extends EsiBase
 
         $response = $this->retrieve();
 
-        if ($response->isFromCache() && Alliance::count() > 0)
-            return;
-
         $alliances = collect($response->getBody());
 
         $alliances->each(function ($alliance_id) {

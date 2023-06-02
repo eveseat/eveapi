@@ -61,8 +61,6 @@ class Map extends EsiBase
     {
         $response = $this->retrieve();
 
-        if ($response->isFromCache() && SovereigntyMap::count() > 0) return;
-
         $systems = $response->getBody();
 
         collect($systems)->chunk(1000)->each(function ($chunk) {

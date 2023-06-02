@@ -77,10 +77,6 @@ class Mails extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() &&
-            MailRecipient::where('recipient_id', $this->getCharacterId())->count() > 0)
-            return;
-
         $mails = $response->getBody();
 
         collect($mails)->each(function ($header) use ($last_known_mail) {
