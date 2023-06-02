@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\ExtractionMapping;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 
@@ -72,15 +73,22 @@ class Extractions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $mining_extractions = $this->retrieve([
+        parent::handle();
+
+        $structure_batch = new StructureBatch();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($mining_extractions->isCachedLoad() &&
+        if ($response->isFromCache() &&
             CorporationIndustryMiningExtraction::where('corporation_id', $this->getCorporationId())->count() > 0)
             return;
 
-        collect($mining_extractions)->each(function ($extraction) {
+        $extractions = $response->getBody();
+
+        collect($extractions)->each(function ($extraction) use ($structure_batch) {
+            $structure_batch->addStructure($extraction->structure_id);
 
             $model = CorporationIndustryMiningExtraction::firstOrNew([
                 'moon_id' => $extraction->moon_id,
@@ -93,5 +101,7 @@ class Extractions extends AbstractAuthCorporationJob
                 },
             ])->save();
         });
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

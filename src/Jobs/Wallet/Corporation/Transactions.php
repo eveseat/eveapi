@@ -80,6 +80,8 @@ class Transactions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         CorporationWalletBalance::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($balance) {
 
@@ -90,14 +92,12 @@ class Transactions extends AbstractAuthCorporationJob
 
                     $this->query_string = ['from_id' => $this->from_id];
 
-                    $transactions = $this->retrieve([
+                    $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
                         'division'       => $balance->division,
                     ]);
 
-                    if ($transactions->isCachedLoad() &&
-                        CorporationWalletTransaction::where('corporation_id', $this->getCorporationId())->count() > 0)
-                        return;
+                    $transactions = $response->getBody();
 
                     // If we have no more entries, break the loop.
                     if (collect($transactions)->count() === 0)

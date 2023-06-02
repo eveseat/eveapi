@@ -51,7 +51,7 @@ class CorporationIndustryMiningExtraction extends Model
     /**
      * Return the base m3 amount gained per hour of extraction length.
      */
-    const BASE_DRILLING_VOLUME = 40000;
+    const BASE_DRILLING_VOLUME = 30000;
 
     /**
      * @var bool

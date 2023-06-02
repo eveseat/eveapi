@@ -110,7 +110,9 @@ class Names extends EsiBase
 
             $this->request_body = collect($chunk->values()->all())->unique()->values()->all();
 
-            $resolutions = $this->retrieve();
+            $response = $this->retrieve();
+
+            $resolutions = $response->getBody();
 
             collect($resolutions)->each(function ($resolution) {
 

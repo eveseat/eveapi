@@ -23,116 +23,41 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Fittings\Insurance;
 use Seat\Eveapi\Models\Market\Price;
 use Seat\Eveapi\Traits\IsReadOnly;
 
-/**
- * Class InvType.
- *
- * @package Seat\Eveapi\Models\Sde
- *
- * @OA\Schema(
- *     description="Inventory Type",
- *     title="InvType",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     minimum=1,
- *     property="typeID",
- *     description="The inventory type ID"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     minimum=1,
- *     property="groupID",
- *     description="The group to which the type is related"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="typeName",
- *     description="The inventory type name"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="description",
- *     description="The inventory type description"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="mass",
- *     description="The inventory type mass"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="volume",
- *     description="The inventory type volume"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="capacity",
- *     description="The inventory type storage capacity"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="portionSize"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="raceID",
- *     description="The race to which the inventory type is tied"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="basePrice",
- *     description="The initial price used by NPC to create order"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="published",
- *     description="True if the item is available in-game"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="marketGroupID",
- *     description="The group into which the item is available on market"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="iconID"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="soundID"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="graphicID"
- * )
- */
+#[OA\Schema(
+    title: 'InvType',
+    description: 'inventory Type',
+    properties: [
+        new OA\Property(property: 'typeID', description: 'The inventory type ID', type: 'integer', minimum: 1),
+        new OA\Property(property: 'groupID', description: 'The group to which the type is related', type: 'integer', minimum: 1),
+        new OA\Property(property: 'typeName', description: 'The inventory type name', type: 'string'),
+        new OA\Property(property: 'description', description: 'The inventory type description', type: 'string'),
+        new OA\Property(property: 'mass', description: 'The inventory type mass', type: 'number', format: 'double'),
+        new OA\Property(property: 'volume', description: 'The inventory type volume', type: 'number', format: 'double'),
+        new OA\Property(property: 'capacity', description: 'The inventory type storage capacity', type: 'number', format: 'double'),
+        new OA\Property(property: 'portionSize', type: 'integer'),
+        new OA\Property(property: 'raceID', description: 'The race to which the inventory type is tied', type: 'integer'),
+        new OA\Property(property: 'basePrice', description: 'The initial price used by NPC to create order', type: 'number', format: 'double'),
+        new OA\Property(property: 'published', description: 'True if the item is available on market', type: 'boolean'),
+        new OA\Property(property: 'marketGroupID', description: 'The group into which the item is available on market', type: 'integer'),
+        new OA\Property(property: 'iconID', type: 'integer'),
+        new OA\Property(property: 'soundID', type: 'integer'),
+        new OA\Property(property: 'graphicID', type: 'integer'),
+    ],
+    type: 'object'
+)]
 class InvType extends Model
 {
     use IsReadOnly;
+
+    /**
+     * Maximum value a skill of rank 1 may have when level 5 has been reached.
+     */
+    const MAX_SKILL_SKILLPOINTS = 256000;
 
     /**
      * @var bool
@@ -155,6 +80,21 @@ class InvType extends Model
      * @var string
      */
     protected $primaryKey = 'typeID';
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * The maximum amount of skillpoints when level 5 has been reached for current skill.
+     *
+     * @return int
+     */
+    public function getMaximumSkillpointsAttribute()
+    {
+        return round($this->dogma_attributes->where('attributeID', DgmTypeAttribute::SKILL_RANK_ID)->first()->valueFloat) * self::MAX_SKILL_SKILLPOINTS;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

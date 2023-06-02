@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Location\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Models\Location\CharacterLocation;
 
 /**
@@ -64,20 +65,31 @@ class Location extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $location = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($location->isCachedLoad() && CharacterLocation::find($this->getCharacterId())) return;
+        if ($response->isFromCache() && CharacterLocation::find($this->getCharacterId())) return;
+
+        $location = $response->getBody();
+
+        $station_id = property_exists($location, 'station_id') ? $location->station_id : null;
+        $citadel_id = property_exists($location, 'structure_id') ? $location->structure_id : null;
+
+        if ($station_id !== null || $citadel_id !== null) {
+            $structure_batch = new StructureBatch();
+            $structure_batch->addStructure($station_id ?? $citadel_id);
+            $structure_batch->submitJobs($this->getToken());
+        }
 
         CharacterLocation::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
             'solar_system_id' => $location->solar_system_id,
-            'station_id'   => property_exists($location, 'station_id') ?
-                $location->station_id : null,
-            'structure_id' => property_exists($location, 'structure_id') ?
-                $location->structure_id : null,
+            'station_id'   => $station_id,
+            'structure_id' => $citadel_id,
         ])->save();
     }
 }

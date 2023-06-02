@@ -24,6 +24,8 @@ namespace Seat\Eveapi\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Market\History;
+use Seat\Eveapi\Jobs\Market\OrderAggregates;
+use Seat\Eveapi\Jobs\Market\Orders;
 use Seat\Eveapi\Jobs\Market\Prices as PricesJob;
 use Seat\Eveapi\Models\Sde\InvType;
 
@@ -66,7 +68,12 @@ class Prices extends Command
             $type_ids = $results->pluck('typeID')->toArray();
             $jobs->add((new History($type_ids))->setCurrentBatchCount($page)->setTotalBatchCount($batch_jobs_count));
         });
+      
+        $job->add(new Orders());
+        $job->add(new OrderAggregates());
 
         PricesJob::withChain($jobs->toArray())->dispatch();
+
+        return $this::SUCCESS;
     }
 }

@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Assets\AssetMapping;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\RefreshToken;
@@ -90,21 +91,28 @@ class Assets extends AbstractAuthCharacterJob
      */
     public function handle(): void
     {
+        parent::handle();
+
+        $structure_batch = new StructureBatch();
 
         while (true) {
 
-            $assets = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($assets->isCachedLoad() && CharacterAsset::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $assets = collect($response->getBody());
 
-            collect($assets)->each(function ($asset) {
+            $assets->each(function ($asset) use ($structure_batch) {
 
                 $model = CharacterAsset::firstOrNew([
                     'item_id' => $asset->item_id,
                 ]);
+
+                //make sure that the location is loaded if it is in a station or citadel
+                if (in_array($asset->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS) && in_array($asset->location_type, StructureBatch::RESOLVABLE_LOCATION_TYPES)) {
+                    $structure_batch->addStructure($asset->location_id);
+                }
 
                 AssetMapping::make($model, $asset, [
                     'character_id' => function () {
@@ -117,7 +125,7 @@ class Assets extends AbstractAuthCharacterJob
                 $this->known_assets->push($asset->item_id);
             });
 
-            if (! $this->nextPage($assets->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 
@@ -125,5 +133,8 @@ class Assets extends AbstractAuthCharacterJob
         CharacterAsset::where('character_id', $this->getCharacterId())
             ->whereNotIn('item_id', $this->known_assets->flatten()->all())
             ->delete();
+
+        // schedule jobs for structures
+        $structure_batch->submitJobs($this->getToken());
     }
 }

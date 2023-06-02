@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Planet.
@@ -58,17 +59,36 @@ class Planets extends AbstractAuthCharacterJob
     protected $tags = ['character', 'pi'];
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $planet_jobs;
+
+    /**
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
+     */
+    public function __construct(RefreshToken $token)
+    {
+        parent::__construct($token);
+
+        $this->planet_jobs = collect();
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
      */
     public function handle()
     {
-        $planets = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if (! $planets->isCachedLoad()) {
+        if (! $response->isFromCache()) {
+
+            $planets = $response->getBody();
 
             collect($planets)->each(function ($planet) {
 
@@ -100,7 +120,12 @@ class Planets extends AbstractAuthCharacterJob
         CharacterPlanet::where('character_id', $this->getCharacterId())
             ->get()
             ->each(function ($planet) {
-                PlanetDetail::dispatch($this->token, $planet->planet_id);
+                // add a new planet detail job to the list
+                $this->planet_jobs->add(new PlanetDetail($this->token, $planet->planet_id));
             });
+
+        // if we have planet jobs to process, append them to the active batch
+        if ($this->planet_jobs->isNotEmpty())
+            $this->batch()->add($this->planet_jobs->toArray());
     }
 }

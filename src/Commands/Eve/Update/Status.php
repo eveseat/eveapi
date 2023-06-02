@@ -52,5 +52,7 @@ class Status extends Command
     public function handle()
     {
         ServerStatusJob::dispatch()->onQueue('high');
+
+        return $this::SUCCESS;
     }
 }

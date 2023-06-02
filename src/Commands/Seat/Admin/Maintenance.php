@@ -52,6 +52,6 @@ class Maintenance extends Command
     public function handle()
     {
 
-        dispatch((new MaintenanceJob))->onQueue('default');
+        dispatch(new MaintenanceJob)->onQueue('default');
     }
 }

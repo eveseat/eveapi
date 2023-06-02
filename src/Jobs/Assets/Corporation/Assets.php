@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Assets\AssetMapping;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\RefreshToken;
@@ -96,22 +97,30 @@ class Assets extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
-            $assets = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($assets->isCachedLoad() && CorporationAsset::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $assets = collect($response->getBody());
 
-            collect($assets)->chunk(1000)->each(function ($chunk) {
+            $assets->chunk(1000)->each(function ($chunk) use ($structure_batch) {
 
-                $chunk->each(function ($asset) {
+                $chunk->each(function ($asset) use ($structure_batch) {
 
                     $model = CorporationAsset::firstOrNew([
                         'item_id' => $asset->item_id,
                     ]);
+
+                    //make sure that the location is loaded if it is in a station or citadel
+                    if (in_array($asset->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS) && in_array($asset->location_type, StructureBatch::RESOLVABLE_LOCATION_TYPES)) {
+                        $structure_batch->addStructure($asset->location_id);
+                    }
 
                     AssetMapping::make($model, $asset, [
                         'corporation_id' => function () {
@@ -123,10 +132,9 @@ class Assets extends AbstractAuthCorporationJob
 
             // Update the list of known item_id's which should be
             // excluded from the database cleanup later.
-            $this->known_assets->push(collect($assets)
-                ->pluck('item_id')->flatten()->all());
+            $this->known_assets->push($assets->pluck('item_id')->flatten()->all());
 
-            if (! $this->nextPage($assets->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 
@@ -134,5 +142,8 @@ class Assets extends AbstractAuthCorporationJob
         CorporationAsset::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('item_id', $this->known_assets->flatten()->all())
             ->delete();
+
+        // schedule jobs for structures
+        $structure_batch->submitJobs($this->getToken());
     }
 }

@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Assets\ContainerLogsMapping;
 use Seat\Eveapi\Models\Corporation\CorporationContainerLog;
 
@@ -77,17 +78,23 @@ class ContainerLogs extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
-            $logs = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($logs->isCachedLoad() &&
-                CorporationContainerLog::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $logs = $response->getBody();
 
-            collect($logs)->each(function ($log) {
+            collect($logs)->each(function ($log) use ($structure_batch) {
+                // I assume location_flag is the same as in assets
+                if (in_array($log->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS)) {
+                    $structure_batch->addStructure($log->location_id);
+                }
 
                 $model = CorporationContainerLog::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
@@ -103,8 +110,10 @@ class ContainerLogs extends AbstractAuthCorporationJob
 
             });
 
-            if (! $this->nextPage($logs->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

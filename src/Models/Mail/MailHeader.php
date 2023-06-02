@@ -23,65 +23,22 @@
 namespace Seat\Eveapi\Models\Mail;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 
-/**
- * Class MailHeader.
- *
- * @package Seat\Eveapi\Models\Character
- *
- * @OA\Schema(
- *     description="Mail Header",
- *     title="MailHeader",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="mail_id",
- *     description="The mail identifier"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="subject",
- *     description="The mail topic"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="from",
- *     description="The mail sender"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="timestamp",
- *     description="The date-time when the mail has been sent"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="boolean",
- *     description="True if the mail has been red"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="body",
- *     description="The mail content"
- * )
- *
- * @OA\Property(
- *     type="array",
- *     property="recipients",
- *     description="A list of recipients",
- *     @OA\Items(ref="#/components/schemas/MailRecipient")
- * )
- */
+#[OA\Schema(
+    title: 'MailHeader',
+    description: 'Mail Header',
+    properties: [
+        new OA\Property(property: 'mail_id', description: 'The mail identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'subject', description: 'The mail topic', type: 'string'),
+        new OA\Property(property: 'timestamp', description: 'The date/time when the mail has been sent', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'boolean', description: 'True if the mail has been red', type: 'boolean'),
+        new OA\Property(property: 'body', description: 'The mail content', type: 'string'),
+        new OA\Property(property: 'recipients', description: 'A list of recipients', type: 'array', items: new OA\Items(ref: '#/components/schemas/MailRecipient')),
+    ],
+    type: 'object'
+)]
 class MailHeader extends Model
 {
 

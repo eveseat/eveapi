@@ -67,13 +67,16 @@ class Roles extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $roles = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($roles->isCachedLoad() && CharacterRole::where('character_id', $this->getCharacterId())->count() > 0)
+        if ($response->isFromCache() && CharacterRole::where('character_id', $this->getCharacterId())->count() > 0)
             return;
+
+        $roles = $response->getBody();
 
         foreach (['roles', 'roles_at_hq', 'roles_at_base', 'roles_at_other'] as $scope) {
 

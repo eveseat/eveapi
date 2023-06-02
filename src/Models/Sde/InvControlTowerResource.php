@@ -50,4 +50,9 @@ class InvControlTowerResource extends Model
      * @var string
      */
     protected $primaryKey = ['controlTowerTypeID', 'resourceTypeID'];
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }

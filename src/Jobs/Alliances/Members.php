@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Alliances;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAllianceJob;
 use Seat\Eveapi\Models\Alliances\AllianceMember;
 
 /**
@@ -30,13 +30,8 @@ use Seat\Eveapi\Models\Alliances\AllianceMember;
  *
  * @package Seat\Eveapi\Jobs\Alliances
  */
-class Members extends EsiBase
+class Members extends AbstractAllianceJob
 {
-    /**
-     * @var int
-     */
-    protected $alliance_id;
-
     /**
      * @var string
      */
@@ -53,36 +48,19 @@ class Members extends EsiBase
     protected $version = 'v1';
 
     /**
-     * @var array
-     */
-    protected $tags = ['alliance'];
-
-    /**
-     * Members constructor.
-     *
-     * @param  int  $alliance_id
-     */
-    public function __construct(int $alliance_id)
-    {
-        $this->alliance_id = $alliance_id;
-
-        array_push($this->tags, $alliance_id);
-    }
-
-    /**
      * @throws \Throwable
      */
     public function handle()
     {
 
-        $corporations = $this->retrieve([
+        $response = $this->retrieve([
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if ($corporations->isCachedLoad() && AllianceMember::where('alliance_id', $this->alliance_id)->count() > 0)
+        if ($response->isFromCache() && AllianceMember::where('alliance_id', $this->alliance_id)->count() > 0)
             return;
 
-        $corporation_ids = collect($corporations);
+        $corporation_ids = collect($response->getBody());
 
         $corporation_ids->each(function ($corporation_id) {
 

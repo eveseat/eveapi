@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\BlueprintMapping;
 use Seat\Eveapi\Models\Character\CharacterBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
@@ -95,22 +96,27 @@ class Blueprints extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
+        $structure_batch = new StructureBatch();
 
         // Start an infinite loop for the paged requests.
         while (true) {
 
-            $blueprints = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($blueprints->isCachedLoad() &&
-                CharacterBlueprint::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $blueprints = collect($response->getBody());
 
             // Process the blueprints from the response
-            collect($blueprints)->chunk(100)->each(function ($chunk) {
+            $blueprints->chunk(100)->each(function ($chunk) use ($structure_batch) {
 
-                $chunk->each(function ($blueprint) {
+                $chunk->each(function ($blueprint) use ($structure_batch) {
+
+                    if (in_array($blueprint->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS)) {
+                        $structure_batch->addStructure($blueprint->location_id);
+                    }
 
                     $model = CharacterBlueprint::firstOrNew([
                         'item_id'      => $blueprint->item_id,
@@ -125,14 +131,15 @@ class Blueprints extends AbstractAuthCharacterJob
             });
 
             // Add item ID's we should remove from the database.
-            $this->cleanup_ids->push(collect($blueprints)->pluck('item_id'));
+            $this->cleanup_ids->push($blueprints->pluck('item_id'));
 
             // Check for pages left.
-            if (! $this->nextPage($blueprints->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 
         $this->cleanup();
+        $structure_batch->submitJobs($this->getToken());
     }
 
     /**
