@@ -77,10 +77,6 @@ class MembersTitles extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($response->isFromCache() &&
-            CorporationMemberTitle::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
-
         $titles = $response->getBody();
 
         collect($titles)->filter(function ($member) {

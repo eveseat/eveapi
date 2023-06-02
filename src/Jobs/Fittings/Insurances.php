@@ -61,8 +61,6 @@ class Insurances extends EsiBase
     {
         $response = $this->retrieve();
 
-        if ($response->isFromCache() && Insurance::count() > 0) return;
-
         $insurances = $response->getBody();
 
         collect($insurances)->each(function ($insurance) {

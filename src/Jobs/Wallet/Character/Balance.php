@@ -70,8 +70,6 @@ class Balance extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() && CharacterWalletBalance::find($this->getCharacterId())) return;
-
         $balance = $response->getBody();
 
         CharacterWalletBalance::firstOrNew([

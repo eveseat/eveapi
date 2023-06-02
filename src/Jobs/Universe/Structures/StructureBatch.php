@@ -72,8 +72,9 @@ class StructureBatch
             }
         }
 
-        // submit batch
         if($jobs->isEmpty()) return;
+
+        // enqueue batch
         Bus::batch($jobs->toArray())
             ->name('Structures')
             ->dispatch();

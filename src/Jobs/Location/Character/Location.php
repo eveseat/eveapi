@@ -71,8 +71,6 @@ class Location extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() && CharacterLocation::find($this->getCharacterId())) return;
-
         $location = $response->getBody();
 
         $station_id = property_exists($location, 'station_id') ? $location->station_id : null;

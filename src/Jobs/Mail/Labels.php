@@ -70,10 +70,6 @@ class Labels extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() &&
-            MailLabel::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
-
         $labels = $response->getBody();
 
         collect($labels->labels)->each(function ($label) {

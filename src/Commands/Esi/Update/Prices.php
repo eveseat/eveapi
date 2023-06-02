@@ -22,12 +22,15 @@
 
 namespace Seat\Eveapi\Commands\Esi\Update;
 
+use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Bus;
 use Seat\Eveapi\Jobs\Market\History;
 use Seat\Eveapi\Jobs\Market\OrderAggregates;
 use Seat\Eveapi\Jobs\Market\Orders;
 use Seat\Eveapi\Jobs\Market\Prices as PricesJob;
 use Seat\Eveapi\Models\Sde\InvType;
+use Throwable;
 
 /**
  * Class Prices.
@@ -55,7 +58,7 @@ class Prices extends Command
      */
     public function handle()
     {
-        $jobs = collect();
+        $jobs = collect([new PricesJob()]);
 
         // collect all items which can be sold on the market.
         $types = InvType::whereNotNull('marketGroupID')
@@ -68,11 +71,32 @@ class Prices extends Command
             $type_ids = $results->pluck('typeID')->toArray();
             $jobs->add((new History($type_ids))->setCurrentBatchCount($page)->setTotalBatchCount($batch_jobs_count));
         });
-      
-        $job->add(new Orders());
-        $job->add(new OrderAggregates());
 
-        PricesJob::withChain($jobs->toArray())->dispatch();
+        Bus::batch($jobs->toArray())
+            ->then(function (Batch $batch) {
+                logger()->info(
+                    sprintf('[Batch][%s] %s - Succeeded : %d/%d - %d failed.',
+                        $batch->id, $batch->name, $batch->totalJobs - $batch->failedJobs, $batch->totalJobs, $batch->failedJobs));
+            })
+            ->catch(function (Batch $batch, Throwable $e) {
+                logger()->error(
+                    sprintf('[Batch][%s] %s - Some jobs have failed : %s',
+                        $batch->id, $batch->name, implode(', ', $batch->failedJobIds)));
+                logger()->error(sprintf('[Batch][%s] %s : %s', $batch->id, $batch->name, $e->getMessage()));
+            })
+            ->finally(function (Batch $batch) {
+                logger()->info(
+                    sprintf('[Batch][%s] %s - Completed : %d/%d - %d failed.',
+                        $batch->id, $batch->name, $batch->totalJobs - $batch->failedJobs, $batch->totalJobs, $batch->failedJobs));
+            })
+            ->allowFailures()
+            ->onQueue('public')
+            ->name('Market Prices')
+            ->dispatch();
+
+        Orders::withChain([
+            new OrderAggregates(),
+        ])->dispatch();
 
         return $this::SUCCESS;
     }

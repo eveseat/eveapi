@@ -71,8 +71,6 @@ class Attributes extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() && CharacterAttribute::find($this->getCharacterId())) return;
-
         $attributes = $response->getBody();
 
         $model = CharacterAttribute::firstOrNew([

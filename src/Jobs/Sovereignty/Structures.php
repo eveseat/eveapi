@@ -62,8 +62,6 @@ class Structures extends EsiBase
     {
         $response = $this->retrieve();
 
-        if ($response->isFromCache() && SovereigntyStructure::count() > 0) return;
-
         $structures = $response->getBody();
 
         collect($structures)->each(function ($structure) {

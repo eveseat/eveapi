@@ -80,10 +80,6 @@ class Jobs extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() &&
-            CharacterIndustryJob::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
-
         $industry_jobs = $response->getBody();
 
         collect($industry_jobs)->each(function ($job) use ($structure_batch) {

@@ -60,9 +60,6 @@ class Info extends AbstractAllianceJob
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if ($response->isFromCache() && Alliance::find($this->alliance_id))
-            return;
-
         $info = $response->getBody();
 
         $model = Alliance::firstOrNew([

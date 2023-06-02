@@ -73,9 +73,6 @@ class Skills extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() &&
-            CharacterSkill::where('character_id', $this->getCharacterId())->count() > 0) return;
-
         $skills = $response->getBody();
 
         CharacterInfo::firstOrCreate(['character_id' => $this->getCharacterId()]);

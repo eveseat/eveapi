@@ -78,8 +78,6 @@ class Status extends EsiBase
 
         $response = $this->retrieve();
 
-        if ($response->isFromCache()) return;
-
         $latest_status = ServerStatus::latest()->first();
 
         // The endpoint caches for 30 seconds, so make sure we
