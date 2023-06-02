@@ -22,8 +22,8 @@
 
 namespace Seat\Eveapi\Jobs\Market;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Bus\Batchable;
+use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Jobs\EsiBase;
