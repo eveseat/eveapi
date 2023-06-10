@@ -47,6 +47,8 @@ abstract class AbstractAllianceJob extends EsiBase
     public function __construct(int $alliance_id)
     {
         $this->alliance_id = $alliance_id;
+
+        parent::__construct();
     }
 
     /**
