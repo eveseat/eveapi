@@ -71,13 +71,13 @@ class Divisions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $divisions = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($divisions->isCachedLoad() &&
-            CorporationDivision::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $divisions = $response->getBody();
 
         if (property_exists($divisions, 'hangar'))
 

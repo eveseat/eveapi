@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Market;
 
+use Illuminate\Bus\Batchable;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\Price;
 
@@ -32,6 +33,8 @@ use Seat\Eveapi\Models\Market\Price;
  */
 class Prices extends EsiBase
 {
+    use Batchable;
+
     /**
      * @var string
      */
@@ -59,9 +62,15 @@ class Prices extends EsiBase
      */
     public function handle()
     {
-        $prices = $this->retrieve();
+        if ($this->batch()->cancelled()) {
+            logger()->debug(sprintf('[Jobs][%s] Orders - Cancelling job due to relevant batch %s cancellation.', $this->job->getJobId(), $this->batch()->id));
 
-        if ($prices->isCachedLoad() && Price::count() > 0) return;
+            return;
+        }
+
+        $response = $this->retrieve();
+
+        $prices = $response->getBody();
 
         collect($prices)->chunk(1000)->each(function ($chunk) {
 
@@ -78,9 +87,6 @@ class Prices extends EsiBase
 
             Price::upsert($records->toArray(), [
                 'type_id',
-                'average_price',
-                'adjusted_price',
-                'updated_at',
             ]);
         });
     }

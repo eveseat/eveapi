@@ -59,12 +59,11 @@ class Alliances extends EsiBase
     public function handle()
     {
 
-        $alliances = $this->retrieve();
+        $response = $this->retrieve();
 
-        if ($alliances->isCachedLoad() && Alliance::count() > 0)
-            return;
+        $alliances = collect($response->getBody());
 
-        collect($alliances)->each(function ($alliance_id) {
+        $alliances->each(function ($alliance_id) {
 
             // queue update jobs which will pull alliance related data.
             (new AllianceBus($alliance_id))->fire();

@@ -69,15 +69,13 @@ class Notifications extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        $notifications = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($notifications->isCachedLoad() &&
-            CharacterNotification::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $notifications = collect($response->getBody());
 
-        collect($notifications)->each(function ($notification) {
+        $notifications->each(function ($notification) {
 
             $model = CharacterNotification::firstOrNew([
                 'character_id' => $this->getCharacterId(),

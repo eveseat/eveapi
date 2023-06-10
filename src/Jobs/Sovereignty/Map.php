@@ -59,9 +59,9 @@ class Map extends EsiBase
      */
     public function handle()
     {
-        $systems = $this->retrieve();
+        $response = $this->retrieve();
 
-        if ($systems->isCachedLoad() && SovereigntyMap::count() > 0) return;
+        $systems = $response->getBody();
 
         collect($systems)->chunk(1000)->each(function ($chunk) {
 
@@ -78,10 +78,6 @@ class Map extends EsiBase
 
             SovereigntyMap::upsert($records->toArray(), [
                 'system_id',
-                'alliance_id',
-                'corporation_id',
-                'faction_id',
-                'updated_at',
             ]);
 
         });

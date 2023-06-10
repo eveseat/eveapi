@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs;
 
 use Exception;
+use Illuminate\Bus\Batchable;
 
 /**
  * Class AbstractAllianceJob.
@@ -31,6 +32,8 @@ use Exception;
  */
 abstract class AbstractAllianceJob extends EsiBase
 {
+    use Batchable;
+
     /**
      * @var int The alliance ID to which the job is related.
      */
@@ -74,5 +77,16 @@ abstract class AbstractAllianceJob extends EsiBase
         }
 
         return $tags;
+    }
+
+    public function handle()
+    {
+        if ($this->batchId && $this->batch()->cancelled())
+            return;
+
+        logger()->debug('Alliance job is processing...', [
+            'name' => static::class,
+            'alliance_id' => $this->alliance_id,
+        ]);
     }
 }

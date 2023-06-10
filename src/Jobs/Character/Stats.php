@@ -68,16 +68,14 @@ class Stats extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        $stats = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($stats->isCachedLoad() &&
-            CharacterStats::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $stats = collect($response->getBody());
 
         // Process each years aggregate
-        collect($stats)->each(function ($aggregate) {
+        $stats->each(function ($aggregate) {
 
             // Separate stats by categories
             foreach (['character', 'combat', 'industry', 'inventory', 'isk', 'market',

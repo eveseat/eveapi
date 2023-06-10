@@ -65,6 +65,7 @@ class Attendees extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $this->updateAttendees('character', $this->getCharacterId());
     }
@@ -85,17 +86,14 @@ class Attendees extends AbstractAuthCharacterJob
             ->where('owner_type', $owner_type)
             ->get()->each(function ($event) {
 
-                $attendees = $this->retrieve([
+                $response = $this->retrieve([
                     'character_id' => $this->getCharacterId(),
                     'event_id'     => $event->event_id,
                 ]);
 
-                if ($attendees->isCachedLoad() &&
-                    CharacterCalendarAttendee::where('character_id', $this->getCharacterId())
-                        ->where('event_id', $event->event_id)->count() > 0)
-                    return;
+                $attendees = collect($response->getBody());
 
-                collect($attendees)->each(function ($attendee) use ($event) {
+                $attendees->each(function ($attendee) use ($event) {
 
                     CharacterCalendarAttendee::firstOrNew([
                         'character_id' => $attendee->character_id,
@@ -107,7 +105,7 @@ class Attendees extends AbstractAuthCharacterJob
                 });
 
                 CharacterCalendarAttendee::where('event_id', $event->event_id)
-                    ->whereNotIn('character_id', collect($attendees)
+                    ->whereNotIn('character_id', collect($response)
                         ->pluck('character_id')->flatten()->all())
                     ->delete();
             });

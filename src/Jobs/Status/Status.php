@@ -76,9 +76,7 @@ class Status extends EsiBase
     public function handle()
     {
 
-        $status = $this->retrieve();
-
-        if ($status->isCachedLoad()) return;
+        $response = $this->retrieve();
 
         $latest_status = ServerStatus::latest()->first();
 
@@ -87,12 +85,13 @@ class Status extends EsiBase
         if (! $latest_status || $latest_status->created_at->addSeconds(30)
                 ->lt(carbon())) {
 
+            $status = $response->getBody();
+
             ServerStatus::create([
                 'start_time'     => carbon($status->start_time),
                 'players'        => $status->players,
                 'server_version' => $status->server_version,
-                'vip'            => property_exists($status, 'vip') ?
-                    $status->vip : false,
+                'vip'            => $status->vip ?? false,
             ]);
         }
     }

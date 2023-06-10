@@ -58,15 +58,13 @@ class CorporationHistory extends AbstractCharacterJob
     public function handle()
     {
 
-        $corporation_history = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($corporation_history->isCachedLoad() &&
-            CharacterCorporationHistory::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $corporations = collect($response->getBody());
 
-        collect($corporation_history)->each(function ($corporation) {
+        $corporations->each(function ($corporation) {
 
             CharacterCorporationHistory::firstOrCreate([
                 'character_id'   => $this->getCharacterId(),
@@ -74,7 +72,7 @@ class CorporationHistory extends AbstractCharacterJob
             ], [
                 'start_date'     => carbon($corporation->start_date),
                 'corporation_id' => $corporation->corporation_id,
-                'is_deleted'     => isset($corporation->is_deleted) ? $corporation->is_deleted : false,
+                'is_deleted'     => $corporation->is_deleted ?? false,
             ]);
         });
     }

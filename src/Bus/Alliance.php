@@ -22,11 +22,13 @@
 
 namespace Seat\Eveapi\Bus;
 
+use Illuminate\Bus\Batch;
 use Seat\Eveapi\Jobs\Alliances\Info;
 use Seat\Eveapi\Jobs\Alliances\Members;
 use Seat\Eveapi\Jobs\Contacts\Alliance\Contacts;
 use Seat\Eveapi\Jobs\Contacts\Alliance\Labels;
 use Seat\Eveapi\Models\RefreshToken;
+use Throwable;
 
 /**
  * Class Alliance.
@@ -38,12 +40,12 @@ class Alliance extends Bus
     /**
      * @var int
      */
-    private $alliance_id;
+    private int $alliance_id;
 
     /**
-     * @var \Seat\Eveapi\Models\RefreshToken
+     * @var \Seat\Eveapi\Models\RefreshToken|null
      */
-    private $token;
+    private ?RefreshToken $token;
 
     /**
      * Alliance constructor.
@@ -71,9 +73,35 @@ class Alliance extends Bus
         if (! is_null($this->token))
             $this->addAuthenticatedJobs();
 
-        Info::withChain($this->jobs->toArray())
-            ->dispatch($this->alliance_id)
-            ->delay(now()->addSeconds(rand(120, 600)));
+        $alliance = \Seat\Eveapi\Models\Alliances\Alliance::firstOrNew(
+            ['alliance_id' => $this->alliance_id],
+            ['name' => "Unknown Alliance : {$this->alliance_id}"]
+        );
+
+        \Illuminate\Support\Facades\Bus::batch([$this->jobs->toArray()])
+            ->then(function (Batch $batch) {
+                logger()->debug('Alliance batch successfully completed.', [
+                    'id' => $batch->id,
+                    'name' => $batch->name,
+                ]);
+            })->catch(function (Batch $batch, Throwable $throwable) {
+                logger()->error('An error occurred during Alliance batch processing.', [
+                    'id' => $batch->id,
+                    'name' => $batch->name,
+                    'error' => $throwable->getMessage(),
+                    'trace' => $throwable->getTrace(),
+                ]);
+            })->finally(function (Batch $batch) {
+                logger()->info('Alliance batch executed.', [
+                    'id' => $batch->id,
+                    'name' => $batch->name,
+                    'stats' => [
+                        'success' => $batch->totalJobs - $batch->failedJobs,
+                        'failed' => $batch->failedJobs,
+                        'total' => $batch->totalJobs,
+                    ],
+                ]);
+            })->onQueue('public')->name($alliance->name)->dispatch();
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
         // https://github.com/eveseat/seat/issues/731
@@ -86,6 +114,7 @@ class Alliance extends Bus
      */
     protected function addPublicJobs()
     {
+        $this->jobs->add(new Info($this->alliance_id));
         $this->jobs->add(new Members($this->alliance_id));
     }
 

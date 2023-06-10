@@ -59,9 +59,9 @@ class Insurances extends EsiBase
      */
     public function handle()
     {
-        $insurances = $this->retrieve();
+        $response = $this->retrieve();
 
-        if ($insurances->isCachedLoad() && Insurance::count() > 0) return;
+        $insurances = $response->getBody();
 
         collect($insurances)->each(function ($insurance) {
 

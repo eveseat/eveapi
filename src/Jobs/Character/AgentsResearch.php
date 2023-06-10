@@ -68,23 +68,22 @@ class AgentsResearch extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $agents_research = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($agents_research->isCachedLoad() &&
-            CharacterAgentResearch::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $agents = collect($response->getBody());
 
-        collect($agents_research)->each(function ($agent_research) {
+        $agents->each(function ($agent) {
 
             $model = CharacterAgentResearch::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'agent_id'     => $agent_research->agent_id,
+                'agent_id'     => $agent->agent_id,
             ]);
 
-            AgentResearchMapping::make($model, $agent_research, [
+            AgentResearchMapping::make($model, $agent, [
                 'character_id' => function () {
                     return $this->getCharacterId();
                 },
@@ -92,8 +91,7 @@ class AgentsResearch extends AbstractAuthCharacterJob
         });
 
         CharacterAgentResearch::where('character_id', $this->getCharacterId())
-            ->whereNotIn('agent_id', collect($agents_research)
-                ->pluck('agent_id')->flatten()->all())
+            ->whereNotIn('agent_id', $agents->pluck('agent_id')->flatten()->all())
             ->delete();
     }
 }

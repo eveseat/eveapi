@@ -62,11 +62,13 @@ class Info extends AbstractCorporationJob
      */
     public function handle()
     {
-        $corporation = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($corporation->isCachedLoad() && CorporationInfo::find($this->getCorporationId())) return;
+        $corporation = $response->getBody();
 
         $model = CorporationInfo::firstOrNew([
             'corporation_id' => $this->getCorporationId(),

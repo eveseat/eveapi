@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Market\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Financial\OrderMapping;
 use Seat\Eveapi\Models\Market\CharacterOrder;
 
@@ -65,15 +66,18 @@ class Orders extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $orders = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($orders->isCachedLoad() &&
-            CharacterOrder::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $orders = $response->getBody();
 
-        collect($orders)->each(function ($order) {
+        $structure_batch = new StructureBatch();
+
+        collect($orders)->each(function ($order) use ($structure_batch) {
+            $structure_batch->addStructure($order->location_id);
 
             $model = CharacterOrder::firstOrNew([
                 'character_id' => $this->getCharacterId(),
@@ -89,5 +93,7 @@ class Orders extends AbstractAuthCharacterJob
                 },
             ])->save();
         });
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

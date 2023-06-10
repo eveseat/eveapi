@@ -64,11 +64,13 @@ class Ship extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $ship = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($ship->isCachedLoad() && CharacterShip::find($this->getCharacterId())) return;
+        $ship = $response->getBody();
 
         CharacterShip::firstOrNew([
             'character_id' => $this->getCharacterId(),

@@ -64,13 +64,13 @@ class Labels extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $labels = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($labels->isCachedLoad() &&
-            MailLabel::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $labels = $response->getBody();
 
         collect($labels->labels)->each(function ($label) {
 

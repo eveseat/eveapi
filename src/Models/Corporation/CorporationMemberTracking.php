@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
@@ -30,65 +31,19 @@ use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 
-/**
- * Class CorporationMemberTracking.
- *
- * @package Seat\Eveapi\Models\Corporation
- *
- * @OA\Schema(
- *      description="Corporation Member Tracking",
- *      title="CorporationMemberTracking",
- *      type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="character_id",
- *     description="The character ID"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="start_date",
- *     description="The date since which the character is member of the corporation"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="base_id",
- *     description="The structure to which the main location of this character is set"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="logon_date",
- *     description="The last time when we saw the character"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="logoff_date",
- *     description="The last time when the character signed out"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="location_id",
- *     description="The place where the character is"
- * )
- *
- * @OA\Property(
- *     property="ship",
- *     description="The ship information",
- *     ref="#/components/schemas/InvType"
- * )
- */
+#[OA\Schema(
+    title: 'CorporationMemberTracking',
+    description: 'Corporation Member Tracking',
+    properties: [
+        new OA\Property(property: 'character_id', description: 'The character ID', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'start_date', description: 'The date since which the character is member of the corporation', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'base_id', description: 'The structure to which the main location of this character is set', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'logoff_date', description: 'The last time when the character signed out', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'location_id', description: 'The place where the character is', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'ship', ref: '#/components/schemas/InvType', description: 'The ship information'),
+    ],
+    type: 'object'
+)]
 class CorporationMemberTracking extends Model
 {
     /**

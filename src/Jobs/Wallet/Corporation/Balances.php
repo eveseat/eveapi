@@ -71,13 +71,13 @@ class Balances extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $balances = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($balances->isCachedLoad() &&
-            CorporationWalletBalance::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $balances = $response->getBody();
 
         collect($balances)->each(function ($balance) {
 

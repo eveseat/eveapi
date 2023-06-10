@@ -93,6 +93,8 @@ class StarbaseDetails extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         CorporationStarbase::where('corporation_id', $this->getCorporationId())
             ->get()->each(function ($starbase) {
 
@@ -100,10 +102,12 @@ class StarbaseDetails extends AbstractAuthCorporationJob
                     'system_id' => $starbase->system_id,
                 ];
 
-                $detail = $this->retrieve([
+                $response = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
                     'starbase_id'    => $starbase->starbase_id,
                 ]);
+
+                $detail = $response->getBody();
 
                 $model = CorporationStarbaseDetail::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),

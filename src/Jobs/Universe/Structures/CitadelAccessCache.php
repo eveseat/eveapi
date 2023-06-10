@@ -20,34 +20,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Sde;
+namespace Seat\Eveapi\Jobs\Universe\Structures;
 
-use Illuminate\Database\Eloquent\Model;
-use Seat\Eveapi\Traits\IsReadOnly;
-
-/**
- * Class ChrFaction.
- *
- * @package Seat\Eveapi\Models\Sde
- */
-class ChrFaction extends Model
+interface CitadelAccessCache
 {
+    const BLOCK_DURATION_SECONDS = 60 * 60 * 24 * 7; // 1 week
 
-    use IsReadOnly;
+    public static function canAccess(int $character_id, int $citadel_id): bool;
 
-    /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var string
-     */
-    protected $table = 'chrFactions';
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'factionID';
-
+    public static function blockAccess(int $character_id, int $citadel_id);
 }

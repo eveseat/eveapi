@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Market;
 
+use Illuminate\Bus\Batchable;
 use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
@@ -35,6 +36,8 @@ use Seat\Eveapi\Models\Market\Price;
  */
 class History extends EsiBase
 {
+    use Batchable;
+
     const THE_FORGE = 10000002;
 
     // override the default from AbstractJob
@@ -98,6 +101,8 @@ class History extends EsiBase
      */
     public function __construct(array $type_ids)
     {
+        parent::__construct();
+
         $this->type_ids = $type_ids;
     }
 
@@ -135,11 +140,17 @@ class History extends EsiBase
      */
     public function handle()
     {
+        if ($this->batch()->cancelled()) {
+            logger()->debug(sprintf('[Jobs][%s] Orders - Cancelling job due to relevant batch %s cancellation.', $this->job->getJobId(), $this->batch()->id));
+
+            return;
+        }
+
         $region_id = setting('market_prices_region_id', true) ?: self::THE_FORGE;
 
         while(count($this->type_ids) > 0) {
             Redis::throttle('market-history-throttle')->block(0)->allow(self::ENDPOINT_RATE_LIMIT_CALLS)->every(self::ENDPOINT_RATE_LIMIT_WINDOW)->then(function () use ($region_id) {
-                logger()->debug(sprintf('[Jobs][%d] History processing -> Remaining types: %d.', $this->job->getJobId(), count($this->type_ids)));
+                logger()->debug(sprintf('[Jobs][%s] History processing -> Remaining types: %d.', $this->job->getJobId(), count($this->type_ids)));
 
                 $type_id = array_shift($this->type_ids);
 
@@ -149,9 +160,11 @@ class History extends EsiBase
 
                 try {
                     // for each subsequent item, request ESI order stats using region in settings (The Forge is default).
-                    $prices = $this->retrieve([
+                    $response = $this->retrieve([
                         'region_id' => $region_id,
                     ]);
+
+                    $prices = $response->getBody();
 
                     // search the more recent entry in returned history.
                     $price = collect($prices)->where('order_count', '>', 0)
@@ -178,10 +191,10 @@ class History extends EsiBase
                         'volume'      => $price->volume,
                     ]);
                 } catch (TemporaryEsiOutageException $e) {
-                    logger()->error(sprintf('[Jobs][%d] History -> ESI is temporarily unavailable - Retry in 120 seconds.', $this->job->getJobId()));
+                    logger()->error(sprintf('[Jobs][%s] History -> ESI is temporarily unavailable - Retry in 120 seconds.', $this->job->getJobId()));
 
                     if ($e->getPrevious() instanceof RequestFailedException) {
-                        logger()->debug(sprintf('[Jobs][%d] History -> ESI remaining error count: %d', $this->job->getJobId(), $e->getPrevious()->getEsiResponse()->error_limit));
+                        logger()->debug(sprintf('[Jobs][%s] History -> ESI remaining error count: %d', $this->job->getJobId(), $e->getPrevious()->getEsiResponse()->error_limit));
                     }
 
                     $this->release(120); // requeue job in next 2 minutes
@@ -192,7 +205,7 @@ class History extends EsiBase
 
                 // specify callback to catch LimiterTimeoutException thrown by the throttler when limit is reached
                 // we will only log the state for diagnose since it is expected.
-                logger()->debug(sprintf('[Jobs][%d] History throttled -> Remaining types: %d.', $this->job->getJobId(), count($this->type_ids)));
+                logger()->debug(sprintf('[Jobs][%s] History throttled -> Remaining types: %d.', $this->job->getJobId(), count($this->type_ids)));
 
                 return true;
             });

@@ -73,8 +73,9 @@ class Titles extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $titles = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
@@ -83,12 +84,12 @@ class Titles extends AbstractAuthCharacterJob
         if (is_null($character))
             return;
 
-        if ($titles->isCachedLoad() && $character->titles()->count() > 0) return;
-
         $this->active_titles = collect();
 
+        $titles = collect($response->getBody());
+
         // Re-add the updated titles for this character
-        collect($titles)->each(function ($title) {
+        $titles->each(function ($title) {
 
             // retrieve or create title
             $corporation_title = CorporationTitle::firstOrCreate([

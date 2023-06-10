@@ -72,6 +72,7 @@ class Transactions extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         // Perform a journal walk backwards to get all of the
         // entries as far back as possible. When the response from
@@ -80,19 +81,17 @@ class Transactions extends AbstractAuthCharacterJob
 
             $this->query_string = ['from_id' => $this->from_id];
 
-            $transactions = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($transactions->isCachedLoad() &&
-                CharacterWalletTransaction::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $entries = collect($response->getBody());
 
             // If we have no more entries, break the loop.
-            if (collect($transactions)->count() === 0)
+            if ($entries->count() === 0)
                 break;
 
-            collect($transactions)->each(function ($transaction) {
+            $entries->each(function ($transaction) {
 
                 $transaction_entry = CharacterWalletTransaction::firstOrNew([
                     'character_id'   => $this->getCharacterId(),
@@ -116,7 +115,7 @@ class Transactions extends AbstractAuthCharacterJob
 
             // Update the from_id to be the new lowest (ref_id - 1) that we
             // know of. The next all will use this.
-            $this->from_id = collect($transactions)->min('transaction_id') - 1;
+            $this->from_id = $entries->min('transaction_id') - 1;
         }
     }
 }

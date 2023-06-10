@@ -92,13 +92,11 @@ class Contacts extends AbstractAuthAllianceJob
     {
         while (true) {
 
-            $contacts = $this->retrieve([
+            $response = $this->retrieve([
                 'alliance_id' => $this->getAllianceId(),
             ]);
 
-            if ($contacts->isCachedLoad() &&
-                AllianceContact::where('alliance_id', $this->getAllianceId())->count() > 0)
-                return;
+            $contacts = $response->getBody();
 
             collect($contacts)->each(function ($contact) {
 
@@ -115,7 +113,7 @@ class Contacts extends AbstractAuthAllianceJob
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
 
-            if (! $this->nextPage($contacts->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 
