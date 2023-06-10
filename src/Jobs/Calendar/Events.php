@@ -108,7 +108,7 @@ class Events extends AbstractAuthCharacterJob
                 ])->save();
             });
 
-            $this->from_id = $response->min('event_id') - 1;
+            $this->from_id = $response->max('event_id');
         }
     }
 }
