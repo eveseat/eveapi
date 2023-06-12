@@ -45,7 +45,7 @@ class CorporationContainerLog extends Model
     protected $primaryKey = ['corporation_id', 'container_id', 'logged_at'];
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setLoggedAtAttribute($value)
     {

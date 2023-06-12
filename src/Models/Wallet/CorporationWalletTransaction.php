@@ -75,7 +75,7 @@ class CorporationWalletTransaction extends Model
     public $incrementing = true;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setDateAttribute($value)
     {

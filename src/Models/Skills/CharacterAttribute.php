@@ -48,7 +48,7 @@ class CharacterAttribute extends Model
     protected $primaryKey = 'character_id';
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setLastRemapDateAttribute($value)
     {
@@ -56,7 +56,7 @@ class CharacterAttribute extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setAccruedRemapCooldownDateAttribute($value)
     {

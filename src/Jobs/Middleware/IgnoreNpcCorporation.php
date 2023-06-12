@@ -33,7 +33,7 @@ class IgnoreNpcCorporation
 {
     /**
      * @param  \Seat\Eveapi\Jobs\EsiBase  $job
-     * @param $next
+     * @param  $next
      *
      * @throws \Exception
      */

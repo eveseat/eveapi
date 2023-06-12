@@ -37,7 +37,7 @@ class CharacterCalendarEvent extends Model
     protected static $unguarded = true;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setEventDateAttribute($value)
     {

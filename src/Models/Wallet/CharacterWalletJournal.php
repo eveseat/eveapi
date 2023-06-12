@@ -65,7 +65,7 @@ class CharacterWalletJournal extends Model
     public $incrementing = false;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setDateAttribute($value)
     {

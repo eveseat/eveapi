@@ -35,7 +35,7 @@ class CheckTokenVersion
 {
     /**
      * @param  \Seat\Eveapi\Jobs\EsiBase  $job
-     * @param $next
+     * @param  $next
      */
     public function handle($job, $next)
     {

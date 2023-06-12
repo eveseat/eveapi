@@ -93,7 +93,7 @@ class ContractDetail extends Model
     /**
      * Seed model using an ESI data structure.
      *
-     * @param $esi_structure
+     * @param  $esi_structure
      * @return $this
      */
     public function fromEsi($esi_structure): ContractDetail

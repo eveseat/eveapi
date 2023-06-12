@@ -34,7 +34,7 @@ class RequireCorporationRole
 {
     /**
      * @param  \Seat\Eveapi\Jobs\AbstractAuthCorporationJob  $job
-     * @param $next
+     * @param  $next
      */
     public function handle($job, $next)
     {

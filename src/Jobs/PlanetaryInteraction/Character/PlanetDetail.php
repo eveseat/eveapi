@@ -336,7 +336,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
     }
 
     /**
-     * @param $planet
+     * @param  $planet
      *
      * @throws \Exception
      */
