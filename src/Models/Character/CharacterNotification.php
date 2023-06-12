@@ -70,7 +70,7 @@ class CharacterNotification extends Model
     /**
      * Return YAML parsed value of the notification content.
      *
-     * @param $value
+     * @param  $value
      * @return mixed
      */
     public function getTextAttribute($value)
@@ -84,7 +84,7 @@ class CharacterNotification extends Model
     /**
      * Reset parsed value of notification content and update raw value.
      *
-     * @param $value
+     * @param  $value
      */
     public function setTextAttribute($value)
     {
@@ -93,7 +93,7 @@ class CharacterNotification extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setTimestampAttribute($value)
     {

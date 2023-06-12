@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Killmails;
 
+use Illuminate\Bus\Batchable;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Mapping\Killmails\AttackerMapping;
 use Seat\Eveapi\Mapping\Killmails\VictimMapping;
@@ -36,6 +37,8 @@ use Seat\Eveapi\Models\Killmails\KillmailVictim;
  */
 class Detail extends EsiBase
 {
+    use Batchable;
+
     /**
      * @var int
      */

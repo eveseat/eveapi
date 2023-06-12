@@ -64,20 +64,26 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 class ContractDetail extends Model
 {
     /**
-     * @var array
+     * @var bool
      */
-    protected $casts = [
-        'for_corporation' => 'boolean',
-    ];
+    public $incrementing = false;
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+
     /**
      * @var bool
      */
     protected static $unguarded = true;
 
     /**
-     * @var bool
+     * @var array
      */
-    public $incrementing = false;
+    protected $casts = [
+        'for_corporation' => 'boolean',
+    ];
 
     /**
      * @var string
@@ -87,7 +93,7 @@ class ContractDetail extends Model
     /**
      * Seed model using an ESI data structure.
      *
-     * @param $esi_structure
+     * @param  $esi_structure
      * @return $this
      */
     public function fromEsi($esi_structure): ContractDetail

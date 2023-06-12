@@ -55,7 +55,7 @@ class Alliance extends Model
     protected $primaryKey = 'alliance_id';
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setDateFoundedAttribute($value)
     {

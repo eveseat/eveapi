@@ -47,7 +47,7 @@ class SovereigntyStructure extends Model
     protected $primaryKey = 'structure_id';
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setVulnerableStartTimeAttribute($value)
     {
@@ -55,7 +55,7 @@ class SovereigntyStructure extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setVulnerableEndTimeAttribute($value)
     {

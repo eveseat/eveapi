@@ -33,7 +33,7 @@ class CheckEsiRateLimit
 {
     /**
      * @param  \Illuminate\Queue\InteractsWithQueue  $job
-     * @param $next
+     * @param  $next
      */
     public function handle($job, $next)
     {

@@ -20,28 +20,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * Class CharacterMedal.
- *
- * @package Seat\Eveapi\Models\Character
- */
-class CharacterMedal extends Model
+class RemoveTimestampsFromContractDetails extends Migration
 {
-
     /**
-     * @var bool
+     * Run the migrations.
+     *
+     * @return void
      */
-    protected static $unguarded = true;
-
-    /**
-     * @param  $value
-     */
-    public function setDateAttribute($value)
+    public function up()
     {
-        $this->attributes['date'] = is_null($value) ? null : carbon($value);
+        Schema::table('contract_details', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('contract_details', function (Blueprint $table) {
+            $table->timestamps();
+        });
     }
 }

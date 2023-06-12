@@ -39,7 +39,7 @@ class CharacterAgentResearch extends Model
     protected static $unguarded = true;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setStartedAtAttribute($value)
     {

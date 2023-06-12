@@ -82,7 +82,7 @@ abstract class AbstractFuzzworkMapping extends DefaultValueBinder implements ToM
 
     /**
      * @param  \PhpOffice\PhpSpreadsheet\Cell\Cell  $cell
-     * @param $value
+     * @param  $value
      * @return bool
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception

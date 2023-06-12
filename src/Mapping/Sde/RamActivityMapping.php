@@ -40,7 +40,7 @@ class RamActivityMapping extends AbstractFuzzworkMapping implements WithValidati
 {
     /**
      * @param  \PhpOffice\PhpSpreadsheet\Cell\Cell  $cell
-     * @param $value
+     * @param  $value
      * @return bool
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception

@@ -221,7 +221,7 @@ class CorporationStructure extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setFuelExpiresAttribute($value)
     {
@@ -229,7 +229,7 @@ class CorporationStructure extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setStateTimerStartAttribute($value)
     {
@@ -237,7 +237,7 @@ class CorporationStructure extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setStateTimerEndAttribute($value)
     {
@@ -245,7 +245,7 @@ class CorporationStructure extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setUnanchorsAtAttribute($value)
     {
@@ -253,7 +253,7 @@ class CorporationStructure extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setNextReinforceApplyAttribute($value)
     {

@@ -101,7 +101,7 @@ class CorporationStarbase extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setOnlinedSinceAttribute($value)
     {
@@ -109,7 +109,7 @@ class CorporationStarbase extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setReinforcedUntilAttribute($value)
     {
@@ -117,7 +117,7 @@ class CorporationStarbase extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setUnanchorAtAttribute($value)
     {

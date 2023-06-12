@@ -43,7 +43,7 @@ abstract class DataMapping
 
     /**
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param $data
+     * @param  $data
      * @param  array  $overrides
      * @return \Illuminate\Database\Eloquent\Model
      */
