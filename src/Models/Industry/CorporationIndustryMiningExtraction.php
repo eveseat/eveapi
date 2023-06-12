@@ -77,7 +77,7 @@ class CorporationIndustryMiningExtraction extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setExtractionStartTimeAttribute($value)
     {
@@ -85,7 +85,7 @@ class CorporationIndustryMiningExtraction extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setChunkArrivalTimeAttribute($value)
     {
@@ -93,7 +93,7 @@ class CorporationIndustryMiningExtraction extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setNaturalDecayTimeAttribute($value)
     {

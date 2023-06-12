@@ -79,7 +79,7 @@ class CorporationInfo extends Model
     protected $primaryKey = 'corporation_id';
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setDateFoundedAttribute($value)
     {

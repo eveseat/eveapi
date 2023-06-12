@@ -67,7 +67,7 @@ class CharacterOrder extends Model
     protected static $unguarded = true;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setIssuedAttribute($value)
     {

@@ -80,7 +80,7 @@ class CharacterIndustryJob extends Model
     public $incrementing = false;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setStartDateAttribute($value)
     {
@@ -88,7 +88,7 @@ class CharacterIndustryJob extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setPauseDateAttribute($value)
     {
@@ -96,7 +96,7 @@ class CharacterIndustryJob extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setEndDateAttribute($value)
     {
@@ -104,7 +104,7 @@ class CharacterIndustryJob extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setCompletedDateAttribute($value)
     {

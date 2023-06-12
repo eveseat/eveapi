@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Jobs\Alliances;
 
 use Seat\Eveapi\Bus\Alliance as AllianceBus;
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Alliances\Alliance;
 
 /**
  * Class Alliances.

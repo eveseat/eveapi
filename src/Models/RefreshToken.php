@@ -113,7 +113,7 @@ class RefreshToken extends Model implements EsiToken
      * Only return a token value if it is not already
      * considered expired.
      *
-     * @param $value
+     * @param  $value
      * @return mixed
      */
     public function getTokenAttribute($value)
