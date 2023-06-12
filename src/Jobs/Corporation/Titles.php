@@ -115,28 +115,28 @@ class Titles extends AbstractAuthCorporationJob
 
         collect($titles)->each(function ($title) {
 
-            CorporationTitle::firstOrNew([
+            $title_model = CorporationTitle::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
                 'title_id'       => $title->title_id,
             ])->fill([
                 'name' => $title->name ?? sprintf('Untitled %d', (int) sqrt($title->title_id - 1)),
             ])->save();
 
-            collect($this->types)->each(function ($type) use ($title) {
+            collect($this->types)->each(function ($type) use ($title, $title_model) {
 
                 if (! property_exists($title, $type))
                     return;
 
-                collect($title->{$type})->each(function ($name) use ($title, $type) {
+                collect($title->{$type})->each(function ($name) use ($title_model, $type) {
 
                     CorporationTitleRole::firstOrCreate([
-                        'title_id'       => $title->id,
+                        'title_id'       => $title_model->id,
                         'type'           => $type,
                         'role'           => $name,
                     ]);
                 });
 
-                CorporationTitleRole::where('title_id', $title->id)
+                CorporationTitleRole::where('title_id', $title_model->id)
                     ->where('type', $type)
                     ->whereNotIn('role', collect($title->{$type})->flatten()->all())
                     ->delete();
