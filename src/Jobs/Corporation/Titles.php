@@ -120,7 +120,8 @@ class Titles extends AbstractAuthCorporationJob
                 'title_id'       => $title->title_id,
             ])->fill([
                 'name' => $title->name ?? sprintf('Untitled %d', (int) sqrt($title->title_id - 1)),
-            ])->save();
+            ]);
+            $title_model->save();
 
             collect($this->types)->each(function ($type) use ($title, $title_model) {
 
