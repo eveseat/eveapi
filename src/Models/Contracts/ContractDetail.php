@@ -106,15 +106,15 @@ class ContractDetail extends Model
             'type'                  => $esi_structure->type,
             'status'                => $esi_structure->status,
             'title'                 => $esi_structure->title ?? null,
-            'for_corporation'       => $esi_structure->for_corporation,
+            'for_corporation'       => (int) $esi_structure->for_corporation, // enforce raw cast to avoid mutex between db retrieval and model seed
             'availability'          => $esi_structure->availability,
-            'date_issued'           => carbon($esi_structure->date_issued),
-            'date_expired'          => carbon($esi_structure->date_expired),
+            'date_issued'           => (string) carbon($esi_structure->date_issued), // enforce raw cast to avoid mutex between db retrieval and model seed
+            'date_expired'          => (string) carbon($esi_structure->date_expired), // enforce raw cast to avoid mutex between db retrieval and model seed
             'date_accepted'         => isset($esi_structure->date_accepted) ?
-                carbon($esi_structure->date_accepted) : null,
+                (string) carbon($esi_structure->date_accepted) : null, // enforce raw cast to avoid mutex between db retrieval and model seed
             'days_to_complete'      => $esi_structure->days_to_complete ?? null,
             'date_completed'        => isset($esi_structure->date_completed) ?
-                carbon($esi_structure->date_completed) : null,
+                (string) carbon($esi_structure->date_completed) : null, // enforce raw cast to avoid mutex between db retrieval and model seed
             'price'                 => $esi_structure->price ?? null,
             'reward'                => $esi_structure->reward ?? null,
             'collateral'            => $esi_structure->collateral ?? null,
