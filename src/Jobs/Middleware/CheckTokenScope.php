@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
+use Closure;
 use Seat\Eveapi\Jobs\EsiBase;
 
 /**
@@ -33,30 +34,63 @@ class CheckTokenScope
 {
     /**
      * @param  \Seat\Eveapi\Jobs\EsiBase  $job
-     * @param  $next
+     * @param  \Closure  $next
      */
-    public function handle($job, $next)
+    public function handle(EsiBase $job, Closure $next)
     {
-        // in case the job is not related to ESI - bypass this check
-        if (! is_subclass_of($job, EsiBase::class)) {
+        // in case the job does not require specific scopes - forward
+        if ($job->getScope() == '') {
+            logger()->debug(
+                sprintf('[Jobs][Middlewares][%s] Check Token Scope -> Bypassed due to unneeded scope to process this job.', $job->job->getJobId()));
+
             $next($job);
 
             return;
         }
 
-        // in case the job does not required specific scopes or token got required scope - forward
-        if ($job->getScope() == '' || in_array($job->getScope(), $job->getToken()->scopes)) {
+        // load sso scopes profiles
+        $profiles = collect(setting('sso_scopes', true) ?? [
+            [
+                'id' => 0,
+                'name' => 'default',
+                'default' => true,
+                'scopes' => config('eveapi.scopes', []),
+            ],
+        ]);
+
+        // in case token related profile is not requiring the job needed scope - log for diagnose and remove it from the queue
+        if (! in_array($job->getScope(), $profiles->where('id', $job->getToken()->scopes_profile)->first()->scopes ?? [])) {
+            logger()->warning(
+                sprintf('[Jobs][Middlewares][%s] Check Token Scope -> Removing job due to required scopes not matching with token related scopes profile.', $job->job->getJobId()),
+                [
+                    'Job' => get_class($job),
+                    'Character' => $job->getToken()->character_id,
+                    'Scopes profile' => $job->getToken()->scopes_profile,
+                ]);
+
+            $job->delete();
+
+            return;
+        }
+
+        // in case token got required scope and job require it - forward
+        if (in_array($job->getScope(), $job->getToken()->scopes)) {
             $next($job);
 
             return;
         }
 
         // log event otherwise
-        logger()->warning('A job requiring a not granted scope has been queued.', [
-            'Job' => get_class($job),
-            'Required scope' => $job->getScope(),
-            'Token scopes' => $job->getToken()->scopes,
-            'Token owner' => $job->getToken()->character_id,
-        ]);
+        logger()->warning(
+            sprintf('[Jobs][Middlewares][%s] Check Token Scope -> A job requiring a not granted scope has been queued.', $job->job->getJobId()),
+            [
+                'Job' => get_class($job),
+                'Required scope' => $job->getScope(),
+                'Token scopes' => $job->getToken()->scopes,
+                'Token owner' => $job->getToken()->character_id,
+            ]);
+
+        $job->tries = 1;
+        $job->fail('A job requiring a not granted scope has been queued.');
     }
 }

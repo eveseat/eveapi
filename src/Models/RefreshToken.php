@@ -69,7 +69,8 @@ class RefreshToken extends Model implements EsiToken
      * @var array
      */
     protected $fillable = [
-        'character_id', 'version', 'user_id', 'character_owner_hash', 'refresh_token', 'scopes', 'expires_on', 'token',
+        'character_id', 'version', 'user_id', 'character_owner_hash',
+        'refresh_token', 'scopes_profile', 'scopes', 'expires_on', 'token',
     ];
 
     /**
