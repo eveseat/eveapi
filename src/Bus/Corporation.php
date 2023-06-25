@@ -114,27 +114,33 @@ class Corporation extends Bus
 
         $batch = \Illuminate\Support\Facades\Bus::batch([$this->jobs->toArray()])
             ->then(function (Batch $batch) {
-                logger()->debug('Corporation batch successfully completed.', [
-                    'id' => $batch->id,
-                    'name' => $batch->name,
-                ]);
+                logger()->debug(
+                    sprintf('[Batches][%s] Corporation batch successfully completed.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                    ]);
             })->catch(function (Batch $batch, Throwable $throwable) {
-                logger()->error('An error occurred during Corporation batch processing.', [
-                    'id' => $batch->id,
-                    'name' => $batch->name,
-                    'error' => $throwable->getMessage(),
-                    'trace' => $throwable->getTrace(),
-                ]);
+                logger()->error(
+                    sprintf('[Batches][%s] An error occurred during Corporation batch processing.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                        'error' => $throwable->getMessage(),
+                        'trace' => $throwable->getTrace(),
+                    ]);
             })->finally(function (Batch $batch) {
-                logger()->info('Corporation batch executed.', [
-                    'id' => $batch->id,
-                    'name' => $batch->name,
-                    'stats' => [
-                        'success' => $batch->totalJobs - $batch->failedJobs,
-                        'failed' => $batch->failedJobs,
-                        'total' => $batch->totalJobs,
-                    ],
-                ]);
+                logger()->info(
+                    sprintf('[Batches][%s] Corporation batch executed.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                        'stats' => [
+                            'success' => $batch->totalJobs - $batch->failedJobs,
+                            'failed' => $batch->failedJobs,
+                            'total' => $batch->totalJobs,
+                        ],
+                    ]);
             })->onQueue('corporations')->name($corporation->name)->dispatch();
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility

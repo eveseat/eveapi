@@ -76,10 +76,7 @@ class Update extends Command
 
             // if we are not able to spawn the entry, log the event and interrupt the command.
             if (! $lock->get()) {
-                $message = 'This character has already been processed during the last update window.' .
-                    'Process has been interrupted.';
-
-                logger()->warning($message, [
+                logger()->warning('[Buckets] This character has already been processed during the last update window. Process has been interrupted.', [
                     'bucket_id' => $bucket->id,
                     'character_id' => $token->character_id,
                     'update_window' => 3600,
@@ -91,7 +88,7 @@ class Update extends Command
             // queue character jobs for the selected token.
             (new Character($token->character_id, $token))->fire();
 
-            logger()->debug('processing token from a bucket', [
+            logger()->debug('[Buckets] Processing token from a bucket', [
                 'bucket' => $bucket->id,
                 'flow'   => 'character',
                 'token'  => $token->character_id,
@@ -120,10 +117,7 @@ class Update extends Command
 
             // if we are not able to spawn the entry, log the event and interrupt the command.
             if (! $lock->get()) {
-                $message = 'This corporation has already been processed during the last update window.' .
-                    'Process has been interrupted.';
-
-                logger()->warning($message, [
+                logger()->warning('[Buckets] This corporation has already been processed during the last update window. Process has been interrupted.', [
                     'bucket_id' => $bucket->id,
                     'corporation_id' => $token->character->affiliation->corporation_id,
                     'update_window' => 3600,
@@ -135,7 +129,7 @@ class Update extends Command
             // Fire the class to update corporation information
             (new Corporation($token->character->affiliation->corporation_id, $token))->fire();
 
-            logger()->debug('processing token from a bucket', [
+            logger()->debug('[Buckets] Processing token from a bucket.', [
                 'bucket' => $bucket->id,
                 'flow'   => 'corporation',
                 'token'  => $token->character_id,

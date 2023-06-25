@@ -83,9 +83,11 @@ abstract class AbstractCharacterJob extends EsiBase
         if ($this->batchId && $this->batch()->cancelled())
             return;
 
-        logger()->debug('Character job is processing...', [
-            'name' => static::class,
-            'character_id' => $this->character_id,
-        ]);
+        logger()->debug(
+            sprintf('[Jobs][%s] Character job is processing...', $this->job->getJobId()),
+            [
+                'fqcn' => static::class,
+                'character_id' => $this->character_id,
+            ]);
     }
 }

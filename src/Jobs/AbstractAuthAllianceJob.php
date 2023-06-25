@@ -25,7 +25,6 @@ namespace Seat\Eveapi\Jobs;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenVersion;
-use Seat\Eveapi\Jobs\Middleware\IgnoreNpcCorporation;
 use Seat\Eveapi\Jobs\Middleware\RequireCorporationRole;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -69,7 +68,6 @@ abstract class AbstractAuthAllianceJob extends AbstractAllianceJob
         return array_merge(parent::middleware(), [
             new CheckTokenScope,
             new CheckTokenVersion,
-            new IgnoreNpcCorporation,
             new RequireCorporationRole,
             (new WithoutOverlapping($this->getToken()->character_id))
                 ->releaseAfter(self::ANTI_RACE_DELAY)

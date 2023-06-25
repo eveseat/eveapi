@@ -35,13 +35,17 @@ class CheckTokenScope
     /**
      * @param  \Seat\Eveapi\Jobs\EsiBase  $job
      * @param  \Closure  $next
+     * @return void
      */
-    public function handle(EsiBase $job, Closure $next)
+    public function handle(EsiBase $job, Closure $next): void
     {
         // in case the job does not require specific scopes - forward
         if ($job->getScope() == '') {
             logger()->debug(
-                sprintf('[Jobs][Middlewares][%s] Check Token Scope -> Bypassed due to unneeded scope to process this job.', $job->job->getJobId()));
+                sprintf('[Jobs][Middlewares][%s] Check Token Scope -> Bypassed due to unneeded scope to process this job.', $job->job->getJobId()),
+                [
+                    'fqcn' => get_class($job),
+                ]);
 
             $next($job);
 
@@ -63,9 +67,9 @@ class CheckTokenScope
             logger()->warning(
                 sprintf('[Jobs][Middlewares][%s] Check Token Scope -> Removing job due to required scopes not matching with token related scopes profile.', $job->job->getJobId()),
                 [
-                    'Job' => get_class($job),
-                    'Character' => $job->getToken()->character_id,
-                    'Scopes profile' => $job->getToken()->scopes_profile,
+                    'fqcn' => get_class($job),
+                    'character_id' => $job->getToken()->character_id,
+                    'scopes_profile' => $job->getToken()->scopes_profile,
                 ]);
 
             $job->delete();
@@ -84,10 +88,10 @@ class CheckTokenScope
         logger()->warning(
             sprintf('[Jobs][Middlewares][%s] Check Token Scope -> A job requiring a not granted scope has been queued.', $job->job->getJobId()),
             [
-                'Job' => get_class($job),
-                'Required scope' => $job->getScope(),
-                'Token scopes' => $job->getToken()->scopes,
-                'Token owner' => $job->getToken()->character_id,
+                'fqcn' => get_class($job),
+                'required_scope' => $job->getScope(),
+                'token_scopes' => $job->getToken()->scopes,
+                'token_owner' => $job->getToken()->character_id,
             ]);
 
         $job->tries = 1;

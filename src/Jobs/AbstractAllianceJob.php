@@ -71,12 +71,8 @@ abstract class AbstractAllianceJob extends EsiBase
         if (! in_array('alliance', $tags))
             $tags[] = 'alliance';
 
-        try {
-            if (! in_array($this->getAllianceId(), $tags))
-                $tags[] = $this->getAllianceId();
-        } catch (Exception $e) {
-            logger()->error($e->getMessage(), $e->getTrace());
-        }
+        if (! in_array($this->getAllianceId(), $tags))
+            $tags[] = $this->getAllianceId();
 
         return $tags;
     }
@@ -86,9 +82,11 @@ abstract class AbstractAllianceJob extends EsiBase
         if ($this->batchId && $this->batch()->cancelled())
             return;
 
-        logger()->debug('Alliance job is processing...', [
-            'name' => static::class,
-            'alliance_id' => $this->alliance_id,
-        ]);
+        logger()->debug(
+            sprintf('[Jobs][%s] Alliance job is processing...', $this->job->getJobId()),
+            [
+                'fqcn' => static::class,
+                'alliance_id' => $this->alliance_id,
+            ]);
     }
 }

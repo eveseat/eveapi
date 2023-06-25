@@ -75,18 +75,18 @@ class Prices extends Command
         Bus::batch($jobs->toArray())
             ->then(function (Batch $batch) {
                 logger()->info(
-                    sprintf('[Batch][%s] %s - Succeeded : %d/%d - %d failed.',
+                    sprintf('[Batches][%s] %s - Succeeded : %d/%d - %d failed.',
                         $batch->id, $batch->name, $batch->totalJobs - $batch->failedJobs, $batch->totalJobs, $batch->failedJobs));
             })
             ->catch(function (Batch $batch, Throwable $e) {
                 logger()->error(
-                    sprintf('[Batch][%s] %s - Some jobs have failed : %s',
+                    sprintf('[Batches][%s] %s - Some jobs have failed : %s',
                         $batch->id, $batch->name, implode(', ', $batch->failedJobIds)));
-                logger()->error(sprintf('[Batch][%s] %s : %s', $batch->id, $batch->name, $e->getMessage()));
+                logger()->error(sprintf('[Batches][%s] %s : %s', $batch->id, $batch->name, $e->getMessage()));
             })
             ->finally(function (Batch $batch) {
                 logger()->info(
-                    sprintf('[Batch][%s] %s - Completed : %d/%d - %d failed.',
+                    sprintf('[Batches][%s] %s - Completed : %d/%d - %d failed.',
                         $batch->id, $batch->name, $batch->totalJobs - $batch->failedJobs, $batch->totalJobs, $batch->failedJobs));
             })
             ->allowFailures()
