@@ -117,7 +117,7 @@ class CheckEsiRouteStatus
 
         logger()->debug('[Jobs][Middlewares] Check ESI Route Status -> Probing ESI endpoints.', [
             'endpoint' => $endpoint,
-            'status' => $status
+            'status' => $status,
         ]);
 
         // If the status is OK, yay.

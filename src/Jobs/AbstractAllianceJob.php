@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs;
 
-use Exception;
 use Illuminate\Bus\Batchable;
 
 /**
