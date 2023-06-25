@@ -68,9 +68,9 @@ class EsiFailedCall
             logger()->error($exception->getMessage());
         }
 
-        logger()->debug('An exception occurred while processing an ESI job.', [
+        logger()->debug('[Jobs][Events] An exception occurred while processing an ESI job.', [
             'connection' => $event->connectionName,
-            'job' => $event->job,
+            'fqcn' => $event->job,
             'exception' => $event->exception,
         ]);
     }

@@ -115,11 +115,11 @@ class Upgrade extends Command
                         $success += 1;
 
                     } catch (RequestException $e) {
-                        logger()->error('Error Migrating Refresh Token', [
-                            'Character ID'   => $token->character_id,
-                            'Message' => $e->getMessage(),
-                            'Body' => (string) $e->getResponse()->getBody(),
-                            'Headers' => $e->getResponse()->getHeaders(),
+                        logger()->error('[Cli] Error Migrating Refresh Token', [
+                            'character_id'   => $token->character_id,
+                            'message' => $e->getMessage(),
+                            'body' => (string) $e->getResponse()->getBody(),
+                            'headers' => $e->getResponse()->getHeaders(),
                         ]);
 
                         if (strpos((string) $e->getResponse()->getBody(), 'invalid_grant') !== false) {

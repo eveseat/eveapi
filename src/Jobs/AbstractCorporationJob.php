@@ -83,9 +83,11 @@ abstract class AbstractCorporationJob extends EsiBase
         if ($this->batchId && $this->batch()->cancelled())
             return;
 
-        logger()->debug('Corporation job is processing...', [
-            'name' => static::class,
-            'corporation_id' => $this->corporation_id,
-        ]);
+        logger()->debug(
+            sprintf('[Jobs][%s] Corporation job is processing...', $this->job->getJobId()),
+            [
+                'fqcn' => static::class,
+                'corporation_id' => $this->corporation_id,
+            ]);
     }
 }

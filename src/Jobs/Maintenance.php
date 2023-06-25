@@ -86,7 +86,7 @@ class Maintenance implements ShouldQueue
     public function cleanup_tables()
     {
 
-        logger()->info('Performing tables maintenance');
+        logger()->info('[Cli] Performing tables maintenance');
 
         // Prune the failed jobs table
         FailedJob::where('id', '<', FailedJob::max('id') - 100)->delete();

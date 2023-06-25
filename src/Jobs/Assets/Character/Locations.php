@@ -218,10 +218,12 @@ class Locations extends AbstractAuthCharacterJob
         if ($exception->getError() !== 'Invalid IDs in the request')
             throw $exception;
 
-        logger()->error('Request contains an invalid asset ID from which retrieve a location.', [
-            'character_id' => $this->character_id,
-            'assets_batch' => $item_ids,
-        ]);
+        logger()->error(
+            sprintf('[Jobs][%s] Request contains an invalid asset ID from which retrieve a location.', $this->job->getJobId()),
+            [
+                'character_id' => $this->character_id,
+                'assets_batch' => $item_ids,
+            ]);
 
         $this->has_exception = true;
     }

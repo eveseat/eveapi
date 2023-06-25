@@ -22,6 +22,8 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
+use Closure;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Jobs\EsiBase;
 
 /**
@@ -32,22 +34,21 @@ use Seat\Eveapi\Jobs\EsiBase;
 class IgnoreNpcCorporation
 {
     /**
-     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
-     * @param  $next
-     *
-     * @throws \Exception
+     * @param  \Seat\Eveapi\Jobs\AbstractAuthCorporationJob  $job
+     * @param  \Closure  $next
+     * @return void
      */
-    public function handle($job, $next)
+    public function handle(AbstractAuthCorporationJob $job, Closure $next): void
     {
-        // in case the job is not ESI related - bypass this check
-        if (! is_subclass_of($job, EsiBase::class)) {
-            $next($job);
-
-            return;
-        }
-
         // in case the job is not targeting corporations - bypass this check
         if (in_array('corporation', $job->tags()) && $this->isNPCCorporation($job)) {
+            logger()->debug(
+                sprintf('[Jobs][Middlewares][%s] Check Corporation Type -> Removing job due to NPC related corporation.', $job->job->getJobId()),
+                [
+                    'fqcn' => get_class($job),
+                    'corporation_id' => $job->getCorporationId(),
+                ]);
+
             $job->delete();
 
             return;
@@ -59,10 +60,10 @@ class IgnoreNpcCorporation
     /**
      * Determine if the current corporation ID is in NPC corporation range.
      *
-     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
+     * @param  \Seat\Eveapi\Jobs\AbstractAuthCorporationJob  $job
      * @return bool
      */
-    private function isNPCCorporation(EsiBase $job): bool
+    private function isNPCCorporation(AbstractAuthCorporationJob $job): bool
     {
 
         // ID range references:
