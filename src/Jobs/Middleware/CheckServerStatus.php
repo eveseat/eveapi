@@ -46,7 +46,7 @@ class CheckServerStatus
             logger()->warning(
                 sprintf('[Jobs][Middlewares][%s] Check Server Status -> EVE Online server seems to be unreachable, aborting job.', $job->job->getJobId()),
                 [
-                    'fqcn' => get_class($job)
+                    'fqcn' => get_class($job),
                 ]);
 
             return;

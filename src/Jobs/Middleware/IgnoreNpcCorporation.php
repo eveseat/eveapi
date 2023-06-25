@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Jobs\Middleware;
 
 use Closure;
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
-use Seat\Eveapi\Jobs\EsiBase;
 
 /**
  * Class IgnoreNpcCorporation.
