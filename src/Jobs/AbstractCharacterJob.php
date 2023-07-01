@@ -31,7 +31,6 @@ use Illuminate\Bus\Batchable;
  */
 abstract class AbstractCharacterJob extends EsiBase
 {
-    use Batchable;
 
     /**
      * @var int The character ID to which this job is related.

@@ -31,7 +31,6 @@ use Illuminate\Bus\Batchable;
  */
 abstract class AbstractAllianceJob extends EsiBase
 {
-    use Batchable;
 
     /**
      * @var int The alliance ID to which the job is related.

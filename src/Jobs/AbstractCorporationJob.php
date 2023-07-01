@@ -22,8 +22,6 @@
 
 namespace Seat\Eveapi\Jobs;
 
-use Illuminate\Bus\Batchable;
-
 /**
  * Class AbstractCorporationJob.
  *
@@ -31,7 +29,6 @@ use Illuminate\Bus\Batchable;
  */
 abstract class AbstractCorporationJob extends EsiBase
 {
-    use Batchable;
 
     /**
      * @var int The corporation ID to which the job is related.
