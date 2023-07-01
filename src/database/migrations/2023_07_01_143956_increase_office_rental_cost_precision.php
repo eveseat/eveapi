@@ -38,7 +38,7 @@ class IncreaseOfficeRentalCostPrecision extends Migration
     {
         Schema::table('universe_stations', function (Blueprint $table) {
             // ceil(log(2**64)) = 45, I hope this is enough
-            $table->float('office_rental_cost', 45, 2)->change();
+            $table->double('office_rental_cost', 45, 2)->unsigned()->change();
         });
     }
 
