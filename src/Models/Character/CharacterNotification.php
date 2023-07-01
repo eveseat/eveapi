@@ -50,6 +50,7 @@ class CharacterNotification extends Model
      */
     protected $casts = [
         'is_read' => 'boolean',
+        'timestamp' => 'datetime'
     ];
 
     /**
