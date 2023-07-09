@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,6 @@
 
 namespace Seat\Eveapi\Jobs;
 
-use Illuminate\Bus\Batchable;
-
 /**
  * Class AbstractCharacterJob.
  *
@@ -31,7 +29,6 @@ use Illuminate\Bus\Batchable;
  */
 abstract class AbstractCharacterJob extends EsiBase
 {
-    use Batchable;
 
     /**
      * @var int The character ID to which this job is related.
