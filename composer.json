@@ -11,13 +11,13 @@
   "autoload": {
     "psr-4": {
       "Seat\\Eveapi\\": "src/",
-      "Seat\\Eveapi\\Database\\Seeders\\": "src/database/seeders/"
+      "Seat\\Eveapi\\Database\\Seeders\\": "src/database/seeders/",
+      "Seat\\Tests\\Eveapi\\Database\\Factories\\": "tests/database/factories/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Seat\\Tests\\Eveapi\\": "tests/",
-      "Seat\\Tests\\Eveapi\\Database\\Factories\\": "tests/database/factories/"
+      "Seat\\Tests\\Eveapi\\": "tests/"
     }
   },
   "minimum-stability": "dev",
