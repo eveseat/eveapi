@@ -32,7 +32,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Tests\Eveapi\Database\Factories\CharacterAffiliationFactory;
+use Seat\Tests\Eveapi\Database\Factories\CharacterAssetFactory;
 
 #[OA\Schema(
     title: 'CharacterAsset',
@@ -90,7 +90,7 @@ class CharacterAsset extends Model
      */
     protected static function newFactory(): Factory
     {
-        return CharacterAffiliationFactory::new();
+        return CharacterAssetFactory::new();
     }
 
     /**
