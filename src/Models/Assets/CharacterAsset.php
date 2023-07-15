@@ -22,6 +22,8 @@
 
 namespace Seat\Eveapi\Models\Assets;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Character\CharacterInfo;
@@ -30,6 +32,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Tests\Eveapi\Database\Factories\CharacterAffiliationFactory;
 
 #[OA\Schema(
     title: 'CharacterAsset',
@@ -53,6 +56,8 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 )]
 class CharacterAsset extends Model
 {
+    use HasFactory;
+
     /**
      * @var array
      */
@@ -79,6 +84,14 @@ class CharacterAsset extends Model
      * @var
      */
     protected $primaryKey = 'item_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CharacterAffiliationFactory::new();
+    }
 
     /**
      * Provide a rate of the used space based on item capacity and stored item volume.

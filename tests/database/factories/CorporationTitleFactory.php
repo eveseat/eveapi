@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to 2020 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,42 +20,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
+namespace Seat\Tests\Eveapi\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Seat\Tests\Eveapi\Database\Factories\CharacterRoleFactory;
+use Seat\Eveapi\Models\Corporation\CorporationTitle;
 
 /**
- * Class CharacterRole.
- *
- * @package Seat\Eveapi\Models\Character
+ * Class CorporationTitleFactory.
+ * @package Seat\Tests\Web\Database\Factories
  */
-class CharacterRole extends Model
+class CorporationTitleFactory extends Factory
 {
-    use HasFactory;
+    protected $model = CorporationTitle::class;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * @var int
      */
-    protected static function newFactory(): Factory
+    static int $id = 1;
+
+    /**
+     * @return array
+     */
+    public function definition(): array
     {
-        return CharacterRoleFactory::new();
+        return [
+            'title_id' => (2 * self::$id++),
+            'name' => fake()->name,
+        ];
     }
-
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = true;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'id';
 }

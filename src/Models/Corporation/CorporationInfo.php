@@ -22,6 +22,8 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Alliances\Alliance;
@@ -40,6 +42,7 @@ use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
+use Seat\Tests\Eveapi\Database\Factories\CorporationInfoFactory;
 
 #[OA\Schema(
     title: 'CorporationInfo',
@@ -63,6 +66,8 @@ use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
 )]
 class CorporationInfo extends Model
 {
+    use HasFactory;
+
     /**
      * @var bool
      */
@@ -77,6 +82,14 @@ class CorporationInfo extends Model
      * @var string
      */
     protected $primaryKey = 'corporation_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CorporationInfoFactory::new();
+    }
 
     /**
      * @param  $value

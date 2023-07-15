@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to 2020 Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,42 +20,29 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
+namespace Seat\Tests\Eveapi\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Seat\Tests\Eveapi\Database\Factories\CharacterRoleFactory;
+use Seat\Eveapi\Models\Character\CharacterAffiliation;
 
 /**
- * Class CharacterRole.
- *
- * @package Seat\Eveapi\Models\Character
+ * Class CharacterAffiliationFactory.
+ * @package Seat\Tests\Web\Database\Factories
  */
-class CharacterRole extends Model
+class CharacterAffiliationFactory extends Factory
 {
-    use HasFactory;
+    protected $model = CharacterAffiliation::class;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * @return array
      */
-    protected static function newFactory(): Factory
+    public function definition(): array
     {
-        return CharacterRoleFactory::new();
+        return [
+            'corporation_id' => fake()->numberBetween(98541680, 98541699),
+            'alliance_id' => fake()->optional()->numberBetween(99000001, 99000049),
+            'faction_id' => null,
+        ];
     }
-
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = true;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'id';
 }

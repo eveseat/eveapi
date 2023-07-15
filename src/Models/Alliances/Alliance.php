@@ -22,10 +22,13 @@
 
 namespace Seat\Eveapi\Models\Alliances;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Contacts\AllianceContact;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Tests\Eveapi\Database\Factories\AllianceFactory;
 
 /**
  * Class Alliance.
@@ -34,6 +37,8 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  */
 class Alliance extends Model
 {
+    use HasFactory;
+
     /**
      * @var array
      */
@@ -53,6 +58,14 @@ class Alliance extends Model
      * @var string
      */
     protected $primaryKey = 'alliance_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return AllianceFactory::new();
+    }
 
     /**
      * @param  $value

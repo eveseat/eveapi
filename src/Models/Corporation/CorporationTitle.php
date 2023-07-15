@@ -22,9 +22,12 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
+use Seat\Tests\Eveapi\Database\Factories\CorporationTitleFactory;
 
 /**
  * Class CorporationTitle.
@@ -33,10 +36,20 @@ use Seat\Eveapi\Pivot\Character\CharacterTitle;
  */
 class CorporationTitle extends Model
 {
+    use HasFactory;
+
     /**
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CorporationTitleFactory::new();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

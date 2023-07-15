@@ -22,8 +22,11 @@
 
 namespace Seat\Eveapi\Models\Character;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Tests\Eveapi\Database\Factories\CharacterAffiliationFactory;
 
 /**
  * Class CharacterAffiliation.
@@ -32,6 +35,8 @@ use Seat\Eveapi\Models\Universe\UniverseName;
  */
 class CharacterAffiliation extends Model
 {
+    use HasFactory;
+
     /**
      * @var bool
      */
@@ -46,6 +51,14 @@ class CharacterAffiliation extends Model
      * @var string
      */
     protected $primaryKey = 'character_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CharacterAffiliationFactory::new();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

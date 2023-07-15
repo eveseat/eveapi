@@ -24,16 +24,19 @@ namespace Seat\Eveapi\Models;
 
 use DateInterval;
 use DateTime;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Services\Contracts\EsiToken;
+use Seat\Tests\Eveapi\Database\Factories\RefreshTokenFactory;
 
 class RefreshToken extends Model implements EsiToken
 {
-    use SoftDeletes {
+    use HasFactory, SoftDeletes {
         SoftDeletes::runSoftDelete as protected traitRunSoftDelete;
     }
 
@@ -84,6 +87,14 @@ class RefreshToken extends Model implements EsiToken
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return RefreshTokenFactory::new();
+    }
 
     /**
      * @param  array  $attributes

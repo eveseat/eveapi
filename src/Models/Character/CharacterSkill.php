@@ -22,9 +22,12 @@
 
 namespace Seat\Eveapi\Models\Character;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Tests\Eveapi\Database\Factories\CharacterSkillFactory;
 
 #[OA\Schema(
     title: 'CharacterSkill',
@@ -39,6 +42,8 @@ use Seat\Eveapi\Models\Sde\InvType;
 )]
 class CharacterSkill extends Model
 {
+    use HasFactory;
+
     /**
      * @var array
      */
@@ -48,6 +53,14 @@ class CharacterSkill extends Model
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CharacterSkillFactory::new();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

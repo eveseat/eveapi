@@ -22,6 +22,8 @@
 
 namespace Seat\Eveapi\Models\Character;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
@@ -50,6 +52,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
 use Seat\Services\Traits\NotableTrait;
+use Seat\Tests\Eveapi\Database\Factories\CharacterInfoFactory;
 
 /**
  * Class CharacterInfo.
@@ -58,7 +61,7 @@ use Seat\Services\Traits\NotableTrait;
  */
 class CharacterInfo extends Model
 {
-    use NotableTrait;
+    use HasFactory, NotableTrait;
 
     /**
      * @var \Illuminate\Contracts\Auth\Authenticatable
@@ -79,6 +82,14 @@ class CharacterInfo extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CharacterInfoFactory::new();
+    }
 
     /**
      * @param  array  $attributes
