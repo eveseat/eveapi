@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ class UpdateCorporationAssetsV4 extends Migration
             $table->renameColumn('location_type', 'location_type_v3');
         });
         Schema::table('corporation_assets', function (Blueprint $table) {
-            $table->enum('location_type', ['station','solar_system','other', 'item'])->nullable(false);
+            $table->enum('location_type', ['station', 'solar_system', 'other', 'item'])->nullable(false);
         });
 
         DB::table('corporation_assets')
@@ -53,7 +53,7 @@ class UpdateCorporationAssetsV4 extends Migration
             $table->renameColumn('location_type', 'location_type_v4');
         });
         Schema::table('corporation_assets', function (Blueprint $table) {
-            $table->enum('location_type', ['station','solar_system','other'])->nullable(false);
+            $table->enum('location_type', ['station', 'solar_system', 'other'])->nullable(false);
         });
 
         DB::table('corporation_assets')
