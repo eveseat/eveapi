@@ -34,6 +34,8 @@ class RemoveKillmailAttackersSurrogateKey extends Migration
 {
     public function up()
     {
+        $engine = DB::getDriverName();
+
         Schema::table('killmail_attackers', function (Blueprint $table) {
             $table->bigIncrements('id')->first();
             $table->string('attacker_hash')->after('id');
@@ -69,8 +71,17 @@ class RemoveKillmailAttackersSurrogateKey extends Migration
                 });
             });
 
-        // remove duplicate entries using killmail_id and attacker hash as pivot
-        DB::statement('DELETE a FROM killmail_attackers a INNER JOIN killmail_attackers b WHERE a.id > b.id AND a.killmail_id = b.killmail_id AND a.attacker_hash = b.attacker_hash');
+        switch ($engine) {
+            case 'mysql':
+                // remove duplicate entries using killmail_id and attacker hash as pivot
+                DB::statement('DELETE a FROM killmail_attackers a INNER JOIN killmail_attackers b WHERE a.id > b.id AND a.killmail_id = b.killmail_id AND a.attacker_hash = b.attacker_hash');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                // remove duplicate entries using killmail_id and attacker hash as pivot
+                DB::statement('DELETE FROM killmail_attackers a USING killmail_attackers b WHERE a.id > b.id AND a.killmail_id = b.killmail_id AND a.attacker_hash = b.attacker_hash');
+                break;
+        }
 
         Schema::table('killmail_attackers', function (Blueprint $table) {
             $table->unique(['killmail_id', 'attacker_hash']);

@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class FixCorporationIndustryMiningObserverDataPrimaryKeys extends Migration
@@ -34,7 +35,19 @@ class FixCorporationIndustryMiningObserverDataPrimaryKeys extends Migration
     public function up()
     {
         Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
-            $table->dropPrimary('obeserver_data_primary');
+            $engine = DB::getDriverName();
+
+            switch ($engine) {
+                case 'mysql':
+                    $table->dropPrimary();
+                    break;
+                case 'pgsql':
+                case 'postgresql':
+                    // workaround for pgsql drop instruction : https://github.com/laravel/framework/issues/42804
+                    $table->dropUnique('corporation_mining_observer_data_pkey');
+                    break;
+            }
+
             $table->primary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'last_updated'],
                 'obeserver_data_primary');
         });
@@ -48,7 +61,19 @@ class FixCorporationIndustryMiningObserverDataPrimaryKeys extends Migration
     public function down()
     {
         Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
-            $table->dropPrimary('obeserver_data_primary');
+            $engine = DB::getDriverName();
+
+            switch ($engine) {
+                case 'mysql':
+                    $table->dropPrimary();
+                    break;
+                case 'pgsql':
+                case 'postgresql':
+                    // workaround for pgsql drop instruction : https://github.com/laravel/framework/issues/42804
+                    $table->dropUnique('obeserver_data_primary');
+                    break;
+            }
+
             $table->primary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id'],
                 'obeserver_data_primary');
         });

@@ -32,6 +32,8 @@ class RemoveCorporationIndustryMiningExtractionsSurrogateKey extends Migration
 {
     public function up()
     {
+        $engine = DB::getDriverName();
+
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'structure_id']);
         });
@@ -40,7 +42,15 @@ class RemoveCorporationIndustryMiningExtractionsSurrogateKey extends Migration
             $table->bigIncrements('id')->first();
         });
 
-        DB::statement('DELETE a FROM corporation_industry_mining_extractions a INNER JOIN corporation_industry_mining_extractions b WHERE a.id < b.id AND a.structure_id = b.structure_id');
+        switch ($engine) {
+            case 'mysql':
+                DB::statement('DELETE a FROM corporation_industry_mining_extractions a INNER JOIN corporation_industry_mining_extractions b WHERE a.id < b.id AND a.structure_id = b.structure_id');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                DB::statement('DELETE FROM corporation_industry_mining_extractions a USING corporation_industry_mining_extractions b WHERE a.id < b.id AND a.structure_id = b.structure_id');
+                break;
+        }
 
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
             $table->dropColumn('id');

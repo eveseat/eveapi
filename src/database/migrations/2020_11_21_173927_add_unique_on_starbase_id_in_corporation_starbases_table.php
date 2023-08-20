@@ -25,19 +25,31 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class RenameIdColumnToReferenceIdIntoCorporationWalletJournalsTable.
+ * Class AddUniqueOnStarbaseIdInCorporationStarbasesTable.
  */
-class ChangeContextIdTypeToStringIntoCorporationWalletJournalsTable extends Migration
+class AddUniqueOnStarbaseIdInCorporationStarbasesTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
-        Schema::table('corporation_wallet_journals', function (Blueprint $table) {
-            $table->string('context_id_type')->change();
+        Schema::table('corporation_starbases', function (Blueprint $table) {
+            $table->unique(['starbase_id']);
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
-
+        Schema::table('corporation_starbases', function (Blueprint $table) {
+            $table->unique(['starbase_id']);
+        });
     }
 }

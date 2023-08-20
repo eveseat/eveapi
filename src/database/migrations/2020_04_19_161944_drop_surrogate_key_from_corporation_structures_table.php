@@ -32,8 +32,19 @@ class DropSurrogateKeyFromCorporationStructuresTable extends Migration
 {
     public function up()
     {
-        // remove any duplicated entry base on structure_id
-        DB::statement('DELETE a FROM corporation_structures a INNER JOIN corporation_structures b WHERE a.updated_at < b.updated_at AND a.structure_id = b.structure_id');
+        $engine = DB::getDriverName();
+
+        switch ($engine) {
+            case 'mysql':
+                // remove any duplicated entry base on structure_id
+                DB::statement('DELETE a FROM corporation_structures a INNER JOIN corporation_structures b WHERE a.updated_at < b.updated_at AND a.structure_id = b.structure_id');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                // remove any duplicated entry base on structure_id
+                DB::statement('DELETE FROM corporation_structures a USING corporation_structures b WHERE a.updated_at < b.updated_at AND a.structure_id = b.structure_id');
+                break;
+        }
 
         Schema::table('corporation_structures', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'structure_id']);

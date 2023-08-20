@@ -32,12 +32,23 @@ class AddMoonIdAsPrimaryKeyIntoCorporationIndustryMiningExtractionsTable extends
 {
     public function up()
     {
+        $engine = DB::getDriverName();
+
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
             $table->bigIncrements('id')->first();
         });
 
-        // remove any duplicated entry base on moon_id
-        DB::statement('DELETE a FROM corporation_industry_mining_extractions a INNER JOIN corporation_industry_mining_extractions b WHERE a.id < b.id AND a.moon_id = b.moon_id');
+        switch ($engine) {
+            case 'mysql':
+                // remove any duplicated entry base on moon_id
+                DB::statement('DELETE a FROM corporation_industry_mining_extractions a INNER JOIN corporation_industry_mining_extractions b WHERE a.id < b.id AND a.moon_id = b.moon_id');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                // remove any duplicated entry base on moon_id
+                DB::statement('DELETE FROM corporation_industry_mining_extractions a USING corporation_industry_mining_extractions b WHERE a.id < b.id AND a.moon_id = b.moon_id');
+                break;
+        }
 
         Schema::table('corporation_industry_mining_extractions', function (Blueprint $table) {
             $table->dropColumn('id');

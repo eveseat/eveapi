@@ -21,7 +21,8 @@
  */
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class SetStructureReinforceWeekdayNullable extends Migration
 {
@@ -32,9 +33,9 @@ class SetStructureReinforceWeekdayNullable extends Migration
      */
     public function up()
     {
-        // use raw query since table using enum fields cannot be altered.
-        // https://stackoverflow.com/questions/33140860/laravel-5-1-unknown-database-type-enum-requested
-        DB::statement('ALTER TABLE corporation_structures CHANGE reinforce_weekday reinforce_weekday INTEGER NULL');
+        Schema::table('corporation_structures', function (Blueprint $table) {
+            $table->integer('reinforce_weekday')->nullable()->change();
+        });
     }
 
     /**
@@ -44,8 +45,8 @@ class SetStructureReinforceWeekdayNullable extends Migration
      */
     public function down()
     {
-        // use raw query since table using enum fields cannot be altered.
-        // https://stackoverflow.com/questions/33140860/laravel-5-1-unknown-database-type-enum-requested
-        DB::statement('ALTER TABLE corporation_structures CHANGE reinforce_weekday reinforce_weekday INTEGER NOT NULL');
+        Schema::table('corporation_structures', function (Blueprint $table) {
+            $table->integer('reinforce_weekday')->nullable(false)->change();
+        });
     }
 }

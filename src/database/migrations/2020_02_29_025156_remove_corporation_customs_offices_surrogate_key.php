@@ -32,6 +32,8 @@ class RemoveCorporationCustomsOfficesSurrogateKey extends Migration
 {
     public function up()
     {
+        $engine = DB::getDriverName();
+
         Schema::table('corporation_customs_offices', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'office_id']);
         });
@@ -40,7 +42,15 @@ class RemoveCorporationCustomsOfficesSurrogateKey extends Migration
             $table->bigIncrements('id')->first();
         });
 
-        DB::statement('DELETE a FROM corporation_customs_offices a INNER JOIN corporation_customs_offices b WHERE a.id < b.id AND a.office_id = b.office_id');
+        switch ($engine) {
+            case 'mysql':
+                DB::statement('DELETE a FROM corporation_customs_offices a INNER JOIN corporation_customs_offices b WHERE a.id < b.id AND a.office_id = b.office_id');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                DB::statement('DELETE FROM corporation_customs_offices a USING corporation_customs_offices b WHERE a.id < b.id AND a.office_id = b.office_id');
+                break;
+        }
 
         Schema::table('corporation_customs_offices', function (Blueprint $table) {
             $table->dropColumn('id');

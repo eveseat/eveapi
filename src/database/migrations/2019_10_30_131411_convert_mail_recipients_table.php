@@ -32,30 +32,36 @@ class ConvertMailRecipientsTable extends Migration
 {
     public function up()
     {
+        $engine = DB::getDriverName();
+
         Schema::disableForeignKeyConstraints();
 
         Schema::table('mig_mail_recipients', function (Blueprint $table) {
             $table->index(['mail_id', 'recipient_id']);
         });
 
-        // remove duplicate entries with sames labels
-        DB::statement('DELETE a FROM mig_mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.id < b.id AND a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id AND a.labels = b.labels');
-
-        // remove duplicate entries without labels
-        DB::statement('DELETE a FROM mig_mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id AND a.labels = "[]" AND b.labels <> "[]"');
-
-        // remove all remaining duplicate entries
-        DB::statement('DELETE a FROM mig_mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.id > b.id AND a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id');
-
-        // remove all entries already stored into mail_recipients
-        DB::statement('DELETE a FROM mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id');
+        switch ($engine) {
+            case 'mysql':
+                // remove duplicate entries with sames labels
+                DB::statement('DELETE a FROM mig_mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.id < b.id AND a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id');
+                // remove all entries already stored into mail_recipients
+                DB::statement('DELETE a FROM mail_recipients a INNER JOIN mig_mail_recipients b WHERE a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                // remove all remaining duplicate entries
+                DB::statement('DELETE FROM mig_mail_recipients a USING mig_mail_recipients b WHERE a.id > b.id AND a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id');
+                // remove all entries already stored into mail_recipients
+                DB::statement('DELETE FROM mail_recipients a USING mig_mail_recipients b WHERE a.mail_id = b.mail_id AND a.recipient_id = b.recipient_id');
+                break;
+        }
 
         // seed mail_recipients with updated labels and read flag
         DB::table('mail_recipients')
             ->insertUsing(
                 ['mail_id', 'recipient_id', 'recipient_type', 'is_read', 'labels'],
                 DB::table('mig_mail_recipients')
-                ->select('mail_id', 'recipient_id', DB::raw('"character"'), 'is_read', 'labels')
+                    ->selectRaw('mail_id, recipient_id, ?, is_read, labels', ['character'])
             );
 
         Schema::dropIfExists('mig_mail_recipients');

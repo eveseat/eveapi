@@ -22,22 +22,33 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Class RenameIdColumnToReferenceIdIntoCorporationWalletJournalsTable.
- */
-class ChangeContextIdTypeToStringIntoCorporationWalletJournalsTable extends Migration
+class AddUniqueMailIdOnMailHeadersTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
-        Schema::table('corporation_wallet_journals', function (Blueprint $table) {
-            $table->string('context_id_type')->change();
-        });
+        $records = DB::table('migrations')
+            ->where('migration', '2019_10_30_131410_drop_character_id_from_mail_headers_table')
+            ->exists();
+
+        if ($records === false) {
+            Schema::table('mail_headers', function (Blueprint $table) {
+                $table->unique(['mail_id']);
+            });
+        }
     }
 
     public function down()
     {
-
+        Schema::table('mail_headers', function (Blueprint $table) {
+            $table->dropIndex(['mail_id']);
+        });
     }
 }

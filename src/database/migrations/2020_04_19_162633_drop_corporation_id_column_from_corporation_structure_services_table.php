@@ -32,8 +32,19 @@ class DropCorporationIdColumnFromCorporationStructureServicesTable extends Migra
 {
     public function up()
     {
-        // remove any duplicated entry base on structure_id
-        DB::statement('DELETE a FROM corporation_structure_services a INNER JOIN corporation_structure_services b WHERE a.updated_at < b.updated_at AND a.structure_id = b.structure_id AND a.name = b.name');
+        $engine = DB::getDriverName();
+
+        switch ($engine) {
+            case 'mysql':
+                // remove any duplicated entry base on structure_id
+                DB::statement('DELETE a FROM corporation_structure_services a INNER JOIN corporation_structure_services b WHERE a.updated_at < b.updated_at AND a.structure_id = b.structure_id AND a.name = b.name');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                // remove any duplicated entry base on structure_id
+                DB::statement('DELETE FROM corporation_structure_services a USING corporation_structure_services b WHERE a.updated_at < b.updated_at AND a.structure_id = b.structure_id AND a.name = b.name');
+                break;
+        }
 
         Schema::table('corporation_structure_services', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'structure_id', 'name']);
