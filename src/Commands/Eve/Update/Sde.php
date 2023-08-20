@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Commands\Eve\Update;
 
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -99,7 +100,7 @@ class Sde extends Command
 
         // Start by warning the user about the command that will be run
         $this->comment('Warning! This Laravel command uses exec() to execute a ');
-        $this->comment('mysql shell command to import an extracted dump. Due');
+        $this->comment('shell command to import an extracted dump. Due');
         $this->comment('to the way the command is constructed, should someone ');
         $this->comment('view the current running processes of your server, they ');
         $this->comment('will be able to see your SeAT database users password.');
@@ -184,11 +185,20 @@ class Sde extends Command
             implode(', ', $this->json->tables));
         $this->info('Download format will be: ' . $this->json->format);
         $this->line('');
-        $this->info(sprintf('The SDE will be imported to mysql://%s@%s:%d/%s',
-            config('database.connections.mysql.username'),
-            config('database.connections.mysql.host'),
-            config('database.connections.mysql.port'),
-            config('database.connections.mysql.database')));
+
+        if (DB::connection()->getDriverName() == 'mysql')
+            $this->info(sprintf('The SDE will be imported to mysql://%s@%s:%d/%s',
+                config('database.connections.mysql.username'),
+                config('database.connections.mysql.host'),
+                config('database.connections.mysql.port'),
+                config('database.connections.mysql.database')));
+
+        if (in_array(DB::connection()->getDriverName(), ['pgsql', 'postgresql']))
+            $this->info(sprintf('The SDE will be imported to pgsql://%s@%s:%d/%s',
+                config('database.connections.pgsql.username'),
+                config('database.connections.pgsql.host'),
+                config('database.connections.pgsql.port'),
+                config('database.connections.pgsql.database')));
 
         if (! $this->confirm('Does the above look OK?', true)) {
 
@@ -299,6 +309,19 @@ class Sde extends Command
     {
 
         $this->line('Downloading...');
+
+        if (DB::connection()->getDriverName() == 'mysql')
+            $this->downloadMysqlSde();
+
+        if (in_array(DB::connection()->getDriverName(), ['pgsql', 'postgresql']))
+            $this->downloadPgSqlSde();
+
+        $this->line('');
+
+    }
+
+    private function downloadMysqlSde()
+    {
         $bar = $this->getProgressBar(count($this->json->tables));
 
         foreach ($this->json->tables as $table) {
@@ -322,8 +345,24 @@ class Sde extends Command
         }
 
         $bar->finish();
-        $this->line('');
+    }
 
+    private function downloadPgSqlSde()
+    {
+        $dump_filename = str_replace('sde', 'postgres', $this->json->version) . '.dmp.bz2';
+        $url = str_replace(':version', $this->json->version, $this->json->url) . $dump_filename;
+        $destination = $this->storage_path . $dump_filename;
+
+        $file_handler = fopen($destination, 'w');
+
+        $result = $this->getGuzzle()->request('GET', $url, [
+            'sink' => $file_handler, ]);
+
+        fclose($file_handler);
+
+        if ($result->getStatusCode() != 200)
+            $this->error('Unable to download ' . $url .
+                '. The HTTP response was: ' . $result->getStatusCode());
     }
 
     /**
@@ -351,6 +390,18 @@ class Sde extends Command
     {
 
         $this->line('Importing...');
+
+        if (DB::connection()->getDriverName() == 'mysql')
+            $this->importMysqlSde();
+
+        if (in_array(DB::connection()->getDriverName(), ['pgsql', 'postgresql']))
+            $this->importPgSqlSde();
+
+        $this->line('');
+    }
+
+    private function importMysqlSde()
+    {
         $bar = $this->getProgressBar(count($this->json->tables));
 
         foreach ($this->json->tables as $table) {
@@ -364,17 +415,7 @@ class Sde extends Command
                 continue;
             }
 
-            // Get 2 handles ready for both the in and out files
-            $input_file = bzopen($archive_path, 'r');
-            $output_file = fopen($extracted_path, 'w');
-
-            // Write the $output_file in chunks
-            while ($chunk = bzread($input_file, 4096))
-                fwrite($output_file, $chunk, 4096);
-
-            // Close the files
-            bzclose($input_file);
-            fclose($output_file);
+            $this->uncompressFile($archive_path, $extracted_path);
 
             // With the output file ready, prepare the scary exec() command
             // that should be run. A sample $import_command is:
@@ -397,12 +438,43 @@ class Sde extends Command
                     $exit_code . ' and command outut: ' . implode('\n', $output));
 
             $bar->advance();
-
         }
 
         $bar->finish();
-        $this->line('');
+    }
 
+    private function importPgSqlSde()
+    {
+        $archive_path = $this->storage_path . str_replace('sde', 'postgres', $this->json->version) . '.dmp.bz2';
+        $extracted_path = $this->storage_path . str_replace('sde', 'postgres', $this->json->version) . '.dmp';
+
+        $this->uncompressFile($archive_path, $extracted_path);
+
+        try {
+            DB::statement('DROP OWNED BY yaml CASCADE');
+        } catch (QueryException $e) {
+            $this->warn('Unable to drop yaml role - role is not found.');
+        }
+
+        DB::statement('DROP ROLE IF EXISTS yaml');
+
+        $this->info('Spawning yaml role');
+        DB::statement('CREATE ROLE yaml WITH NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT NOREPLICATION CONNECTION LIMIT -1');
+        DB::statement('GRANT yaml TO seat');
+
+        $import_command = 'PGPASSWORD=' . config('database.connections.pgsql.password') .
+            ' pg_restore -d ' . config('database.connections.pgsql.database') .
+            ' -h ' . config('database.connections.pgsql.host') .
+            ' -p ' . config('database.connections.pgsql.port') .
+            ' -U ' . config('database.connections.pgsql.username') .
+            ' -t ' . implode(' -t ', $this->json->tables) .
+            ' ' . $extracted_path;
+
+        exec($import_command, $output, $exit_code);
+
+        if ($exit_code !== 0)
+            $this->error('Warning: Import failed with exit code ' .
+                $exit_code . ' and command outut: ' . implode('\n', $output));
     }
 
     /**
@@ -461,5 +533,20 @@ class Sde extends Command
             ], DB::table('mapDenormalize')->where('groupID', MapDenormalize::MOON)
                 ->select('itemID', 'orbitID', 'solarSystemID', 'constellationID', 'regionID', 'itemName', 'typeID',
                     'x', 'y', 'z', 'radius', 'celestialIndex', 'orbitIndex'));
+    }
+
+    private function uncompressFile($archive_path, $extracted_target_path): void
+    {
+        // Get 2 handles ready for both the in and out files
+        $input_file = bzopen($archive_path, 'r');
+        $output_file = fopen($extracted_target_path, 'w');
+
+        // Write the $output_file in chunks
+        while ($chunk = bzread($input_file, 4096))
+            fwrite($output_file, $chunk, 4096);
+
+        // Close the files
+        bzclose($input_file);
+        fclose($output_file);
     }
 }

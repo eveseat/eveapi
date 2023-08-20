@@ -45,13 +45,13 @@ class CreateKillmailsTable extends Migration
         // collect mails from deprecated tables
         $killmails = DB::table('character_killmails')
             ->select('killmail_id', 'killmail_hash')
-            ->selectRaw('"2020-01-06 00:00:00" as created_at')
-            ->selectRaw('"2020-01-06 00:00:00" as updated_at')
+            ->selectRaw('CURRENT_TIMESTAMP as created_at')
+            ->selectRaw('CURRENT_TIMESTAMP as updated_at')
             ->union(
                 DB::table('corporation_killmails')
                     ->select('killmail_id', 'killmail_hash')
-                    ->selectRaw('"2020-01-06 00:00:00" as created_at')
-                    ->selectRaw('"2020-01-06 00:00:00" as updated_at')
+                    ->selectRaw('CURRENT_TIMESTAMP as created_at')
+                    ->selectRaw('CURRENT_TIMESTAMP as updated_at')
             )
             ->distinct();
 

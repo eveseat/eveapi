@@ -22,22 +22,33 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Class RenameIdColumnToReferenceIdIntoCorporationWalletJournalsTable.
- */
-class ChangeContextIdTypeToStringIntoCorporationWalletJournalsTable extends Migration
+class AddUniqueFittingIdOnCharacterFittingsTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
-        Schema::table('corporation_wallet_journals', function (Blueprint $table) {
-            $table->string('context_id_type')->change();
-        });
+        $records = DB::table('migrations')
+            ->where('migration', '2020_02_28_230014_remove_character_fittings_surrogate_key')
+            ->exists();
+
+        if ($records === false) {
+            Schema::table('character_fittings', function (Blueprint $table) {
+                $table->unique(['fitting_id']);
+            });
+        }
     }
 
     public function down()
     {
-
+        Schema::table('character_fittings', function (Blueprint $table) {
+            $table->dropIndex(['fitting_id']);
+        });
     }
 }

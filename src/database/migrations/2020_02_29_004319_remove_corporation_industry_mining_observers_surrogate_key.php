@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@ class RemoveCorporationIndustryMiningObserversSurrogateKey extends Migration
 {
     public function up()
     {
+        $engine = DB::getDriverName();
+
         Schema::table('corporation_industry_mining_observers', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'observer_id']);
         });
@@ -39,7 +41,15 @@ class RemoveCorporationIndustryMiningObserversSurrogateKey extends Migration
             $table->bigIncrements('id')->first();
         });
 
-        DB::statement('DELETE a FROM corporation_industry_mining_observers a INNER JOIN corporation_industry_mining_observers b WHERE a.id < b.id AND a.observer_id = b.observer_id');
+        switch ($engine) {
+            case 'mysql':
+                DB::statement('DELETE a FROM corporation_industry_mining_observers a INNER JOIN corporation_industry_mining_observers b WHERE a.id < b.id AND a.observer_id = b.observer_id');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                DB::statement('DELETE FROM corporation_industry_mining_observers a USING corporation_industry_mining_observers b WHERE a.id < b.id AND a.observer_id = b.observer_id');
+                break;
+        }
 
         Schema::table('corporation_industry_mining_observers', function (Blueprint $table) {
             $table->dropColumn('id');

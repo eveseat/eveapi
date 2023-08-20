@@ -88,7 +88,7 @@ class DropCharacterIdFromMailHeadersTable extends Migration
             ->insertUsing(
                 ['mail_id', 'subject', 'from', 'timestamp', 'created_at', 'updated_at'],
                 DB::table('mig_mail_headers')
-                    ->select('mail_id', DB::raw('TRIM(REPLACE(subject, CHAR(9), CHAR(32)))'), 'from', 'timestamp', DB::raw('now()'), DB::raw('now()'))
+                    ->select('mail_id', DB::raw('TRIM(REPLACE(subject, \'	\', \' \'))'), 'from', 'timestamp', DB::raw('now()'), DB::raw('now()'))
                     ->distinct()
             );
 
