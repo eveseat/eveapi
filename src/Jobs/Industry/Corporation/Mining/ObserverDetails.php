@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Industry\Corporation\Mining;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserver;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserverData;
 
@@ -33,6 +34,8 @@ use Seat\Eveapi\Models\Industry\CorporationIndustryMiningObserverData;
  */
 class ObserverDetails extends AbstractAuthCorporationJob
 {
+    const EXTRACTION_FIND_RANGE = 5;
+
     /**
      * @var string
      */
@@ -92,8 +95,7 @@ class ObserverDetails extends AbstractAuthCorporationJob
                         return;
 
                     collect($detail)->each(function ($data) use ($observer) {
-
-                        CorporationIndustryMiningObserverData::firstOrNew([
+                        $entry = CorporationIndustryMiningObserverData::firstOrNew([
                             'corporation_id'          => $this->getCorporationId(),
                             'observer_id'             => $observer->observer_id,
                             'recorded_corporation_id' => $data->recorded_corporation_id,
@@ -102,8 +104,13 @@ class ObserverDetails extends AbstractAuthCorporationJob
                             'last_updated'            => $data->last_updated,
                         ])->fill([
                             'quantity' => $data->quantity,
-                        ])->save();
-
+                        ]);
+                        if (! $entry->id) {
+                            $entry->fill([
+                                'extraction_id' => $this->findExtraction($observer->observer_id, $data->last_updated),
+                            ]);
+                        }
+                        $entry->save();
                     });
 
                     if (! $this->nextPage($detail->pages))
@@ -113,5 +120,28 @@ class ObserverDetails extends AbstractAuthCorporationJob
 
                 $this->page = 1;
             });
+    }
+
+    /**
+     * @param $observer_id
+     * @param $last_updated
+     * @return int
+     */
+    private function findExtraction($observer_id, $last_updated)
+    {
+        $result = 0;
+        $minDate = carbon($last_updated)->subDays(self::EXTRACTION_FIND_RANGE);
+        $maxDate = carbon($last_updated)->addDays(1);
+
+        $extraction = CorporationIndustryMiningExtraction::select()
+            ->where('structure_id', $observer_id)
+            ->whereBetween('chunk_arrival_time', [$minDate, $maxDate])
+            ->get()
+            ->first();
+        if ($extraction) {
+            $result = $extraction->id;
+        }
+
+        return $result;
     }
 }

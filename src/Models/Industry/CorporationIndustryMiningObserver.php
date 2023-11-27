@@ -55,11 +55,15 @@ class CorporationIndustryMiningObserver extends Model
     }
 
     /**
+     * Returns all entries associated with athanor.
+     * Use CorporationIndustryMiningExtraction::entries instead
+     * as it is linked to single extraction.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function extraction()
     {
-        return $this->hasOne(CorporationIndustryMiningExtraction::class, 'observer_id', 'observer_id')
+        return $this->hasOne(CorporationIndustryMiningExtraction::class, 'structure_id', 'observer_id')
             ->withDefault();
     }
 }

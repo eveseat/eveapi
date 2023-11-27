@@ -23,6 +23,9 @@
 namespace Seat\Eveapi\Models\Industry;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Models\Universe\UniverseName;
 
 /**
  * Class CorporationIndustryMiningObserverData.
@@ -50,4 +53,39 @@ class CorporationIndustryMiningObserverData extends Model
      * @var bool
      */
     public $incrementing = true;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function extraction()
+    {
+        return $this->belongsTo(CorporationIndustryMiningExtraction::class, 'extraction_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function character()
+    {
+        return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function universe_name()
+    {
+        return $this->belongsTo(UniverseName::class, 'character_id', 'entity_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function type()
+    {
+        return $this->hasOne(InvType::class, 'typeID', 'type_id')
+            ->withDefault([
+                'typeName' => trans('seat::web.unknown'),
+            ]);
+    }
 }
