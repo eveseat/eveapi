@@ -49,15 +49,25 @@ class RemoveCorporationIdColumnFromCorporationTitleRolesTable extends Migration
             ->whereNotIn('corporation_id', DB::table('corporation_titles')->select('corporation_id')->distinct())
             ->delete();
 
+        // create temporary column
+        Schema::table('corporation_title_roles', function (Blueprint $table) {
+            $table->integer('title_id_temporary')->unsigned()->nullable();
+        });
+
+        // migrate to temporary column
         DB::table('corporation_titles')
             ->get()
             ->each(function ($title) {
                 DB::table('corporation_title_roles')
                     ->where('corporation_id', $title->corporation_id)
                     ->where('title_id', $title->title_id)
-                    ->update(['title_id' => $title->id]);
+                    ->update(['title_id_temporary' => $title->id]);
             });
 
+        // delete invalid corporation_title_roles since they always must have a title ID
+        DB::table('corporation_title_roles')->where('title_id_temporary', null)->delete();
+
+        // change the table to the format we want
         Schema::table('corporation_title_roles', function (Blueprint $table) {
             $table->dropPrimary('corporation_title_roles_primary_key');
             $table->dropColumn('corporation_id');
@@ -66,8 +76,13 @@ class RemoveCorporationIdColumnFromCorporationTitleRolesTable extends Migration
             $table->unique(['title_id', 'type', 'role']);
         });
 
+        // move the data from the temporary column to the correct column
+        DB::table('corporation_title_roles')->update(['title_id' => DB::raw('`title_id_temporary`')]);
+
+        // final touches plus remove the temporary column
         Schema::table('corporation_title_roles', function (Blueprint $table) {
             $table->bigIncrements('id')->first();
+            $table->dropColumn('title_id_temporary');
 
             $table->foreign('title_id')
                 ->references('id')
@@ -88,6 +103,11 @@ class RemoveCorporationIdColumnFromCorporationTitleRolesTable extends Migration
             $table->dropUnique(['title_id', 'type', 'role']);
 
             $table->bigInteger('corporation_id')->nullable()->first();
+
+            $table->dropForeign('corporation_title_roles_title_id_foreign');
+
+            // add temporary column for migration
+            $table->integer('title_id_temporary')->unsigned()->nullable();
         });
 
         // restore corporation id field
@@ -110,13 +130,19 @@ class RemoveCorporationIdColumnFromCorporationTitleRolesTable extends Migration
                     ->where('title_id', $title->id)
                     ->where('corporation_id', $title->corporation_id)
                     ->update([
-                        'title_id' => $title->title_id,
+                        'title_id_temporary' => $title->title_id,
                     ]);
             });
+
+        // delete invalid corporation_title_roles since they always must have a title ID
+        DB::table('corporation_title_roles')->where('title_id_temporary', null)->delete();
+
+        DB::table('corporation_title_roles')->update(['title_id' => DB::raw('`title_id_temporary`')]);
 
         Schema::table('corporation_title_roles', function (Blueprint $table) {
             $table->bigInteger('corporation_id')->nullable(false)->change();
             $table->primary(['corporation_id', 'title_id', 'type', 'role']);
+            $table->dropColumn('title_id_temporary');
         });
     }
 }
