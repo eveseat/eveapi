@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Contracts\HasTypeID;
 
 #[OA\Schema(
     title: 'CorporationOrder',
@@ -49,7 +50,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
     ],
     type: 'object'
 )]
-class CorporationOrder extends Model
+class CorporationOrder extends Model implements HasTypeID
 {
     /**
      * @var array
@@ -96,5 +97,13 @@ class CorporationOrder extends Model
             ->withDefault([
                 'typeName' => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

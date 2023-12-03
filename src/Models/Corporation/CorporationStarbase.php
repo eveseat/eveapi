@@ -30,13 +30,14 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\Moon;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Contracts\HasTypeID;
 
 /**
  * Class CorporationStarbase.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationStarbase extends Model
+class CorporationStarbase extends Model implements HasTypeID
 {
     use HasCompositePrimaryKey;
 
@@ -187,5 +188,13 @@ class CorporationStarbase extends Model
     {
 
         return $this->belongsTo(InvType::class, 'type_id', 'typeID');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

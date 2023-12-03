@@ -30,6 +30,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Contracts\HasTypeID;
 
 #[OA\Schema(
     title: 'CorporationAsset',
@@ -51,7 +52,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
     ],
     type: 'object'
 )]
-class CorporationAsset extends Model
+class CorporationAsset extends Model implements HasTypeID
 {
     /**
      * @var array
@@ -188,5 +189,13 @@ class CorporationAsset extends Model
     {
         return $this->hasOne(SolarSystem::class, 'system_id', 'location_id')
             ->withDefault();
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

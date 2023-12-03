@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Contracts\HasTypeID;
 
 #[OA\Schema(
     title: 'CharacterOrder',
@@ -47,7 +48,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
     ],
     type: 'object'
 )]
-class CharacterOrder extends Model
+class CharacterOrder extends Model implements HasTypeID
 {
     /**
      * @var array
@@ -94,5 +95,13 @@ class CharacterOrder extends Model
             ->withDefault([
                 'typeName' => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

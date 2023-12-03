@@ -32,6 +32,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Contracts\HasTypeID;
 use Seat\Tests\Eveapi\Database\Factories\CharacterAssetFactory;
 
 #[OA\Schema(
@@ -54,7 +55,7 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterAssetFactory;
     ],
     type: 'object'
 )]
-class CharacterAsset extends Model
+class CharacterAsset extends Model implements HasTypeID
 {
     use HasFactory;
 
@@ -201,5 +202,13 @@ class CharacterAsset extends Model
             ->withDefault([
                 'name' => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

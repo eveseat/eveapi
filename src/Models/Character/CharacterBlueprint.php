@@ -27,13 +27,14 @@ use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Contracts\HasTypeID;
 
 /**
  * Class CharacterBluePrints.
  *
  * @package App
  */
-class CharacterBlueprint extends Model
+class CharacterBlueprint extends Model implements HasTypeID
 {
     /**
      * @var bool
@@ -85,5 +86,13 @@ class CharacterBlueprint extends Model
             ->withDefault([
                 'typeName' => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Contracts;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
 
 #[OA\Schema(
     title: 'ContractItem',
@@ -38,7 +39,7 @@ use Seat\Eveapi\Models\Sde\InvType;
     ],
     type: 'object'
 )]
-class ContractItem extends Model
+class ContractItem extends Model implements HasTypeID
 {
     /**
      * @var array
@@ -85,5 +86,13 @@ class ContractItem extends Model
             ->withDefault([
                 'typeName' => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

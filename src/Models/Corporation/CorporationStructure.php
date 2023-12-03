@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Contracts\HasTypeID;
 
 #[OA\Schema(
     title: 'CorporationStructure',
@@ -52,7 +53,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
     ],
     type: 'object'
 )]
-class CorporationStructure extends Model
+class CorporationStructure extends Model implements HasTypeID
 {
     const DGM_SERVICE_MODULE_CYCLE_FUEL_NEED = 2109;
 
@@ -356,5 +357,13 @@ class CorporationStructure extends Model
             })->implode(PHP_EOL) .
 
             PHP_EOL . PHP_EOL;
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }
