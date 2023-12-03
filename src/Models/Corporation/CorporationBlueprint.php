@@ -91,7 +91,6 @@ class CorporationBlueprint extends Model implements HasTypeID
             ]);
     }
 
-
     /**
      * @return int The eve type id of this object
      */
