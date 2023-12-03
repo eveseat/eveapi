@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Skills;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
 
 #[OA\Schema(
     title: 'CharacterSkillQueue',
@@ -40,7 +41,7 @@ use Seat\Eveapi\Models\Sde\InvType;
     ],
     type: 'object'
 )]
-class CharacterSkillQueue extends Model
+class CharacterSkillQueue extends Model implements HasTypeID
 {
     /**
      * @var array
@@ -67,5 +68,13 @@ class CharacterSkillQueue extends Model
     {
 
         return $this->belongsTo(InvType::class, 'skill_id', 'typeID');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

@@ -28,13 +28,14 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Contracts\HasTypeID;
 
 /**
  * Class CorporationBlueprint.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationBlueprint extends Model
+class CorporationBlueprint extends Model implements HasTypeID
 {
     use HasCompositePrimaryKey;
 
@@ -88,5 +89,14 @@ class CorporationBlueprint extends Model
             ->withDefault([
                 'typeName' => trans('web::seat.unknown'),
             ]);
+    }
+
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

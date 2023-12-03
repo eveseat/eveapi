@@ -24,13 +24,14 @@ namespace Seat\Eveapi\Models\Market;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
 
 /**
  * Class Price.
  *
  * @package Seat\Eveapi\Models\Market
  */
-class Price extends Model
+class Price extends Model implements HasTypeID
 {
     /**
      * @var bool
@@ -59,5 +60,13 @@ class Price extends Model
     {
 
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

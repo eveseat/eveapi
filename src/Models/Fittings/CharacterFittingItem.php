@@ -24,13 +24,14 @@ namespace Seat\Eveapi\Models\Fittings;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
 
 /**
  * Class CharacterFittingItem.
  *
  * @package Seat\Eveapi\Models\Fittings
  */
-class CharacterFittingItem extends Model
+class CharacterFittingItem extends Model implements HasTypeID
 {
     /**
      * @var bool
@@ -41,5 +42,13 @@ class CharacterFittingItem extends Model
     {
 
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

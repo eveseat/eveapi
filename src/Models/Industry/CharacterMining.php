@@ -26,13 +26,14 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
+use Seat\Services\Contracts\HasTypeID;
 
 /**
  * Class CharacterMining.
  *
  * @package Seat\Eveapi\Models\Industry
  */
-class CharacterMining extends Model
+class CharacterMining extends Model implements HasTypeID
 {
     /**
      * @var bool
@@ -91,5 +92,13 @@ class CharacterMining extends Model
         $this->setAttribute('year', carbon($this->getAttributeValue('date'))->year);
 
         return parent::save($options);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

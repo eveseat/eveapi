@@ -24,13 +24,14 @@ namespace Seat\Eveapi\Models\Clones;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
 
 /**
  * Class CharacterImplant.
  *
  * @package Seat\Eveapi\Models\Clones
  */
-class CharacterImplant extends Model
+class CharacterImplant extends Model implements HasTypeID
 {
     /**
      * @var bool
@@ -44,5 +45,13 @@ class CharacterImplant extends Model
     {
 
         return $this->belongsTo(InvType::class, 'type_id', 'typeID');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

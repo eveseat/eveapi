@@ -27,13 +27,14 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Contracts\HasTypeID;
 
 /**
  * Class Price.
  *
  * @package Seat\Eveapi\Models\Market
  */
-class MarketOrder extends Model
+class MarketOrder extends Model implements HasTypeID
 {
 
     /**
@@ -100,5 +101,13 @@ class MarketOrder extends Model
     public function station()
     {
         return $this->hasOne(UniverseStation::class, 'station_id', 'location_id');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

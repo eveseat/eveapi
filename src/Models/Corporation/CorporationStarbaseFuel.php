@@ -24,13 +24,14 @@ namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Contracts\HasTypeID;
 
 /**
  * Class CorporationStarbaseFuel.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationStarbaseFuel extends Model
+class CorporationStarbaseFuel extends Model implements HasTypeID
 {
 
     use HasCompositePrimaryKey;
@@ -45,4 +46,11 @@ class CorporationStarbaseFuel extends Model
      */
     protected $primaryKey = ['corporation_id', 'starbase_id', 'type_id'];
 
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
+    }
 }

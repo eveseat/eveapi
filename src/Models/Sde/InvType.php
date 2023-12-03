@@ -27,6 +27,7 @@ use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Fittings\Insurance;
 use Seat\Eveapi\Models\Market\Price;
 use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Services\Contracts\HasTypeID;
 
 #[OA\Schema(
     title: 'InvType',
@@ -50,7 +51,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
     ],
     type: 'object'
 )]
-class InvType extends Model
+class InvType extends Model implements HasTypeID
 {
     use IsReadOnly;
 
@@ -164,5 +165,13 @@ class InvType extends Model
         return $this->belongsToMany(InvType::class, 'invTypeReactions', 'reactionTypeID', 'typeID')
             ->wherePivot('input', true)
             ->withPivot('input', 'quantity');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->typeID;
     }
 }
