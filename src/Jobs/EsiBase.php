@@ -112,7 +112,7 @@ abstract class EsiBase extends AbstractJob
      *
      * @var string
      */
-    protected $scope = 'public';
+    protected $scope = 'public'; // By default, queue all ESI jobs on public queue.
 
     /**
      * The page to retrieve.
@@ -154,9 +154,6 @@ abstract class EsiBase extends AbstractJob
      */
     public function __construct()
     {
-        // By default, queue all ESI jobs on public queue.
-        $this->queue = 'public';
-
         // Attach an ESI Client.
         $this->esi = app()->make(EsiClient::class);
     }
