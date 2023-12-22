@@ -73,7 +73,7 @@ abstract class EsiBase extends AbstractJob
     /**
      * @var string By default, queue all ESI jobs on public queue.
      */
-    public $queue = 'public';
+    public $queue = 'public'; // By default, queue all ESI jobs on public queue.
 
     /**
      * @var int By default, retry all ESI jobs 3 times.
@@ -112,7 +112,7 @@ abstract class EsiBase extends AbstractJob
      *
      * @var string
      */
-    protected $scope = 'public'; // By default, queue all ESI jobs on public queue.
+    protected $scope = 'public';
 
     /**
      * The page to retrieve.
