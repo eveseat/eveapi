@@ -33,6 +33,8 @@ use Seat\Eveapi\Models\Character\CharacterNotification;
  */
 class Notifications extends AbstractAuthCharacterJob
 {
+    public $queue = 'notifications';
+
     /**
      * @var string
      */
