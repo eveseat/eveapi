@@ -38,14 +38,14 @@ class AddUniqueOnStarbaseIdInCorporationStarbasesTable extends Migration
     public function up()
     {
         // before adding a unique constraint, we have to remove duplicates
-        $duplicate_rows =DB::table("corporation_starbases")
+        $duplicate_rows = DB::table('corporation_starbases')
             ->select('starbase_id', DB::raw('COUNT(*) as count'))
             ->havingRaw('COUNT(*) > 1')
-            ->groupBy("starbase_id")
+            ->groupBy('starbase_id')
             ->get();
         foreach ($duplicate_rows as $row) {
-            DB::table("corporation_starbases")
-                ->where('starbase_id',$row->starbase_id)
+            DB::table('corporation_starbases')
+                ->where('starbase_id', $row->starbase_id)
                 ->limit($row->count - 1) // keep one row remaining
                 ->orderBy('updated_at')
                 ->delete();
