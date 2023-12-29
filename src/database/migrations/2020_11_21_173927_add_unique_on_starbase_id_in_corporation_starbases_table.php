@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -36,6 +37,20 @@ class AddUniqueOnStarbaseIdInCorporationStarbasesTable extends Migration
      */
     public function up()
     {
+        // before adding a unique constraint, we have to remove duplicates
+        $duplicate_rows =DB::table("corporation_starbases")
+            ->select('starbase_id', DB::raw('COUNT(*) as count'))
+            ->havingRaw('COUNT(*) > 1')
+            ->groupBy("starbase_id")
+            ->get();
+        foreach ($duplicate_rows as $row) {
+            DB::table("corporation_starbases")
+                ->where('starbase_id',$row->starbase_id)
+                ->limit($row->count - 1) // keep one row remaining
+                ->orderBy('updated_at')
+                ->delete();
+        }
+
         Schema::table('corporation_starbases', function (Blueprint $table) {
             $table->unique(['starbase_id']);
         });
