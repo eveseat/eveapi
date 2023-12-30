@@ -149,7 +149,7 @@ class History extends EsiBase
         $region_id = setting('market_prices_region_id', true) ?: self::THE_FORGE;
 
         while(count($this->type_ids) > 0) {
-            Redis::throttle('market-history-throttle')->block(0)->allow(self::ENDPOINT_RATE_LIMIT_CALLS)->every(self::ENDPOINT_RATE_LIMIT_WINDOW)->then(function () use ($region_id) {
+            $delay = Redis::throttle('market-history-throttle')->block(0)->allow(self::ENDPOINT_RATE_LIMIT_CALLS)->every(self::ENDPOINT_RATE_LIMIT_WINDOW)->then(function () use ($region_id) {
                 logger()->debug(sprintf('[Jobs][%s] History processing -> Remaining types: %d.', $this->job->getJobId(), count($this->type_ids)));
 
                 $type_id = array_shift($this->type_ids);
@@ -190,6 +190,8 @@ class History extends EsiBase
                         'order_count' => $price->order_count,
                         'volume'      => $price->volume,
                     ]);
+
+                    return false;
                 } catch (TemporaryEsiOutageException $e) {
                     logger()->error(sprintf('[Jobs][%s] History -> ESI is temporarily unavailable - Retry in 120 seconds.', $this->job->getJobId()));
 
@@ -197,18 +199,24 @@ class History extends EsiBase
                         logger()->debug(sprintf('[Jobs][%s] History -> ESI remaining error count: %d', $this->job->getJobId(), $e->getPrevious()->getEsiResponse()->error_limit));
                     }
 
-                    $this->release(120); // requeue job in next 2 minutes
+                    return true;
                 } catch (RequestFailedException $e) {
                     logger()->error($e->getMessage());
+                    return true;
                 }
             }, function () {
 
                 // specify callback to catch LimiterTimeoutException thrown by the throttler when limit is reached
                 // we will only log the state for diagnose since it is expected.
-                logger()->debug(sprintf('[Jobs][%s] History throttled -> Remaining types: %d.', $this->job->getJobId(), count($this->type_ids)));
+                logger()->debug(sprintf('[Jobs][%s] History throttled -> Remaining types: %d. Delaying by %d.', $this->job->getJobId(), count($this->type_ids), self::ENDPOINT_RATE_LIMIT_WINDOW));
 
                 return true;
             });
+
+            if($delay) {
+                $this->release(self::ENDPOINT_RATE_LIMIT_WINDOW);
+                return;
+            }
         }
     }
 }
