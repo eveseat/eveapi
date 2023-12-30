@@ -173,22 +173,22 @@ class History extends EsiBase
 
                     if (is_null($price)) {
                         $price = (object) [
-                            'average'     => 0.0,
-                            'highest'     => 0.0,
-                            'lowest'      => 0.0,
+                            'average' => 0.0,
+                            'highest' => 0.0,
+                            'lowest' => 0.0,
                             'order_count' => 0,
-                            'volume'      => 0,
+                            'volume' => 0,
                         ];
                     }
 
                     Price::updateOrCreate([
                         'type_id' => $type_id,
                     ], [
-                        'average'     => $price->average,
-                        'highest'     => $price->highest,
-                        'lowest'      => $price->lowest,
+                        'average' => $price->average,
+                        'highest' => $price->highest,
+                        'lowest' => $price->lowest,
                         'order_count' => $price->order_count,
-                        'volume'      => $price->volume,
+                        'volume' => $price->volume,
                     ]);
 
                     return false;
@@ -202,6 +202,7 @@ class History extends EsiBase
                     return true;
                 } catch (RequestFailedException $e) {
                     logger()->error($e->getMessage());
+
                     return true;
                 }
             }, function () {
@@ -215,6 +216,7 @@ class History extends EsiBase
 
             if($delay) {
                 $this->release(self::ENDPOINT_RATE_LIMIT_WINDOW);
+
                 return;
             }
         }
