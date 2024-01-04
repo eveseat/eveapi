@@ -35,9 +35,12 @@ class AddUuidToFailedJobsTable extends Migration
      */
     public function up()
     {
-        Schema::table('failed_jobs', function (Blueprint $table) {
-            $table->string('uuid')->after('id')->nullable()->unique();
-        });
+        // for unknown reasons, some seat instance already have this on seat 4. If the column exists, we can leave it
+        if(!Schema::hasColumn('failed_jobs','uuid')) {
+            Schema::table('failed_jobs', function (Blueprint $table) {
+                $table->string('uuid')->after('id')->nullable()->unique();
+            });
+        }
 
         DB::table('failed_jobs')
             ->whereNull('uuid')
