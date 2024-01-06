@@ -88,10 +88,10 @@ class Status extends EsiBase
             $status = $response->getBody();
 
             ServerStatus::create([
-                'start_time'     => carbon($status->start_time),
-                'players'        => $status->players,
+                'start_time' => carbon($status->start_time),
+                'players' => $status->players,
                 'server_version' => $status->server_version,
-                'vip'            => $status->vip ?? false,
+                'vip' => $status->vip ?? false,
             ]);
         }
     }

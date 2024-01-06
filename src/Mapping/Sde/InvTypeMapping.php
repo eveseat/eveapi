@@ -43,20 +43,20 @@ class InvTypeMapping extends AbstractFuzzworkMapping implements WithValidation
     public function model(array $row)
     {
         return (new InvType([
-            'typeID'        => $row[0],
-            'groupID'       => $row[1],
-            'typeName'      => $row[2],
-            'description'   => $row[3],
-            'mass'          => $row[4],
-            'volume'        => $row[5],
-            'capacity'      => $row[6],
-            'portionSize'   => $row[7],
-            'raceID'        => $row[8],
-            'basePrice'     => $row[9],
-            'published'     => $row[10],
+            'typeID' => $row[0],
+            'groupID' => $row[1],
+            'typeName' => $row[2],
+            'description' => $row[3],
+            'mass' => $row[4],
+            'volume' => $row[5],
+            'capacity' => $row[6],
+            'portionSize' => $row[7],
+            'raceID' => $row[8],
+            'basePrice' => $row[9],
+            'published' => $row[10],
             'marketGroupID' => $row[11],
-            'iconID'        => $row[12],
-            'graphicID'     => $row[14],
+            'iconID' => $row[12],
+            'graphicID' => $row[14],
         ]))->bypassReadOnly();
     }
 

@@ -105,13 +105,13 @@ class Contacts extends AbstractAuthCharacterJob
 
                 CharacterContact::firstOrNew([
                     'character_id' => $this->getCharacterId(),
-                    'contact_id'   => $contact->contact_id,
+                    'contact_id' => $contact->contact_id,
                 ])->fill([
-                    'standing'     => $contact->standing,
+                    'standing' => $contact->standing,
                     'contact_type' => $contact->contact_type,
-                    'is_watched'   => $contact->is_watched ?? false,
-                    'is_blocked'   => $contact->is_blocked ?? false,
-                    'label_ids'    => $contact->label_ids ?? null,
+                    'is_watched' => $contact->is_watched ?? false,
+                    'is_blocked' => $contact->is_blocked ?? false,
+                    'label_ids' => $contact->label_ids ?? null,
                 ])->save();
             });
 

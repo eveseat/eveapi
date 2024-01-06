@@ -66,8 +66,8 @@ class AllianceContact extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'contact_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => $this->contact_type,
+                'name' => trans('web::seat.unknown'),
+                'category' => $this->contact_type,
             ]);
     }
 

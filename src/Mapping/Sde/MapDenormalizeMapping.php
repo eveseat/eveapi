@@ -45,21 +45,21 @@ class MapDenormalizeMapping extends AbstractFuzzworkMapping implements WithValid
     public function model(array $row)
     {
         return (new MapDenormalize([
-            'itemID'          => $row[0],
-            'typeID'          => $row[1],
-            'groupID'         => $row[2],
-            'solarSystemID'   => $row[3],
+            'itemID' => $row[0],
+            'typeID' => $row[1],
+            'groupID' => $row[2],
+            'solarSystemID' => $row[3],
             'constellationID' => $row[4],
-            'regionID'        => $row[5],
-            'orbitID'         => $row[6],
-            'x'               => $row[7],
-            'y'               => $row[8],
-            'z'               => $row[9],
-            'radius'          => $row[10],
-            'itemName'        => $row[11],
-            'security'        => $row[12],
-            'celestialIndex'  => $row[13],
-            'orbitIndex'      => $row[14],
+            'regionID' => $row[5],
+            'orbitID' => $row[6],
+            'x' => $row[7],
+            'y' => $row[8],
+            'z' => $row[9],
+            'radius' => $row[10],
+            'itemName' => $row[11],
+            'security' => $row[12],
+            'celestialIndex' => $row[13],
+            'orbitIndex' => $row[14],
         ]))->bypassReadOnly();
     }
 

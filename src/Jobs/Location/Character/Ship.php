@@ -76,7 +76,7 @@ class Ship extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ])->fill([
             'ship_item_id' => $ship->ship_item_id,
-            'ship_name'    => $ship->ship_name,
+            'ship_name' => $ship->ship_name,
             'ship_type_id' => $ship->ship_type_id,
         ])->save();
     }

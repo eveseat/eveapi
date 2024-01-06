@@ -36,13 +36,13 @@ class WalletTransactionMapping extends DataMapping
      */
     protected static $mapping = [
         'transaction_id' => 'transaction_id',
-        'date'           => 'date',
-        'type_id'        => 'type_id',
-        'location_id'    => 'location_id',
-        'unit_price'     => 'unit_price',
-        'quantity'       => 'quantity',
-        'client_id'      => 'client_id',
-        'is_buy'         => 'is_buy',
+        'date' => 'date',
+        'type_id' => 'type_id',
+        'location_id' => 'location_id',
+        'unit_price' => 'unit_price',
+        'quantity' => 'quantity',
+        'client_id' => 'client_id',
+        'is_buy' => 'is_buy',
         'journal_ref_id' => 'journal_ref_id',
     ];
 }

@@ -142,7 +142,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
     {
         $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
-            'planet_id'    => $this->planet_id,
+            'planet_id' => $this->planet_id,
         ]);
 
         $planet = $response->getBody();

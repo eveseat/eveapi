@@ -79,7 +79,7 @@ class Implants extends AbstractAuthCharacterJob
 
             CharacterImplant::firstOrCreate([
                 'character_id' => $this->getCharacterId(),
-                'type_id'      => $implant,
+                'type_id' => $implant,
             ]);
         });
 

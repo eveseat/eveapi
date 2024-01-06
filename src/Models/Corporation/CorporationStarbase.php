@@ -133,13 +133,13 @@ class CorporationStarbase extends Model implements HasTypeID
 
         return $this->hasOne(CorporationStarbaseDetail::class, 'starbase_id', 'starbase_id')
             ->withDefault([
-                'allow_corporation_members'                => 0,
-                'allow_alliance_members'                   => 0,
-                'use_alliance_standings'                   => 0,
-                'attack_standing_threshold'                => 0,
-                'attack_security_status_threshold'         => 0,
+                'allow_corporation_members' => 0,
+                'allow_alliance_members' => 0,
+                'use_alliance_standings' => 0,
+                'attack_standing_threshold' => 0,
+                'attack_security_status_threshold' => 0,
                 'attack_if_other_security_status_dropping' => 0,
-                'attack_if_at_war'                         => 0,
+                'attack_if_at_war' => 0,
             ]);
     }
 

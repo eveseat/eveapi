@@ -88,7 +88,7 @@ class Attendees extends AbstractAuthCharacterJob
 
                 $response = $this->retrieve([
                     'character_id' => $this->getCharacterId(),
-                    'event_id'     => $event->event_id,
+                    'event_id' => $event->event_id,
                 ]);
 
                 $attendees = collect($response->getBody());
@@ -97,7 +97,7 @@ class Attendees extends AbstractAuthCharacterJob
 
                     CharacterCalendarAttendee::firstOrNew([
                         'character_id' => $attendee->character_id,
-                        'event_id'     => $event->event_id,
+                        'event_id' => $event->event_id,
                     ])->fill([
                         'event_response' => $attendee->event_response,
                     ])->save();

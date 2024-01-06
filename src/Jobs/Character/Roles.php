@@ -82,8 +82,8 @@ class Roles extends AbstractAuthCharacterJob
 
                 CharacterRole::firstOrCreate([
                     'character_id' => $this->getCharacterId(),
-                    'role'         => $role,
-                    'scope'        => $scope,
+                    'role' => $role,
+                    'scope' => $scope,
                 ]);
             });
 

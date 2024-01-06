@@ -82,8 +82,8 @@ class Alliance extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'executor_corporation_id')
             ->withDefault([
-                'category'  => 'corporation',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'corporation',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -94,8 +94,8 @@ class Alliance extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'creator_id')
             ->withDefault([
-                'category'  => 'character',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'character',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -106,8 +106,8 @@ class Alliance extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'creator_corporation_id')
             ->withDefault([
-                'category'  => 'corporation',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'corporation',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 

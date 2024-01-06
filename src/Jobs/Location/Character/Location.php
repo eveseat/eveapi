@@ -86,7 +86,7 @@ class Location extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ])->fill([
             'solar_system_id' => $location->solar_system_id,
-            'station_id'   => $station_id,
+            'station_id' => $station_id,
             'structure_id' => $citadel_id,
         ])->save();
     }

@@ -119,7 +119,7 @@ class Names extends EsiBase
                 UniverseName::firstOrNew([
                     'entity_id' => $resolution->id,
                 ])->fill([
-                    'name'     => $resolution->name,
+                    'name' => $resolution->name,
                     'category' => $resolution->category,
                 ])->save();
 

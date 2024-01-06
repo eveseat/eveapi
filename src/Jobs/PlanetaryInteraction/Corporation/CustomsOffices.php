@@ -110,7 +110,7 @@ class CustomsOffices extends AbstractAuthCorporationJob
 
                 $model = CorporationCustomsOffice::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'office_id'      => $office->office_id,
+                    'office_id' => $office->office_id,
                 ]);
 
                 CustomsOfficeMapping::make($model, $office, [

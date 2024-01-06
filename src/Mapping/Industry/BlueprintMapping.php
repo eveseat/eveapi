@@ -35,13 +35,13 @@ class BlueprintMapping extends DataMapping
      * @var array
      */
     protected static $mapping = [
-        'item_id'             => 'item_id',
-        'type_id'             => 'type_id',
-        'location_flag'       => 'location_flag',
-        'location_id'         => 'location_id',
-        'quantity'            => 'quantity',
-        'time_efficiency'     => 'time_efficiency',
+        'item_id' => 'item_id',
+        'type_id' => 'type_id',
+        'location_flag' => 'location_flag',
+        'location_id' => 'location_id',
+        'quantity' => 'quantity',
+        'time_efficiency' => 'time_efficiency',
         'material_efficiency' => 'material_efficiency',
-        'runs'                => 'runs',
+        'runs' => 'runs',
     ];
 }

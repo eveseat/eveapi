@@ -95,23 +95,23 @@ class Detail extends EsiBase
     public function handle()
     {
         $response = $this->retrieve([
-            'killmail_id'   => $this->killmail_id,
+            'killmail_id' => $this->killmail_id,
             'killmail_hash' => $this->killmail_hash,
         ]);
 
         $detail = $response->getBody();
 
         $killmail = KillmailDetail::firstOrCreate([
-            'killmail_id'     => $this->killmail_id,
+            'killmail_id' => $this->killmail_id,
         ], [
-            'killmail_time'   => carbon($detail->killmail_time),
+            'killmail_time' => carbon($detail->killmail_time),
             'solar_system_id' => $detail->solar_system_id,
-            'moon_id'         => property_exists($detail, 'moon_id') ? $detail->moon_id : null,
-            'war_id'          => property_exists($detail, 'war_id') ? $detail->war_id : null,
+            'moon_id' => property_exists($detail, 'moon_id') ? $detail->moon_id : null,
+            'war_id' => property_exists($detail, 'war_id') ? $detail->war_id : null,
         ]);
 
         $victim = KillmailVictim::firstOrNew([
-            'killmail_id'    => $this->killmail_id,
+            'killmail_id' => $this->killmail_id,
         ]);
 
         VictimMapping::make($victim, $detail->victim, [
@@ -123,14 +123,14 @@ class Detail extends EsiBase
         collect($detail->attackers)->each(function ($attacker) {
 
             $model = KillmailAttacker::firstOrNew([
-                'killmail_id'     => $this->killmail_id,
-                'character_id'    => property_exists($attacker, 'character_id') ?
+                'killmail_id' => $this->killmail_id,
+                'character_id' => property_exists($attacker, 'character_id') ?
                     $attacker->character_id : null,
-                'corporation_id'  => property_exists($attacker, 'corporation_id') ?
+                'corporation_id' => property_exists($attacker, 'corporation_id') ?
                     $attacker->corporation_id : null,
-                'alliance_id'     => property_exists($attacker, 'alliance_id') ?
+                'alliance_id' => property_exists($attacker, 'alliance_id') ?
                     $attacker->alliance_id : null,
-                'faction_id'      => property_exists($attacker, 'faction_id') ?
+                'faction_id' => property_exists($attacker, 'faction_id') ?
                     $attacker->faction_id : null,
             ]);
 
@@ -146,7 +146,7 @@ class Detail extends EsiBase
             collect($detail->victim->items)->each(function ($item) use ($victim) {
 
                 $pivot_attributes = [
-                    'flag'      => $item->flag,
+                    'flag' => $item->flag,
                     'singleton' => $item->singleton,
                 ];
 

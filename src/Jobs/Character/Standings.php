@@ -79,8 +79,8 @@ class Standings extends AbstractAuthCharacterJob
 
             CharacterStanding::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'from_type'    => $standing->from_type,
-                'from_id'      => $standing->from_id,
+                'from_type' => $standing->from_type,
+                'from_id' => $standing->from_id,
             ])->fill([
                 'standing' => $standing->standing,
             ])->save();

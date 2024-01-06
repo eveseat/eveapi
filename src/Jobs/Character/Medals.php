@@ -80,7 +80,7 @@ class Medals extends AbstractAuthCharacterJob
 
             $model = CharacterMedal::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'medal_id'     => $medal->medal_id,
+                'medal_id' => $medal->medal_id,
             ]);
 
             MedalsMapping::make($model, $medal, [

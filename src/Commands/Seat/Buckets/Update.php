@@ -90,8 +90,8 @@ class Update extends Command
 
             logger()->debug('[Buckets] Processing token from a bucket', [
                 'bucket' => $bucket->id,
-                'flow'   => 'character',
-                'token'  => $token->character_id,
+                'flow' => 'character',
+                'token' => $token->character_id,
             ]);
         });
     }
@@ -131,8 +131,8 @@ class Update extends Command
 
             logger()->debug('[Buckets] Processing token from a bucket.', [
                 'bucket' => $bucket->id,
-                'flow'   => 'corporation',
-                'token'  => $token->character_id,
+                'flow' => 'corporation',
+                'token' => $token->character_id,
             ]);
         });
     }

@@ -102,7 +102,7 @@ class Jobs extends AbstractAuthCorporationJob
 
                 $model = CorporationIndustryJob::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'job_id'         => $job->job_id,
+                    'job_id' => $job->job_id,
                 ]);
 
                 JobMapping::make($model, $job, [

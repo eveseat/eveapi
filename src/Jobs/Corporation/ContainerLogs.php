@@ -98,8 +98,8 @@ class ContainerLogs extends AbstractAuthCorporationJob
 
                 $model = CorporationContainerLog::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'container_id'   => $log->container_id,
-                    'logged_at'      => carbon($log->logged_at),
+                    'container_id' => $log->container_id,
+                    'logged_at' => carbon($log->logged_at),
                 ]);
 
                 ContainerLogsMapping::make($model, $log, [

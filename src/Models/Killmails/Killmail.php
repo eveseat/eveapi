@@ -65,7 +65,7 @@ class Killmail extends Model
     public function detail()
     {
         return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id')->withDefault([
-            'killmail_time'   => '1970-01-01 00:00:01',
+            'killmail_time' => '1970-01-01 00:00:01',
             'solar_system_id' => 30000380,
         ]);
     }
@@ -76,9 +76,9 @@ class Killmail extends Model
     public function victim()
     {
         return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id')->withDefault([
-            'character_id'   => 0,
+            'character_id' => 0,
             'corporation_id' => 0,
-            'ship_type_id'   => 0,
+            'ship_type_id' => 0,
         ]);
     }
 

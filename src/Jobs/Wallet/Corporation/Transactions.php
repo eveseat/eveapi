@@ -94,7 +94,7 @@ class Transactions extends AbstractAuthCorporationJob
 
                     $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
-                        'division'       => $balance->division,
+                        'division' => $balance->division,
                     ]);
 
                     $transactions = $response->getBody();
@@ -107,7 +107,7 @@ class Transactions extends AbstractAuthCorporationJob
 
                         $transaction_entry = CorporationWalletTransaction::firstOrNew([
                             'corporation_id' => $this->getCorporationId(),
-                            'division'       => $balance->division,
+                            'division' => $balance->division,
                             'transaction_id' => $transaction->transaction_id,
                         ]);
 

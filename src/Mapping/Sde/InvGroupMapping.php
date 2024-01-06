@@ -43,15 +43,15 @@ class InvGroupMapping extends AbstractFuzzworkMapping implements WithValidation
     public function model(array $row)
     {
         return (new InvGroup([
-            'groupID'              => $row[0],
-            'categoryID'           => $row[1],
-            'groupName'            => $row[2],
-            'iconID'               => $row[3],
-            'useBasePrice'         => $row[4],
-            'anchored'             => $row[5],
-            'anchorable'           => $row[6],
+            'groupID' => $row[0],
+            'categoryID' => $row[1],
+            'groupName' => $row[2],
+            'iconID' => $row[3],
+            'useBasePrice' => $row[4],
+            'anchored' => $row[5],
+            'anchorable' => $row[6],
             'fittableNonSingleton' => $row[7],
-            'published'            => $row[8],
+            'published' => $row[8],
         ]))->bypassReadOnly();
     }
 

@@ -102,11 +102,11 @@ class Contacts extends AbstractAuthAllianceJob
 
                 AllianceContact::firstOrNew([
                     'alliance_id' => $this->getAllianceId(),
-                    'contact_id'     => $contact->contact_id,
+                    'contact_id' => $contact->contact_id,
                 ])->fill([
-                    'standing'     => $contact->standing,
+                    'standing' => $contact->standing,
                     'contact_type' => $contact->contact_type,
-                    'label_ids'    => $contact->label_ids ?? null,
+                    'label_ids' => $contact->label_ids ?? null,
                 ])->save();
             });
 

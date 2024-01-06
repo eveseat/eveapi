@@ -23,22 +23,22 @@
 return [
     'esi' => [
         'auth' => [
-            'client_id'       => env('EVE_CLIENT_ID'),
-            'client_secret'   => env('EVE_CLIENT_SECRET'),
+            'client_id' => env('EVE_CLIENT_ID'),
+            'client_secret' => env('EVE_CLIENT_SECRET'),
             'client_callback' => env('EVE_CALLBACK_URL'),
         ],
         'service' => [
-            'scheme'     => env('EVE_ESI_SCHEME', 'https'),
-            'host'       => env('EVE_ESI_HOST', 'esi.evetech.net'),
-            'port'       => env('EVE_ESI_PORT', 443),
+            'scheme' => env('EVE_ESI_SCHEME', 'https'),
+            'host' => env('EVE_ESI_HOST', 'esi.evetech.net'),
+            'port' => env('EVE_ESI_PORT', 443),
             'datasource' => env('EVE_ESI_DATASOURCE', 'tranquility'),
         ],
     ],
     'sso' => [
         'service' => [
             'scheme' => env('EVE_SSO_SCHEME', 'https'),
-            'host'   => env('EVE_SSO_HOST', 'login.eveonline.com'),
-            'port'   => env('EVE_SSO_PORT', 443),
+            'host' => env('EVE_SSO_HOST', 'login.eveonline.com'),
+            'port' => env('EVE_SSO_PORT', 443),
         ],
     ],
 ];

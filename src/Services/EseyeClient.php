@@ -95,12 +95,12 @@ class EseyeClient implements EsiClient
     public function setAuthentication(EsiToken $authentication): EsiClient
     {
         $container = new EsiAuthentication([
-            'client_id'     => config('eseye.esi.auth.client_id'),
-            'secret'        => config('eseye.esi.auth.client_secret'),
-            'access_token'  => $authentication->getAccessToken(),
+            'client_id' => config('eseye.esi.auth.client_id'),
+            'secret' => config('eseye.esi.auth.client_secret'),
+            'access_token' => $authentication->getAccessToken(),
             'refresh_token' => $authentication->getRefreshToken(),
             'token_expires' => $authentication->getExpiresOn()->getTimestamp(),
-            'scopes'        => $authentication->getScopes(),
+            'scopes' => $authentication->getScopes(),
         ]);
 
         $this->instance->setAuthentication($container);

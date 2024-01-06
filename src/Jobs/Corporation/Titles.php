@@ -117,7 +117,7 @@ class Titles extends AbstractAuthCorporationJob
 
             $title_model = CorporationTitle::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'title_id'       => $title->title_id,
+                'title_id' => $title->title_id,
             ])->fill([
                 'name' => $title->name ?? sprintf('Untitled %d', (int) sqrt($title->title_id - 1)),
             ]);
@@ -131,9 +131,9 @@ class Titles extends AbstractAuthCorporationJob
                 collect($title->{$type})->each(function ($name) use ($title_model, $type) {
 
                     CorporationTitleRole::firstOrCreate([
-                        'title_id'       => $title_model->id,
-                        'type'           => $type,
-                        'role'           => $name,
+                        'title_id' => $title_model->id,
+                        'type' => $type,
+                        'role' => $name,
                     ]);
                 });
 

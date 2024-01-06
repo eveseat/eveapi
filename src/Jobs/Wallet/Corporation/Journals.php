@@ -108,7 +108,7 @@ class Journals extends AbstractAuthCorporationJob
 
                     $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
-                        'division'       => $balance->division,
+                        'division' => $balance->division,
                     ]);
 
                     $entries = collect($response->getBody());
@@ -135,8 +135,8 @@ class Journals extends AbstractAuthCorporationJob
 
                             $model = CorporationWalletJournal::firstOrNew([
                                 'corporation_id' => $this->getCorporationId(),
-                                'division'       => $balance->division,
-                                'id'             => $entry->id,
+                                'division' => $balance->division,
+                                'id' => $entry->id,
                             ]);
 
                             WalletJournalMapping::make($model, $entry, [

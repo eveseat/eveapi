@@ -155,7 +155,7 @@ class Sde extends Command
 
         $all_sde_tables_exist = true;
         foreach ($this->json->tables as $table) {
-            if(!Schema::hasTable($table)) {
+            if(! Schema::hasTable($table)) {
                 $all_sde_tables_exist = false;
             }
         }

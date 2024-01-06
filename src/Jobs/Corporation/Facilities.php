@@ -83,9 +83,9 @@ class Facilities extends AbstractAuthCorporationJob
 
             CorporationFacility::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'facility_id'    => $facility->facility_id,
+                'facility_id' => $facility->facility_id,
             ])->fill([
-                'type_id'   => $facility->type_id,
+                'type_id' => $facility->type_id,
                 'system_id' => $facility->system_id,
             ])->save();
         });

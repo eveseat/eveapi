@@ -63,11 +63,11 @@ class RamActivityMapping extends AbstractFuzzworkMapping implements WithValidati
     public function model(array $row)
     {
         return (new RamActivity([
-            'activityID'   => $row[0],
+            'activityID' => $row[0],
             'activityName' => $row[1],
-            'iconNo'       => $row[2],
-            'description'  => $row[3],
-            'published'    => $row[4],
+            'iconNo' => $row[2],
+            'description' => $row[3],
+            'published' => $row[4],
         ]))->bypassReadOnly();
     }
 

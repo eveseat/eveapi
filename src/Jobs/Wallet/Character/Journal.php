@@ -115,7 +115,7 @@ class Journal extends AbstractAuthCharacterJob
 
                 $journal_entry = CharacterWalletJournal::firstOrNew([
                     'character_id' => $this->getCharacterId(),
-                    'id'           => $entry->id,
+                    'id' => $entry->id,
                 ]);
 
                 // If this journal entry has already been recorded,

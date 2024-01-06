@@ -35,13 +35,13 @@ class MedalsMapping extends DataMapping
      * @var array
      */
     protected static $mapping = [
-        'medal_id'       => 'medal_id',
-        'title'          => 'title',
-        'description'    => 'description',
+        'medal_id' => 'medal_id',
+        'title' => 'title',
+        'description' => 'description',
         'corporation_id' => 'corporation_id',
-        'issuer_id'      => 'issuer_id',
-        'date'           => 'date',
-        'reason'         => 'reason',
-        'status'         => 'status',
+        'issuer_id' => 'issuer_id',
+        'date' => 'date',
+        'reason' => 'reason',
+        'status' => 'status',
     ];
 }

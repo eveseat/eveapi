@@ -43,9 +43,9 @@ class InvTypeMaterialMapping extends AbstractFuzzworkMapping implements WithVali
     public function model(array $row)
     {
         return (new InvTypeMaterial([
-            'typeID'         => $row[0],
+            'typeID' => $row[0],
             'materialTypeID' => $row[1],
-            'quantity'       => $row[2],
+            'quantity' => $row[2],
         ]))->bypassReadOnly();
     }
 

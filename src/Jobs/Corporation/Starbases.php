@@ -110,7 +110,7 @@ class Starbases extends AbstractAuthCorporationJob
 
                 $model = CorporationStarbase::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'starbase_id'    => $starbase->starbase_id,
+                    'starbase_id' => $starbase->starbase_id,
                 ]);
 
                 StarbaseMapping::make($model, $starbase, [

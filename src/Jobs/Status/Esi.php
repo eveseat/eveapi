@@ -87,7 +87,7 @@ class Esi extends EsiBase
         $end = microtime(true) - $start;
 
         EsiStatus::create([
-            'status'       => $status,
+            'status' => $status,
             'request_time' => $end,
         ]);
     }

@@ -83,9 +83,9 @@ class Stats extends AbstractAuthCharacterJob
 
                 CharacterStats::firstOrCreate([
                     'character_id' => $this->getCharacterId(),
-                    'year'         => $aggregate->year,
-                    'category'     => $category,
-                    'stats'        => isset($aggregate->$category) ?
+                    'year' => $aggregate->year,
+                    'category' => $category,
+                    'stats' => isset($aggregate->$category) ?
                         json_encode($aggregate->$category) : null,
                 ]);
             }

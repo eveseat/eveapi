@@ -24,7 +24,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 class AddUuidToFailedJobsTable extends Migration
 {
@@ -37,7 +36,6 @@ class AddUuidToFailedJobsTable extends Migration
     {
         // failed_jobs is unimportant data. Since adding a UUID to each failed_job is complicated, we just delete all failed_jobs.
         DB::table('failed_jobs')->truncate();
-
 
         // Older version of this migration sometimes took excessive amounts of time, so that users cancelled the migration process (never do this kids :))
         // On the next attempt at migrating, the migration process failed since it had already run half of the migration and the uuid column was already added.

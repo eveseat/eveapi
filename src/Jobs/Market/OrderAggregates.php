@@ -47,10 +47,10 @@ class OrderAggregates extends AbstractJob
             ->chunk(1000, function ($types) use ($now) {
                 $types = $types->map(function ($type) use ($now) {
                     return [
-                        'type_id'=>$type->type_id,
-                        'sell_price'=>$type->sell_price,
-                        'created_at'     => $now,
-                        'updated_at'     => $now,
+                        'type_id' => $type->type_id,
+                        'sell_price' => $type->sell_price,
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ];
                 });
 
@@ -71,8 +71,8 @@ class OrderAggregates extends AbstractJob
                     return [
                         'type_id' => $type->type_id,
                         'buy_price' => $type->buy_price,
-                        'created_at'     => $now,
-                        'updated_at'     => $now,
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ];
                 });
 

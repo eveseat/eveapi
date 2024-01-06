@@ -108,9 +108,9 @@ class Shareholders extends AbstractAuthCorporationJob
             collect($shareholders)->each(function ($shareholder) {
 
                 CorporationShareholder::firstOrNew([
-                    'corporation_id'   => $this->getCorporationId(),
+                    'corporation_id' => $this->getCorporationId(),
                     'shareholder_type' => $shareholder->shareholder_type,
-                    'shareholder_id'   => $shareholder->shareholder_id,
+                    'shareholder_id' => $shareholder->shareholder_id,
                 ])->fill([
                     'share_count' => $shareholder->share_count,
                 ])->save();

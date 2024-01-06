@@ -87,7 +87,7 @@ class Jobs extends AbstractAuthCharacterJob
 
             $model = CharacterIndustryJob::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'job_id'       => $job->job_id,
+                'job_id' => $job->job_id,
             ]);
 
             JobMapping::make($model, $job, [
