@@ -43,10 +43,10 @@ class DgmTypeAttributeMapping extends AbstractFuzzworkMapping implements WithVal
     public function model(array $row)
     {
         return (new DgmTypeAttribute([
-            'typeID'      => $row[0],
+            'typeID' => $row[0],
             'attributeID' => $row[1],
-            'valueInt'    => $row[2],
-            'valueFloat'  => $row[3],
+            'valueInt' => $row[2],
+            'valueFloat' => $row[3],
         ]))->bypassReadOnly();
     }
 

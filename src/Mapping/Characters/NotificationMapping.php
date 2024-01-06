@@ -36,11 +36,11 @@ class NotificationMapping extends DataMapping
      */
     protected static $mapping = [
         'notification_id' => 'notification_id',
-        'type'            => 'type',
-        'sender_id'       => 'sender_id',
-        'sender_type'     => 'sender_type',
-        'timestamp'       => 'timestamp',
-        'is_read'         => 'is_read',
-        'text'            => 'text',
+        'type' => 'type',
+        'sender_id' => 'sender_id',
+        'sender_type' => 'sender_type',
+        'timestamp' => 'timestamp',
+        'is_read' => 'is_read',
+        'text' => 'text',
     ];
 }

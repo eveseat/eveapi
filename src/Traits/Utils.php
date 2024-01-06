@@ -82,7 +82,7 @@ trait Utils
         // The default response will be the system this
         // location is in.
         $response = [
-            'map_id'   => $solar_system_id,
+            'map_id' => $solar_system_id,
             'map_name' => 'Unknown',
         ];
 

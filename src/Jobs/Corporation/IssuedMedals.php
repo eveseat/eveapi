@@ -90,11 +90,11 @@ class IssuedMedals extends AbstractAuthCorporationJob
 
                 CorporationIssuedMedal::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'medal_id'       => $medal->medal_id,
-                    'character_id'   => $medal->character_id,
+                    'medal_id' => $medal->medal_id,
+                    'character_id' => $medal->character_id,
                 ])->fill([
-                    'reason'    => $medal->reason,
-                    'status'    => $medal->status,
+                    'reason' => $medal->reason,
+                    'status' => $medal->status,
                     'issuer_id' => $medal->issuer_id,
                     'issued_at' => carbon($medal->issued_at),
                 ])->save();

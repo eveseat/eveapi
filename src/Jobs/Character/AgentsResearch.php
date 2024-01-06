@@ -80,7 +80,7 @@ class AgentsResearch extends AbstractAuthCharacterJob
 
             $model = CharacterAgentResearch::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'agent_id'     => $agent->agent_id,
+                'agent_id' => $agent->agent_id,
             ]);
 
             AgentResearchMapping::make($model, $agent, [

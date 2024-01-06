@@ -116,7 +116,7 @@ class Upgrade extends Command
 
                     } catch (RequestException $e) {
                         logger()->error('[Cli] Error Migrating Refresh Token', [
-                            'character_id'   => $token->character_id,
+                            'character_id' => $token->character_id,
                             'message' => $e->getMessage(),
                             'body' => (string) $e->getResponse()->getBody(),
                             'headers' => $e->getResponse()->getHeaders(),

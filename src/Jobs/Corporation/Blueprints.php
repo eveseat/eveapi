@@ -116,7 +116,7 @@ class Blueprints extends AbstractAuthCorporationJob
                     $structure_batch->addStructure($blueprint->location_id);
 
                     $model = CorporationBlueprint::firstOrNew([
-                        'item_id'        => $blueprint->item_id,
+                        'item_id' => $blueprint->item_id,
                     ]);
 
                     BlueprintMapping::make($model, $blueprint, [

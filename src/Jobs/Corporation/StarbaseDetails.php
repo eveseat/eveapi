@@ -104,14 +104,14 @@ class StarbaseDetails extends AbstractAuthCorporationJob
 
                 $response = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'starbase_id'    => $starbase->starbase_id,
+                    'starbase_id' => $starbase->starbase_id,
                 ]);
 
                 $detail = $response->getBody();
 
                 $model = CorporationStarbaseDetail::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'starbase_id'    => $starbase->starbase_id,
+                    'starbase_id' => $starbase->starbase_id,
                 ]);
 
                 StarbaseDetailMapping::make($model, $detail, [
@@ -129,8 +129,8 @@ class StarbaseDetails extends AbstractAuthCorporationJob
 
                         CorporationStarbaseFuel::firstOrNew([
                             'corporation_id' => $this->getCorporationId(),
-                            'starbase_id'    => $starbase->starbase_id,
-                            'type_id'        => $fuel->type_id,
+                            'starbase_id' => $starbase->starbase_id,
+                            'type_id' => $fuel->type_id,
                         ])->fill([
                             'quantity' => $fuel->quantity,
                         ])->save();

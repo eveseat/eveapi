@@ -104,11 +104,11 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
 
                 CorporationCustomsOffice::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'office_id'      => $location->item_id,
+                    'office_id' => $location->item_id,
                 ])->fill([
-                    'x'           => $location->position->x,
-                    'y'           => $location->position->y,
-                    'z'           => $location->position->z,
+                    'x' => $location->position->x,
+                    'y' => $location->position->y,
+                    'z' => $location->position->z,
                     'location_id' => $nearest_celestial['map_id'],
                 ])->save();
 

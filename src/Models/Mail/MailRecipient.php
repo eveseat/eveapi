@@ -94,8 +94,8 @@ class MailRecipient extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'recipient_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 }

@@ -95,7 +95,7 @@ class Orders extends AbstractAuthCorporationJob
 
                 $model = CorporationOrder::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'order_id'       => $order->order_id,
+                    'order_id' => $order->order_id,
                 ]);
 
                 OrderMapping::make($model, $order, [

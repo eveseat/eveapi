@@ -102,7 +102,7 @@ class Contracts extends AbstractAuthCorporationJob
                 // Ensure the character is associated to this contract
                 CorporationContract::firstOrCreate([
                     'corporation_id' => $this->getCorporationId(),
-                    'contract_id'    => $contract->contract_id,
+                    'contract_id' => $contract->contract_id,
                 ]);
 
                 // dispatch a job which will collect bids related to this contract

@@ -76,9 +76,9 @@ class KillmailDetail extends Model
 
         return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id')
             ->withDefault([
-                'character_id'   => 0,
+                'character_id' => 0,
                 'corporation_id' => 0,
-                'ship_type_id'   => 0,
+                'ship_type_id' => 0,
             ]);
     }
 

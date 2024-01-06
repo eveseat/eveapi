@@ -43,11 +43,11 @@ class InvMarketGroupMapping extends AbstractFuzzworkMapping implements WithValid
     public function model(array $row)
     {
         return (new InvMarketGroup([
-            'marketGroupID'   => $row[0],
-            'parentGroupID'   => $row[1],
+            'marketGroupID' => $row[0],
+            'parentGroupID' => $row[1],
             'marketGroupName' => $row[2],
-            'description'     => $row[3],
-            'iconID'          => $row[4],
+            'description' => $row[3],
+            'iconID' => $row[4],
         ]))->bypassReadOnly();
     }
 

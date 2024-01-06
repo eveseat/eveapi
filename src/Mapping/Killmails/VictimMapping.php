@@ -35,14 +35,14 @@ class VictimMapping extends DataMapping
      * @var array
      */
     protected static $mapping = [
-        'character_id'   => 'character_id',
+        'character_id' => 'character_id',
         'corporation_id' => 'corporation_id',
-        'alliance_id'    => 'alliance_id',
-        'faction_id'     => 'faction_id',
-        'damage_taken'   => 'damage_taken',
-        'ship_type_id'   => 'ship_type_id',
-        'x'              => 'position.x',
-        'y'              => 'position.y',
-        'z'              => 'position.z',
+        'alliance_id' => 'alliance_id',
+        'faction_id' => 'faction_id',
+        'damage_taken' => 'damage_taken',
+        'ship_type_id' => 'ship_type_id',
+        'x' => 'position.x',
+        'y' => 'position.y',
+        'z' => 'position.z',
     ];
 }

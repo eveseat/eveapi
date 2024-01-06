@@ -94,7 +94,7 @@ class Transactions extends AbstractAuthCharacterJob
             $entries->each(function ($transaction) {
 
                 $transaction_entry = CharacterWalletTransaction::firstOrNew([
-                    'character_id'   => $this->getCharacterId(),
+                    'character_id' => $this->getCharacterId(),
                     'transaction_id' => $transaction->transaction_id,
                 ]);
 

@@ -44,11 +44,11 @@ class InvControlTowerResourceMapping extends AbstractFuzzworkMapping implements 
     {
         return (new InvControlTowerResource([
             'controlTowerTypeID' => $row[0],
-            'resourceTypeID'     => $row[1],
-            'purpose'            => $row[2],
-            'quantity'           => $row[3],
-            'minSecurityLevel'   => $row[4],
-            'factionID'          => $row[5],
+            'resourceTypeID' => $row[1],
+            'purpose' => $row[2],
+            'quantity' => $row[3],
+            'minSecurityLevel' => $row[4],
+            'factionID' => $row[5],
         ]))->bypassReadOnly();
     }
 

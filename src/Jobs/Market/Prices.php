@@ -77,11 +77,11 @@ class Prices extends EsiBase
             $records = $chunk->map(function ($item, $key) {
 
                 return [
-                    'type_id'        => $item->type_id,
-                    'average_price'  => $item->average_price ?? 0.0,
+                    'type_id' => $item->type_id,
+                    'average_price' => $item->average_price ?? 0.0,
                     'adjusted_price' => $item->adjusted_price ?? 0.0,
-                    'created_at'     => carbon(),
-                    'updated_at'     => carbon(),
+                    'created_at' => carbon(),
+                    'updated_at' => carbon(),
                 ];
             });
 

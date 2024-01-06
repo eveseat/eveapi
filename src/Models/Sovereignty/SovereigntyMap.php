@@ -55,7 +55,7 @@ class SovereigntyMap extends Model
         return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
             ->withDefault([
                 'category' => 'alliance',
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -67,7 +67,7 @@ class SovereigntyMap extends Model
         return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
             ->withDefault([
                 'category' => 'corporation',
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -79,7 +79,7 @@ class SovereigntyMap extends Model
         return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
             ->withDefault([
                 'category' => 'faction',
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 }

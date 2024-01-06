@@ -73,11 +73,11 @@ class AllianceHistory extends AbstractCorporationJob
 
             CorporationAllianceHistory::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'record_id'      => $alliance->record_id,
+                'record_id' => $alliance->record_id,
             ])->fill([
-                'start_date'  => carbon($alliance->start_date),
+                'start_date' => carbon($alliance->start_date),
                 'alliance_id' => $alliance->alliance_id ?? null,
-                'is_deleted'  => $alliance->is_deleted ?? false,
+                'is_deleted' => $alliance->is_deleted ?? false,
             ])->save();
 
         });

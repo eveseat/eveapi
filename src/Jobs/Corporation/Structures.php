@@ -121,11 +121,11 @@ class Structures extends AbstractAuthCorporationJob
                 if (! $model->exists) {
                     $model->fill([
                         'solar_system_id' => $structure->system_id,
-                        'type_id'               => $structure->type_id,
-                        'name'                  => $structure->name,
-                        'x'                          => 0.0,
-                        'y'                          => 0.0,
-                        'z'                          => 0.0,
+                        'type_id' => $structure->type_id,
+                        'name' => $structure->name,
+                        'x' => 0.0,
+                        'y' => 0.0,
+                        'z' => 0.0,
                     ])->save();
                 }
 
@@ -139,7 +139,7 @@ class Structures extends AbstractAuthCorporationJob
                 if (! $model->exists) $model->save();
 
                 $model = CorporationStructure::firstOrNew([
-                    'structure_id'   => $structure->structure_id,
+                    'structure_id' => $structure->structure_id,
                 ]);
 
                 CorporationStructureMapping::make($model, $structure)->save();
@@ -149,8 +149,8 @@ class Structures extends AbstractAuthCorporationJob
                     collect($structure->services)->each(function ($service) use ($structure) {
 
                         CorporationStructureService::firstOrNew([
-                            'structure_id'   => $structure->structure_id,
-                            'name'           => $service->name,
+                            'structure_id' => $structure->structure_id,
+                            'name' => $service->name,
                         ])->fill([
                             'state' => $service->state,
                         ])->save();

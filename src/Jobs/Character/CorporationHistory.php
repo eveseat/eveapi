@@ -67,12 +67,12 @@ class CorporationHistory extends AbstractCharacterJob
         $corporations->each(function ($corporation) {
 
             CharacterCorporationHistory::firstOrCreate([
-                'character_id'   => $this->getCharacterId(),
-                'record_id'      => $corporation->record_id,
+                'character_id' => $this->getCharacterId(),
+                'record_id' => $corporation->record_id,
             ], [
-                'start_date'     => carbon($corporation->start_date),
+                'start_date' => carbon($corporation->start_date),
                 'corporation_id' => $corporation->corporation_id,
-                'is_deleted'     => $corporation->is_deleted ?? false,
+                'is_deleted' => $corporation->is_deleted ?? false,
             ]);
         });
     }

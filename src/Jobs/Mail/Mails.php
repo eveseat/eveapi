@@ -86,11 +86,11 @@ class Mails extends AbstractAuthCharacterJob
 
             // seed mail header if not exists
             $mail_header = MailHeader::firstOrCreate([
-                'mail_id'      => $header->mail_id,
+                'mail_id' => $header->mail_id,
             ], [
-                'subject'      => $header->subject,
-                'from'         => $header->from,
-                'timestamp'    => carbon($header->timestamp),
+                'subject' => $header->subject,
+                'from' => $header->from,
+                'timestamp' => carbon($header->timestamp),
             ]);
 
             // seed recipient using requested character
@@ -107,8 +107,8 @@ class Mails extends AbstractAuthCharacterJob
             collect($header->recipients)->each(function ($recipient) use ($header) {
 
                 MailRecipient::firstOrCreate([
-                    'mail_id'        => $header->mail_id,
-                    'recipient_id'   => $recipient->recipient_id,
+                    'mail_id' => $header->mail_id,
+                    'recipient_id' => $recipient->recipient_id,
                     'recipient_type' => $recipient->recipient_type,
                 ]);
             });
@@ -117,13 +117,13 @@ class Mails extends AbstractAuthCharacterJob
             if ($mail_header->wasRecentlyCreated) {
                 $body = $this->esi->setVersion('v1')->invoke('get', '/characters/{character_id}/mail/{mail_id}/', [
                     'character_id' => $this->getCharacterId(),
-                    'mail_id'      => $header->mail_id,
+                    'mail_id' => $header->mail_id,
                 ]);
 
                 MailBody::firstOrCreate([
                     'mail_id' => $header->mail_id,
                 ], [
-                    'body'    => $body->getBody()->body,
+                    'body' => $body->getBody()->body,
                 ]);
             }
         });

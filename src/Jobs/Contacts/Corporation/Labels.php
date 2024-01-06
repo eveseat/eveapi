@@ -78,9 +78,9 @@ class Labels extends AbstractAuthCorporationJob
 
             CorporationLabel::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'label_id'       => $label->label_id,
+                'label_id' => $label->label_id,
             ])->fill([
-                'name'           => $label->label_name,
+                'name' => $label->label_name,
             ])->save();
         });
 

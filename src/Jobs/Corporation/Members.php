@@ -78,7 +78,7 @@ class Members extends AbstractAuthCorporationJob
 
             CorporationMember::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'character_id'   => $member_id,
+                'character_id' => $member_id,
             ])->save();
 
         });

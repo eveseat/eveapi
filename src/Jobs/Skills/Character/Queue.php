@@ -84,7 +84,7 @@ class Queue extends AbstractAuthCharacterJob
 
             $model = CharacterSkillQueue::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'queue_position'    => $skill->queue_position,
+                'queue_position' => $skill->queue_position,
             ]);
 
             SkillQueueMapping::make($model, $skill, [

@@ -67,12 +67,12 @@ class Map extends EsiBase
 
             $records = $chunk->map(function ($system, $key) {
                 return [
-                    'system_id'      => $system->system_id,
-                    'alliance_id'    => $system->alliance_id ?? null,
+                    'system_id' => $system->system_id,
+                    'alliance_id' => $system->alliance_id ?? null,
                     'corporation_id' => $system->corporation_id ?? null,
-                    'faction_id'     => $system->faction_id ?? null,
-                    'created_at'     => carbon(),
-                    'updated_at'     => carbon(),
+                    'faction_id' => $system->faction_id ?? null,
+                    'created_at' => carbon(),
+                    'updated_at' => carbon(),
                 ];
             });
 

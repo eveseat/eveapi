@@ -88,12 +88,12 @@ class Medals extends AbstractAuthCorporationJob
 
                 CorporationMedal::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'medal_id'       => $medal->medal_id,
+                    'medal_id' => $medal->medal_id,
                 ])->fill([
-                    'title'       => $medal->title,
+                    'title' => $medal->title,
                     'description' => $medal->description,
-                    'creator_id'  => $medal->creator_id,
-                    'created_at'  => carbon($medal->created_at),
+                    'creator_id' => $medal->creator_id,
+                    'created_at' => carbon($medal->created_at),
                 ])->save();
 
             });

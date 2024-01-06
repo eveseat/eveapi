@@ -86,7 +86,7 @@ class ObserverDetails extends AbstractAuthCorporationJob
 
                     $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
-                        'observer_id'    => $observer->observer_id,
+                        'observer_id' => $observer->observer_id,
                     ]);
 
                     $observers = $response->getBody();
@@ -94,12 +94,12 @@ class ObserverDetails extends AbstractAuthCorporationJob
                     collect($observers)->each(function ($data) use ($observer) {
 
                         CorporationIndustryMiningObserverData::firstOrNew([
-                            'corporation_id'          => $this->getCorporationId(),
-                            'observer_id'             => $observer->observer_id,
+                            'corporation_id' => $this->getCorporationId(),
+                            'observer_id' => $observer->observer_id,
                             'recorded_corporation_id' => $data->recorded_corporation_id,
-                            'character_id'            => $data->character_id,
-                            'type_id'                 => $data->type_id,
-                            'last_updated'            => $data->last_updated,
+                            'character_id' => $data->character_id,
+                            'type_id' => $data->type_id,
+                            'last_updated' => $data->last_updated,
                         ])->fill([
                             'quantity' => $data->quantity,
                         ])->save();

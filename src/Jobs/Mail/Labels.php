@@ -77,14 +77,14 @@ class Labels extends AbstractAuthCharacterJob
             // Create the label
             MailLabel::firstOrCreate([
                 'character_id' => $this->getCharacterId(),
-                'label_id'     => $label->label_id,
+                'label_id' => $label->label_id,
             ]);
 
             // Update the name and color for the label
             MailLabel::where('character_id', $this->getCharacterId())
                 ->where('label_id', $label->label_id)
                 ->update([
-                    'name'  => $label->name,
+                    'name' => $label->name,
                     'color' => $label->color,
                 ]);
         });

@@ -99,27 +99,27 @@ class ContractDetail extends Model
     public function fromEsi($esi_structure): ContractDetail
     {
         $this->fill([
-            'issuer_id'             => $esi_structure->issuer_id,
+            'issuer_id' => $esi_structure->issuer_id,
             'issuer_corporation_id' => $esi_structure->issuer_corporation_id,
-            'assignee_id'           => $esi_structure->assignee_id,
-            'acceptor_id'           => $esi_structure->acceptor_id,
-            'type'                  => $esi_structure->type,
-            'status'                => $esi_structure->status,
-            'title'                 => $esi_structure->title ?? null,
-            'for_corporation'       => (int) $esi_structure->for_corporation, // enforce raw cast to avoid mutex between db retrieval and model seed
-            'availability'          => $esi_structure->availability,
-            'date_issued'           => (string) carbon($esi_structure->date_issued), // enforce raw cast to avoid mutex between db retrieval and model seed
-            'date_expired'          => (string) carbon($esi_structure->date_expired), // enforce raw cast to avoid mutex between db retrieval and model seed
-            'date_accepted'         => isset($esi_structure->date_accepted) ?
+            'assignee_id' => $esi_structure->assignee_id,
+            'acceptor_id' => $esi_structure->acceptor_id,
+            'type' => $esi_structure->type,
+            'status' => $esi_structure->status,
+            'title' => $esi_structure->title ?? null,
+            'for_corporation' => (int) $esi_structure->for_corporation, // enforce raw cast to avoid mutex between db retrieval and model seed
+            'availability' => $esi_structure->availability,
+            'date_issued' => (string) carbon($esi_structure->date_issued), // enforce raw cast to avoid mutex between db retrieval and model seed
+            'date_expired' => (string) carbon($esi_structure->date_expired), // enforce raw cast to avoid mutex between db retrieval and model seed
+            'date_accepted' => isset($esi_structure->date_accepted) ?
                 (string) carbon($esi_structure->date_accepted) : null, // enforce raw cast to avoid mutex between db retrieval and model seed
-            'days_to_complete'      => $esi_structure->days_to_complete ?? null,
-            'date_completed'        => isset($esi_structure->date_completed) ?
+            'days_to_complete' => $esi_structure->days_to_complete ?? null,
+            'date_completed' => isset($esi_structure->date_completed) ?
                 (string) carbon($esi_structure->date_completed) : null, // enforce raw cast to avoid mutex between db retrieval and model seed
-            'price'                 => $esi_structure->price ?? null,
-            'reward'                => $esi_structure->reward ?? null,
-            'collateral'            => $esi_structure->collateral ?? null,
-            'buyout'                => $esi_structure->buyout ?? null,
-            'volume'                => $esi_structure->volume ?? null,
+            'price' => $esi_structure->price ?? null,
+            'reward' => $esi_structure->reward ?? null,
+            'collateral' => $esi_structure->collateral ?? null,
+            'buyout' => $esi_structure->buyout ?? null,
+            'volume' => $esi_structure->volume ?? null,
         ]);
 
         // update location fields manually (to prevent excessive database queries).
@@ -136,8 +136,8 @@ class ContractDetail extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'acceptor_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 
@@ -148,8 +148,8 @@ class ContractDetail extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'assignee_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 
@@ -160,8 +160,8 @@ class ContractDetail extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'issuer_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 

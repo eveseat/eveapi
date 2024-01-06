@@ -44,8 +44,8 @@ class CorporationStanding extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'from_id')
             ->withDefault([
-                'category'  => 'character',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'character',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 }

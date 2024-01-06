@@ -106,11 +106,11 @@ class Mining extends AbstractAuthCharacterJob
 
                     // finally, we create the new entry
                     CharacterMining::updateOrCreate([
-                        'character_id'    => $this->getCharacterId(),
-                        'date'            => $ledger_entry->date,
-                        'time'            => $delta_time,
+                        'character_id' => $this->getCharacterId(),
+                        'date' => $ledger_entry->date,
+                        'time' => $delta_time,
                         'solar_system_id' => $ledger_entry->solar_system_id,
-                        'type_id'         => $ledger_entry->type_id,
+                        'type_id' => $ledger_entry->type_id,
                     ], [
                         'quantity' => $delta_quantity,
                     ]);

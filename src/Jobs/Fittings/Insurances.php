@@ -69,10 +69,10 @@ class Insurances extends EsiBase
 
                 Insurance::firstOrNew([
                     'type_id' => $insurance->type_id,
-                    'name'    => $level->name,
+                    'name' => $level->name,
                 ], [
-                    'cost'    => $level->cost,
-                    'payout'  => $level->payout,
+                    'cost' => $level->cost,
+                    'payout' => $level->payout,
                 ])->save();
 
             });

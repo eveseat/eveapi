@@ -94,7 +94,7 @@ class Titles extends AbstractAuthCharacterJob
             // retrieve or create title
             $corporation_title = CorporationTitle::firstOrCreate([
                 'corporation_id' => $this->token->character->affiliation->corporation_id,
-                'title_id'       => $title->title_id,
+                'title_id' => $title->title_id,
             ], [
                 'name' => $title->name,
             ]);

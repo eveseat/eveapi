@@ -107,7 +107,7 @@ class Stations extends EsiBase
         collect($structure->services)->each(function ($service) use ($structure) {
 
             UniverseStationService::firstOrNew([
-                'station_id'   => $structure->station_id,
+                'station_id' => $structure->station_id,
                 'service_name' => $service,
             ])->save();
 

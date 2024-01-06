@@ -102,8 +102,8 @@ class CorporationWalletTransaction extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'client_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 

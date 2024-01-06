@@ -63,8 +63,8 @@ class CharacterCorporationHistory extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
             ->withDefault([
-                'category'  => 'corporation',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'corporation',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 }

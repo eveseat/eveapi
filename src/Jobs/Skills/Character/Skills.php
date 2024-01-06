@@ -80,7 +80,7 @@ class Skills extends AbstractAuthCharacterJob
         CharacterInfoSkill::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
-            'total_sp'       => $skills->total_sp,
+            'total_sp' => $skills->total_sp,
             'unallocated_sp' => property_exists($skills, 'unallocated_sp') ?
                 $skills->unallocated_sp : 0,
         ])->save();

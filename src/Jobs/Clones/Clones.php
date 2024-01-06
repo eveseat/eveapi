@@ -83,11 +83,11 @@ class Clones extends AbstractAuthCharacterJob
         CharacterClone::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
-            'last_clone_jump_date'     => isset($clone_informations->last_clone_jump_date) ?
+            'last_clone_jump_date' => isset($clone_informations->last_clone_jump_date) ?
                 carbon($clone_informations->last_clone_jump_date) : null,
-            'home_location_id'         => isset($clone_informations->home_location) ?
+            'home_location_id' => isset($clone_informations->home_location) ?
                 $clone_informations->home_location->location_id : null,
-            'home_location_type'       => isset($clone_informations->home_location) ?
+            'home_location_type' => isset($clone_informations->home_location) ?
                 $clone_informations->home_location->location_type : null,
             'last_station_change_date' => isset($clone_informations->last_station_change_date) ?
                 carbon($clone_informations->last_station_change_date) : null,
@@ -100,13 +100,13 @@ class Clones extends AbstractAuthCharacterJob
             $structure_batch->addStructure($jump_clone->location_id);
 
             CharacterJumpClone::firstOrNew([
-                'character_id'  => $this->getCharacterId(),
+                'character_id' => $this->getCharacterId(),
                 'jump_clone_id' => $jump_clone->jump_clone_id,
             ])->fill([
-                'name'          => $jump_clone->name ?? null,
-                'location_id'   => $jump_clone->location_id,
+                'name' => $jump_clone->name ?? null,
+                'location_id' => $jump_clone->location_id,
                 'location_type' => $jump_clone->location_type,
-                'implants'      => $jump_clone->implants,
+                'implants' => $jump_clone->implants,
             ])->save();
         });
 

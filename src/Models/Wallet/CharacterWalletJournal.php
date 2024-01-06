@@ -80,8 +80,8 @@ class CharacterWalletJournal extends Model
         return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id')
             ->withDefault([
                 'corporation_id' => 0,
-                'alliance_id'    => 0,
-                'faction_id'     => 0,
+                'alliance_id' => 0,
+                'faction_id' => 0,
             ]);
     }
 
@@ -93,8 +93,8 @@ class CharacterWalletJournal extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 
@@ -106,8 +106,8 @@ class CharacterWalletJournal extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 }

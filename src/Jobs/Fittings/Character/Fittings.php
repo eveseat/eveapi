@@ -77,10 +77,10 @@ class Fittings extends AbstractAuthCharacterJob
 
             CharacterFitting::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'fitting_id'   => $fitting->fitting_id,
+                'fitting_id' => $fitting->fitting_id,
             ])->fill([
-                'name'         => $fitting->name,
-                'description'  => $fitting->description,
+                'name' => $fitting->name,
+                'description' => $fitting->description,
                 'ship_type_id' => $fitting->ship_type_id,
             ])->save();
 
@@ -93,10 +93,10 @@ class Fittings extends AbstractAuthCharacterJob
 
                     CharacterFittingItem::firstOrCreate([
                         'fitting_id' => $fitting->fitting_id,
-                        'type_id'    => $item->type_id,
-                        'flag'       => $item->flag,
+                        'type_id' => $item->type_id,
+                        'flag' => $item->flag,
                     ], [
-                        'quantity'   => $item->quantity,
+                        'quantity' => $item->quantity,
                     ]);
                 });
             }

@@ -119,7 +119,7 @@ class Blueprints extends AbstractAuthCharacterJob
                     }
 
                     $model = CharacterBlueprint::firstOrNew([
-                        'item_id'      => $blueprint->item_id,
+                        'item_id' => $blueprint->item_id,
                     ]);
 
                     BlueprintMapping::make($model, $blueprint, [

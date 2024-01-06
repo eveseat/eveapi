@@ -35,10 +35,10 @@ class CalendarEventMapping extends DataMapping
      * @var string[]
      */
     protected static $mapping = [
-        'event_id'       => 'event_id',
-        'event_date'     => 'event_date',
-        'title'          => 'title',
-        'importance'     => 'importance',
+        'event_id' => 'event_id',
+        'event_date' => 'event_date',
+        'title' => 'title',
+        'importance' => 'importance',
         'event_response' => 'event_response',
     ];
 }

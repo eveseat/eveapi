@@ -81,7 +81,7 @@ class Orders extends AbstractAuthCharacterJob
 
             $model = CharacterOrder::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'order_id'     => $order->order_id,
+                'order_id' => $order->order_id,
             ]);
 
             OrderMapping::make($model, $order, [

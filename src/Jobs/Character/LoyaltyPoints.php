@@ -95,7 +95,7 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
                 CorporationInfoJob::dispatch($corporation_loyalty->corporation_id);
             }
 
-            return [$corporation_loyalty->corporation_id => ['amount'=> $corporation_loyalty->loyalty_points]];
+            return [$corporation_loyalty->corporation_id => ['amount' => $corporation_loyalty->loyalty_points]];
         }));
 
     }

@@ -103,8 +103,8 @@ class CorporationMemberTracking extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 }

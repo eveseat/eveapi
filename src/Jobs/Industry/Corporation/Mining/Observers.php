@@ -89,10 +89,10 @@ class Observers extends AbstractAuthCorporationJob
         collect($observers)->each(function ($observer) {
 
             CorporationIndustryMiningObserver::firstOrNew([
-                'observer_id'    => $observer->observer_id,
+                'observer_id' => $observer->observer_id,
             ])->fill([
                 'corporation_id' => $this->getCorporationId(),
-                'last_updated'  => carbon($observer->last_updated),
+                'last_updated' => carbon($observer->last_updated),
                 'observer_type' => $observer->observer_type,
             ])->save();
         });

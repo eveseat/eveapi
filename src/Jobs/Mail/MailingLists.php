@@ -75,10 +75,10 @@ class MailingLists extends AbstractAuthCharacterJob
         collect($lists)->each(function ($list) {
 
             MailMailingList::firstOrCreate([
-                'character_id'    => $this->getCharacterId(),
+                'character_id' => $this->getCharacterId(),
                 'mailing_list_id' => $list->mailing_list_id,
             ], [
-                'name'            => $list->name,
+                'name' => $list->name,
             ]);
         });
     }

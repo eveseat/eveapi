@@ -23,8 +23,8 @@
 return [
     'eseye' => [
         'driver' => 'daily',
-        'path'   => storage_path('logs/eseye.log'),
-        'level'  => env('LOG_LEVEL', 'error'),
-        'days'   => 7,
+        'path' => storage_path('logs/eseye.log'),
+        'level' => env('LOG_LEVEL', 'error'),
+        'days' => 7,
     ],
 ];
