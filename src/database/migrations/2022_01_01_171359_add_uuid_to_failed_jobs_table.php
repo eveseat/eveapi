@@ -35,23 +35,18 @@ class AddUuidToFailedJobsTable extends Migration
      */
     public function up()
     {
-        // for unknown reasons, some seat instance already have this on seat 4. If the column exists, we can leave it
+        // failed_jobs is unimportant data. Since adding a UUID to each failed_job is complicated, we just delete all failed_jobs.
+        DB::table('failed_jobs')->truncate();
+
+
+        // Older version of this migration sometimes took excessive amounts of time, so that users cancelled the migration process (never do this kids :))
+        // On the next attempt at migrating, the migration process failed since it had already run half of the migration and the uuid column was already added.
+        // We don't know how many people with a broken database state are out there, therefore we make sure the migration also goes smooth for them.
         if(! Schema::hasColumn('failed_jobs', 'uuid')) {
             Schema::table('failed_jobs', function (Blueprint $table) {
                 $table->string('uuid')->after('id')->nullable()->unique();
             });
         }
-
-        DB::table('failed_jobs')
-            ->whereNull('uuid')
-            ->cursor()
-            ->each(function ($job) {
-                DB::table('failed_jobs')
-                    ->where('id', $job->id)
-                    ->update([
-                        'uuid' => (string) Str::uuid(),
-                    ]);
-        });
     }
 
     /**
