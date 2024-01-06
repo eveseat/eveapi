@@ -28,6 +28,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
@@ -147,10 +148,23 @@ class Sde extends Command
             }
         }
 
+        // add extra tables registered on behalf providers
+        $extra_tables = config('seat.sde.tables', []);
+        $this->json->tables = array_unique(array_merge($this->json->tables, $extra_tables));
+        sort($this->json->tables, SORT_STRING);
+
+        $all_sde_tables_exist = true;
+        foreach ($this->json->tables as $table) {
+            if(!Schema::hasTable($table)) {
+                $all_sde_tables_exist = false;
+            }
+        }
+
         // Avoid an existing SDE to be accidentally installed again
         // except if the user explicitly ask for it
         if ($this->json->version == Seat::get('installed_sde') &&
-            $this->option('force') == false
+            $this->option('force') == false &&
+            $all_sde_tables_exist
         ) {
 
             $this->warn('You are already running the latest SDE version.');
@@ -171,12 +185,6 @@ class Sde extends Command
                 return $this::SUCCESS;
             }
         }
-
-        // add extra tables registered on behalf providers
-        $extra_tables = config('seat.sde.tables', []);
-
-        $this->json->tables = array_unique(array_merge($this->json->tables, $extra_tables));
-        sort($this->json->tables, SORT_STRING);
 
         // Show a final confirmation with some info on what
         // we are going to be doing.
