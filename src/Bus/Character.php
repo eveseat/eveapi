@@ -144,7 +144,7 @@ class Character extends Bus
                             'total' => $batch->totalJobs,
                         ],
                     ]);
-            })->onQueue('characters')->name($character->name)->dispatch();
+            })->onQueue('characters')->name($character->name)->allowFailures()->dispatch();
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
         // https://github.com/eveseat/seat/issues/731
