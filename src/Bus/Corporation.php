@@ -141,10 +141,7 @@ class Corporation extends Bus
                             'total' => $batch->totalJobs,
                         ],
                     ]);
-            })->onQueue('corporations')->name($corporation->name)->dispatch();
-        // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
-        // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
-        // https://github.com/eveseat/seat/issues/731
+            })->onQueue('corporations')->name($corporation->name)->allowFailures()->dispatch();
     }
 
     /**
