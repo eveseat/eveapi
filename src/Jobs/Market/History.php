@@ -140,7 +140,7 @@ class History extends EsiBase
      */
     public function handle()
     {
-        if ($this->batch()->cancelled()) {
+        if ($this->batchId && $this->batch()->cancelled()) {
             logger()->debug(sprintf('[Jobs][%s] Orders - Cancelling job due to relevant batch %s cancellation.', $this->job->getJobId(), $this->batch()->id));
 
             return;
