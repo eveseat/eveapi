@@ -71,11 +71,6 @@ class Assets extends AbstractAuthCorporationJob
     protected $page = 1;
 
     /**
-     * @var \Illuminate\Support\Collection
-     */
-    protected $known_assets;
-
-    /**
      * Assets constructor.
      *
      * @param  int  $corporation_id
@@ -83,8 +78,6 @@ class Assets extends AbstractAuthCorporationJob
      */
     public function __construct(int $corporation_id, RefreshToken $token)
     {
-        $this->known_assets = collect();
-
         parent::__construct($corporation_id, $token);
     }
 
@@ -98,6 +91,8 @@ class Assets extends AbstractAuthCorporationJob
     public function handle()
     {
         parent::handle();
+
+        $start = now();
 
         $structure_batch = new StructureBatch();
 
@@ -130,17 +125,13 @@ class Assets extends AbstractAuthCorporationJob
                 });
             });
 
-            // Update the list of known item_id's which should be
-            // excluded from the database cleanup later.
-            $this->known_assets->push($assets->pluck('item_id')->flatten()->all());
-
             if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 
         // Cleanup old assets
         CorporationAsset::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('item_id', $this->known_assets->flatten()->all())
+            ->where('updated_at','<',$start)
             ->delete();
 
         // schedule jobs for structures
