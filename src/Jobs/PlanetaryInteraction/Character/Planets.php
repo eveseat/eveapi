@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
+use Illuminate\Support\Facades\Bus;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
 use Seat\Eveapi\Models\RefreshToken;
@@ -122,7 +123,15 @@ class Planets extends AbstractAuthCharacterJob
             });
 
         // if we have planet jobs to process, append them to the active batch
-        if ($this->planet_jobs->isNotEmpty())
-            $this->batch()->add($this->planet_jobs->toArray());
+        if ($this->planet_jobs->isNotEmpty()) {
+            if($this->batchId) {
+                $this->batch()->add($this->planet_jobs->toArray());
+            } else {
+                Bus::batch($this->planet_jobs->toArray())
+                    ->name(sprintf('PI: %s', $this->token->character->name ?? $this->token->character_id))
+                    ->onQueue($this->job->getQueue())
+                    ->dispatch();
+            }
+        }
     }
 }
