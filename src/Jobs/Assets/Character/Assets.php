@@ -122,7 +122,7 @@ class Assets extends AbstractAuthCharacterJob
 
         // Cleanup old assets
         CharacterAsset::where('character_id', $this->getCharacterId())
-            ->where('updated_at','<',$start)
+            ->where('updated_at', '<', $start)
             ->delete();
 
         // schedule jobs for structures
