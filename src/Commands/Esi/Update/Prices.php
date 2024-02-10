@@ -25,12 +25,10 @@ namespace Seat\Eveapi\Commands\Esi\Update;
 use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use Seat\Eveapi\Jobs\Market\History;
 use Seat\Eveapi\Jobs\Market\DispatchHistoryJobs;
 use Seat\Eveapi\Jobs\Market\OrderAggregates;
 use Seat\Eveapi\Jobs\Market\Orders;
 use Seat\Eveapi\Jobs\Market\Prices as PricesJob;
-use Seat\Eveapi\Models\Sde\InvType;
 use Throwable;
 
 /**
@@ -64,8 +62,8 @@ class Prices extends Command
             new DispatchHistoryJobs(),
             [
                 new Orders(),
-                new OrderAggregates()
-            ]
+                new OrderAggregates(),
+            ],
         ])
             ->then(function (Batch $batch) {
                 logger()->info(
