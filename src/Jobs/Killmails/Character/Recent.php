@@ -117,7 +117,7 @@ class Recent extends AbstractAuthCharacterJob
                 $this->batch()->add($this->killmail_jobs->toArray());
             } else {
                 Bus::batch($this->killmail_jobs->toArray())
-                    ->name(sprintf('PI: %s', $this->token->character->name ?? $this->token->character_id))
+                    ->name(sprintf('KM: %s', $this->token->character->name ?? $this->token->character_id))
                     ->onQueue($this->job->getQueue())
                     ->dispatch();
             }
