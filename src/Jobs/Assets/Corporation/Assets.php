@@ -131,7 +131,7 @@ class Assets extends AbstractAuthCorporationJob
 
         // Cleanup old assets
         CorporationAsset::where('corporation_id', $this->getCorporationId())
-            ->where('updated_at','<',$start)
+            ->where('updated_at', '<', $start)
             ->delete();
 
         // schedule jobs for structures
