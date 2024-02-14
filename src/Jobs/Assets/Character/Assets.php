@@ -66,19 +66,12 @@ class Assets extends AbstractAuthCharacterJob
     protected $page = 1;
 
     /**
-     * @var \Illuminate\Support\Collection
-     */
-    protected $known_assets;
-
-    /**
      * Assets constructor.
      *
      * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(RefreshToken $token)
     {
-        $this->known_assets = collect();
-
         parent::__construct($token);
     }
 
@@ -92,6 +85,8 @@ class Assets extends AbstractAuthCharacterJob
     public function handle(): void
     {
         parent::handle();
+
+        $start = now();
 
         $structure_batch = new StructureBatch();
 
@@ -119,10 +114,6 @@ class Assets extends AbstractAuthCharacterJob
                         return $this->getCharacterId();
                     },
                 ])->save();
-
-                // Update the list of known item_id's which should be
-                // excluded from the database cleanup later.
-                $this->known_assets->push($asset->item_id);
             });
 
             if (! $this->nextPage($response->getPagesCount()))
@@ -131,7 +122,7 @@ class Assets extends AbstractAuthCharacterJob
 
         // Cleanup old assets
         CharacterAsset::where('character_id', $this->getCharacterId())
-            ->whereNotIn('item_id', $this->known_assets->flatten()->all())
+            ->where('updated_at', '<', $start)
             ->delete();
 
         // schedule jobs for structures
