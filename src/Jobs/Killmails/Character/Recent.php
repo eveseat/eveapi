@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Character;
 
+use Illuminate\Support\Facades\Bus;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Jobs\Killmails\Detail;
 use Seat\Eveapi\Models\Killmails\Killmail;
@@ -111,7 +112,15 @@ class Recent extends AbstractAuthCharacterJob
                 break;
         }
 
-        if ($this->killmail_jobs->isNotEmpty())
-            $this->batch()->add($this->killmail_jobs->toArray());
+        if ($this->killmail_jobs->isNotEmpty()) {
+            if($this->batchId) {
+                $this->batch()->add($this->killmail_jobs->toArray());
+            } else {
+                Bus::batch($this->killmail_jobs->toArray())
+                    ->name(sprintf('KM: %s', $this->token->character->name ?? $this->token->character_id))
+                    ->onQueue($this->job->getQueue())
+                    ->dispatch();
+            }
+        }
     }
 }
