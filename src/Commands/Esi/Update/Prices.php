@@ -25,11 +25,10 @@ namespace Seat\Eveapi\Commands\Esi\Update;
 use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use Seat\Eveapi\Jobs\Market\History;
+use Seat\Eveapi\Jobs\Market\DispatchHistoryJobs;
 use Seat\Eveapi\Jobs\Market\OrderAggregates;
 use Seat\Eveapi\Jobs\Market\Orders;
 use Seat\Eveapi\Jobs\Market\Prices as PricesJob;
-use Seat\Eveapi\Models\Sde\InvType;
 use Throwable;
 
 /**
@@ -58,21 +57,14 @@ class Prices extends Command
      */
     public function handle()
     {
-        $jobs = collect([new PricesJob()]);
-
-        // collect all items which can be sold on the market.
-        $types = InvType::whereNotNull('marketGroupID')
-            ->where('published', true)
-            ->select('typeID');
-
-        $batch_jobs_count = (int) ceil($types->count() / History::ENDPOINT_RATE_LIMIT_CALLS);
-
-        $types->chunk(History::ENDPOINT_RATE_LIMIT_CALLS, function ($results, $page) use ($batch_jobs_count, $jobs) {
-            $type_ids = $results->pluck('typeID')->toArray();
-            $jobs->add((new History($type_ids))->setCurrentBatchCount($page)->setTotalBatchCount($batch_jobs_count));
-        });
-
-        Bus::batch($jobs->toArray())
+        Bus::batch([
+            new PricesJob(),
+            new DispatchHistoryJobs(),
+            [
+                new Orders(),
+                new OrderAggregates(),
+            ],
+        ])
             ->then(function (Batch $batch) {
                 logger()->info(
                     sprintf('[Batches][%s] %s - Succeeded : %d/%d - %d failed.',
@@ -93,10 +85,6 @@ class Prices extends Command
             ->onQueue('public')
             ->name('Market Prices')
             ->dispatch();
-
-        Orders::withChain([
-            new OrderAggregates(),
-        ])->dispatch();
 
         return $this::SUCCESS;
     }
