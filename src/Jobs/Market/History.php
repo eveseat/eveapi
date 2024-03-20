@@ -159,17 +159,28 @@ class History extends EsiBase
                 ];
 
                 try {
-                    // for each subsequent item, request ESI order stats using region in settings (The Forge is default).
-                    $response = $this->retrieve([
-                        'region_id' => $region_id,
-                    ]);
+                    try {
+                        // for each subsequent item, request ESI order stats using region in settings (The Forge is default).
+                        $response = $this->retrieve([
+                            'region_id' => $region_id,
+                        ]);
 
-                    $prices = $response->getBody();
+                        $prices = $response->getBody();
 
-                    // search the more recent entry in returned history.
-                    $price = collect($prices)->where('order_count', '>', 0)
-                        ->sortByDesc('date')
-                        ->first();
+                        // search the more recent entry in returned history.
+                        $price = collect($prices)->where('order_count', '>', 0)
+                            ->sortByDesc('date')
+                            ->first();
+                    } catch (RequestFailedException $e) {
+                        // If the item was not found on market, default to an empty price
+                        if($e->getEsiResponse()->getErrorCode() == 404 || $e->getEsiResponse()->getErrorCode() == 400) {
+                            logger()->error(sprintf('[Jobs][%s] History -> type_id %d not found on market: %s', $this->job->getJobId(), $type_id, $e->getMessage()));
+                            $price = null;
+                        } else {
+                            // Rethrow exception for any other status code
+                            throw $e;
+                        }
+                    }
 
                     if (is_null($price)) {
                         $price = (object) [
@@ -201,7 +212,7 @@ class History extends EsiBase
 
                     return true;
                 } catch (RequestFailedException $e) {
-                    logger()->error($e->getMessage());
+                    logger()->error(sprintf('[Jobs][%s] History -> ESI Error for type id %d: %s', $this->job->getJobId(), $type_id, $e->getMessage()));
 
                     return true;
                 }
