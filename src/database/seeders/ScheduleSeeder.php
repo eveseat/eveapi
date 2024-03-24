@@ -32,13 +32,12 @@ use Seat\Services\Seeding\AbstractScheduleSeeder;
  */
 class ScheduleSeeder extends AbstractScheduleSeeder
 {
-
     /**
-     * Returns an array of schedules that should be seeded whenever the stack boots up
+     * Returns an array of schedules that should be seeded whenever the stack boots up.
      *
      * @return array
      */
-    function getSchedules(): array
+    public function getSchedules(): array
     {
         $schedules = [
             [   // ESI Status | Every Minute
@@ -187,14 +186,16 @@ class ScheduleSeeder extends AbstractScheduleSeeder
                     break;
             }
         }
+
         return $schedules;
     }
 
     /**
-     * Returns a list of commands to remove from the schedule
+     * Returns a list of commands to remove from the schedule.
+     *
      * @return array
      */
-    function getDeprecatedSchedules(): array
+    public function getDeprecatedSchedules(): array
     {
         // these commands are no longer in use, remove them
         return [
