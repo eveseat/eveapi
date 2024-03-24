@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Killmails;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\SolarSystem;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'KillmailDetail',
@@ -37,7 +38,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
     ],
     type: 'object'
 )]
-class KillmailDetail extends Model
+class KillmailDetail extends ExtensibleModel
 {
     /**
      * @var array

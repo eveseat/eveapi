@@ -25,13 +25,14 @@ namespace Seat\Eveapi\Models\PlanetaryInteraction;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\Planet;
 use Seat\Eveapi\Models\Sde\SolarSystem;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationCustomsOffice.
  *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
-class CorporationCustomsOffice extends Model
+class CorporationCustomsOffice extends ExtensibleModel
 {
     /**
      * @var bool

@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Mail;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'MailHeader',
@@ -39,7 +40,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
     ],
     type: 'object'
 )]
-class MailHeader extends Model
+class MailHeader extends ExtensibleModel
 {
 
     /**

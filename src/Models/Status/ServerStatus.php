@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Status;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class ServerStatus.
  *
  * @package Seat\Eveapi\Models\Status
  */
-class ServerStatus extends Model
+class ServerStatus extends ExtensibleModel
 {
     /**
      * @var bool

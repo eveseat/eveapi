@@ -25,13 +25,14 @@ namespace Seat\Eveapi\Models\Clones;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterImplant.
  *
  * @package Seat\Eveapi\Models\Clones
  */
-class CharacterImplant extends Model implements HasTypeID
+class CharacterImplant extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool

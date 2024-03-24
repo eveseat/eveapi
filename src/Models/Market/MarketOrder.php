@@ -28,13 +28,14 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class Price.
  *
  * @package Seat\Eveapi\Models\Market
  */
-class MarketOrder extends Model implements HasTypeID
+class MarketOrder extends ExtensibleModel implements HasTypeID
 {
 
     /**

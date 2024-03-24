@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Status;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class EsiStatus.
  *
  * @package Seat\Eveapi\Models\Market
  */
-class EsiStatus extends Model
+class EsiStatus extends ExtensibleModel
 {
 
     /**

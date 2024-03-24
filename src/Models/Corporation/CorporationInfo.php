@@ -42,6 +42,7 @@ use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\CorporationInfoFactory;
 
 #[OA\Schema(
@@ -64,7 +65,7 @@ use Seat\Tests\Eveapi\Database\Factories\CorporationInfoFactory;
     ],
     type: 'object'
 )]
-class CorporationInfo extends Model
+class CorporationInfo extends ExtensibleModel
 {
     use HasFactory;
 

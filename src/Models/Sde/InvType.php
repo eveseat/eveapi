@@ -28,6 +28,7 @@ use Seat\Eveapi\Models\Fittings\Insurance;
 use Seat\Eveapi\Models\Market\Price;
 use Seat\Eveapi\Traits\IsReadOnly;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'InvType',
@@ -51,7 +52,7 @@ use Seat\Services\Contracts\HasTypeID;
     ],
     type: 'object'
 )]
-class InvType extends Model implements HasTypeID
+class InvType extends ExtensibleModel implements HasTypeID
 {
     use IsReadOnly;
 

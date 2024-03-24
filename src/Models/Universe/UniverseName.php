@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Universe;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'UniverseName',
@@ -36,7 +37,7 @@ use Seat\Eveapi\Models\Character\CharacterAffiliation;
     ],
     type: 'object'
 )]
-class UniverseName extends Model
+class UniverseName extends ExtensibleModel
 {
     /**
      * @var array

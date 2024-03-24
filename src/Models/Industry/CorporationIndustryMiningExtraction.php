@@ -25,13 +25,14 @@ namespace Seat\Eveapi\Models\Industry;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Sde\Moon;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationIndustryMiningExtraction.
  *
  * @package Seat\Eveapi\Models\Industry
  */
-class CorporationIndustryMiningExtraction extends Model
+class CorporationIndustryMiningExtraction extends ExtensibleModel
 {
     /**
      * Return the theoretical duration of a chunk once it reached its drilling cycle.

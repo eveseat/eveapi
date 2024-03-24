@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Sde;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'SolarSystem',
@@ -38,7 +39,7 @@ use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
     ],
     type: 'object'
 )]
-class SolarSystem extends Model
+class SolarSystem extends ExtensibleModel
 {
     /**
      * @var bool

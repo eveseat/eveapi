@@ -27,6 +27,7 @@ use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CorporationOrder',
@@ -50,7 +51,7 @@ use Seat\Services\Contracts\HasTypeID;
     ],
     type: 'object'
 )]
-class CorporationOrder extends Model implements HasTypeID
+class CorporationOrder extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var array

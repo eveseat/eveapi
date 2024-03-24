@@ -24,13 +24,14 @@ namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationStanding.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationStanding extends Model
+class CorporationStanding extends ExtensibleModel
 {
     /**
      * @var bool

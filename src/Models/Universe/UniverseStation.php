@@ -25,13 +25,14 @@ namespace Seat\Eveapi\Models\Universe;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Sde\SolarSystem;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class UniverseStation.
  *
  * @package Seat\Eveapi\Models\Universe
  */
-class UniverseStation extends Model
+class UniverseStation extends ExtensibleModel
 {
     /**
      * Those stations might be returned by ESI on some endpoints (ie: corporation infos) - however, they don't exist.

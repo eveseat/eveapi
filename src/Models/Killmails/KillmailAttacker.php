@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'KillmailAttacker',
@@ -44,7 +45,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
     ],
     type: 'object'
 )]
-class KillmailAttacker extends Model
+class KillmailAttacker extends ExtensibleModel
 {
     protected $casts = [
         'final_blow' => 'boolean',

@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Calendar;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterCalendarEvent.
  *
  * @package Seat\Eveapi\Models\Calendar
  */
-class CharacterCalendarEvent extends Model
+class CharacterCalendarEvent extends ExtensibleModel
 {
     /**
      * @var bool

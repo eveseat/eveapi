@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterLabel.
  *
  * @package Seat\Eveapi\Models\Contacts
  */
-class CharacterLabel extends Model
+class CharacterLabel extends ExtensibleModel
 {
 
     /**

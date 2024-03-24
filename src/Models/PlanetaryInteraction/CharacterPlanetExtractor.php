@@ -24,13 +24,14 @@ namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterPlanetExtractor.
  *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
-class CharacterPlanetExtractor extends Model
+class CharacterPlanetExtractor extends ExtensibleModel
 {
     /**
      * @var bool

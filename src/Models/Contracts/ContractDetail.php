@@ -30,6 +30,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'ContractDetail',
@@ -61,7 +62,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
     ],
     type: 'object'
 )]
-class ContractDetail extends Model
+class ContractDetail extends ExtensibleModel
 {
     /**
      * @var bool

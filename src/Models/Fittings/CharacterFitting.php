@@ -24,13 +24,14 @@ namespace Seat\Eveapi\Models\Fittings;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterFitting.
  *
  * @package Seat\Eveapi\Models\Fittings
  */
-class CharacterFitting extends Model
+class CharacterFitting extends ExtensibleModel
 {
     /**
      * @var bool

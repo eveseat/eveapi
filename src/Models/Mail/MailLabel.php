@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Mail;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class MailLabel.
  *
  * @package Seat\Eveapi\Models\Mail
  */
-class MailLabel extends Model
+class MailLabel extends ExtensibleModel
 {
     /**
      * @var bool

@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class Bucket.
  *
  * @package Seat\Eveapi\Models
  */
-class Bucket extends Model
+class Bucket extends ExtensibleModel
 {
     /**
      * @param  int  $threshold

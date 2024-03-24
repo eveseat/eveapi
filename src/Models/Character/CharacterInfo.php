@@ -51,6 +51,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Services\Traits\NotableTrait;
 use Seat\Tests\Eveapi\Database\Factories\CharacterInfoFactory;
 
@@ -59,7 +60,7 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterInfoFactory;
  *
  * @package Seat\Eveapi\Models\Character
  */
-class CharacterInfo extends Model
+class CharacterInfo extends ExtensibleModel
 {
     use HasFactory, NotableTrait;
 

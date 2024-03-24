@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CharacterWalletJournal',
@@ -47,7 +48,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
     ],
     type: 'object'
 )]
-class CharacterWalletJournal extends Model
+class CharacterWalletJournal extends ExtensibleModel
 {
     /**
      * @var array

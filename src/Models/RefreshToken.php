@@ -32,9 +32,10 @@ use Illuminate\Support\Carbon;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Services\Contracts\EsiToken;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\RefreshTokenFactory;
 
-class RefreshToken extends Model implements EsiToken
+class RefreshToken extends ExtensibleModel implements EsiToken
 {
     use HasFactory, SoftDeletes {
         SoftDeletes::runSoftDelete as protected traitRunSoftDelete;

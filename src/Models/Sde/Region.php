@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class Region.
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class Region extends Model
+class Region extends ExtensibleModel
 {
     /**
      * @var bool

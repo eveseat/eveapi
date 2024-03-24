@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class Constellation.
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class Constellation extends Model
+class Constellation extends ExtensibleModel
 {
     /**
      * @var bool

@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'Killmail',
@@ -37,7 +38,7 @@ use OpenApi\Attributes as OA;
     ],
     type: 'object'
 )]
-class Killmail extends Model
+class Killmail extends ExtensibleModel
 {
     /**
      * @var bool

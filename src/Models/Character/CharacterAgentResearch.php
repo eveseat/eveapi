@@ -25,13 +25,14 @@ namespace Seat\Eveapi\Models\Character;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterAgentsResearch.
  *
  * @package App
  */
-class CharacterAgentResearch extends Model
+class CharacterAgentResearch extends ExtensibleModel
 {
     /**
      * @var bool

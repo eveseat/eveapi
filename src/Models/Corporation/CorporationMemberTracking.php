@@ -30,6 +30,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CorporationMemberTracking',
@@ -44,7 +45,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
     ],
     type: 'object'
 )]
-class CorporationMemberTracking extends Model
+class CorporationMemberTracking extends ExtensibleModel
 {
     /**
      * @var bool

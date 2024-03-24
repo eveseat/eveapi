@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\CharacterSkillFactory;
 
 #[OA\Schema(
@@ -40,7 +41,7 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterSkillFactory;
     ],
     type: 'object'
 )]
-class CharacterSkill extends Model
+class CharacterSkill extends ExtensibleModel
 {
     use HasFactory;
 

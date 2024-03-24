@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
 use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class MapDenormalize.
@@ -54,7 +55,7 @@ use Seat\Eveapi\Traits\IsReadOnly;
     ],
     type: 'object'
 )]
-class MapDenormalize extends Model
+class MapDenormalize extends ExtensibleModel
 {
     use IsReadOnly;
 

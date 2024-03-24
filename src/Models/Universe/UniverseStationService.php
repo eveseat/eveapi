@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Universe;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class UniverseStationService.
  *
  * @package Seat\Eveapi\Models\Universe
  */
-class UniverseStationService extends Model
+class UniverseStationService extends ExtensibleModel
 {
     /**
      * @var bool

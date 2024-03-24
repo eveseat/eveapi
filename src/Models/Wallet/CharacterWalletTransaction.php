@@ -27,6 +27,7 @@ use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CharacterWalletTransaction',
@@ -44,7 +45,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
     ],
     type: 'object'
 )]
-class CharacterWalletTransaction extends Model
+class CharacterWalletTransaction extends ExtensibleModel
 {
     /**
      * @var array

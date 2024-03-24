@@ -26,13 +26,14 @@ use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\Planet;
 use Seat\Eveapi\Models\Sde\SolarSystem;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterPlanet.
  *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
-class CharacterPlanet extends Model
+class CharacterPlanet extends ExtensibleModel
 {
     /**
      * @var bool

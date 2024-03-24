@@ -24,13 +24,14 @@ namespace Seat\Eveapi\Models\Sde;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class InvGroup.
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class InvGroup extends Model
+class InvGroup extends ExtensibleModel
 {
     use IsReadOnly;
 

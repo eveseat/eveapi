@@ -25,13 +25,14 @@ namespace Seat\Eveapi\Models\Corporation;
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationRoleHistory.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationRoleHistory extends Model
+class CorporationRoleHistory extends ExtensibleModel
 {
 
     use HasCompositePrimaryKey;

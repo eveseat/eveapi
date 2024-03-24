@@ -24,13 +24,14 @@ namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationMember.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationMember extends Model
+class CorporationMember extends ExtensibleModel
 {
     use HasCompositePrimaryKey;
 

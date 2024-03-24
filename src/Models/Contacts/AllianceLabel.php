@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Contacts;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class AllianceLabel.
  *
  * @package Seat\Eveapi\Models\Contacts
  */
-class AllianceLabel extends Model
+class AllianceLabel extends ExtensibleModel
 {
 
     /**

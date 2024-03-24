@@ -29,6 +29,7 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CorporationStructure',
@@ -53,7 +54,7 @@ use Seat\Services\Contracts\HasTypeID;
     ],
     type: 'object'
 )]
-class CorporationStructure extends Model implements HasTypeID
+class CorporationStructure extends ExtensibleModel implements HasTypeID
 {
     const DGM_SERVICE_MODULE_CYCLE_FUEL_NEED = 2109;
 

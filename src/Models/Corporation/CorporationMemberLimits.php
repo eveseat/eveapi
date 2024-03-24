@@ -23,13 +23,14 @@
 namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationMembersLimit.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationMemberLimits extends Model
+class CorporationMemberLimits extends ExtensibleModel
 {
     /**
      * @var bool

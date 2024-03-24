@@ -29,13 +29,14 @@ use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationBlueprint.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationBlueprint extends Model implements HasTypeID
+class CorporationBlueprint extends ExtensibleModel implements HasTypeID
 {
     use HasCompositePrimaryKey;
 

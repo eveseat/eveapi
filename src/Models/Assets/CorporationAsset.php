@@ -31,6 +31,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CorporationAsset',
@@ -52,7 +53,7 @@ use Seat\Services\Contracts\HasTypeID;
     ],
     type: 'object'
 )]
-class CorporationAsset extends Model implements HasTypeID
+class CorporationAsset extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var array

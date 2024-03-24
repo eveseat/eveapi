@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Models\Contacts;
 use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CharacterContact',
@@ -39,7 +40,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
     ],
     type: 'object'
 )]
-class CharacterContact extends Model
+class CharacterContact extends ExtensibleModel
 {
 
     /**

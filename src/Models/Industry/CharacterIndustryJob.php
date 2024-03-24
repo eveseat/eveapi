@@ -27,6 +27,7 @@ use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\RamActivity;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CharacterIndustryJob',
@@ -57,7 +58,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
     ],
     type: 'object'
 )]
-class CharacterIndustryJob extends Model
+class CharacterIndustryJob extends ExtensibleModel
 {
     /**
      * @var array

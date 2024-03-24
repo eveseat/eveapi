@@ -33,6 +33,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\CharacterAssetFactory;
 
 #[OA\Schema(
@@ -55,7 +56,7 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterAssetFactory;
     ],
     type: 'object'
 )]
-class CharacterAsset extends Model implements HasTypeID
+class CharacterAsset extends ExtensibleModel implements HasTypeID
 {
     use HasFactory;
 
