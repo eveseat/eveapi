@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Alliances;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Services\Models\ExtensibleModel;
 

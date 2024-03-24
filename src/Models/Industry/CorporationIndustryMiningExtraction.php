@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Industry;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Sde\Moon;
 use Seat\Services\Models\ExtensibleModel;

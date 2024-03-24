@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Contacts;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Services\Models\ExtensibleModel;

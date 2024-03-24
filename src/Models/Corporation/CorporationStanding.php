@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Services\Models\ExtensibleModel;
 

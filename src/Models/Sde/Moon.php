@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
 use Seat\Services\Models\ExtensibleModel;
 use Seat\Web\Models\UniverseMoonReport;

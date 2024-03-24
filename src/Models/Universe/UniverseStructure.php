@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Universe;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Sde\InvType;

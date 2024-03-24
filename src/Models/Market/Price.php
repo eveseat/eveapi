@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Market;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Services\Contracts\HasTypeID;
 use Seat\Services\Models\ExtensibleModel;

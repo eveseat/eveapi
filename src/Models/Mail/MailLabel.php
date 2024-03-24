@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Mail;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Services\Models\ExtensibleModel;
 
 /**
