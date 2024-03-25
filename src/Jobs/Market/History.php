@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Market;
 
 use Illuminate\Bus\Batchable;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
@@ -39,6 +40,11 @@ class History extends EsiBase
     use Batchable;
 
     const THE_FORGE = 10000002;
+
+    /**
+     * HISTORY_EXPIRY_DELAY forces lock release after 2 minutes.
+     */
+    const HISTORY_EXPIRY_DELAY = 60 * 2;
 
     // override the default from AbstractJob
     public const JOB_EXECUTION_TIMEOUT = 60 * 60 * 24; // 1 day
@@ -130,6 +136,19 @@ class History extends EsiBase
         $this->tags = array_merge($this->tags, ['batch_current:' . $current]);
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function middleware()
+    {
+        // Ensure market history jobs don't run in parallell
+        return array_merge(parent::middleware(), [
+            (new WithoutOverlapping('market-history-job'))
+                ->releaseAfter(self::ANTI_RACE_DELAY)
+                ->expireAfter(self::HISTORY_EXPIRY_DELAY),
+        ]);
     }
 
     /**
