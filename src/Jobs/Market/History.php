@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Market;
 
 use Illuminate\Bus\Batchable;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Redis;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
@@ -39,6 +40,11 @@ class History extends EsiBase
     use Batchable;
 
     const THE_FORGE = 10000002;
+
+    /**
+     * HISTORY_EXPIRY_DELAY forces lock release after 2 minutes.
+     */
+    const HISTORY_EXPIRY_DELAY = 60 * 2;
 
     // override the default from AbstractJob
     public const JOB_EXECUTION_TIMEOUT = 60 * 60 * 24; // 1 day
@@ -133,6 +139,19 @@ class History extends EsiBase
     }
 
     /**
+     * @return array
+     */
+    public function middleware()
+    {
+        // Ensure market history jobs don't run in parallell
+        return array_merge(parent::middleware(), [
+            (new WithoutOverlapping('market-history-job'))
+                ->releaseAfter(self::ANTI_RACE_DELAY)
+                ->expireAfter(self::HISTORY_EXPIRY_DELAY),
+        ]);
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @throws \Seat\Services\Exceptions\SettingException
@@ -159,17 +178,28 @@ class History extends EsiBase
                 ];
 
                 try {
-                    // for each subsequent item, request ESI order stats using region in settings (The Forge is default).
-                    $response = $this->retrieve([
-                        'region_id' => $region_id,
-                    ]);
+                    try {
+                        // for each subsequent item, request ESI order stats using region in settings (The Forge is default).
+                        $response = $this->retrieve([
+                            'region_id' => $region_id,
+                        ]);
 
-                    $prices = $response->getBody();
+                        $prices = $response->getBody();
 
-                    // search the more recent entry in returned history.
-                    $price = collect($prices)->where('order_count', '>', 0)
-                        ->sortByDesc('date')
-                        ->first();
+                        // search the more recent entry in returned history.
+                        $price = collect($prices)->where('order_count', '>', 0)
+                            ->sortByDesc('date')
+                            ->first();
+                    } catch (RequestFailedException $e) {
+                        // If the item was not found on market, default to an empty price
+                        if($e->getEsiResponse()->getErrorCode() == 404 || $e->getEsiResponse()->getErrorCode() == 400) {
+                            logger()->error(sprintf('[Jobs][%s] History -> type_id %d not found on market: %s', $this->job->getJobId(), $type_id, $e->getMessage()));
+                            $price = null;
+                        } else {
+                            // Rethrow exception for any other status code
+                            throw $e;
+                        }
+                    }
 
                     if (is_null($price)) {
                         $price = (object) [
@@ -201,7 +231,7 @@ class History extends EsiBase
 
                     return true;
                 } catch (RequestFailedException $e) {
-                    logger()->error($e->getMessage());
+                    logger()->error(sprintf('[Jobs][%s] History -> ESI Error for type id %d: %s', $this->job->getJobId(), $type_id, $e->getMessage()));
 
                     return true;
                 }
