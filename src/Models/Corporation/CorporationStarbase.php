@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
 use Seat\Eveapi\Models\Sde\InvControlTowerResource;
@@ -31,13 +30,14 @@ use Seat\Eveapi\Models\Sde\Moon;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationStarbase.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationStarbase extends Model implements HasTypeID
+class CorporationStarbase extends ExtensibleModel implements HasTypeID
 {
     use HasCompositePrimaryKey;
 

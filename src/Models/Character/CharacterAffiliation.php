@@ -24,8 +24,8 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\CharacterAffiliationFactory;
 
 /**
@@ -33,7 +33,7 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterAffiliationFactory;
  *
  * @package Seat\Eveapi\Models\Character
  */
-class CharacterAffiliation extends Model
+class CharacterAffiliation extends ExtensibleModel
 {
     use HasFactory;
 

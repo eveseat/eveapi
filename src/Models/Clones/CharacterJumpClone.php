@@ -22,10 +22,10 @@
 
 namespace Seat\Eveapi\Models\Clones;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CharacterJumpClone',
@@ -39,7 +39,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
     ],
     type: 'object'
 )]
-class CharacterJumpClone extends Model
+class CharacterJumpClone extends ExtensibleModel
 {
     /**
      * @var array

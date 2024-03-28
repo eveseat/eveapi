@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationContract.
  *
  * @package Seat\Eveapi\Models\Contacts
  */
-class CorporationContract extends Model
+class CorporationContract extends ExtensibleModel
 {
     /**
      * @var bool

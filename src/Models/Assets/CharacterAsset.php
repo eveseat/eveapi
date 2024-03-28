@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Assets;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvGroup;
@@ -33,6 +32,7 @@ use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\CharacterAssetFactory;
 
 #[OA\Schema(
@@ -55,7 +55,7 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterAssetFactory;
     ],
     type: 'object'
 )]
-class CharacterAsset extends Model implements HasTypeID
+class CharacterAsset extends ExtensibleModel implements HasTypeID
 {
     use HasFactory;
 

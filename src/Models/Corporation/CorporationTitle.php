@@ -24,9 +24,9 @@ namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\CorporationTitleFactory;
 
 /**
@@ -34,7 +34,7 @@ use Seat\Tests\Eveapi\Database\Factories\CorporationTitleFactory;
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationTitle extends Model
+class CorporationTitle extends ExtensibleModel
 {
     use HasFactory;
 

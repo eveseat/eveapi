@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Sovereignty;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class SovereigntyStructure.
  *
  * @package Seat\Eveapi\Models\Sovereignty
  */
-class SovereigntyStructure extends Model
+class SovereigntyStructure extends ExtensibleModel
 {
     /**
      * @var bool

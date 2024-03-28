@@ -22,18 +22,18 @@
 
 namespace Seat\Eveapi\Models\Location;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterLocation.
  *
  * @package Seat\Eveapi\Models\Killmails
  */
-class CharacterLocation extends Model
+class CharacterLocation extends ExtensibleModel
 {
     /**
      * @var bool

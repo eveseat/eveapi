@@ -22,19 +22,19 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterBluePrints.
  *
  * @package App
  */
-class CharacterBlueprint extends Model implements HasTypeID
+class CharacterBlueprint extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool

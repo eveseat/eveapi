@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Industry;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationIndustryMiningObserverData.
  *
  * @package Seat\Eveapi\Models\Industry
  */
-class CorporationIndustryMiningObserverData extends Model
+class CorporationIndustryMiningObserverData extends ExtensibleModel
 {
     /**
      * @var string

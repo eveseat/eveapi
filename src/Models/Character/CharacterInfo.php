@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 use Seat\Eveapi\Models\Clones\CharacterClone;
@@ -51,6 +50,7 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Services\Traits\NotableTrait;
 use Seat\Tests\Eveapi\Database\Factories\CharacterInfoFactory;
 
@@ -59,7 +59,7 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterInfoFactory;
  *
  * @package Seat\Eveapi\Models\Character
  */
-class CharacterInfo extends Model
+class CharacterInfo extends ExtensibleModel
 {
     use HasFactory, NotableTrait;
 

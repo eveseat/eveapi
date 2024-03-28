@@ -24,10 +24,10 @@ namespace Seat\Eveapi\Models\Alliances;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Contacts\AllianceContact;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\AllianceFactory;
 
 /**
@@ -35,7 +35,7 @@ use Seat\Tests\Eveapi\Database\Factories\AllianceFactory;
  *
  * @package Seat\Eveapi\Models\Alliances
  */
-class Alliance extends Model
+class Alliance extends ExtensibleModel
 {
     use HasFactory;
 

@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationTitleRole.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationTitleRole extends Model
+class CorporationTitleRole extends ExtensibleModel
 {
     use HasCompositePrimaryKey;
 

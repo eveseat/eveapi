@@ -22,9 +22,9 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CorporationStructureService',
@@ -35,7 +35,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
     ],
     type: 'object'
 )]
-class CorporationStructureService extends Model
+class CorporationStructureService extends ExtensibleModel
 {
     use HasCompositePrimaryKey;
 

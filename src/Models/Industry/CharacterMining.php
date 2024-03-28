@@ -22,18 +22,18 @@
 
 namespace Seat\Eveapi\Models\Industry;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterMining.
  *
  * @package Seat\Eveapi\Models\Industry
  */
-class CharacterMining extends Model implements HasTypeID
+class CharacterMining extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool

@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class FailedJob.
  *
  * @package Seat\Eveapi\Models
  */
-class FailedJob extends Model
+class FailedJob extends ExtensibleModel
 {
 
 }

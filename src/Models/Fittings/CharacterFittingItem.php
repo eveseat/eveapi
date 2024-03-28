@@ -22,16 +22,16 @@
 
 namespace Seat\Eveapi\Models\Fittings;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterFittingItem.
  *
  * @package Seat\Eveapi\Models\Fittings
  */
-class CharacterFittingItem extends Model implements HasTypeID
+class CharacterFittingItem extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool

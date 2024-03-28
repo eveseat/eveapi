@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterPlanetLink.
  *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
-class CharacterPlanetLink extends Model
+class CharacterPlanetLink extends ExtensibleModel
 {
     /**
      * @var bool

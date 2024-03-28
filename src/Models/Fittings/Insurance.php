@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Fittings;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class Insurance.
  *
  * @package Seat\Eveapi\Models\Fittings
  */
-class Insurance extends Model
+class Insurance extends ExtensibleModel
 {
     /**
      * @var string

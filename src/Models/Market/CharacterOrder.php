@@ -22,11 +22,11 @@
 
 namespace Seat\Eveapi\Models\Market;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CharacterOrder',
@@ -48,7 +48,7 @@ use Seat\Services\Contracts\HasTypeID;
     ],
     type: 'object'
 )]
-class CharacterOrder extends Model implements HasTypeID
+class CharacterOrder extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var array

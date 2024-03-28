@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class StaStation.
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class StaStation extends Model
+class StaStation extends ExtensibleModel
 {
     use IsReadOnly;
 

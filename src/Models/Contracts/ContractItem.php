@@ -22,10 +22,10 @@
 
 namespace Seat\Eveapi\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'ContractItem',
@@ -39,7 +39,7 @@ use Seat\Services\Contracts\HasTypeID;
     ],
     type: 'object'
 )]
-class ContractItem extends Model implements HasTypeID
+class ContractItem extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var array

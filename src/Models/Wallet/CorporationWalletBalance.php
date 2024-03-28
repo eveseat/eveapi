@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Wallet;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationWalletBalance.
  *
  * @package Seat\Eveapi\Models\Wallet
  */
-class CorporationWalletBalance extends Model
+class CorporationWalletBalance extends ExtensibleModel
 {
     /**
      * @var bool

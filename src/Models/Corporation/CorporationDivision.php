@@ -22,16 +22,16 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationDivision.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationDivision extends Model
+class CorporationDivision extends ExtensibleModel
 {
     use HasCompositePrimaryKey;
 

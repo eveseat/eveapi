@@ -22,18 +22,18 @@
 
 namespace Seat\Eveapi\Models\Location;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Sde\InvGroup;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterShip.
  *
  * @package Seat\Eveapi\Models\Location
  */
-class CharacterShip extends Model implements HasTypeID
+class CharacterShip extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool

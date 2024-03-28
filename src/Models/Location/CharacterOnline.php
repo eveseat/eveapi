@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Location;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterOnline.
  *
  * @package Seat\Eveapi\Models\Location
  */
-class CharacterOnline extends Model
+class CharacterOnline extends ExtensibleModel
 {
     /**
      * @var bool

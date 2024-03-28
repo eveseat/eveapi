@@ -22,9 +22,9 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 use Symfony\Component\Yaml\Yaml;
 
 #[OA\Schema(
@@ -43,7 +43,7 @@ use Symfony\Component\Yaml\Yaml;
     ],
     type: 'object'
 )]
-class CharacterNotification extends Model
+class CharacterNotification extends ExtensibleModel
 {
     /**
      * @var array

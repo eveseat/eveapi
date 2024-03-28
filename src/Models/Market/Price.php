@@ -22,16 +22,16 @@
 
 namespace Seat\Eveapi\Models\Market;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class Price.
  *
  * @package Seat\Eveapi\Models\Market
  */
-class Price extends Model implements HasTypeID
+class Price extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool

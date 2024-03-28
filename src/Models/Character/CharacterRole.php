@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\CharacterRoleFactory;
 
 /**
@@ -32,7 +32,7 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterRoleFactory;
  *
  * @package Seat\Eveapi\Models\Character
  */
-class CharacterRole extends Model
+class CharacterRole extends ExtensibleModel
 {
     use HasFactory;
 

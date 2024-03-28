@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Mail;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class MailBody.
  *
  * @package Seat\Eveapi\Models\Mail
  */
-class MailBody extends Model
+class MailBody extends ExtensibleModel
 {
     /**
      * @var bool

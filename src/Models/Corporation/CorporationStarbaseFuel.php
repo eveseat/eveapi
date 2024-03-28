@@ -22,16 +22,16 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationStarbaseFuel.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationStarbaseFuel extends Model implements HasTypeID
+class CorporationStarbaseFuel extends ExtensibleModel implements HasTypeID
 {
 
     use HasCompositePrimaryKey;

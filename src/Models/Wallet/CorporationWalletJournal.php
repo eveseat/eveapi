@@ -22,9 +22,9 @@
 
 namespace Seat\Eveapi\Models\Wallet;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CorporationWalletJournal',
@@ -47,7 +47,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
     ],
     type: 'object'
 )]
-class CorporationWalletJournal extends Model
+class CorporationWalletJournal extends ExtensibleModel
 {
     /**
      * @var array

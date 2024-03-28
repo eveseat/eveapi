@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Alliances;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class AllianceMember.
  *
  * @package Seat\Eveapi\Models\Alliances
  */
-class AllianceMember extends Model
+class AllianceMember extends ExtensibleModel
 {
     /**
      * @var bool

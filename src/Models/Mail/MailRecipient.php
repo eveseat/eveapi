@@ -22,9 +22,9 @@
 
 namespace Seat\Eveapi\Models\Mail;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'MailRecipient',
@@ -34,7 +34,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
         new OA\Property(property: 'recipient_type', description: 'The recipient qualifier', type: 'string', enum: ['character', 'corporation', 'alliance', 'mailing_list']),
     ]
 )]
-class MailRecipient extends Model
+class MailRecipient extends ExtensibleModel
 {
     /**
      * @var bool

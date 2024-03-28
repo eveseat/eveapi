@@ -22,8 +22,8 @@
 
 namespace Seat\Eveapi\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'ContractBid',
@@ -34,7 +34,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'amount', description: 'Amount of placed bid', type: 'number'),
     ]
 )]
-class ContractBid extends Model
+class ContractBid extends ExtensibleModel
 {
     /**
      * @var array

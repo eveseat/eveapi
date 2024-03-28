@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Calendar;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterCalendarEventDetail.
  *
  * @package Seat\Eveapi\Models\Calendar
  */
-class CharacterCalendarEventDetail extends Model
+class CharacterCalendarEventDetail extends ExtensibleModel
 {
     /**
      * @var bool

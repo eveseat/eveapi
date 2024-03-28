@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Sovereignty;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class SovereigntyMap.
  *
  * @package Seat\Eveapi\Models\Sovereignty
  */
-class SovereigntyMap extends Model
+class SovereigntyMap extends ExtensibleModel
 {
     /**
      * @var bool

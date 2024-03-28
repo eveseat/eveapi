@@ -22,9 +22,9 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CharacterCorporationHistory',
@@ -37,7 +37,7 @@ use Seat\Eveapi\Models\Universe\UniverseName;
     ],
     type: 'object'
 )]
-class CharacterCorporationHistory extends Model
+class CharacterCorporationHistory extends ExtensibleModel
 {
     /**
      * @var array

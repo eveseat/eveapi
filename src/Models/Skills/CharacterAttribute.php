@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Skills;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterAttribute.
  *
  * @package Seat\Eveapi\Models\Market
  */
-class CharacterAttribute extends Model
+class CharacterAttribute extends ExtensibleModel
 {
 
     /**

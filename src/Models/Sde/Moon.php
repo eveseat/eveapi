@@ -22,8 +22,8 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Industry\CorporationIndustryMiningExtraction;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Web\Models\UniverseMoonReport;
 
 /**
@@ -31,7 +31,7 @@ use Seat\Web\Models\UniverseMoonReport;
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class Moon extends Model
+class Moon extends ExtensibleModel
 {
     const UBIQUITOUS = 2396;
 

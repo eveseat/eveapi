@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterStanding.
  *
  * @package Seat\Eveapi\Models\Character
  */
-class CharacterStanding extends Model
+class CharacterStanding extends ExtensibleModel
 {
     /**
      * @var bool

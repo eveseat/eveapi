@@ -22,10 +22,10 @@
 
 namespace Seat\Eveapi\Models\Skills;
 
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 #[OA\Schema(
     title: 'CharacterSkillQueue',
@@ -41,7 +41,7 @@ use Seat\Services\Contracts\HasTypeID;
     ],
     type: 'object'
 )]
-class CharacterSkillQueue extends Model implements HasTypeID
+class CharacterSkillQueue extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var array

@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterContract.
  *
  * @package Seat\Eveapi\Models\Contacts
  */
-class CharacterContract extends Model
+class CharacterContract extends ExtensibleModel
 {
     /**
      * @var bool

@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Models\Corporation;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
@@ -42,6 +41,7 @@ use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\CorporationInfoFactory;
 
 #[OA\Schema(
@@ -64,7 +64,7 @@ use Seat\Tests\Eveapi\Database\Factories\CorporationInfoFactory;
     ],
     type: 'object'
 )]
-class CorporationInfo extends Model
+class CorporationInfo extends ExtensibleModel
 {
     use HasFactory;
 

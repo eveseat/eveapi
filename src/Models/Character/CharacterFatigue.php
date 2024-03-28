@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterFatigue.
  *
  * @package Seat\Eveapi\Models\Character
  */
-class CharacterFatigue extends Model
+class CharacterFatigue extends ExtensibleModel
 {
     /**
      * @var bool
