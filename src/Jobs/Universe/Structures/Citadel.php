@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
  *
  * @package Seat\Eveapi\Jobs\Universe
  */
-class Citadels extends AbstractAuthCharacterJob
+class Citadel extends AbstractAuthCharacterJob
 {
     /**
      * @var string

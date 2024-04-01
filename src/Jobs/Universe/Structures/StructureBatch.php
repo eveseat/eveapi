@@ -55,10 +55,12 @@ class StructureBatch
 
         //filter out already known stations, schedule the rest
         $stations = $stations->filter(function ($station_id) {
-            return UniverseStation::find($station_id) === null;
+            return UniverseStation::find($station_id) === null && !$this->isCurrentlyProcessing($station_id,0); // stations don't need a character
         });
-        if($stations->isNotEmpty()){
-            $jobs->add(new Stations($stations));
+        foreach ($stations as $station_id){
+            // mark this station as already in progress
+            $this->setStructureCurrentlyProcessing($station_id, 0); // stations don't need a character
+            $jobs->add(new Station($station_id));
         }
 
         // we can only load citadels if we have a token
@@ -76,7 +78,7 @@ class StructureBatch
                 // mark this character-citadel combination as already in progress
                 $this->setStructureCurrentlyProcessing($citadel_id, $token->character_id);
                 // schedule the job
-                $jobs->add(new Citadels($citadel_id, $token));
+                $jobs->add(new Citadel($citadel_id, $token));
             }
         }
 
