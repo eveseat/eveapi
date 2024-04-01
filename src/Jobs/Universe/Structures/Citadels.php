@@ -80,6 +80,9 @@ class Citadels extends AbstractAuthCharacterJob
     {
         parent::handle();
 
+        // it looks like we've loaded it in the meantime
+        if(UniverseStructure::find($this->structure_id) !== null) return;
+
         // check if the acl cache allows refetching the structure
         if(! CacheCitadelAccessCache::canAccess($this->getCharacterId(), $this->structure_id)) return;
 

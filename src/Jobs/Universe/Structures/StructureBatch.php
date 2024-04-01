@@ -65,10 +65,17 @@ class StructureBatch
         if($token !== null) {
             // only dispatch the job if the citadel is unknown AND the character is not acl banned
             $citadels = $citadels->filter(function ($citadel_id) use ($token) {
-                return UniverseStructure::find($citadel_id) === null && CacheCitadelAccessCache::canAccess($token->character_id, $citadel_id);
+
+                return                                                                          // only schedule the citadel if:
+                    UniverseStructure::find($citadel_id) === null                               // we don't already know it
+                    && CacheCitadelAccessCache::canAccess($token->character_id, $citadel_id)    // the character isn't banned
+                    && !$this->isCurrentlyProcessing($citadel_id, $token->character_id);        // we haven't already scheduled it
             });
 
             foreach ($citadels as $citadel_id) {
+                // mark this character-citadel combination as already in progress
+                $this->setStructureCurrentlyProcessing($citadel_id, $token->character_id);
+                // schedule the job
                 $jobs->add(new Citadels($citadel_id, $token));
             }
         }
@@ -79,5 +86,27 @@ class StructureBatch
         Bus::batch($jobs->toArray())
             ->name('Structures')
             ->dispatch();
+    }
+
+    /**
+     * Returns whether a job for this citadel has already been scheduled.
+     * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job
+     * @param int $structure_id
+     * @param int $character_id
+     * @return bool
+     */
+    private function isCurrentlyProcessing(int $structure_id, int $character_id): bool {
+        return cache()->get(sprintf('structure.%d.processing.%d', $structure_id, $character_id), false);
+    }
+
+    /**
+     * Set a structure as already processing.
+     * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job
+     * @param int $structure_id
+     * @param int $character_id
+     * @return void
+     */
+    private function setStructureCurrentlyProcessing(int $structure_id, int $character_id): void {
+        cache()->set(sprintf('structure.%d.processing.%d', $structure_id, $character_id),true,now()->addMinutes(60));
     }
 }
