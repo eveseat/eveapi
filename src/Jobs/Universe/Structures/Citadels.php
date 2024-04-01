@@ -60,49 +60,54 @@ class Citadels extends AbstractAuthCharacterJob
      */
     protected $tags = ['universe', 'structure'];
 
-    private iterable $structure_ids;
+    private int $structure_id;
 
     /**
-     * @param  iterable  $structure_ids
+     * @param int $structure_id
+     * @param RefreshToken $token
      */
-    public function __construct(iterable $structure_ids, RefreshToken $token)
+    public function __construct(int $structure_id, RefreshToken $token)
     {
         parent::__construct($token);
-        $this->structure_ids = $structure_ids;
+        $this->structure_id = $structure_id;
     }
 
     /**
      * {@inheritdoc}
+     * @throws RequestFailedException
      */
     public function handle()
     {
         parent::handle();
 
-        foreach ($this->structure_ids as $structure_id) {
-            // check if the acl cache allows refetching the structure
-            if(! CacheCitadelAccessCache::canAccess($this->getCharacterId(), $structure_id)) continue;
+        // check if the acl cache allows refetching the structure
+        if(! CacheCitadelAccessCache::canAccess($this->getCharacterId(), $this->structure_id)) return;
 
-            try {
-                // attempt to resolve the structure
-                $response = $this->retrieve([
-                    'structure_id' => $structure_id,
-                ]);
+        try {
+            // attempt to resolve the structure
+            $response = $this->retrieve([
+                'structure_id' => $this->structure_id,
+            ]);
 
-                $model = UniverseStructure::firstOrNew([
-                    'structure_id' => $structure_id,
-                ]);
+            $model = UniverseStructure::firstOrNew([
+                'structure_id' => $this->structure_id,
+            ]);
 
-                $structure = $response->getBody();
+            $structure = $response->getBody();
 
-                UniverseStructureMapping::make($model, $structure, [
-                    'structure_id' => function () use ($structure_id) {
-                        return $structure_id;
-                    },
-                ])->save();
+            UniverseStructureMapping::make($model, $structure, [
+                'structure_id' => function () {
+                    return $this->structure_id;
+                },
+            ])->save();
 
-            } catch (RequestFailedException $e) {
-                CacheCitadelAccessCache::blockAccess($this->getCharacterId(), $structure_id);
+        } catch (RequestFailedException $e) {
+            if($e->getEsiResponse()->getErrorCode() === 403) {
+                CacheCitadelAccessCache::blockAccess($this->getCharacterId(), $this->structure_id);
+            } else {
+                throw $e;
             }
         }
+
     }
 }

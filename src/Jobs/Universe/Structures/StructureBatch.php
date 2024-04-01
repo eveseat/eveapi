@@ -67,8 +67,9 @@ class StructureBatch
             $citadels = $citadels->filter(function ($citadel_id) use ($token) {
                 return UniverseStructure::find($citadel_id) === null && CacheCitadelAccessCache::canAccess($token->character_id, $citadel_id);
             });
-            if ($citadels->isNotEmpty()) {
-                $jobs->add(new Citadels($citadels, $token));
+
+            foreach ($citadels as $citadel_id) {
+                $jobs->add(new Citadels($citadel_id, $token));
             }
         }
 
