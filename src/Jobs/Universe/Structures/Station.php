@@ -33,7 +33,7 @@ use Seat\Eveapi\Models\Universe\UniverseStationService;
  *
  * @package Seat\Eveapi\Jobs\Universe
  */
-class Stations extends EsiBase
+class Station extends EsiBase
 {
     use Batchable;
 
@@ -58,20 +58,20 @@ class Stations extends EsiBase
     protected $tags = ['public', 'universe', 'structure'];
 
     /**
-     * @var iterable
+     * @var int
      */
-    private iterable $station_ids;
+    private int $station_id;
 
     /**
      * Stations constructor.
      *
-     * @param  array  $station_ids
+     * @param  int  $station_id
      */
-    public function __construct(iterable $station_ids)
+    public function __construct(int $station_id)
     {
         parent::__construct();
 
-        $this->station_ids = $station_ids;
+        $this->station_id = $station_id;
     }
 
     /**
@@ -81,18 +81,9 @@ class Stations extends EsiBase
      */
     public function handle()
     {
-        foreach ($this->station_ids as $station_id) {
-            $response = $this->retrieve(['station_id' => $station_id]);
 
-            $this->updateStructure($response->getBody());
-        }
-    }
-
-    /**
-     * @param  object  $structure
-     */
-    private function updateStructure(object $structure)
-    {
+        $response = $this->retrieve(['station_id' => $this->station_id]);
+        $structure = $response->getBody();
 
         $model = UniverseStation::firstOrNew([
             'station_id' => $structure->station_id,
@@ -117,5 +108,6 @@ class Stations extends EsiBase
             ->whereNotIn('service_name', collect($structure->services)
                 ->pluck('name')->flatten()->all())
             ->delete();
+
     }
 }

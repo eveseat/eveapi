@@ -26,7 +26,21 @@ interface CitadelAccessCache
 {
     const BLOCK_DURATION_SECONDS = 60 * 60 * 24 * 7; // 1 week
 
+    /**
+     * Checks whether a character can access a citadel or if esi will return an error 403.
+     *
+     * @param  int  $character_id
+     * @param  int  $citadel_id
+     * @return bool
+     */
     public static function canAccess(int $character_id, int $citadel_id): bool;
 
+    /**
+     * After having received an error 403, block a character from further accesses.
+     *
+     * @param  int  $character_id
+     * @param  int  $citadel_id
+     * @return mixed
+     */
     public static function blockAccess(int $character_id, int $citadel_id);
 }
