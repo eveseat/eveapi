@@ -188,7 +188,10 @@ abstract class EsiBase extends AbstractJob
      */
     public function getRateLimitKeyTtl(): int
     {
-        return Redis::ttl(Cache::getPrefix() . self::RATE_LIMIT_KEY);
+        // Redis 'default' database can be different from 'cache'
+        $redis = Redis::connection('cache');
+
+        return $redis->ttl(Cache::getPrefix() . self::RATE_LIMIT_KEY);
     }
 
     /**
