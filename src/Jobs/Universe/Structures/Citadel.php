@@ -63,8 +63,8 @@ class Citadel extends AbstractAuthCharacterJob
     private int $structure_id;
 
     /**
-     * @param int $structure_id
-     * @param RefreshToken $token
+     * @param  int  $structure_id
+     * @param  RefreshToken  $token
      */
     public function __construct(int $structure_id, RefreshToken $token)
     {
@@ -74,6 +74,7 @@ class Citadel extends AbstractAuthCharacterJob
 
     /**
      * {@inheritdoc}
+     *
      * @throws RequestFailedException
      */
     public function handle()

@@ -110,5 +110,4 @@ class Station extends EsiBase
             ->delete();
 
     }
-
 }
