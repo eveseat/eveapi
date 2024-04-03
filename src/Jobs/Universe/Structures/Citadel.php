@@ -36,6 +36,11 @@ use Seat\Eveapi\Models\Universe\UniverseStructure;
 class Citadel extends AbstractAuthCharacterJob
 {
     /**
+     * HTTP 403 is frequent for Citadel jobs. Decrease RATE_LIMIT to not starve out other jobs.
+     */
+    const RATE_LIMIT = parent::RATE_LIMIT * 0.65;
+
+    /**
      * @var string
      */
     protected $method = 'get';
