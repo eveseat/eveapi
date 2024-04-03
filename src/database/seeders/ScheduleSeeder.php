@@ -136,14 +136,6 @@ class ScheduleSeeder extends AbstractScheduleSeeder
                 'ping_before' => null,
                 'ping_after' => null,
             ],
-            [   // Stations Data | Once a day
-                'command' => 'esi:update:stations',
-                'expression' => '0 1 * * *',
-                'allow_overlap' => false,
-                'allow_maintenance' => false,
-                'ping_before' => null,
-                'ping_after' => null,
-            ],
             [   // Horizon remove batches older than 48 hours | Once a day
                 'command' => 'queue:prune-batches --hours=48',
                 'expression' => '0 3 * * *',
@@ -181,7 +173,6 @@ class ScheduleSeeder extends AbstractScheduleSeeder
                 case 'esi:update:alliances':
                 case 'esi:update:insurances':
                 case 'esi:update:sovereignty':
-                case 'esi:update:stations':
                     $schedules[$key]['expression'] = sprintf('%d %d * * *', rand(0, 59), Arr::random($hours));
                     break;
             }
@@ -204,6 +195,7 @@ class ScheduleSeeder extends AbstractScheduleSeeder
             'esi:update:esistatus',
             'esi:update:characters',
             'esi:update:corporations',
+            'esi:update:stations',
         ];
     }
 }
