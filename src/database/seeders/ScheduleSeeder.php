@@ -48,6 +48,14 @@ class ScheduleSeeder extends AbstractScheduleSeeder
                 'ping_before' => null,
                 'ping_after' => null,
             ],
+            [   // EVE Server Status | Every Minute
+                'command' => 'eve:update:status',
+                'expression' => '* * * * *',
+                'allow_overlap' => false,
+                'allow_maintenance' => false,
+                'ping_before' => null,
+                'ping_after' => null,
+            ],
             [   // SDE Data | Monthly
                 'command' => 'eve:update:sde',
                 'expression' => '0 0 1 * *',
