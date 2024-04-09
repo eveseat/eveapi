@@ -46,6 +46,7 @@ class CheckEsiRateLimit
                 [
                     'fqcn' => get_class($job),
                     'delay' => $job::RATE_LIMIT_DURATION,
+                    'limit' => $job::RATE_LIMIT,
                 ]);
 
             $job->release($job::RATE_LIMIT_DURATION);
