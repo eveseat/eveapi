@@ -104,9 +104,9 @@ class Assets extends AbstractAuthCorporationJob
 
             $assets = collect($response->getBody());
 
-            $assets->chunk(1000)->each(function ($chunk) use ($structure_batch) {
+            $assets->chunk(1000)->each(function ($chunk) use ($structure_batch, $start) {
 
-                $chunk->each(function ($asset) use ($structure_batch) {
+                $chunk->each(function ($asset) use ($structure_batch, $start) {
 
                     $model = CorporationAsset::firstOrNew([
                         'item_id' => $asset->item_id,
@@ -121,6 +121,7 @@ class Assets extends AbstractAuthCorporationJob
                         'corporation_id' => function () {
                             return $this->getCorporationId();
                         },
+                        'updated_at' => $start,
                     ])->save();
                 });
             });
