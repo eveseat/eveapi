@@ -98,22 +98,26 @@ class Assets extends AbstractAuthCharacterJob
 
             $assets = collect($response->getBody());
 
-            $assets->each(function ($asset) use ($structure_batch) {
+            $assets->chunk(1000)->each(function ($chunk) use ($structure_batch, $start) {
 
-                $model = CharacterAsset::firstOrNew([
-                    'item_id' => $asset->item_id,
-                ]);
+                $chunk->each(function ($asset) use ($structure_batch, $start) {
 
-                //make sure that the location is loaded if it is in a station or citadel
-                if (in_array($asset->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS) && in_array($asset->location_type, StructureBatch::RESOLVABLE_LOCATION_TYPES)) {
-                    $structure_batch->addStructure($asset->location_id);
-                }
+                    $model = CharacterAsset::firstOrNew([
+                        'item_id' => $asset->item_id,
+                    ]);
 
-                AssetMapping::make($model, $asset, [
-                    'character_id' => function () {
-                        return $this->getCharacterId();
-                    },
-                ])->save();
+                    //make sure that the location is loaded if it is in a station or citadel
+                    if (in_array($asset->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS) && in_array($asset->location_type, StructureBatch::RESOLVABLE_LOCATION_TYPES)) {
+                        $structure_batch->addStructure($asset->location_id);
+                    }
+
+                    AssetMapping::make($model, $asset, [
+                        'character_id' => function () {
+                            return $this->getCharacterId();
+                        },
+                        'updated_at' => $start
+                    ])->save();
+                });
             });
 
             if (! $this->nextPage($response->getPagesCount()))
