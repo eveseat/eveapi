@@ -113,7 +113,9 @@ class Assets extends AbstractAuthCharacterJob
                     'character_id' => function () {
                         return $this->getCharacterId();
                     },
-                    'updated_at' => $start,
+                    'updated_at' => function () use ($start) {
+                            return $start;
+                        },
                 ])->save();
             });
 
