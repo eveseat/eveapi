@@ -121,7 +121,9 @@ class Assets extends AbstractAuthCorporationJob
                         'corporation_id' => function () {
                             return $this->getCorporationId();
                         },
-                        'updated_at' => $start,
+                        'updated_at' => function () use ($start) {
+                            return $start;
+                        },
                     ])->save();
                 });
             });
