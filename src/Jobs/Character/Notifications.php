@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
+use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Mapping\Characters\NotificationMapping;
 use Seat\Eveapi\Models\Character\CharacterNotification;
@@ -74,6 +75,10 @@ class Notifications extends AbstractAuthCharacterJob
         $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($response->isFromCache() && 
+            CharacterNotification::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         $notifications = collect($response->getBody());
 

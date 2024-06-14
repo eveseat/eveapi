@@ -73,6 +73,8 @@ class Roles extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
+        // Not checking if cached here as impact is low and I would rather always update roles.
+
         $roles = $response->getBody();
 
         foreach (['roles', 'roles_at_hq', 'roles_at_base', 'roles_at_other'] as $scope) {

@@ -101,6 +101,13 @@ class Contacts extends AbstractAuthCharacterJob
 
             $contacts = $response->getBody();
 
+            $this->known_contact_ids->push(collect($contacts)
+                ->pluck('contact_id')->flatten()->all());
+
+            if ($response->isFromCache() &&
+                CharacterContact::where('character_id', $this->getCharacterId())->count() > 0)
+                continue;
+            
             collect($contacts)->each(function ($contact) {
 
                 CharacterContact::firstOrNew([
@@ -115,8 +122,7 @@ class Contacts extends AbstractAuthCharacterJob
                 ])->save();
             });
 
-            $this->known_contact_ids->push(collect($contacts)
-                ->pluck('contact_id')->flatten()->all());
+
 
             if (! $this->nextPage($response->getPagesCount()))
                 break;
