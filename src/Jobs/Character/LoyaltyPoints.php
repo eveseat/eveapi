@@ -76,7 +76,6 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
         //if the character doesn't exist, stop here
         if (is_null($character)){
             $this->fail();
-
             return;
         }
 
@@ -84,6 +83,8 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
         $response = $this->retrieve([
             'character_id' => $character_id,
         ]);
+
+        // TODO: if cached and exists move on
 
         //get the lp data as collection
         $loyalty_points = collect($response->getBody());

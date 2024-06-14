@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
+use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Jobs\AbstractCharacterJob;
 use Seat\Eveapi\Models\Character\CharacterCorporationHistory;
 
@@ -61,6 +62,10 @@ class CorporationHistory extends AbstractCharacterJob
         $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($response->isFromCache() &&
+            CharacterCorporationHistory::where('character_id', $this->getCharacterId())->count()>0)
+            return;
 
         $corporations = collect($response->getBody());
 

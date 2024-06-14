@@ -73,11 +73,15 @@ class Fatigue extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        $fatigue = $response->getBody();
-
-        CharacterFatigue::firstOrNew([
+        $model = CharacterFatigue::firstOrNew([
             'character_id' => $this->getCharacterId(),
-        ])->fill([
+        ]);
+        
+        if ($response->isFromCache() && $model->exists) return;
+
+        $fatigue = $response->getBody();        
+
+        $model->fill([
             'last_jump_date' => property_exists($fatigue, 'last_jump_date') ?
                 carbon($fatigue->last_jump_date) : null,
             'jump_fatigue_expire_date' => property_exists($fatigue, 'jump_fatigue_expire_date') ?

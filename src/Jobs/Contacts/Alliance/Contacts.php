@@ -97,6 +97,13 @@ class Contacts extends AbstractAuthAllianceJob
             ]);
 
             $contacts = $response->getBody();
+            
+            $this->known_contact_ids->push(collect($contacts)
+                ->pluck('contact_id')->flatten()->all());
+
+            if ($response->isFromCache() &&
+                AllianceContact::where('alliance_id', $this->getAllianceId())->count() > 0)
+                continue; // This page has no changes so move onto the next page
 
             collect($contacts)->each(function ($contact) {
 
@@ -109,9 +116,6 @@ class Contacts extends AbstractAuthAllianceJob
                     'label_ids' => $contact->label_ids ?? null,
                 ])->save();
             });
-
-            $this->known_contact_ids->push(collect($contacts)
-                ->pluck('contact_id')->flatten()->all());
 
             if (! $this->nextPage($response->getPagesCount()))
                 break;

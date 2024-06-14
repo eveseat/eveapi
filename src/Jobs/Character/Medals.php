@@ -22,9 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
+use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Mapping\Characters\MedalsMapping;
 use Seat\Eveapi\Models\Character\CharacterMedal;
+use Seat\Web\Http\Composers\CharacterMenu;
 
 /**
  * Class Medals.
@@ -73,6 +75,10 @@ class Medals extends AbstractAuthCharacterJob
         $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
+
+        if ($response->isFromCache() && 
+            CharacterMedal::where('character_id', $this->getCharacterId())->count() > 0)
+            return;
 
         $medals = collect($response->getBody());
 
