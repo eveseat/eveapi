@@ -81,11 +81,6 @@ class Items extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'contract'];
 
     /**
-     * @var int
-     */
-    public $tries = 60;
-
-    /**
      * Items constructor.
      *
      * @param  int  $corporation_id
