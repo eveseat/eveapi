@@ -105,7 +105,7 @@ class Contacts extends AbstractAuthCharacterJob
                 ->pluck('contact_id')->flatten()->all());
 
             if ($response->isFromCache() &&
-                CharacterContact::where('character_id', $this->getCharacterId())->count() > 0)
+                CharacterContact::where('character_id', $this->getCharacterId())->exists())
                 continue;
             
             collect($contacts)->each(function ($contact) {

@@ -78,7 +78,7 @@ class Clones extends AbstractAuthCharacterJob
         ]);
 
         if ($response->isFromCache() && 
-            CharacterClone::where('character_id', $this->getCharacterId())->count() > 0)
+            CharacterClone::where('character_id', $this->getCharacterId())->exists())
             return;
 
 

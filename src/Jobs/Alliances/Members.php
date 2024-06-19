@@ -58,7 +58,7 @@ class Members extends AbstractAllianceJob
         ]);
 
         if ($response->isFromCache() && 
-            AllianceMember::where('alliance_id', $this->alliance_id)->count() > 0)
+            AllianceMember::where('alliance_id', $this->alliance_id)->exists())
             return;
 
         $corporation_ids = collect($response->getBody());

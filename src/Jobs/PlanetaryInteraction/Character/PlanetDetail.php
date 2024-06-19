@@ -146,7 +146,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
         ]);
 
         if ($response->isFromCache() && 
-            CharacterPlanetPin::where('character_id', $this->getCharacterId())->count() > 0)
+            CharacterPlanetPin::where('character_id', $this->getCharacterId())->exists())
             return;
 
 
