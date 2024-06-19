@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Jobs\Character;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Jobs\Corporation\Info as CorporationInfoJob;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Character\CharacterLoyaltyPoints;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
@@ -84,7 +85,7 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
             'character_id' => $character_id,
         ]);
 
-        // TODO: if cached and exists move on
+        if ($response->isFromCache() && CharacterLoyaltyPoints::where('character_id', $character_id)->exists()) return;
 
         //get the lp data as collection
         $loyalty_points = collect($response->getBody());

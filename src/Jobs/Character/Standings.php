@@ -74,7 +74,7 @@ class Standings extends AbstractAuthCharacterJob
         ]);
 
         if ($response->isFromCache() && 
-            CharacterStanding::where('character_id', $this->getCharacterId())->count() > 0)
+            CharacterStanding::where('character_id', $this->getCharacterId())->exists())
             return;
 
         $standings = collect($response->getBody());

@@ -102,7 +102,7 @@ class Contacts extends AbstractAuthAllianceJob
                 ->pluck('contact_id')->flatten()->all());
 
             if ($response->isFromCache() &&
-                AllianceContact::where('alliance_id', $this->getAllianceId())->count() > 0)
+                AllianceContact::where('alliance_id', $this->getAllianceId())->exists())
                 continue; // This page has no changes so move onto the next page
 
             collect($contacts)->each(function ($contact) {

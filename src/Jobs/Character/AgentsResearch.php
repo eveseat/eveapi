@@ -75,7 +75,7 @@ class AgentsResearch extends AbstractAuthCharacterJob
         ]);
 
         if ($response->isFromCache() && 
-            CharacterAgentResearch::where('character_id', $this->getCharacterId()->count() > 0))
+            CharacterAgentResearch::where('character_id', $this->getCharacterId()->exists()))
             return;
 
         $agents = collect($response->getBody());

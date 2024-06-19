@@ -77,7 +77,7 @@ class Medals extends AbstractAuthCharacterJob
         ]);
 
         if ($response->isFromCache() && 
-            CharacterMedal::where('character_id', $this->getCharacterId())->count() > 0)
+            CharacterMedal::where('character_id', $this->getCharacterId())->exists())
             return;
 
         $medals = collect($response->getBody());
