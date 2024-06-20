@@ -161,31 +161,31 @@ class CharacterFitting extends ExtensibleModel
         return sprintf('[%s, %s]', $this->ship->typeName, $this->name) . PHP_EOL .
 
         $this->low_slots->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .
 
         $this->medium_slots->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .
 
         $this->high_slots->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .
 
         $this->sub_systems->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .
 
         $this->rig_slots->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .

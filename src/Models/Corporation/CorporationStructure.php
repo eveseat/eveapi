@@ -317,31 +317,31 @@ class CorporationStructure extends ExtensibleModel implements HasTypeID
         return sprintf('[%s, %s]', $this->type->typeName, $this->info->name) . PHP_EOL .
 
             $this->low_slots->map(function ($slot) {
-                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+                return sprintf('%s', $slot->type->typeName);
             })->implode(PHP_EOL) .
 
             PHP_EOL . PHP_EOL .
 
             $this->medium_slots->map(function ($slot) {
-                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+                return sprintf('%s', $slot->type->typeName);
             })->implode(PHP_EOL) .
 
             PHP_EOL . PHP_EOL .
 
             $this->high_slots->map(function ($slot) {
-                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+                return sprintf('%s', $slot->type->typeName);
             })->implode(PHP_EOL) .
 
             PHP_EOL . PHP_EOL .
 
             $this->services_slots->map(function ($slot) {
-                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+                return sprintf('%s', $slot->type->typeName);
             })->implode(PHP_EOL) .
 
             PHP_EOL . PHP_EOL .
 
             $this->rig_slots->map(function ($slot) {
-                return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+                return sprintf('%s', $slot->type->typeName);
             })->implode(PHP_EOL) .
 
             PHP_EOL . PHP_EOL .
