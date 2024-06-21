@@ -94,7 +94,7 @@ class StructureBatch
      * Returns whether a job for this citadel has already been scheduled.
      * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job.
      *
-     * @param int $structure_id
+     * @param  int  $structure_id
      * @return bool
      */
     private function isCurrentlyProcessing(int $structure_id): bool {
@@ -105,7 +105,7 @@ class StructureBatch
      * Set a structure as already processing.
      * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job.
      *
-     * @param int $structure_id
+     * @param  int  $structure_id
      * @return void
      */
     private function setStructureCurrentlyProcessing(int $structure_id): void {
