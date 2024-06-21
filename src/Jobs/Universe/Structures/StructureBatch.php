@@ -55,11 +55,11 @@ class StructureBatch
 
         //filter out already known stations, schedule the rest
         $stations = $stations->filter(function ($station_id) {
-            return UniverseStation::find($station_id) === null && ! $this->isCurrentlyProcessing($station_id, 0); // stations don't need a character
+            return UniverseStation::find($station_id) === null && ! $this->isCurrentlyProcessing($station_id); // stations don't need a character
         });
         foreach ($stations as $station_id){
             // mark this station as already in progress
-            $this->setStructureCurrentlyProcessing($station_id, 0); // stations don't need a character
+            $this->setStructureCurrentlyProcessing($station_id); // stations don't need a character
             $jobs->add(new Station($station_id));
         }
 
@@ -71,12 +71,12 @@ class StructureBatch
                 return                                                                          // only schedule the citadel if:
                     UniverseStructure::find($citadel_id) === null                               // we don't already know it
                     && CacheCitadelAccessCache::canAccess($token->character_id, $citadel_id)    // the character isn't banned
-                    && ! $this->isCurrentlyProcessing($citadel_id, $token->character_id);        // we haven't already scheduled it
+                    && ! $this->isCurrentlyProcessing($citadel_id);        // we haven't already scheduled it
             });
 
             foreach ($citadels as $citadel_id) {
                 // mark this character-citadel combination as already in progress
-                $this->setStructureCurrentlyProcessing($citadel_id, $token->character_id);
+                $this->setStructureCurrentlyProcessing($citadel_id);
                 // schedule the job
                 $jobs->add(new Citadel($citadel_id, $token));
             }
@@ -94,23 +94,21 @@ class StructureBatch
      * Returns whether a job for this citadel has already been scheduled.
      * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job.
      *
-     * @param  int  $structure_id
-     * @param  int  $character_id
+     * @param int $structure_id
      * @return bool
      */
-    private function isCurrentlyProcessing(int $structure_id, int $character_id): bool {
-        return cache()->get(sprintf('structure.%d.processing.%d', $structure_id, $character_id), false);
+    private function isCurrentlyProcessing(int $structure_id): bool {
+        return cache()->get(sprintf('structure.%d.processing', $structure_id), false);
     }
 
     /**
      * Set a structure as already processing.
      * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job.
      *
-     * @param  int  $structure_id
-     * @param  int  $character_id
+     * @param int $structure_id
      * @return void
      */
-    private function setStructureCurrentlyProcessing(int $structure_id, int $character_id): void {
-        cache()->set(sprintf('structure.%d.processing.%d', $structure_id, $character_id), true, now()->addMinutes(60));
+    private function setStructureCurrentlyProcessing(int $structure_id): void {
+        cache()->set(sprintf('structure.%d.processing', $structure_id), true, now()->addMinutes(60));
     }
 }

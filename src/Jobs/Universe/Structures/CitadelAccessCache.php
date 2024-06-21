@@ -24,7 +24,7 @@ namespace Seat\Eveapi\Jobs\Universe\Structures;
 
 interface CitadelAccessCache
 {
-    const BLOCK_DURATION_SECONDS = 60 * 60 * 24 * 7; // 1 week
+    const BLOCK_DURATION_SECONDS = 60 * 60 * 24 * 7 * 4; // 4 weeks
 
     /**
      * Checks whether a character can access a citadel or if esi will return an error 403.
