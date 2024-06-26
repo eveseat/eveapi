@@ -84,18 +84,6 @@ class History extends EsiBase
     protected $tags = ['public', 'market'];
 
     /**
-     * Override base attempts limit and allow the job to be retried up to 100 times.
-     * This value is tied to the amount of requests which should be done against ESI
-     * in order to process a complete batch.
-     *
-     * Everytime a TemporaryOutageException is thrown, we will release the job back
-     * in the queue. Every release is counting as an attempts.
-     *
-     * @var int
-     */
-    public $tries = 100;
-
-    /**
      * @var array
      */
     private $type_ids;

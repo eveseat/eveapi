@@ -81,11 +81,6 @@ class Items extends AbstractAuthCharacterJob
     protected $tags = ['character', 'contract'];
 
     /**
-     * @var int
-     */
-    public $tries = 60;
-
-    /**
      * Items constructor.
      *
      * @param  \Seat\Eveapi\Models\RefreshToken  $token

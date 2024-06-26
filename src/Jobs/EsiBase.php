@@ -76,11 +76,6 @@ abstract class EsiBase extends AbstractJob
     public $queue = 'public'; // By default, queue all ESI jobs on public queue.
 
     /**
-     * @var int By default, retry all ESI jobs 3 times.
-     */
-    public $tries = 3;
-
-    /**
      * The HTTP method used for the API Call.
      *
      * Eg: GET, POST, PUT, DELETE
