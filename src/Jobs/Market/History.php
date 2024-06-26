@@ -64,6 +64,18 @@ class History extends EsiBase
     const ENDPOINT_RATE_LIMIT_CALLS = 100;
 
     /**
+     * The maximum number of unhandled exceptions to allow before failing.
+     *
+     * Override base attempts limit and allow the job to be retried up to 100 times.
+     * This value is tied to the amount of requests which should be done against ESI
+     * in order to process a complete batch.
+     *
+     *
+     * @var int
+     */
+    public $maxExceptions = 100;
+
+    /**
      * @var string
      */
     protected $method = 'get';

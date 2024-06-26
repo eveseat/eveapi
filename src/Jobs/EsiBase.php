@@ -71,6 +71,13 @@ abstract class EsiBase extends AbstractJob
     ];
 
     /**
+     * The maximum number of unhandled exceptions to allow before failing.
+     *
+     * @var int
+     */
+    public $maxExceptions = 3;
+
+    /**
      * @var string By default, queue all ESI jobs on public queue.
      */
     public $queue = 'public'; // By default, queue all ESI jobs on public queue.
