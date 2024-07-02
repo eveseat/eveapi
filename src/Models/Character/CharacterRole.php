@@ -31,6 +31,9 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterRoleFactory;
  * Class CharacterRole.
  *
  * @package Seat\Eveapi\Models\Character
+ *
+ * @property string $scope
+ * @property string $role
  */
 class CharacterRole extends ExtensibleModel
 {

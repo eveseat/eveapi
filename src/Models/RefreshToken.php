@@ -35,6 +35,11 @@ use Seat\Services\Contracts\EsiToken;
 use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\RefreshTokenFactory;
 
+/**
+ * @property CharacterInfo $character
+ * @property CharacterAffiliation $affiliation
+ * @property
+ */
 class RefreshToken extends ExtensibleModel implements EsiToken
 {
     use HasFactory, SoftDeletes {
