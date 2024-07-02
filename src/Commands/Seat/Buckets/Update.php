@@ -68,8 +68,22 @@ class Update extends Command
 
     private function updateToken(RefreshToken $token)
     {
+        // the esi update interval in seconds, but at least an hour
+        $esi_update_interval = max(60*60,$token->esi_update_interval);
+
+        // if the token got processed in the update interval, return now
+        if($token->last_esi_update !== null && $token->last_esi_update->diffInSeconds(now()) < $esi_update_interval) return;
+
+        // update the last updated indicator
+        $token->last_esi_update = now();
+        $token->save();
+
         // schedule character related update
-        $this->scheduleCharacterJobs($token);
+        (new Character($token->character_id, $token))->fire();
+        logger()->debug('[Buckets] Processing token from a bucket', [
+            'flow' => 'character',
+            'token' => $token->character_id,
+        ]);
 
         // if this is a director, schedule corporation related updates
         if (
@@ -78,68 +92,12 @@ class Update extends Command
             && !$this->isCorporationAlreadyScheduled($token->affiliation->corporation_id)
         ) {
             $this->markCorporationScheduled($token->affiliation->corporation_id);
-            $this->scheduleCorporationJobs($token);
-        }
-    }
-
-    /**
-     * Update characters tied to the bucket tokens.
-     *
-     * @param RefreshToken $token
-     */
-    private function scheduleCharacterJobs(RefreshToken $token): void
-    {
-        // create a cache entry with TTL 1 hour - so we can prevent a character to be updated more than once
-        // in the defined update window.
-        $lock = Cache::lock(sprintf('buckets:characters:%d', $token->character_id), 3600);
-
-        // if we are not able to spawn the entry, log the event and interrupt the command.
-        if (!$lock->get()) {
-            logger()->warning('[Buckets] This character has already been processed during the last update window. Process has been interrupted.', [
-                'character_id' => $token->character_id,
+            (new Corporation($token->affiliation->corporation_id, $token))->fire();
+            logger()->debug('[Buckets] Processing token from a bucket.', [
+                'flow' => 'corporation',
+                'token' => $token->character_id,
             ]);
-
-            return;
         }
-
-        // queue character jobs for the selected token.
-        (new Character($token->character_id, $token))->fire();
-
-        logger()->debug('[Buckets] Processing token from a bucket', [
-            'flow' => 'character',
-            'token' => $token->character_id,
-        ]);
-
-    }
-
-    /**
-     * Update corporations tied to the bucket tokens.
-     *
-     * @param RefreshToken $token
-     */
-    private function scheduleCorporationJobs(RefreshToken $token): void
-    {
-        // create a cache entry with TTL 1 hour - so we can prevent a corporation to be updated more than once
-        // in the defined update window.
-        $lock = Cache::lock(sprintf('buckets:corporations:%d',
-            $token->character->affiliation->corporation_id), 3600);
-
-        // if we are not able to spawn the entry, log the event and interrupt the command.
-        if (!$lock->get()) {
-            logger()->warning('[Buckets] This corporation has already been processed during the last update window. Process has been interrupted.', [
-                'corporation_id' => $token->character->affiliation->corporation_id,
-            ]);
-
-            return;
-        }
-
-        // Fire the class to update corporation information
-        (new Corporation($token->character->affiliation->corporation_id, $token))->fire();
-
-        logger()->debug('[Buckets] Processing token from a bucket.', [
-            'flow' => 'corporation',
-            'token' => $token->character_id,
-        ]);
     }
 
     /**
