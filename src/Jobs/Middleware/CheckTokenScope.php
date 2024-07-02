@@ -82,6 +82,16 @@ class CheckTokenScope
             $next($job);
 
             return;
+        } else {
+            logger()->warning(
+                sprintf('[Jobs][Middlewares][%s] Check Token Scope -> Removing job due to required scopes not matching with token scopes.', $job->job->getJobId()),
+                [
+                    'fqcn' => get_class($job),
+                    'job_scopes' => $job->getScope(),
+                    'character_id' => $job->getToken()->character_id,
+                ]);            
+            $job->delete();
+            return;
         }
 
         // log event otherwise
