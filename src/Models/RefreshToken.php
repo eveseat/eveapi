@@ -39,6 +39,7 @@ use Seat\Tests\Eveapi\Database\Factories\RefreshTokenFactory;
  * @property CharacterInfo $character
  * @property CharacterAffiliation $affiliation
  * @property int $character_id
+ * @property \Carbon\Carbon $updated_at
  * @property int esi_update_interval The time in seconds after which this character should be updated
  * @property \Carbon\Carbon last_esi_update The last time this token has been scheduled for an update
  */

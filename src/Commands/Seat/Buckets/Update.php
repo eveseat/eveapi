@@ -26,6 +26,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Bus\Corporation;
+use Seat\Eveapi\Jobs\Character\Roles;
 use Seat\Eveapi\Models\Bucket;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -72,8 +73,17 @@ class Update extends Command
         $esi_update_interval = max(60*60,$token->esi_update_interval);
 
         // if the token got processed in the update interval, return now
-        if($token->last_esi_update !== null && $token->last_esi_update->diffInSeconds(now()) < $esi_update_interval) return;
+        if($token->last_esi_update === null || $token->last_esi_update->diffInSeconds(now()) > $esi_update_interval) {
+            $this->dispatchCharacterEsiUpdate($token);
+        }
+        // if the token hasn't been updated in the last day, make sure to schedule a single job to keep the token alive
+        elseif ($token->updated_at->lt(now()->subHours(23))) {
+            $this->dispatchCharacterTokenKeepalive($token);
+        }
+    }
 
+    private function dispatchCharacterEsiUpdate(RefreshToken $token): void
+    {
         // update the last updated indicator
         $token->last_esi_update = now();
         $token->save();
@@ -98,6 +108,12 @@ class Update extends Command
                 'token' => $token->character_id,
             ]);
         }
+    }
+
+    private function dispatchCharacterTokenKeepalive(RefreshToken $token): void
+    {
+        // TODO: add a job that only requests a new access token instead of a random esi job
+        Roles::dispatch($token)->onQueue('characters');
     }
 
     /**
