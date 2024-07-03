@@ -24,9 +24,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -34,10 +32,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('refresh_token_schedules', function (Blueprint $table){
+        Schema::create('refresh_token_schedules', function (Blueprint $table) {
             $table->bigInteger('character_id')->unsigned()->primary();
             $table->timestamp('last_update');
-            $table->integer('update_interval')->default(60*60);
+            $table->integer('update_interval')->default(60 * 60);
         });
     }
 

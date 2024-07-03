@@ -173,7 +173,7 @@ class RefreshToken extends ExtensibleModel implements EsiToken
 
     public function token_schedule()
     {
-        return $this->hasOne(RefreshTokenSchedule::class,'character_id');
+        return $this->hasOne(RefreshTokenSchedule::class, 'character_id');
     }
 
     /**

@@ -68,15 +68,21 @@ class Update extends Command
             });
     }
 
+    /**
+     * Checks whether a token should be updated and dispatches the required jobs
+     *
+     * @param RefreshToken $token
+     * @return void
+     */
     private function updateToken(RefreshToken $token): void
     {
-        // get the schedule information associated with this token
+        // this contains the info when this character was last scheduled and how often the character should get scheduled
         $token_schedule = $token->token_schedule;
 
-        // the esi update interval in seconds, but at least an hour
-        $esi_update_interval = max(60*60,$token_schedule->update_interval ?? null);
+        // ensure the update interval is not below the cache time
+        $esi_update_interval = max(60 * 60, $token_schedule->update_interval ?? null);
 
-        // if the token got processed in the update interval, return now
+        // schedule the character if 1: he hasn't been scheduled before, 2: enough time has passed since the last time
         if($token_schedule === null || $token_schedule->last_update->diffInSeconds(now()) > $esi_update_interval) {
             $this->dispatchCharacterEsiUpdate($token);
         }
@@ -87,29 +93,35 @@ class Update extends Command
         }
     }
 
+    /**
+     * Dispatches the jobs to update the character
+     *
+     * @param RefreshToken $token
+     * @return void
+     */
     private function dispatchCharacterEsiUpdate(RefreshToken $token): void
     {
-        // update the last updated indicator
+        // update the last_update field so the token won't be scheduled again
         $token_schedule = $token->token_schedule;
         if($token_schedule === null) {
             $token_schedule = new RefreshTokenSchedule();
-            $token_schedule->character_id  = $token->character_id;
+            $token_schedule->character_id = $token->character_id;
         }
         $token_schedule->last_update = now();
         $token_schedule->save();
 
-        // schedule character related update
+        // dispatch the jobs for this character
         (new Character($token->character_id, $token))->fire();
         logger()->debug('[Buckets] Processing token from a bucket', [
             'flow' => 'character',
             'token' => $token->character_id,
         ]);
 
-        // if this is a director, schedule corporation related updates
+        // if this is a director, dispatch corporation jobs, but only if no other director has already been scheduled
         if (
             $token->affiliation->corporation_id !== null
             && $token->character->corporation_roles->where('scope', 'roles')->where('role', 'Director')->isNotEmpty()
-            && !$this->isCorporationAlreadyScheduled($token->affiliation->corporation_id)
+            && ! $this->isCorporationAlreadyScheduled($token->affiliation->corporation_id)
         ) {
             $this->markCorporationScheduled($token->affiliation->corporation_id);
             (new Corporation($token->affiliation->corporation_id, $token))->fire();
@@ -120,9 +132,15 @@ class Update extends Command
         }
     }
 
+    /**
+     * Dispatches a job that uses the token, so it doesn't expire.
+     *
+     * @param RefreshToken $token
+     * @return void
+     */
     private function dispatchCharacterTokenKeepAlive(RefreshToken $token): void
     {
-        // TODO: add a job that only requests a new access token instead of a random esi job
+        // TODO: add a job that only requests a new access token instead of a random esi job. This will require some eseye rework
         Roles::dispatch($token)->onQueue('characters');
     }
 
@@ -144,7 +162,7 @@ class Update extends Command
             $bucket = Bucket::orderBy('id')->first();
 
             // if we're still not able to find a candidate, spawn a new bucket.
-            if (!$bucket) {
+            if (! $bucket) {
                 $bucket = new Bucket();
                 $bucket->save();
 
@@ -165,11 +183,23 @@ class Update extends Command
         return Cache::get('buckets:processed') ?: 0;
     }
 
+    /**
+     * Determine if jobs for a corporation have already been scheduled
+     *
+     * @param int $corporation_id
+     * @return bool
+     */
     private function isCorporationAlreadyScheduled(int $corporation_id): bool
     {
         return array_key_exists($corporation_id, $this->scheduled_corporations);
     }
 
+    /**
+     * Mark a corporation as already being processed
+     *
+     * @param int $corporation_id
+     * @return void
+     */
     private function markCorporationScheduled(int $corporation_id): void
     {
         $this->scheduled_corporations[$corporation_id] = true;
