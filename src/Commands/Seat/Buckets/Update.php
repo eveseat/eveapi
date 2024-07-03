@@ -69,9 +69,9 @@ class Update extends Command
     }
 
     /**
-     * Checks whether a token should be updated and dispatches the required jobs
+     * Checks whether a token should be updated and dispatches the required jobs.
      *
-     * @param RefreshToken $token
+     * @param  RefreshToken  $token
      * @return void
      */
     private function updateToken(RefreshToken $token): void
@@ -94,9 +94,9 @@ class Update extends Command
     }
 
     /**
-     * Dispatches the jobs to update the character
+     * Dispatches the jobs to update the character.
      *
-     * @param RefreshToken $token
+     * @param  RefreshToken  $token
      * @return void
      */
     private function dispatchCharacterEsiUpdate(RefreshToken $token): void
@@ -135,7 +135,7 @@ class Update extends Command
     /**
      * Dispatches a job that uses the token, so it doesn't expire.
      *
-     * @param RefreshToken $token
+     * @param  RefreshToken  $token
      * @return void
      */
     private function dispatchCharacterTokenKeepAlive(RefreshToken $token): void
@@ -184,9 +184,9 @@ class Update extends Command
     }
 
     /**
-     * Determine if jobs for a corporation have already been scheduled
+     * Determine if jobs for a corporation have already been scheduled.
      *
-     * @param int $corporation_id
+     * @param  int  $corporation_id
      * @return bool
      */
     private function isCorporationAlreadyScheduled(int $corporation_id): bool
@@ -195,9 +195,9 @@ class Update extends Command
     }
 
     /**
-     * Mark a corporation as already being processed
+     * Mark a corporation as already being processed.
      *
-     * @param int $corporation_id
+     * @param  int  $corporation_id
      * @return void
      */
     private function markCorporationScheduled(int $corporation_id): void
