@@ -38,10 +38,9 @@ use Seat\Tests\Eveapi\Database\Factories\RefreshTokenFactory;
 /**
  * @property CharacterInfo $character
  * @property CharacterAffiliation $affiliation
+ * @property RefreshTokenSchedule $token_schedule
  * @property int $character_id
  * @property \Carbon\Carbon $updated_at
- * @property int esi_update_interval The time in seconds after which this character should be updated
- * @property \Carbon\Carbon last_esi_update The last time this token has been scheduled for an update
  */
 class RefreshToken extends ExtensibleModel implements EsiToken
 {
@@ -70,7 +69,6 @@ class RefreshToken extends ExtensibleModel implements EsiToken
         'scopes' => 'array',
         'expires_on' => 'datetime',
         'deleted_at' => 'datetime',
-        'last_esi_update' => 'datetime'
     ];
 
     /**
@@ -171,6 +169,11 @@ class RefreshToken extends ExtensibleModel implements EsiToken
     public function user()
     {
         return $this->belongsTo(self::$user_instance::class, 'user_id', self::$user_instance->getAuthIdentifierName());
+    }
+
+    public function token_schedule()
+    {
+        return $this->hasOne(RefreshTokenSchedule::class,'character_id');
     }
 
     /**

@@ -29,6 +29,7 @@ use Seat\Eveapi\Bus\Corporation;
 use Seat\Eveapi\Jobs\Character\Roles;
 use Seat\Eveapi\Models\Bucket;
 use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Models\RefreshTokenSchedule;
 
 /**
  * Class Update.
@@ -61,32 +62,41 @@ class Update extends Command
         Cache::forever('buckets:processed', $bucket->id);
 
         $bucket->refresh_tokens()
-            ->with(['character', 'affiliation'])
+            ->with(['character', 'affiliation', 'token_schedule'])
             ->get()->each(function (RefreshToken $token) {
                 $this->updateToken($token);
             });
     }
 
-    private function updateToken(RefreshToken $token)
+    private function updateToken(RefreshToken $token): void
     {
+        // get the schedule information associated with this token
+        $token_schedule = $token->token_schedule;
+
         // the esi update interval in seconds, but at least an hour
-        $esi_update_interval = max(60*60,$token->esi_update_interval);
+        $esi_update_interval = max(60*60,$token_schedule->update_interval ?? null);
 
         // if the token got processed in the update interval, return now
-        if($token->last_esi_update === null || $token->last_esi_update->diffInSeconds(now()) > $esi_update_interval) {
+        if($token_schedule === null || $token_schedule->last_update->diffInSeconds(now()) > $esi_update_interval) {
             $this->dispatchCharacterEsiUpdate($token);
         }
         // if the token hasn't been updated in the last day, make sure to schedule a single job to keep the token alive
+        // the value is 23 hours instead of 24 so the web ui, using 24h, never shows it as outdated
         elseif ($token->updated_at->lt(now()->subHours(23))) {
-            $this->dispatchCharacterTokenKeepalive($token);
+            $this->dispatchCharacterTokenKeepAlive($token);
         }
     }
 
     private function dispatchCharacterEsiUpdate(RefreshToken $token): void
     {
         // update the last updated indicator
-        $token->last_esi_update = now();
-        $token->save();
+        $token_schedule = $token->token_schedule;
+        if($token_schedule === null) {
+            $token_schedule = new RefreshTokenSchedule();
+            $token_schedule->character_id  = $token->character_id;
+        }
+        $token_schedule->last_update = now();
+        $token_schedule->save();
 
         // schedule character related update
         (new Character($token->character_id, $token))->fire();
@@ -110,7 +120,7 @@ class Update extends Command
         }
     }
 
-    private function dispatchCharacterTokenKeepalive(RefreshToken $token): void
+    private function dispatchCharacterTokenKeepAlive(RefreshToken $token): void
     {
         // TODO: add a job that only requests a new access token instead of a random esi job
         Roles::dispatch($token)->onQueue('characters');

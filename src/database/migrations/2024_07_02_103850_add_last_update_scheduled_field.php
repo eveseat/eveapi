@@ -34,9 +34,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('refresh_tokens', function (Blueprint $table) {
-            $table->timestamp('last_esi_update')->nullable();
-            $table->integer('esi_update_interval')->unsigned()->default(60*60);
+        Schema::create('refresh_token_schedules', function (Blueprint $table){
+            $table->bigInteger('character_id')->unsigned()->primary();
+            $table->timestamp('last_update');
+            $table->integer('update_interval')->default(60*60);
         });
     }
 
@@ -47,9 +48,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('refresh_tokens', function (Blueprint $table) {
-            $table->dropColumn('last_esi_update');
-            $table->dropColumn('esi_update_interval');
-        });
+        Schema::drop('refresh_token_schedules');
     }
 };
