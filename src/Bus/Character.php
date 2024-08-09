@@ -79,11 +79,6 @@ class Character extends Bus
     private int $character_id;
 
     /**
-     * @var \Seat\Eveapi\Models\RefreshToken|null
-     */
-    private ?RefreshToken $token;
-
-    /**
      * Character constructor.
      *
      * @param  int  $character_id
@@ -91,10 +86,9 @@ class Character extends Bus
      */
     public function __construct(int $character_id, ?RefreshToken $token = null)
     {
-        parent::__construct();
+        parent::__construct($token);
 
         $this->character_id = $character_id;
-        $this->token = $token;
     }
 
     /**
@@ -102,7 +96,7 @@ class Character extends Bus
      *
      * @return void
      */
-    public function fire()
+    public function fire(): void
     {
         $this->addPublicJobs();
 
@@ -154,9 +148,9 @@ class Character extends Bus
      */
     protected function addPublicJobs()
     {
-        $this->jobs->add(new Info($this->character_id));
-        $this->jobs->add(new CorporationHistory($this->character_id));
-        $this->jobs->add(new Affiliation([$this->character_id]));
+        $this->addPublicJob(new Info($this->character_id));
+        $this->addPublicJob(new CorporationHistory($this->character_id));
+        $this->addPublicJob(new Affiliation([$this->character_id]));
     }
 
     /**
@@ -166,57 +160,57 @@ class Character extends Bus
      */
     protected function addAuthenticatedJobs()
     {
-        $this->jobs->add(new Roles($this->token));
-        $this->jobs->add(new Titles($this->token));
-        $this->jobs->add(new Clones($this->token));
-        $this->jobs->add(new Implants($this->token));
+        $this->addAuthenticatedJob(new Roles($this->token));
+        $this->addAuthenticatedJob(new Titles($this->token));
+        $this->addAuthenticatedJob(new Clones($this->token));
+        $this->addAuthenticatedJob(new Implants($this->token));
 
-        $this->jobs->add(new Location($this->token));
-        $this->jobs->add(new Online($this->token));
-        $this->jobs->add(new Ship($this->token));
+        $this->addAuthenticatedJob(new Location($this->token));
+        $this->addAuthenticatedJob(new Online($this->token));
+        $this->addAuthenticatedJob(new Ship($this->token));
 
-        $this->jobs->add(new Attributes($this->token));
-        $this->jobs->add(new Queue($this->token));
-        $this->jobs->add(new Skills($this->token));
+        $this->addAuthenticatedJob(new Attributes($this->token));
+        $this->addAuthenticatedJob(new Queue($this->token));
+        $this->addAuthenticatedJob(new Skills($this->token));
 
         // collect military information
-        $this->jobs->add(new Fittings($this->token));
+        $this->addAuthenticatedJob(new Fittings($this->token));
 
-        $this->jobs->add(new Fatigue($this->token));
-        $this->jobs->add(new Medals($this->token));
+        $this->addAuthenticatedJob(new Fatigue($this->token));
+        $this->addAuthenticatedJob(new Medals($this->token));
 
         // collect industrial information
-        $this->jobs->add(new Blueprints($this->token));
-        $this->jobs->add(new Jobs($this->token));
-        $this->jobs->add(new Mining($this->token));
-        $this->jobs->add(new AgentsResearch($this->token));
+        $this->addAuthenticatedJob(new Blueprints($this->token));
+        $this->addAuthenticatedJob(new Jobs($this->token));
+        $this->addAuthenticatedJob(new Mining($this->token));
+        $this->addAuthenticatedJob(new AgentsResearch($this->token));
 
         // collect financial information
-        $this->jobs->add(new Orders($this->token));
-        $this->jobs->add(new History($this->token));
-        $this->jobs->add(new Planets($this->token));
-        $this->jobs->add(new Balance($this->token));
-        $this->jobs->add(new Journal($this->token));
-        $this->jobs->add(new Transactions($this->token));
-        $this->jobs->add(new LoyaltyPoints($this->token));
+        $this->addAuthenticatedJob(new Orders($this->token));
+        $this->addAuthenticatedJob(new History($this->token));
+        $this->addAuthenticatedJob(new Planets($this->token));
+        $this->addAuthenticatedJob(new Balance($this->token));
+        $this->addAuthenticatedJob(new Journal($this->token));
+        $this->addAuthenticatedJob(new Transactions($this->token));
+        $this->addAuthenticatedJob(new LoyaltyPoints($this->token));
 
         // collect intel information
-        $this->jobs->add(new Standings($this->token));
-        $this->jobs->add(new Contacts($this->token));
-        $this->jobs->add(new ContactLabels($this->token));
+        $this->addAuthenticatedJob(new Standings($this->token));
+        $this->addAuthenticatedJob(new Contacts($this->token));
+        $this->addAuthenticatedJob(new ContactLabels($this->token));
 
-        $this->jobs->add(new MailLabels($this->token));
-        $this->jobs->add(new MailingLists($this->token));
-        $this->jobs->add(new Mails($this->token));
+        $this->addAuthenticatedJob(new MailLabels($this->token));
+        $this->addAuthenticatedJob(new MailingLists($this->token));
+        $this->addAuthenticatedJob(new Mails($this->token));
 
         // calendar events
-        $this->jobs->add(new Events($this->token));
-        $this->jobs->add(new Detail($this->token));
-        $this->jobs->add(new Attendees($this->token));
+        $this->addAuthenticatedJob(new Events($this->token));
+        $this->addAuthenticatedJob(new Detail($this->token));
+        $this->addAuthenticatedJob(new Attendees($this->token));
 
         // assets
-        $this->jobs->add(new Assets($this->token));
-        $this->jobs->add(new Names($this->token));
-        $this->jobs->add(new Locations($this->token));
+        $this->addAuthenticatedJob(new Assets($this->token));
+        $this->addAuthenticatedJob(new Names($this->token));
+        $this->addAuthenticatedJob(new Locations($this->token));
     }
 }
