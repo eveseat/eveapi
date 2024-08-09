@@ -61,8 +61,9 @@ abstract class Bus
     abstract public function fire(): void;
 
     /**
-     * Checks if the scopes of the token allow this job and if so, add it to the job list
-     * @param EsiBase $job
+     * Checks if the scopes of the token allow this job and if so, add it to the job list.
+     *
+     * @param  EsiBase  $job
      * @return void
      */
     protected function addAuthenticatedJob(EsiBase $job): void
@@ -75,8 +76,9 @@ abstract class Bus
     }
 
     /**
-     * Add a public job to the job list
-     * @param ShouldQueue $job
+     * Add a public job to the job list.
+     *
+     * @param  ShouldQueue  $job
      * @return void
      */
     protected function addPublicJob(ShouldQueue $job): void
