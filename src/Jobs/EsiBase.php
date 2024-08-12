@@ -29,6 +29,7 @@ use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Exception\PermanentInvalidTokenException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Exception\UnavailableEveServersException;
+use Seat\Eveapi\InteractsWithToken;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiRateLimit;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiRouteStatus;
 use Seat\Eveapi\Jobs\Middleware\CheckServerStatus;
@@ -46,6 +47,8 @@ use Throwable;
  */
 abstract class EsiBase extends AbstractJob
 {
+    use InteractsWithToken;
+
     /**
      * ANTI_RACE_DELAY prevents rapid job recycling with low queue depths.
      */
@@ -212,6 +215,11 @@ abstract class EsiBase extends AbstractJob
         return $this->token;
     }
 
+    protected function getClient(): EsiClient
+    {
+        return $this->esi;
+    }
+
     /**
      * @return string
      */
@@ -299,17 +307,13 @@ abstract class EsiBase extends AbstractJob
         if (! is_null($this->page))
             $this->esi->page($this->page);
 
+        $this->configureTokenForEsiClient();
+
         // Generally, we want to bubble up exceptions all the way to the
         // callee. However, in the case of this worker class, we need to
         // try and be vigilant with tokens that may have expired. So for
         // those cases we wrap in a try/catch.
         try {
-            if ($this->token) {
-                $this->token = $this->token->fresh();
-
-                $this->esi->setAuthentication($this->token);
-            }
-
             $result = $this->esi->invoke($this->method, $this->endpoint, $path_values);
 
             // Update the refresh token we have stored in the database.
@@ -396,35 +400,6 @@ abstract class EsiBase extends AbstractJob
                 ->set('el', $this->endpoint)
                 ->set('ev', $response->getHeader('Warning'))))->onQueue('default');
         }
-    }
-
-    /**
-     * Update the access_token last used in the job,
-     * along with the expiry time.
-     */
-    public function updateRefreshToken(): void
-    {
-
-        tap($this->token, function ($token) {
-
-            // If no API call was made, the client would have never
-            // been instantiated and auth information never updated.
-            if (is_null($token))
-                return;
-
-            if (! $this->esi->isAuthenticated())
-                return;
-
-            $last_auth = $this->esi->getAuthentication();
-
-            if (! empty($last_auth->getRefreshToken()))
-                $token->refresh_token = $last_auth->getRefreshToken();
-
-            $token->token = $last_auth->getAccessToken() ?? '-';
-            $token->expires_on = $last_auth->getExpiresOn();
-
-            $token->save();
-        });
     }
 
     /**

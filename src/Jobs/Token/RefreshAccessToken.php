@@ -23,13 +23,16 @@
 namespace Seat\Eveapi\Jobs\Token;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eseye\Exceptions\InvalidContainerDataException;
+use Seat\Eveapi\InteractsWithToken;
 use Seat\Eveapi\Jobs\AbstractJob;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\Contracts\EsiClient;
 
 class RefreshAccessToken extends AbstractJob
 {
+    use InteractsWithToken;
+
     /**
      * @var array
      */
@@ -41,7 +44,7 @@ class RefreshAccessToken extends AbstractJob
     protected $token;
 
     /**
-     * @var \Seat\Services\Contracts\EsiClient
+     * @var EsiClient
      */
     protected EsiClient $esi;
 
@@ -58,29 +61,28 @@ class RefreshAccessToken extends AbstractJob
 
     /**
      * @return void
+     *
+     * @throws InvalidContainerDataException
      */
-    public function handle()
+    public function handle(): void
     {
-        // normally the retrieve function passes the token down the esi stack, but we don't use retrieve
-        $this->esi->setAuthentication($this->token);
+        // pass this token to the esi client
+        $this->configureTokenForEsiClient();
 
-        try {
-            // get or renew access token
-            $this->esi->getValidAccessToken();
-        } catch (RequestFailedException $e) {
+        // ensure we have a valid access token
+        $this->esi->getValidAccessToken();
 
-        }
+        // make sure the new token is stored
+        $this->updateRefreshToken();
+    }
 
-        // save the new access token. the following logic is extracted from EsiBase
-        $this->token = $this->token->fresh(); // since the model might have been in the queue for a while, amke sure to get the latest info
-        $last_auth = $this->esi->getAuthentication(); // extract the access token info from eseye
+    public function getClient(): EsiClient
+    {
+        return $this->esi;
+    }
 
-        if (! empty($last_auth->getRefreshToken()))
-            $this->token->refresh_token = $last_auth->getRefreshToken();
-
-        $this->token->token = $last_auth->getAccessToken() ?? '-';
-        $this->token->expires_on = $last_auth->getExpiresOn();
-
-        $this->token->save();
+    public function getToken(): ?RefreshToken
+    {
+        return $this->token;
     }
 }
