@@ -76,11 +76,6 @@ class Corporation extends Bus
     private int $corporation_id;
 
     /**
-     * @var \Seat\Eveapi\Models\RefreshToken|null
-     */
-    private ?RefreshToken $token;
-
-    /**
      * Corporation constructor.
      *
      * @param  int  $corporation_id
@@ -88,7 +83,7 @@ class Corporation extends Bus
      */
     public function __construct(int $corporation_id, ?RefreshToken $token = null)
     {
-        parent::__construct();
+        parent::__construct($token);
 
         $this->corporation_id = $corporation_id;
         $this->token = $token;
@@ -99,7 +94,7 @@ class Corporation extends Bus
      *
      * @return void
      */
-    public function fire()
+    public function fire(): void
     {
         $this->addPublicJobs();
 
@@ -151,8 +146,8 @@ class Corporation extends Bus
      */
     protected function addPublicJobs()
     {
-        $this->jobs->add(new Info($this->corporation_id));
-        $this->jobs->add(new AllianceHistory($this->corporation_id));
+        $this->addPublicJob(new Info($this->corporation_id));
+        $this->addPublicJob(new AllianceHistory($this->corporation_id));
     }
 
     /**
@@ -162,53 +157,53 @@ class Corporation extends Bus
      */
     protected function addAuthenticatedJobs()
     {
-        $this->jobs->add(new Divisions($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Divisions($this->corporation_id, $this->token));
 
-        $this->jobs->add(new Roles($this->corporation_id, $this->token));
-        $this->jobs->add(new RoleHistories($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Roles($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new RoleHistories($this->corporation_id, $this->token));
 
-        $this->jobs->add(new Titles($this->corporation_id, $this->token));
-        $this->jobs->add(new MembersTitles($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Titles($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new MembersTitles($this->corporation_id, $this->token));
 
-        $this->jobs->add(new MembersLimit($this->corporation_id, $this->token));
-        $this->jobs->add(new Members($this->corporation_id, $this->token));
-        $this->jobs->add(new MemberTracking($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new MembersLimit($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Members($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new MemberTracking($this->corporation_id, $this->token));
 
-        $this->jobs->add(new Medals($this->corporation_id, $this->token));
-        $this->jobs->add(new IssuedMedals($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Medals($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new IssuedMedals($this->corporation_id, $this->token));
 
         // collect industrial information
-        $this->jobs->add(new Blueprints($this->corporation_id, $this->token));
-        $this->jobs->add(new Facilities($this->corporation_id, $this->token));
-        $this->jobs->add(new Jobs($this->corporation_id, $this->token));
-        $this->jobs->add(new Observers($this->corporation_id, $this->token));
-        $this->jobs->add(new ObserverDetails($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Blueprints($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Facilities($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Jobs($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Observers($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new ObserverDetails($this->corporation_id, $this->token));
 
         // collect financial information
-        $this->jobs->add(new Orders($this->corporation_id, $this->token));
-        $this->jobs->add(new History($this->corporation_id, $this->token));
-        $this->jobs->add(new Shareholders($this->corporation_id, $this->token));
-        $this->jobs->add(new Balances($this->corporation_id, $this->token));
-        $this->jobs->add(new Journals($this->corporation_id, $this->token));
-        $this->jobs->add(new Transactions($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Orders($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new History($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Shareholders($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Balances($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Journals($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Transactions($this->corporation_id, $this->token));
 
         // collect intel information
-        $this->jobs->add(new Labels($this->corporation_id, $this->token));
-        $this->jobs->add(new Standings($this->corporation_id, $this->token));
-        $this->jobs->add(new Contacts($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Labels($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Standings($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Contacts($this->corporation_id, $this->token));
 
         // structures
-        $this->jobs->add(new Starbases($this->corporation_id, $this->token));
-        $this->jobs->add(new StarbaseDetails($this->corporation_id, $this->token));
-        $this->jobs->add(new Structures($this->corporation_id, $this->token));
-        $this->jobs->add(new Extractions($this->corporation_id, $this->token));
-        $this->jobs->add(new CustomsOffices($this->corporation_id, $this->token));
-        $this->jobs->add(new CustomsOfficeLocations($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Starbases($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new StarbaseDetails($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Structures($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Extractions($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new CustomsOffices($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new CustomsOfficeLocations($this->corporation_id, $this->token));
 
         // assets
-        $this->jobs->add(new Assets($this->corporation_id, $this->token));
-        $this->jobs->add(new ContainerLogs($this->corporation_id, $this->token));
-        $this->jobs->add(new Locations($this->corporation_id, $this->token));
-        $this->jobs->add(new Names($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Assets($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new ContainerLogs($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Locations($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Names($this->corporation_id, $this->token));
     }
 }

@@ -43,11 +43,6 @@ class Alliance extends Bus
     private int $alliance_id;
 
     /**
-     * @var \Seat\Eveapi\Models\RefreshToken|null
-     */
-    private ?RefreshToken $token;
-
-    /**
      * Alliance constructor.
      *
      * @param  int  $alliance_id
@@ -55,7 +50,7 @@ class Alliance extends Bus
      */
     public function __construct(int $alliance_id, ?RefreshToken $token = null)
     {
-        parent::__construct();
+        parent::__construct($token);
 
         $this->token = $token;
         $this->alliance_id = $alliance_id;
@@ -66,7 +61,7 @@ class Alliance extends Bus
      *
      * @return void
      */
-    public function fire()
+    public function fire(): void
     {
         $this->addPublicJobs();
 
@@ -117,8 +112,8 @@ class Alliance extends Bus
      */
     protected function addPublicJobs()
     {
-        $this->jobs->add(new Info($this->alliance_id));
-        $this->jobs->add(new Members($this->alliance_id));
+        $this->addPublicJob(new Info($this->alliance_id));
+        $this->addPublicJob(new Members($this->alliance_id));
     }
 
     /**
@@ -128,7 +123,7 @@ class Alliance extends Bus
      */
     protected function addAuthenticatedJobs()
     {
-        $this->jobs->add(new Labels($this->alliance_id, $this->token));
-        $this->jobs->add(new Contacts($this->alliance_id, $this->token));
+        $this->addAuthenticatedJob(new Labels($this->alliance_id, $this->token));
+        $this->addAuthenticatedJob(new Contacts($this->alliance_id, $this->token));
     }
 }

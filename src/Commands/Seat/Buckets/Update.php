@@ -26,7 +26,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Bus\Corporation;
+use Seat\Eveapi\Jobs\Character\Roles;
 use Seat\Eveapi\Models\Bucket;
+use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Models\RefreshTokenSchedule;
 
 /**
  * Class Update.
@@ -45,6 +48,8 @@ class Update extends Command
      */
     protected $description = 'Schedule jobs from next bucket to update tokens.';
 
+    private array $scheduled_corporations = [];
+
     /**
      * Execute command.
      */
@@ -56,91 +61,93 @@ class Update extends Command
         // store bucket ID, so we keep track of the flow.
         Cache::forever('buckets:processed', $bucket->id);
 
-        $this->updateCharacters($bucket);
-        $this->updateCorporations($bucket);
+        $bucket->refresh_tokens()
+            ->with(['character', 'affiliation', 'token_schedule'])
+            ->get()->each(function (RefreshToken $token) {
+                $this->updateToken($token);
+            });
     }
 
     /**
-     * Update characters tied to the bucket tokens.
+     * Checks whether a token should be updated and dispatches the required jobs.
      *
-     * @param  \Seat\Eveapi\Models\Bucket  $bucket
+     * @param  RefreshToken  $token
+     * @return void
      */
-    private function updateCharacters(Bucket $bucket)
+    private function updateToken(RefreshToken $token): void
     {
-        // loop over each attached tokens and enqueue job tied to this token.
-        $bucket->refresh_tokens->each(function ($token) use ($bucket) {
+        // this contains the info when this character was last scheduled and how often the character should get scheduled
+        $token_schedule = $token->token_schedule;
 
-            // create a cache entry with TTL 1 hour - so we can prevent a character to be updated more than once
-            // in the defined update window.
-            $lock = Cache::lock(sprintf('buckets:characters:%d', $token->character_id), 3600);
+        // ensure the update interval is not below the cache time
+        $esi_update_interval = max(60 * 60, $token_schedule->update_interval ?? null);
 
-            // if we are not able to spawn the entry, log the event and interrupt the command.
-            if (! $lock->get()) {
-                logger()->warning('[Buckets] This character has already been processed during the last update window. Process has been interrupted.', [
-                    'bucket_id' => $bucket->id,
-                    'character_id' => $token->character_id,
-                    'update_window' => 3600,
-                ]);
-
-                return;
-            }
-
-            // queue character jobs for the selected token.
-            (new Character($token->character_id, $token))->fire();
-
-            logger()->debug('[Buckets] Processing token from a bucket', [
-                'bucket' => $bucket->id,
-                'flow' => 'character',
-                'token' => $token->character_id,
-            ]);
-        });
+        // schedule the character if 1: he hasn't been scheduled before, 2: enough time has passed since the last time
+        if($token_schedule === null || $token_schedule->last_update->diffInSeconds(now()) > $esi_update_interval) {
+            $this->dispatchCharacterEsiUpdate($token);
+        }
+        // if the token hasn't been updated in the last day, make sure to schedule a single job to keep the token alive
+        // the value is 23 hours instead of 24 so the web ui, using 24h, never shows it as outdated
+        elseif ($token->updated_at->lt(now()->subHours(23))) {
+            $this->dispatchCharacterTokenKeepAlive($token);
+        }
     }
 
     /**
-     * Update corporations tied to the bucket tokens.
+     * Dispatches the jobs to update the character.
      *
-     * @param  \Seat\Eveapi\Models\Bucket  $bucket
+     * @param  RefreshToken  $token
+     * @return void
      */
-    private function updateCorporations(Bucket $bucket)
+    private function dispatchCharacterEsiUpdate(RefreshToken $token): void
     {
-        $bucket->refresh_tokens()->whereHas('character.affiliation', function ($query) {
-            $query->whereNotNull('corporation_id');
-        })->whereHas('character.corporation_roles', function ($query) {
-            $query->where('scope', 'roles');
-            $query->where('role', 'Director');
-        })->get()->unique('character.affiliation.corporation_id')->each(function ($token) use ($bucket) {
+        // update the last_update field so the token won't be scheduled again
+        $token_schedule = $token->token_schedule;
+        if($token_schedule === null) {
+            $token_schedule = new RefreshTokenSchedule();
+            $token_schedule->character_id = $token->character_id;
+        }
+        $token_schedule->last_update = now();
+        $token_schedule->save();
 
-            // create a cache entry with TTL 1 hour - so we can prevent a corporation to be updated more than once
-            // in the defined update window.
-            $lock = Cache::lock(sprintf('buckets:corporations:%d',
-                $token->character->affiliation->corporation_id), 3600);
+        // dispatch the jobs for this character
+        (new Character($token->character_id, $token))->fire();
+        logger()->debug('[Buckets] Processing token from a bucket', [
+            'flow' => 'character',
+            'token' => $token->character_id,
+        ]);
 
-            // if we are not able to spawn the entry, log the event and interrupt the command.
-            if (! $lock->get()) {
-                logger()->warning('[Buckets] This corporation has already been processed during the last update window. Process has been interrupted.', [
-                    'bucket_id' => $bucket->id,
-                    'corporation_id' => $token->character->affiliation->corporation_id,
-                    'update_window' => 3600,
-                ]);
-
-                return;
-            }
-
-            // Fire the class to update corporation information
-            (new Corporation($token->character->affiliation->corporation_id, $token))->fire();
-
+        // if this is a director, dispatch corporation jobs, but only if no other director has already been scheduled
+        if (
+            $token->affiliation->corporation_id !== null
+            && $token->character->corporation_roles->where('scope', 'roles')->where('role', 'Director')->isNotEmpty()
+            && ! $this->isCorporationAlreadyScheduled($token->affiliation->corporation_id)
+        ) {
+            $this->markCorporationScheduled($token->affiliation->corporation_id);
+            (new Corporation($token->affiliation->corporation_id, $token))->fire();
             logger()->debug('[Buckets] Processing token from a bucket.', [
-                'bucket' => $bucket->id,
                 'flow' => 'corporation',
                 'token' => $token->character_id,
             ]);
-        });
+        }
+    }
+
+    /**
+     * Dispatches a job that uses the token, so it doesn't expire.
+     *
+     * @param  RefreshToken  $token
+     * @return void
+     */
+    private function dispatchCharacterTokenKeepAlive(RefreshToken $token): void
+    {
+        // TODO: add a job that only requests a new access token instead of a random esi job. This will require some eseye rework
+        Roles::dispatch($token)->onQueue('characters');
     }
 
     /**
      * Determine what is the next bucket to process.
      *
-     * @return \Seat\Eveapi\Models\Bucket
+     * @return Bucket
      */
     private function getNextBucket(): Bucket
     {
@@ -174,5 +181,27 @@ class Update extends Command
     private function getLastProcessedBucketID(): int
     {
         return Cache::get('buckets:processed') ?: 0;
+    }
+
+    /**
+     * Determine if jobs for a corporation have already been scheduled.
+     *
+     * @param  int  $corporation_id
+     * @return bool
+     */
+    private function isCorporationAlreadyScheduled(int $corporation_id): bool
+    {
+        return array_key_exists($corporation_id, $this->scheduled_corporations);
+    }
+
+    /**
+     * Mark a corporation as already being processed.
+     *
+     * @param  int  $corporation_id
+     * @return void
+     */
+    private function markCorporationScheduled(int $corporation_id): void
+    {
+        $this->scheduled_corporations[$corporation_id] = true;
     }
 }

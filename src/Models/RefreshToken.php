@@ -35,6 +35,13 @@ use Seat\Services\Contracts\EsiToken;
 use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\RefreshTokenFactory;
 
+/**
+ * @property CharacterInfo $character
+ * @property CharacterAffiliation $affiliation
+ * @property RefreshTokenSchedule $token_schedule
+ * @property int $character_id
+ * @property \Carbon\Carbon $updated_at
+ */
 class RefreshToken extends ExtensibleModel implements EsiToken
 {
     use HasFactory, SoftDeletes {
@@ -162,6 +169,11 @@ class RefreshToken extends ExtensibleModel implements EsiToken
     public function user()
     {
         return $this->belongsTo(self::$user_instance::class, 'user_id', self::$user_instance->getAuthIdentifierName());
+    }
+
+    public function token_schedule()
+    {
+        return $this->hasOne(RefreshTokenSchedule::class, 'character_id');
     }
 
     /**

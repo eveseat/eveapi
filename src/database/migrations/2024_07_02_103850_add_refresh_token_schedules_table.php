@@ -20,45 +20,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Seat\Services\Models\ExtensibleModel;
-use Seat\Tests\Eveapi\Database\Factories\CharacterRoleFactory;
-
-/**
- * Class CharacterRole.
- *
- * @package Seat\Eveapi\Models\Character
- *
- * @property string $scope
- * @property string $role
- */
-class CharacterRole extends ExtensibleModel
-{
-    use HasFactory;
-
+return new class extends Migration {
     /**
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * Run the migrations.
+     *
+     * @return void
      */
-    protected static function newFactory(): Factory
+    public function up()
     {
-        return CharacterRoleFactory::new();
+        Schema::create('refresh_token_schedules', function (Blueprint $table) {
+            $table->bigInteger('character_id')->unsigned()->primary();
+            $table->timestamp('last_update');
+            $table->integer('update_interval')->default(60 * 60);
+        });
     }
 
     /**
-     * @var bool
+     * Reverse the migrations.
+     *
+     * @return void
      */
-    protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = true;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'id';
-}
+    public function down()
+    {
+        Schema::drop('refresh_token_schedules');
+    }
+};
