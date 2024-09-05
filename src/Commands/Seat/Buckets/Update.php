@@ -26,7 +26,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Bus\Corporation;
-use Seat\Eveapi\Jobs\Character\Roles;
+use Seat\Eveapi\Jobs\Token\RefreshAccessToken;
 use Seat\Eveapi\Models\Bucket;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\RefreshTokenSchedule;
@@ -140,8 +140,7 @@ class Update extends Command
      */
     private function dispatchCharacterTokenKeepAlive(RefreshToken $token): void
     {
-        // TODO: add a job that only requests a new access token instead of a random esi job. This will require some eseye rework
-        Roles::dispatch($token)->onQueue('characters');
+        RefreshAccessToken::dispatch($token)->onQueue('characters');
     }
 
     /**
