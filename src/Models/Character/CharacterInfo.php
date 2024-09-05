@@ -58,6 +58,8 @@ use Seat\Tests\Eveapi\Database\Factories\CharacterInfoFactory;
  * Class CharacterInfo.
  *
  * @package Seat\Eveapi\Models\Character
+ *
+ * @property CharacterRole $corporation_roles
  */
 class CharacterInfo extends ExtensibleModel
 {

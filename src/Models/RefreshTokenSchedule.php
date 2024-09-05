@@ -20,45 +20,30 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Models\Character;
+namespace Seat\Eveapi\Models;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 use Seat\Services\Models\ExtensibleModel;
-use Seat\Tests\Eveapi\Database\Factories\CharacterRoleFactory;
 
 /**
- * Class CharacterRole.
- *
- * @package Seat\Eveapi\Models\Character
- *
- * @property string $scope
- * @property string $role
+ * @property int $character_id
+ * @property Carbon $last_update
+ * @property int $update_interval
+ * @property RefreshToken $token
  */
-class CharacterRole extends ExtensibleModel
+class RefreshTokenSchedule extends ExtensibleModel
 {
-    use HasFactory;
+    protected $table = 'refresh_token_schedules';
+    protected $primaryKey = 'character_id';
+    public $incrementing = false;
+    public $timestamps = false;
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-    protected static function newFactory(): Factory
+    protected $casts = [
+        'last_update' => 'datetime',
+    ];
+
+    public function token()
     {
-        return CharacterRoleFactory::new();
+        return $this->hasOne(RefreshToken::class, 'character_id');
     }
-
-    /**
-     * @var bool
-     */
-    protected static $unguarded = true;
-
-    /**
-     * @var bool
-     */
-    public $incrementing = true;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'id';
 }
