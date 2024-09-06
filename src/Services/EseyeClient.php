@@ -34,6 +34,8 @@ use Psr\SimpleCache\CacheInterface;
 use Seat\Eseye\Configuration;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Eseye;
+use Seat\Eseye\Exceptions\InvalidAuthenticationException;
+use Seat\Eseye\Exceptions\InvalidContainerDataException;
 use Seat\Services\Contracts\EsiClient;
 use Seat\Services\Contracts\EsiResponse;
 use Seat\Services\Contracts\EsiToken;
@@ -226,5 +228,14 @@ class EseyeClient implements EsiClient
     public function getCache(): CacheInterface
     {
         return $this->instance->getConfiguration()->getCache();
+    }
+
+    /**
+     * @throws InvalidAuthenticationException
+     * @throws InvalidContainerDataException
+     */
+    public function getValidAccessToken(): string
+    {
+        return $this->instance->getValidAccessToken()->access_token;
     }
 }
