@@ -27,7 +27,7 @@
     "laravel/framework": "^10.0",
     "maatwebsite/excel": "^3.1.45",
     "eveseat/eseye": "^3.1",
-    "eveseat/services": "^5.0.6",
+    "eveseat/services": "^5.0.8",
     "guzzlehttp/guzzle": "^7.0",
     "doctrine/dbal": "^3.0",
     "psr/simple-cache": "^3.0",
