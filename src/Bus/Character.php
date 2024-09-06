@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Bus;
 
 use Illuminate\Bus\Batch;
+use Seat\Eveapi\Events\CharacterBatchProcessed;
 use Seat\Eveapi\Jobs\Assets\Character\Assets;
 use Seat\Eveapi\Jobs\Assets\Character\Locations;
 use Seat\Eveapi\Jobs\Assets\Character\Names;
@@ -126,7 +127,9 @@ class Character extends Bus
                         'error' => $throwable->getMessage(),
                         'trace' => $throwable->getTrace(),
                     ]);
-            })->finally(function (Batch $batch) {
+            })->finally(function (Batch $batch) use ($character) {
+                event(new CharacterBatchProcessed($character));
+
                 logger()->info(
                     sprintf('[Batches][%s] Character batch executed.', $batch->id),
                     [
