@@ -101,7 +101,8 @@ class Contacts extends AbstractAuthAllianceJob
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
 
-            if ($response->isFromCache() &&
+            // This wont save network calls, but should save DB writes
+            if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
                 AllianceContact::where('alliance_id', $this->getAllianceId())->exists())
                 continue; // This page has no changes so move onto the next page
 

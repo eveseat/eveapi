@@ -104,7 +104,8 @@ class Contacts extends AbstractAuthCharacterJob
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
 
-            if ($response->isFromCache() &&
+            // This wont save network but should save DB writes
+            if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
                 CharacterContact::where('character_id', $this->getCharacterId())->exists())
                 continue;
             

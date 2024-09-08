@@ -84,6 +84,15 @@ class IssuedMedals extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+                CorporationIssuedMedal::where('corporation_id', $this->getCorporationId())->exists()){
+                    if (! $this->nextPage($response->getPagesCount())){
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
+
             $medals = $response->getBody();
 
             collect($medals)->each(function ($medal) {

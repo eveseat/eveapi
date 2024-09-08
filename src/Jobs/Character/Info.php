@@ -73,7 +73,7 @@ class Info extends AbstractCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() && $model->exists) return;
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() && $model->exists) return;
 
         $info = $response->getBody();
 

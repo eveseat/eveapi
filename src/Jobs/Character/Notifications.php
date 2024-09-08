@@ -76,7 +76,7 @@ class Notifications extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($response->isFromCache() && 
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() && 
             CharacterNotification::where('character_id', $this->getCharacterId())->exists())
             return;
 

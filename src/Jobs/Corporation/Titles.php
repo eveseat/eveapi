@@ -111,6 +111,10 @@ class Titles extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+            CorporationTitle::where('corporation_id', $this->getCorporationId())->exists())
+            return;
+
         $titles = $response->getBody();
 
         collect($titles)->each(function ($title) {

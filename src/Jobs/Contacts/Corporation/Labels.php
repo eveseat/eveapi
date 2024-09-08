@@ -72,7 +72,7 @@ class Labels extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($response->isFromCache() &&
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
         CorporationLabel::where('corporation_id', $this->getCorporationId())->exists())
             return;
 

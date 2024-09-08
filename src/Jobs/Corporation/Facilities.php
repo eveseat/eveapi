@@ -77,6 +77,10 @@ class Facilities extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+            CorporationFacility::where('corporation_id', $this->getCorporationId())->exists())
+            return;
+
         $facilities = $response->getBody();
 
         collect($facilities)->each(function ($facility) {

@@ -85,7 +85,7 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
             'character_id' => $character_id,
         ]);
 
-        if ($response->isFromCache() && CharacterLoyaltyPoints::where('character_id', $character_id)->exists()) return;
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() && CharacterLoyaltyPoints::where('character_id', $character_id)->exists()) return;
 
         //get the lp data as collection
         $loyalty_points = collect($response->getBody());

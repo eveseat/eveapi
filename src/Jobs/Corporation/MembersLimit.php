@@ -77,6 +77,10 @@ class MembersLimit extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+            CorporationMemberLimits::where('corporation_id', $this->getCorporationId())->exists())
+            return;
+
         $limit = $response->getBody();
 
         if (! property_exists($limit, 'scalar'))

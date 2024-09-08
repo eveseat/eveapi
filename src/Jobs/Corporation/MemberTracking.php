@@ -77,6 +77,10 @@ class MemberTracking extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+            CorporationMemberTracking::where('corporation_id', $this->getCorporationId())->exists())
+            return;
+
         $members = $response->getBody();
 
         collect($members)->each(function ($member) {

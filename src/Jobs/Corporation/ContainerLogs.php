@@ -88,6 +88,15 @@ class ContainerLogs extends AbstractAuthCorporationJob
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
+            if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+                CorporationContainerLog::where('corporation_id', $this->getCorporationId())->exists()){
+                    if (! $this->nextPage($response->getPagesCount())){
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
+
             $logs = $response->getBody();
 
             collect($logs)->each(function ($log) use ($structure_batch) {

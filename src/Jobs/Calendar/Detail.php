@@ -91,7 +91,7 @@ class Detail extends AbstractAuthCharacterJob
                     'event_id' => $event_id,
                 ]);
 
-                if ($response->isFromCache() && $model->exists) return true; // Move onto the next detail if this is cached
+                if (config('eveapi.cache.respect_cache') && $response->isFromCache() && $model->exists) return true; // Move onto the next detail if this is cached
 
                 $detail = $response->getBody();
 

@@ -77,6 +77,10 @@ class MembersTitles extends AbstractAuthCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+            CorporationMemberTitle::where('corporation_id', $this->getCorporationId())->exists())
+            return;
+
         $titles = $response->getBody();
 
         collect($titles)->filter(function ($member) {
