@@ -76,10 +76,10 @@ class Fatigue extends AbstractAuthCharacterJob
         $model = CharacterFatigue::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ]);
-        
+
         if (config('eveapi.cache.respect_cache') && $response->isFromCache() && $model->exists) return;
 
-        $fatigue = $response->getBody();        
+        $fatigue = $response->getBody();
 
         $model->fill([
             'last_jump_date' => property_exists($fatigue, 'last_jump_date') ?

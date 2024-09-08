@@ -97,7 +97,7 @@ class Contacts extends AbstractAuthAllianceJob
             ]);
 
             $contacts = $response->getBody();
-            
+
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
 

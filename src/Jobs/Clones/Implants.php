@@ -73,7 +73,7 @@ class Implants extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if (config('eveapi.cache.respect_cache') && $response->isFromCache() && 
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
             CharacterImplant::where('character_id', $this->getCharacterId())->exists())
             return;
 

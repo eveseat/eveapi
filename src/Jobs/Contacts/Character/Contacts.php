@@ -108,7 +108,7 @@ class Contacts extends AbstractAuthCharacterJob
             if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
                 CharacterContact::where('character_id', $this->getCharacterId())->exists())
                 continue;
-            
+
             collect($contacts)->each(function ($contact) {
 
                 CharacterContact::firstOrNew([
@@ -122,8 +122,6 @@ class Contacts extends AbstractAuthCharacterJob
                     'label_ids' => $contact->label_ids ?? null,
                 ])->save();
             });
-
-
 
             if (! $this->nextPage($response->getPagesCount()))
                 break;

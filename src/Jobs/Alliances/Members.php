@@ -57,7 +57,7 @@ class Members extends AbstractAllianceJob
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if (config('eveapi.cache.respect_cache') && $response->isFromCache() && 
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
             AllianceMember::where('alliance_id', $this->alliance_id)->exists())
             return;
 

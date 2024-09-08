@@ -77,6 +77,7 @@ class LoyaltyPoints extends AbstractAuthCharacterJob
         //if the character doesn't exist, stop here
         if (is_null($character)){
             $this->fail();
+
             return;
         }
 

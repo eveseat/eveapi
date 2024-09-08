@@ -22,11 +22,9 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Mapping\Characters\MedalsMapping;
 use Seat\Eveapi\Models\Character\CharacterMedal;
-use Seat\Web\Http\Composers\CharacterMenu;
 
 /**
  * Class Medals.
@@ -76,7 +74,7 @@ class Medals extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if (config('eveapi.cache.respect_cache') && $response->isFromCache() && 
+        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
             CharacterMedal::where('character_id', $this->getCharacterId())->exists())
             return;
 

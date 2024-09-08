@@ -102,7 +102,7 @@ class Contacts extends AbstractAuthCorporationJob
 
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
-            
+
                 // In this case, the cache guard here  will not save network ops, but should save the DB
             if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
                 CorporationContact::where('corporation_id', $this->getCorporationId())->exists())
@@ -120,8 +120,6 @@ class Contacts extends AbstractAuthCorporationJob
                     'label_ids' => $contact->label_ids ?? null,
                 ])->save();
             });
-
-
 
             if (! $this->nextPage($response->getPagesCount()))
                 break;

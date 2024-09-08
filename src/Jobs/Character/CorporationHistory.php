@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
-use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Jobs\AbstractCharacterJob;
 use Seat\Eveapi\Models\Character\CharacterCorporationHistory;
 

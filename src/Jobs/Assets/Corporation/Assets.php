@@ -129,7 +129,7 @@ class Assets extends AbstractAuthCorporationJob
                     if ($model->exists && $model->isClean()){
                         // No ESI data updated, just touch the timestamp
                         $model->updated_at = $start;
-    
+
                         // There is no point triggering events when nothing has changed
                         $model->saveQuietly();
                     } else {
@@ -138,7 +138,6 @@ class Assets extends AbstractAuthCorporationJob
                         $model->save();
                     }
 
-                    
                 });
             });
 

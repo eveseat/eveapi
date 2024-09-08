@@ -110,6 +110,7 @@ class StarbaseDetails extends AbstractAuthCorporationJob
                 if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
                     CorporationStarbaseDetail::where('starbase_id', $starbase->starbase_id)->exists()){
                         $this->known_starbases->push($starbase->starbase_id);
+
                         return;
                     }
 
