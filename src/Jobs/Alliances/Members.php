@@ -57,7 +57,7 @@ class Members extends AbstractAllianceJob
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if ($this->shouldUseCache($response) && 
+        if ($this->shouldUseCache($response) &&
             AllianceMember::where('alliance_id', $this->alliance_id)->exists())
             return;
 

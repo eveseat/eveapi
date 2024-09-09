@@ -423,7 +423,7 @@ abstract class EsiBase extends AbstractJob
 
     /**
      * Check if the call should respect the cache
-     * based on the request being cached and settings
+     * based on the request being cached and settings.
      *
      * @param  \Seat\Services\Contracts\EsiResponse  $response
      * @return bool

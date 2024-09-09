@@ -123,7 +123,7 @@ class Starbases extends AbstractAuthCorporationJob
 
             });
 
-        } while ( $this->nextPage($response->getPagesCount()));
+        } while ($this->nextPage($response->getPagesCount()));
 
         CorporationStarbase::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('starbase_id', $this->known_starbases->flatten()->all())

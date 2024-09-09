@@ -105,7 +105,7 @@ class Contacts extends AbstractAuthCharacterJob
                 ->pluck('contact_id')->flatten()->all());
 
             // This wont save network but should save DB writes
-            if ($this->shouldUseCache($response)  &&
+            if ($this->shouldUseCache($response) &&
                 CharacterContact::where('character_id', $this->getCharacterId())->exists())
                 continue;
 

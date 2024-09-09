@@ -114,6 +114,7 @@ class StarbaseDetails extends AbstractAuthCorporationJob
 
                 if ($this->shouldUseCache($response) && $model->exists){
                         $this->known_starbases->push($starbase->starbase_id);
+
                         return true;
                     }
 

@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Calendar;
 
-use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Mapping\Characters\CalendarEventMapping;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
