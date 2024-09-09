@@ -62,7 +62,7 @@ class CorporationHistory extends AbstractCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+        if ($this->shouldUseCache($response) &&
             CharacterCorporationHistory::where('character_id', $this->getCharacterId())->exists())
             return;
 

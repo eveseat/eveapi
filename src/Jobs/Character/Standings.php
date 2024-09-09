@@ -73,7 +73,7 @@ class Standings extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+        if ($this->shouldUseCache($response) &&
             CharacterStanding::where('character_id', $this->getCharacterId())->exists())
             return;
 

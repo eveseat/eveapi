@@ -93,7 +93,7 @@ class Contacts extends AbstractAuthCharacterJob
     {
         parent::handle();
 
-        while (true) {
+        do {
 
             $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
@@ -105,7 +105,7 @@ class Contacts extends AbstractAuthCharacterJob
                 ->pluck('contact_id')->flatten()->all());
 
             // This wont save network but should save DB writes
-            if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+            if ($this->shouldUseCache($response)  &&
                 CharacterContact::where('character_id', $this->getCharacterId())->exists())
                 continue;
 
@@ -123,9 +123,7 @@ class Contacts extends AbstractAuthCharacterJob
                 ])->save();
             });
 
-            if (! $this->nextPage($response->getPagesCount()))
-                break;
-        }
+        } while ($this->nextPage($response->getPagesCount()));
 
         // Cleanup old contacts
         CharacterContact::where('character_id', $this->getCharacterId())

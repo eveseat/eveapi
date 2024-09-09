@@ -70,7 +70,7 @@ class Labels extends AbstractAuthAllianceJob
             'alliance_id' => $this->getAllianceId(),
         ]);
 
-        if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+        if ($this->shouldUseCache($response)  &&
             AllianceLabel::where('alliance_id', $this->getAllianceId())->exists())
             return;
 

@@ -92,7 +92,7 @@ class Contacts extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        while (true) {
+        do {
 
             $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
@@ -104,7 +104,7 @@ class Contacts extends AbstractAuthCorporationJob
                 ->pluck('contact_id')->flatten()->all());
 
                 // In this case, the cache guard here  will not save network ops, but should save the DB
-            if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+            if ($this->shouldUseCache($response) &&
                 CorporationContact::where('corporation_id', $this->getCorporationId())->exists())
                 continue;
 
@@ -121,9 +121,7 @@ class Contacts extends AbstractAuthCorporationJob
                 ])->save();
             });
 
-            if (! $this->nextPage($response->getPagesCount()))
-                break;
-        }
+        } while ($this->nextPage($response->getPagesCount()));
 
         // Cleanup old contacts
         CorporationContact::where('corporation_id', $this->getCorporationId())

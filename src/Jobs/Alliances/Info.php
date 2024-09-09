@@ -64,7 +64,7 @@ class Info extends AbstractAllianceJob
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if (config('eveapi.cache.respect_cache') && $response->isFromCache() && $model->exists) return; // No need to hit the DB here
+        if ($this->shouldUseCache($response) && $model->exists) return; // No need to hit the DB here
 
         $info = $response->getBody();
 

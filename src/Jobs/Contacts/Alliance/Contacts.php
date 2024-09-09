@@ -90,7 +90,7 @@ class Contacts extends AbstractAuthAllianceJob
      */
     public function handle()
     {
-        while (true) {
+        do {
 
             $response = $this->retrieve([
                 'alliance_id' => $this->getAllianceId(),
@@ -102,7 +102,7 @@ class Contacts extends AbstractAuthAllianceJob
                 ->pluck('contact_id')->flatten()->all());
 
             // This wont save network calls, but should save DB writes
-            if (config('eveapi.cache.respect_cache') && $response->isFromCache() &&
+            if ($this->shouldUseCache($response) &&
                 AllianceContact::where('alliance_id', $this->getAllianceId())->exists())
                 continue; // This page has no changes so move onto the next page
 
@@ -118,9 +118,7 @@ class Contacts extends AbstractAuthAllianceJob
                 ])->save();
             });
 
-            if (! $this->nextPage($response->getPagesCount()))
-                break;
-        }
+        } while ($this->nextPage($response->getPagesCount()));
 
         // Cleanup old contacts
         AllianceContact::where('alliance_id', $this->getAllianceId())

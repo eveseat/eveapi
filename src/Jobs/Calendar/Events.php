@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Calendar;
 
+use Seat\Eveapi\Bus\Character;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Mapping\Characters\CalendarEventMapping;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
@@ -85,6 +86,9 @@ class Events extends AbstractAuthCharacterJob
             $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
+
+            if ($this->shouldUseCache($response) && CharacterCalendarEvent::where('character_id', $this->getCharacterId())->exists())
+                return;
 
             $events = collect($response->getBody());
 

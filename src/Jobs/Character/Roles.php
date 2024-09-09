@@ -73,7 +73,8 @@ class Roles extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        // Not checking if cached here as impact is low and I would rather always update roles.
+        if ($this->shouldUseCache($response) && CharacterRole::where('character_id', $this->getCharacterId())->exists())
+            return;
 
         $roles = $response->getBody();
 
