@@ -42,7 +42,7 @@ class Dispatch extends Command
      *
      * @var string
      */
-    protected $signature = 'esi:job:dispatch {job_class} {--character_id=} {--corporation_id=}';
+    protected $signature = 'esi:job:dispatch {job_class} {--sync} {--character_id=} {--corporation_id=}';
 
     /**
      * The console command description.
@@ -86,7 +86,11 @@ class Dispatch extends Command
             return $this::INVALID;
         }
 
-        $job::dispatch($this->option('character_id'));
+        if($this->option('sync')) {
+            $job::dispatchSync($this->option('character_id'));
+        } else {
+            $job::dispatch($this->option('character_id'));
+        }
 
         $this->info('Job dispatched!');
 
@@ -102,7 +106,12 @@ class Dispatch extends Command
         }
 
         $refresh_token = RefreshToken::findOrFail($this->option('character_id'));
-        $job::dispatch($refresh_token);
+
+        if($this->option('sync')) {
+            $job::dispatchSync($refresh_token);
+        } else {
+            $job::dispatch($refresh_token);
+        }
 
         $this->info('Job dispatched!');
 
@@ -117,7 +126,11 @@ class Dispatch extends Command
             return $this::INVALID;
         }
 
-        $job::dispatch($this->option('corporation_id'));
+        if($this->option('sync')) {
+            $job::dispatchSync($this->option('corporation_id'));
+        } else {
+            $job::dispatch($this->option('corporation_id'));
+        }
 
         $this->info('Job dispatched!');
 
@@ -139,7 +152,12 @@ class Dispatch extends Command
         }
 
         $refresh_token = RefreshToken::findOrFail($this->option('character_id'));
-        $job::dispatch($this->option('corporation_id'), $refresh_token);
+
+        if($this->option('sync')) {
+            $job::dispatchSync($this->option('corporation_id'), $refresh_token);
+        } else {
+            $job::dispatch($this->option('corporation_id'), $refresh_token);
+        }
 
         $this->info('Job dispatched!');
 
@@ -151,7 +169,11 @@ class Dispatch extends Command
         if (! is_subclass_of($job, EsiBase::class))
             $this->warn('The job is not part of Esi stack.');
 
-        $job::dispatch();
+        if($this->option('sync')) {
+            $job::dispatchSync();
+        } else {
+            $job::dispatch();
+        }
 
         $this->info('Job dispatched!');
 
