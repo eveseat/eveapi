@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Sde\DgmTypeAttribute;
 use Seat\Eveapi\Models\Sde\InvControlTowerResource;
@@ -30,13 +29,15 @@ use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\Moon;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationStarbase.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationStarbase extends Model
+class CorporationStarbase extends ExtensibleModel implements HasTypeID
 {
     use HasCompositePrimaryKey;
 
@@ -101,7 +102,7 @@ class CorporationStarbase extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setOnlinedSinceAttribute($value)
     {
@@ -109,7 +110,7 @@ class CorporationStarbase extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setReinforcedUntilAttribute($value)
     {
@@ -117,7 +118,7 @@ class CorporationStarbase extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setUnanchorAtAttribute($value)
     {
@@ -132,13 +133,13 @@ class CorporationStarbase extends Model
 
         return $this->hasOne(CorporationStarbaseDetail::class, 'starbase_id', 'starbase_id')
             ->withDefault([
-                'allow_corporation_members'                => 0,
-                'allow_alliance_members'                   => 0,
-                'use_alliance_standings'                   => 0,
-                'attack_standing_threshold'                => 0,
-                'attack_security_status_threshold'         => 0,
+                'allow_corporation_members' => 0,
+                'allow_alliance_members' => 0,
+                'use_alliance_standings' => 0,
+                'attack_standing_threshold' => 0,
+                'attack_security_status_threshold' => 0,
                 'attack_if_other_security_status_dropping' => 0,
-                'attack_if_at_war'                         => 0,
+                'attack_if_at_war' => 0,
             ]);
     }
 
@@ -187,5 +188,13 @@ class CorporationStarbase extends Model
     {
 
         return $this->belongsTo(InvType::class, 'type_id', 'typeID');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

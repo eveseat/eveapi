@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ namespace Seat\Eveapi\Jobs;
  */
 abstract class AbstractCorporationJob extends EsiBase
 {
+
     /**
      * @var int The corporation ID to which the job is related.
      */
@@ -38,10 +39,14 @@ abstract class AbstractCorporationJob extends EsiBase
      * AbstractCorporationJob constructor.
      *
      * @param  int  $corporation_id
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __construct(int $corporation_id)
     {
         $this->corporation_id = $corporation_id;
+
+        parent::__construct();
     }
 
     /**
@@ -68,5 +73,18 @@ abstract class AbstractCorporationJob extends EsiBase
             $tags[] = $this->getCorporationId();
 
         return $tags;
+    }
+
+    public function handle()
+    {
+        if ($this->batchId && $this->batch()->cancelled())
+            return;
+
+        logger()->debug(
+            sprintf('[Jobs][%s] Corporation job is processing...', $this->job->getJobId()),
+            [
+                'fqcn' => static::class,
+                'corporation_id' => $this->corporation_id,
+            ]);
     }
 }

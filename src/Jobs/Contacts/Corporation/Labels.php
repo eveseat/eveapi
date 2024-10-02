@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,21 +66,21 @@ class Labels extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $labels = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($labels->isCachedLoad() &&
-            CorporationLabel::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $labels = $response->getBody();
 
         collect($labels)->each(function ($label) {
 
             CorporationLabel::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'label_id'       => $label->label_id,
+                'label_id' => $label->label_id,
             ])->fill([
-                'name'           => $label->label_name,
+                'name' => $label->label_name,
             ])->save();
         });
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,23 +61,23 @@ class AllianceHistory extends AbstractCorporationJob
      */
     public function handle()
     {
-        $history = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($history->isCachedLoad() &&
-            CorporationAllianceHistory::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $history = $response->getBody();
 
         collect($history)->each(function ($alliance) {
 
             CorporationAllianceHistory::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'record_id'      => $alliance->record_id,
+                'record_id' => $alliance->record_id,
             ])->fill([
-                'start_date'  => carbon($alliance->start_date),
+                'start_date' => carbon($alliance->start_date),
                 'alliance_id' => $alliance->alliance_id ?? null,
-                'is_deleted'  => $alliance->is_deleted ?? false,
+                'is_deleted' => $alliance->is_deleted ?? false,
             ])->save();
 
         });

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,16 +22,21 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
+use Seat\Tests\Eveapi\Database\Factories\CharacterAffiliationFactory;
 
 /**
  * Class CharacterAffiliation.
  *
  * @package Seat\Eveapi\Models\Character
  */
-class CharacterAffiliation extends Model
+class CharacterAffiliation extends ExtensibleModel
 {
+    use HasFactory;
+
     /**
      * @var bool
      */
@@ -48,13 +53,21 @@ class CharacterAffiliation extends Model
     protected $primaryKey = 'character_id';
 
     /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CharacterAffiliationFactory::new();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function character()
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
             ->withDefault([
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
                 'category' => 'character',
             ]);
     }
@@ -66,7 +79,7 @@ class CharacterAffiliation extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
             ->withDefault([
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
                 'category' => 'corporation',
             ]);
     }
@@ -78,7 +91,7 @@ class CharacterAffiliation extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
             ->withDefault([
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
                 'category' => 'alliance',
             ]);
     }
@@ -90,7 +103,7 @@ class CharacterAffiliation extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
             ->withDefault([
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
                 'category' => 'faction',
             ]);
     }

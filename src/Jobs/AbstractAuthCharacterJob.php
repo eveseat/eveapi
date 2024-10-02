@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@
 
 namespace Seat\Eveapi\Jobs;
 
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenScope;
 use Seat\Eveapi\Jobs\Middleware\CheckTokenVersion;
-use Seat\Eveapi\Jobs\Middleware\WithoutOverlapping;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -60,8 +60,8 @@ abstract class AbstractAuthCharacterJob extends AbstractCharacterJob
             new CheckTokenScope,
             new CheckTokenVersion,
             (new WithoutOverlapping($this->getToken()->character_id))
-                ->releaseAfter(WithoutOverlapping::ANTI_RACE_DELAY)
-                ->expireAfter(WithoutOverlapping::ACCESS_TOKEN_EXPIRY_DELAY),
+                ->releaseAfter(self::ANTI_RACE_DELAY)
+                ->expireAfter(self::ACCESS_TOKEN_EXPIRY_DELAY),
         ]);
     }
 }

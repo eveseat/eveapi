@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,32 +22,20 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class CorporationStructureService.
- *
- * @package Seat\Eveapi\Models\Corporation
- *
- * @OA\Schema(
- *     title="CorporationStructureService",
- *     description="Corporation Structure Service",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     property="name",
- *     type="string"
- * )
- *
- * @OA\Property(
- *     property="state",
- *     type="string",
- *     enum={"online", "offline", "cleanup"}
- * )
- */
-class CorporationStructureService extends Model
+#[OA\Schema(
+    title: 'CorporationStructureService',
+    description: 'Corporation Structure Service',
+    properties: [
+        new OA\Property(property: 'name', type: 'string'),
+        new OA\Property(property: 'state', type: 'string', enum: ['online', 'offline', 'cleanup']),
+    ],
+    type: 'object'
+)]
+class CorporationStructureService extends ExtensibleModel
 {
     use HasCompositePrimaryKey;
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Calendar\CharacterCalendarEvent;
 use Seat\Eveapi\Models\Clones\CharacterClone;
@@ -49,17 +50,25 @@ use Seat\Eveapi\Models\Wallet\CharacterWalletBalance;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
 use Seat\Eveapi\Models\Wallet\CharacterWalletTransaction;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
+use Seat\Services\Models\ExtensibleModel;
 use Seat\Services\Traits\NotableTrait;
-use Seat\Web\Models\User;
+use Seat\Tests\Eveapi\Database\Factories\CharacterInfoFactory;
 
 /**
  * Class CharacterInfo.
  *
  * @package Seat\Eveapi\Models\Character
+ *
+ * @property CharacterRole $corporation_roles
  */
-class CharacterInfo extends Model
+class CharacterInfo extends ExtensibleModel
 {
-    use NotableTrait;
+    use HasFactory, NotableTrait;
+
+    /**
+     * @var \Illuminate\Contracts\Auth\Authenticatable
+     */
+    private static $user_instance;
 
     /**
      * @var bool
@@ -75,6 +84,28 @@ class CharacterInfo extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CharacterInfoFactory::new();
+    }
+
+    /**
+     * @param  array  $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // init user instance - so we can apply relationship
+        if (is_null(self::$user_instance)) {
+            $user_class = config('auth.providers.users.model');
+            self::$user_instance = new $user_class;
+        }
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -439,13 +470,11 @@ class CharacterInfo extends Model
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
-     *
-     * @deprecated 4.0.0
      */
     public function user()
     {
-        return $this->hasOneThrough(User::class, RefreshToken::class,
-            'character_id', 'id', 'character_id', 'user_id')
+        return $this->hasOneThrough(self::$user_instance::class, RefreshToken::class,
+            'character_id', self::$user_instance->getAuthIdentifierName(), 'character_id', 'user_id')
             ->withDefault([
                 'name' => trans('web::seat.unknown'),
             ]);
@@ -469,18 +498,5 @@ class CharacterInfo extends Model
 
         return $this->hasMany(CharacterWalletTransaction::class,
             'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Seat\Eveapi\Models\Character\CharacterCorporationHistory
-     *
-     * @deprecated 4.0.0
-     */
-    public function getCurrentCorporationAttribute()
-    {
-
-        return CharacterCorporationHistory::where('character_id', $this->character_id)
-            ->orderBy('record_id', 'desc')
-            ->first();
     }
 }

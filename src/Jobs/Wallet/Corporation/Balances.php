@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,19 +71,19 @@ class Balances extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $balances = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($balances->isCachedLoad() &&
-            CorporationWalletBalance::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $balances = $response->getBody();
 
         collect($balances)->each(function ($balance) {
 
             CorporationWalletBalance::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'division'       => $balance->division,
+                'division' => $balance->division,
             ])->fill([
                 'balance' => $balance->balance,
             ])->save();

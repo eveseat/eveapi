@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,20 +22,17 @@
 
 namespace Seat\Eveapi\Models\Market;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class Price.
  *
  * @package Seat\Eveapi\Models\Market
  */
-class Price extends Model
+class Price extends ExtensibleModel implements HasTypeID
 {
-
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */
@@ -63,5 +60,13 @@ class Price extends Model
     {
 
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

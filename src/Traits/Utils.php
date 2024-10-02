@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ trait Utils
         // the available different group types in the
         // table is basically:
         //
-        //        groupID	typeName
+        //        groupID |	typeName
         //        ------------------
         //        3	        Region
         //        4	        Constellation
@@ -82,7 +82,7 @@ trait Utils
         // The default response will be the system this
         // location is in.
         $response = [
-            'map_id'   => $solar_system_id,
+            'map_id' => $solar_system_id,
             'map_name' => 'Unknown',
         ];
 
@@ -116,7 +116,7 @@ trait Utils
                 $closest_distance = $distance;
 
                 $response = [
-                    'map_id'   => $celestial->itemID,
+                    'map_id' => $celestial->itemID,
                     'map_name' => $celestial->itemName,
                 ];
             }

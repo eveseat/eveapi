@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Alliances;
 
-use Seat\Eveapi\Jobs\EsiBase;
+use Seat\Eveapi\Jobs\AbstractAllianceJob;
 use Seat\Eveapi\Mapping\Alliances\InfoMapping;
 use Seat\Eveapi\Models\Alliances\Alliance;
 
@@ -31,13 +31,8 @@ use Seat\Eveapi\Models\Alliances\Alliance;
  *
  * @package Seat\Eveapi\Jobs\Alliances
  */
-class Info extends EsiBase
+class Info extends AbstractAllianceJob
 {
-    /**
-     * @var int
-     */
-    private $alliance_id;
-
     /**
      * @var string
      */
@@ -54,23 +49,6 @@ class Info extends EsiBase
     protected $version = 'v3';
 
     /**
-     * @var array
-     */
-    protected $tags = ['alliance'];
-
-    /**
-     * Info constructor.
-     *
-     * @param  int  $alliance_id
-     */
-    public function __construct(int $alliance_id)
-    {
-        $this->alliance_id = $alliance_id;
-
-        array_push($this->tags, $alliance_id);
-    }
-
-    /**
      * Handle the job.
      *
      * @throws \Throwable
@@ -78,12 +56,11 @@ class Info extends EsiBase
     public function handle()
     {
 
-        $info = $this->retrieve([
+        $response = $this->retrieve([
             'alliance_id' => $this->alliance_id,
         ]);
 
-        if ($info->isCachedLoad() && Alliance::find($this->alliance_id))
-            return;
+        $info = $response->getBody();
 
         $model = Alliance::firstOrNew([
             'alliance_id' => $this->alliance_id,

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ namespace Seat\Eveapi\Jobs\Alliances;
 
 use Seat\Eveapi\Bus\Alliance as AllianceBus;
 use Seat\Eveapi\Jobs\EsiBase;
-use Seat\Eveapi\Models\Alliances\Alliance;
 
 /**
  * Class Alliances.
@@ -59,12 +58,11 @@ class Alliances extends EsiBase
     public function handle()
     {
 
-        $alliances = $this->retrieve();
+        $response = $this->retrieve();
 
-        if ($alliances->isCachedLoad() && Alliance::count() > 0)
-            return;
+        $alliances = collect($response->getBody());
 
-        collect($alliances)->each(function ($alliance_id) {
+        $alliances->each(function ($alliance_id) {
 
             // queue update jobs which will pull alliance related data.
             (new AllianceBus($alliance_id))->fire();

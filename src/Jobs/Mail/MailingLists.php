@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,21 +64,21 @@ class MailingLists extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $mailing_lists = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($mailing_lists->isCachedLoad() &&
-            MailMailingList::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $lists = $response->getBody();
 
-        collect($mailing_lists)->each(function ($list) {
+        collect($lists)->each(function ($list) {
 
             MailMailingList::firstOrCreate([
-                'character_id'    => $this->getCharacterId(),
+                'character_id' => $this->getCharacterId(),
                 'mailing_list_id' => $list->mailing_list_id,
             ], [
-                'name'            => $list->name,
+                'name' => $list->name,
             ]);
         });
     }

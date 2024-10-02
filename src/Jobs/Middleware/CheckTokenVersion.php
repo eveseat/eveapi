@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
+use Closure;
 use Seat\Eveapi\Exception\TokenVersionException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\RefreshToken;
@@ -35,33 +36,34 @@ class CheckTokenVersion
 {
     /**
      * @param  \Seat\Eveapi\Jobs\EsiBase  $job
-     * @param $next
+     * @param  \Closure  $next
+     * @return void
      */
-    public function handle($job, $next)
+    public function handle(EsiBase $job, Closure $next): void
     {
+        $version = $job->getToken()->version;
 
-        // in case the job is not ESI related - bypass this check
-        if (! is_subclass_of($job, EsiBase::class)) {
+        if ($version == RefreshToken::CURRENT_VERSION){
+            logger()->debug(
+                sprintf('[Jobs][Middlewares][%s] Check Token Version -> Processing job is using up to date token.', $job->job->getJobId()),
+                [
+                    'fqcn' => get_class($job),
+                    'character_id' => $job->getToken()->character_id,
+                ]);
+
             $next($job);
 
             return;
         }
 
-        $ver = $job->getToken()->version;
-
-        if ($ver == RefreshToken::CURRENT_VERSION){
-            logger()->debug('Job running with up to date token', [
-                'job' => get_class($job),
-                'token_id' => $job->getToken()->character_id,
+        logger()->error(
+            sprintf('[Jobs][Middlewares][%s] Check Token Version -> Deleting job due to outdated token version.', $job->job->getJobId()),
+            [
+                'fqcn' => get_class($job),
+                'character_id' => $job->getToken()->character_id,
             ]);
-            $next($job);
-        } else {
-            logger()->error('Job deleted due to token version', [
-                'job' => get_class($job),
-                'token_id' => $job->getToken()->character_id,
-            ]);
-            $job->fail(new TokenVersionException('Token Version Mismatch. Run command `php artisan seat:token:upgrade` in order to fix.'));
-        }
 
+        $job->tries = 1;
+        $job->fail(new TokenVersionException('Token Version Mismatch. Run command `php artisan seat:token:upgrade` in order to fix.'));
     }
 }

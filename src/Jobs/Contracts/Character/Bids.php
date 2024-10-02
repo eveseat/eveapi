@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,14 +120,12 @@ class Bids extends AbstractAuthCharacterJob
             ->then(function () {
 
                 try {
-                    $bids = $this->retrieve([
+                    $response = $this->retrieve([
                         'character_id' => $this->getCharacterId(),
                         'contract_id' => $this->contract_id,
                     ]);
 
-                    if ($bids->isCachedLoad() &&
-                        ContractBid::where('contract_id', $this->contract_id)->count() > 0)
-                        return;
+                    $bids = $response->getBody();
 
                     collect($bids)->each(function ($bid) {
 

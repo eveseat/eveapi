@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,70 +22,26 @@
 
 namespace Seat\Eveapi\Models\Skills;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class CharacterSkillQueue.
- *
- * @package Seat\Eveapi\Models\Skills
- *
- * @OA\Schema(
- *     description="Character Skill Queue",
- *     title="CharacterSkillQueue",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="finish_date",
- *     description="The date-time when the skill training will end"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="start_date",
- *     description="The date-time when the skill training start"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="finished_level",
- *     description="The level at which the skill will be at end of the training"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="queue_position",
- *     description="The position in the queue"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="training_start_sp",
- *     description="The skillpoint amount in the skill when training start"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="level_end_sp",
- *     description="The skillpoint amount earned at end of the level training"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="level_start_sp",
- *     description="The skillpoint amount from which the training level is starting"
- * )
- *
- * @OA\Property(
- *     property="type",
- *     ref="#/components/schemas/InvType"
- * )
- */
-class CharacterSkillQueue extends Model
+#[OA\Schema(
+    title: 'CharacterSkillQueue',
+    description: 'Character Skill Queue',
+    properties: [
+        new OA\Property(property: 'finish_date', description: 'The date/time when the skill training will end', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'finished_level', description: 'The level at which the skill will be at end of the training', type: 'integer'),
+        new OA\Property(property: 'queue_position', description: 'The position in the queue', type: 'integer'),
+        new OA\Property(property: 'training_start_sp', description: 'The skillpoint amount in the skill when training start', type: 'integer'),
+        new OA\Property(property: 'level_end_sp', description: 'The skillpoint amount earned at end of the level training', type: 'integer'),
+        new OA\Property(property: 'level_start_sp', description: 'The skillpoint amount from which the training level is starting', type: 'integer'),
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType'),
+    ],
+    type: 'object'
+)]
+class CharacterSkillQueue extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var array
@@ -93,25 +49,17 @@ class CharacterSkillQueue extends Model
     protected $hidden = ['id', 'character_id', 'skill_id', 'created_at', 'updated_at'];
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'start_date' => 'datetime',
+        'finish_date' => 'datetime',
+    ];
+
+    /**
      * @var bool
      */
     protected static $unguarded = true;
-
-    /**
-     * @param $value
-     */
-    public function setStartDateAttribute($value)
-    {
-        $this->attributes['start_date'] = is_null($value) ? null : carbon($value);
-    }
-
-    /**
-     * @param $value
-     */
-    public function setFinishDateAttribute($value)
-    {
-        $this->attributes['finish_date'] = is_null($value) ? null : carbon($value);
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -120,5 +68,13 @@ class CharacterSkillQueue extends Model
     {
 
         return $this->belongsTo(InvType::class, 'skill_id', 'typeID');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

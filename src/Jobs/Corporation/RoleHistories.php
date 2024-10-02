@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,15 +76,15 @@ class RoleHistories extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $roles = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($roles->isCachedLoad() &&
-                CorporationRoleHistory::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $roles = $response->getBody();
 
             collect($roles)->each(function ($role) {
 
@@ -92,11 +92,11 @@ class RoleHistories extends AbstractAuthCorporationJob
 
                     CorporationRoleHistory::firstOrNew([
                         'corporation_id' => $this->getCorporationId(),
-                        'character_id'   => $role->character_id,
-                        'changed_at'     => carbon($role->changed_at),
-                        'role_type'      => $role->role_type,
-                        'state'          => 'old',
-                        'role'           => $role_id,
+                        'character_id' => $role->character_id,
+                        'changed_at' => carbon($role->changed_at),
+                        'role_type' => $role->role_type,
+                        'state' => 'old',
+                        'role' => $role_id,
                     ])->fill([
                         'issuer_id' => $role->issuer_id,
                     ])->save();
@@ -107,11 +107,11 @@ class RoleHistories extends AbstractAuthCorporationJob
 
                     CorporationRoleHistory::firstOrNew([
                         'corporation_id' => $this->getCorporationId(),
-                        'character_id'   => $role->character_id,
-                        'changed_at'     => carbon($role->changed_at),
-                        'role_type'      => $role->role_type,
-                        'state'          => 'new',
-                        'role'           => $role_id,
+                        'character_id' => $role->character_id,
+                        'changed_at' => carbon($role->changed_at),
+                        'role_type' => $role->role_type,
+                        'state' => 'new',
+                        'role' => $role_id,
                     ])->fill([
                         'issuer_id' => $role->issuer_id,
                     ])->save();
@@ -120,7 +120,7 @@ class RoleHistories extends AbstractAuthCorporationJob
 
             });
 
-            if (! $this->nextPage($roles->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

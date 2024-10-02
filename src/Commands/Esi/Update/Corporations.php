@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,14 +60,14 @@ class Corporations extends Command
         if (! $token) {
             $this->error('The provided ID is invalid or not registered in SeAT.');
 
-            return;
+            return $this::INVALID;
         }
 
         if (! $token->character->affiliation->corporation_id) {
             $this->error(sprintf('Unable to process corporation update from %d - %s. The corporation is unknown.',
                 $token->character_id, $token->character->name ?? trans('web::seat.unknown')));
 
-            return;
+            return $this::INVALID;
         }
 
         // Fire the class to update corporation information
@@ -75,5 +75,7 @@ class Corporations extends Command
 
         $this->info(sprintf('Processing corporation update %d - %s',
             $token->character_id, $token->character->name ?? trans('web::seat.unknown')));
+
+        return $this::SUCCESS;
     }
 }

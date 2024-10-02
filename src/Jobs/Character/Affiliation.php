@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Character;
 
+use Illuminate\Bus\Batchable;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 
@@ -32,6 +33,7 @@ use Seat\Eveapi\Models\Character\CharacterAffiliation;
  */
 class Affiliation extends EsiBase
 {
+    use Batchable;
     /**
      * The maximum number of entities we can request affiliation information for.
      */
@@ -69,6 +71,8 @@ class Affiliation extends EsiBase
      */
     public function __construct(array $character_ids)
     {
+        parent::__construct();
+
         $this->character_ids = $character_ids;
     }
 
@@ -81,16 +85,20 @@ class Affiliation extends EsiBase
      */
     public function handle()
     {
-        logger()->debug('Retrieving affiliation for the following characters list.', [
-            'limit' => self::REQUEST_ID_LIMIT,
-            'batch' => $this->character_ids,
-        ]);
+        logger()->debug(
+            sprintf('[Jobs][%s] Retrieving affiliation for the following characters list.', $this->job->getJobId()),
+            [
+                'limit' => self::REQUEST_ID_LIMIT,
+                'batch' => $this->character_ids,
+            ]);
 
         collect($this->character_ids)->chunk(self::REQUEST_ID_LIMIT)->each(function ($chunk) {
             $this->request_body = $chunk->values()->all();
-            $affiliations = $this->retrieve();
+            $response = $this->retrieve();
 
-            collect($affiliations)->each(function ($affiliation) {
+            $affiliations = collect($response->getBody());
+
+            $affiliations->each(function ($affiliation) {
                 CharacterAffiliation::updateOrCreate(
                     ['character_id' => $affiliation->character_id],
                     ['corporation_id' => $affiliation->corporation_id, 'alliance_id' => $affiliation->alliance_id ?? null, 'faction_id' => $affiliation->faction_id ?? null]

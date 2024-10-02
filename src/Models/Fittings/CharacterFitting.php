@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Fittings;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterFitting.
  *
  * @package Seat\Eveapi\Models\Fittings
  */
-class CharacterFitting extends Model
+class CharacterFitting extends ExtensibleModel
 {
     /**
      * @var bool
@@ -138,8 +138,8 @@ class CharacterFitting extends Model
      */
     public function getEstimatedPriceAttribute()
     {
-        return $this->ship->price->average + $this->items->sum(function ($item) {
-            return $item->type->price->average * $item->quantity;
+        return $this->ship->price->adjusted_price + $this->items->sum(function ($item) {
+            return $item->type->price->adjusted_price * $item->quantity;
         });
     }
 
@@ -149,7 +149,7 @@ class CharacterFitting extends Model
     public function getFittingEstimatedPriceAttribute()
     {
         return $this->items->sum(function ($item) {
-            return $item->type->price->average * $item->quantity;
+            return $item->type->price->adjusted_price * $item->quantity;
         });
     }
 
@@ -161,31 +161,31 @@ class CharacterFitting extends Model
         return sprintf('[%s, %s]', $this->ship->typeName, $this->name) . PHP_EOL .
 
         $this->low_slots->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .
 
         $this->medium_slots->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .
 
         $this->high_slots->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .
 
         $this->sub_systems->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .
 
         $this->rig_slots->map(function ($slot) {
-            return sprintf('%s x%d', $slot->type->typeName, $slot->quantity);
+            return sprintf('%s', $slot->type->typeName);
         })->implode(PHP_EOL) .
 
         PHP_EOL . PHP_EOL .

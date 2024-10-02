@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,15 @@ namespace Seat\Eveapi\Commands\Eve\Update;
 
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
+use Seat\Services\Settings\Seat;
 
 /**
  * Class Sde.
@@ -98,7 +101,7 @@ class Sde extends Command
 
         // Start by warning the user about the command that will be run
         $this->comment('Warning! This Laravel command uses exec() to execute a ');
-        $this->comment('mysql shell command to import an extracted dump. Due');
+        $this->comment('shell command to import an extracted dump. Due');
         $this->comment('to the way the command is constructed, should someone ');
         $this->comment('view the current running processes of your server, they ');
         $this->comment('will be able to see your SeAT database users password.');
@@ -113,7 +116,7 @@ class Sde extends Command
 
             $this->warn('Exiting');
 
-            return;
+            return $this::SUCCESS;
         }
 
         // Request the json from eveseat/resources
@@ -124,7 +127,7 @@ class Sde extends Command
 
             $this->warn('Unable to reach the resources endpoint.');
 
-            return;
+            return $this::FAILURE;
         }
 
         // Check if we should attempt getting the
@@ -147,31 +150,27 @@ class Sde extends Command
 
         // add extra tables registered on behalf providers
         $extra_tables = config('seat.sde.tables', []);
-        //filter duplicates
         $this->json->tables = array_unique(array_merge($this->json->tables, $extra_tables));
         sort($this->json->tables, SORT_STRING);
 
-        //get currently installed tables
-        // after the update introducing this change or a new install, this will be null. To ensure it's properly set, we assume no sde is installed
-        $current_tables = setting('installed_sde_tables', true) ?? [];
-
-        // Avoid an existing SDE to be accidentally installed again
-        // except if there is a newer version
-        // except if the user explicitly ask for it,
-        // except if new tables are required
-        $requires_update =
-            $this->json->version !== setting('installed_sde', true) ||
-            $this->option('force') == true ||
-            array_diff($this->json->tables, $current_tables) !== [];
+        $all_sde_tables_exist = true;
+        foreach ($this->json->tables as $table) {
+            if(! Schema::hasTable($table)) {
+                $all_sde_tables_exist = false;
+            }
+        }
 
         // Avoid an existing SDE to be accidentally installed again
         // except if the user explicitly ask for it
-        if (! $requires_update) {
+        if ($this->json->version == Seat::get('installed_sde') &&
+            $this->option('force') == false &&
+            $all_sde_tables_exist
+        ) {
 
             $this->warn('You are already running the latest SDE version.');
             $this->warn('If you want to install it again, run this command with --force argument.');
 
-            return;
+            return $this::SUCCESS;
         }
 
         // Ask for a confirmation before installing an existing SDE version
@@ -183,7 +182,7 @@ class Sde extends Command
 
                 $this->info('Nothing has been updated.');
 
-                return;
+                return $this::SUCCESS;
             }
         }
 
@@ -194,24 +193,33 @@ class Sde extends Command
             implode(', ', $this->json->tables));
         $this->info('Download format will be: ' . $this->json->format);
         $this->line('');
-        $this->info(sprintf('The SDE will be imported to mysql://%s@%s:%d/%s',
-            config('database.connections.mysql.username'),
-            config('database.connections.mysql.host'),
-            config('database.connections.mysql.port'),
-            config('database.connections.mysql.database')));
+
+        if (DB::connection()->getDriverName() == 'mysql')
+            $this->info(sprintf('The SDE will be imported to mysql://%s@%s:%d/%s',
+                config('database.connections.mysql.username'),
+                config('database.connections.mysql.host'),
+                config('database.connections.mysql.port'),
+                config('database.connections.mysql.database')));
+
+        if (in_array(DB::connection()->getDriverName(), ['pgsql', 'postgresql']))
+            $this->info(sprintf('The SDE will be imported to pgsql://%s@%s:%d/%s',
+                config('database.connections.pgsql.username'),
+                config('database.connections.pgsql.host'),
+                config('database.connections.pgsql.port'),
+                config('database.connections.pgsql.database')));
 
         if (! $this->confirm('Does the above look OK?', true)) {
 
             $this->warn('Exiting');
 
-            return;
+            return $this::SUCCESS;
         }
 
         if (! $this->isStorageOk()) {
 
             $this->error('Storage path is not OK. Please check permissions');
 
-            return;
+            return $this::INVALID;
         }
 
         // Download the SDE's
@@ -221,8 +229,7 @@ class Sde extends Command
 
         $this->explodeMap();
 
-        setting(['installed_sde', $this->json->version], true);
-        setting(['installed_sde_tables', $this->json->tables], true);
+        Seat::set('installed_sde', $this->json->version);
 
         $this->line('SDE Update Command Complete');
 
@@ -234,6 +241,7 @@ class Sde extends Command
             ->set('el', 'console')
             ->set('ev', $this->json->version)));
 
+        return $this::SUCCESS;
     }
 
     /**
@@ -309,6 +317,19 @@ class Sde extends Command
     {
 
         $this->line('Downloading...');
+
+        if (DB::connection()->getDriverName() == 'mysql')
+            $this->downloadMysqlSde();
+
+        if (in_array(DB::connection()->getDriverName(), ['pgsql', 'postgresql']))
+            $this->downloadPgSqlSde();
+
+        $this->line('');
+
+    }
+
+    private function downloadMysqlSde()
+    {
         $bar = $this->getProgressBar(count($this->json->tables));
 
         foreach ($this->json->tables as $table) {
@@ -332,15 +353,31 @@ class Sde extends Command
         }
 
         $bar->finish();
-        $this->line('');
+    }
 
+    private function downloadPgSqlSde()
+    {
+        $dump_filename = str_replace('sde', 'postgres', $this->json->version) . '.dmp.bz2';
+        $url = str_replace(':version', $this->json->version, $this->json->url) . $dump_filename;
+        $destination = $this->storage_path . $dump_filename;
+
+        $file_handler = fopen($destination, 'w');
+
+        $result = $this->getGuzzle()->request('GET', $url, [
+            'sink' => $file_handler, ]);
+
+        fclose($file_handler);
+
+        if ($result->getStatusCode() != 200)
+            $this->error('Unable to download ' . $url .
+                '. The HTTP response was: ' . $result->getStatusCode());
     }
 
     /**
      * Get a new progress bar to display based on the
      * amount of iterations we expect to use.
      *
-     * @param $iterations
+     * @param  $iterations
      * @return \Symfony\Component\Console\Helper\ProgressBar
      */
     public function getProgressBar($iterations)
@@ -361,6 +398,18 @@ class Sde extends Command
     {
 
         $this->line('Importing...');
+
+        if (DB::connection()->getDriverName() == 'mysql')
+            $this->importMysqlSde();
+
+        if (in_array(DB::connection()->getDriverName(), ['pgsql', 'postgresql']))
+            $this->importPgSqlSde();
+
+        $this->line('');
+    }
+
+    private function importMysqlSde()
+    {
         $bar = $this->getProgressBar(count($this->json->tables));
 
         foreach ($this->json->tables as $table) {
@@ -374,17 +423,7 @@ class Sde extends Command
                 continue;
             }
 
-            // Get 2 handles ready for both the in and out files
-            $input_file = bzopen($archive_path, 'r');
-            $output_file = fopen($extracted_path, 'w');
-
-            // Write the $output_file in chunks
-            while ($chunk = bzread($input_file, 4096))
-                fwrite($output_file, $chunk, 4096);
-
-            // Close the files
-            bzclose($input_file);
-            fclose($output_file);
+            $this->uncompressFile($archive_path, $extracted_path);
 
             // With the output file ready, prepare the scary exec() command
             // that should be run. A sample $import_command is:
@@ -407,12 +446,43 @@ class Sde extends Command
                     $exit_code . ' and command outut: ' . implode('\n', $output));
 
             $bar->advance();
-
         }
 
         $bar->finish();
-        $this->line('');
+    }
 
+    private function importPgSqlSde()
+    {
+        $archive_path = $this->storage_path . str_replace('sde', 'postgres', $this->json->version) . '.dmp.bz2';
+        $extracted_path = $this->storage_path . str_replace('sde', 'postgres', $this->json->version) . '.dmp';
+
+        $this->uncompressFile($archive_path, $extracted_path);
+
+        try {
+            DB::statement('DROP OWNED BY yaml CASCADE');
+        } catch (QueryException $e) {
+            $this->warn('Unable to drop yaml role - role is not found.');
+        }
+
+        DB::statement('DROP ROLE IF EXISTS yaml');
+
+        $this->info('Spawning yaml role');
+        DB::statement('CREATE ROLE yaml WITH NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT NOREPLICATION CONNECTION LIMIT -1');
+        DB::statement('GRANT yaml TO seat');
+
+        $import_command = 'PGPASSWORD=' . config('database.connections.pgsql.password') .
+            ' pg_restore -d ' . config('database.connections.pgsql.database') .
+            ' -h ' . config('database.connections.pgsql.host') .
+            ' -p ' . config('database.connections.pgsql.port') .
+            ' -U ' . config('database.connections.pgsql.username') .
+            ' -t ' . implode(' -t ', $this->json->tables) .
+            ' ' . $extracted_path;
+
+        exec($import_command, $output, $exit_code);
+
+        if ($exit_code !== 0)
+            $this->error('Warning: Import failed with exit code ' .
+                $exit_code . ' and command outut: ' . implode('\n', $output));
     }
 
     /**
@@ -471,5 +541,20 @@ class Sde extends Command
             ], DB::table('mapDenormalize')->where('groupID', MapDenormalize::MOON)
                 ->select('itemID', 'orbitID', 'solarSystemID', 'constellationID', 'regionID', 'itemName', 'typeID',
                     'x', 'y', 'z', 'radius', 'celestialIndex', 'orbitIndex'));
+    }
+
+    private function uncompressFile($archive_path, $extracted_target_path): void
+    {
+        // Get 2 handles ready for both the in and out files
+        $input_file = bzopen($archive_path, 'r');
+        $output_file = fopen($extracted_target_path, 'w');
+
+        // Write the $output_file in chunks
+        while ($chunk = bzread($input_file, 4096))
+            fwrite($output_file, $chunk, 4096);
+
+        // Close the files
+        bzclose($input_file);
+        fclose($output_file);
     }
 }

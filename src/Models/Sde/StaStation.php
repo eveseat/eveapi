@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class StaStation.
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class StaStation extends Model
+class StaStation extends ExtensibleModel
 {
     use IsReadOnly;
 
@@ -48,6 +48,11 @@ class StaStation extends Model
      * @var string
      */
     protected $primaryKey = 'stationID';
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 
     /**
      * @return int

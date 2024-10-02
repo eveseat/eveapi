@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\BlueprintMapping;
 use Seat\Eveapi\Models\Corporation\CorporationBlueprint;
 use Seat\Eveapi\Models\RefreshToken;
@@ -97,22 +98,25 @@ class Blueprints extends AbstractAuthCorporationJob
      */
     public function handle(): void
     {
+        parent::handle();
+
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
-            $blueprints = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($blueprints->isCachedLoad() &&
-                CorporationBlueprint::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $blueprints = $response->getBody();
 
-            collect($blueprints)->chunk(100)->each(function ($chunk) {
+            collect($blueprints)->chunk(100)->each(function ($chunk) use ($structure_batch) {
 
-                $chunk->each(function ($blueprint) {
+                $chunk->each(function ($blueprint) use ($structure_batch) {
+                    $structure_batch->addStructure($blueprint->location_id);
 
                     $model = CorporationBlueprint::firstOrNew([
-                        'item_id'        => $blueprint->item_id,
+                        'item_id' => $blueprint->item_id,
                     ]);
 
                     BlueprintMapping::make($model, $blueprint, [
@@ -126,7 +130,7 @@ class Blueprints extends AbstractAuthCorporationJob
             $this->known_blueprints->push(collect($blueprints)
                 ->pluck('item_id')->flatten()->all());
 
-            if (! $this->nextPage($blueprints->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 
@@ -134,5 +138,7 @@ class Blueprints extends AbstractAuthCorporationJob
         CorporationBlueprint::where('corporation_id', $this->getCorporationId())
             ->whereNotIn('item_id', $this->known_blueprints->flatten()->all())
             ->delete();
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

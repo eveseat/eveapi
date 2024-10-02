@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,47 +22,22 @@
 
 namespace Seat\Eveapi\Models\Killmails;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\SolarSystem;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class KillmailDetail.
- *
- * @package Seat\Eveapi\Models\Killmails
- *
- * @OA\Schema(
- *     description="Killmail Detail",
- *     title="KillmailDetail",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     property="killmail_time",
- *     type="string",
- *     format="date-time",
- *     description="The date-time when kill append"
- * )
- *
- * @OA\Property(
- *     property="solar_system_id",
- *     type="integer",
- *     description="The solar system identifier in which the kill occurs"
- * )
- *
- * @OA\Property(
- *     property="moon_id",
- *     type="integer",
- *     description="The moon identifier near to which the kill occurs"
- * )
- *
- * @OA\Property(
- *     property="war_id",
- *     type="integer",
- *     format="int64",
- *     description="The war identifier in which the kill involves"
- * )
- */
-class KillmailDetail extends Model
+#[OA\Schema(
+    title: 'KillmailDetail',
+    description: 'Killmail Detail',
+    properties: [
+        new OA\Property(property: 'killmail_time', description: 'The date-time when kill append', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'solar_system_id', description: 'The Solar System Identifier in which the kill occurs', type: 'integer'),
+        new OA\Property(property: 'moon_id', description: 'The moon identifier near to which the kill occurs', type: 'integer'),
+        new OA\Property(property: 'war_id', description: 'The war identifier in which the kill involves', type: 'integer', format: 'int64'),
+    ],
+    type: 'object'
+)]
+class KillmailDetail extends ExtensibleModel
 {
     /**
      * @var array
@@ -101,9 +76,9 @@ class KillmailDetail extends Model
 
         return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id')
             ->withDefault([
-                'character_id'   => 0,
+                'character_id' => 0,
                 'corporation_id' => 0,
-                'ship_type_id'   => 0,
+                'ship_type_id' => 0,
             ]);
     }
 

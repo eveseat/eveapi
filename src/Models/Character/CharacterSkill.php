@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,46 +22,28 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Models\ExtensibleModel;
+use Seat\Tests\Eveapi\Database\Factories\CharacterSkillFactory;
 
-/**
- * Class CharacterSkill.
- *
- * @package Seat\Eveapi\Models\Character
- *
- * @OA\Schema(
- *     description="Character Skill",
- *     title="CharacterSkill",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="skillpoints_in_skill",
- *     description="The amount of skill point actually learned for that skill"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="trained_skill_level",
- *     description="The level up to which the skill as been learned"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="active_skill_level",
- *     description="The level actually training"
- * )
- *
- * @OA\Property(
- *     property="type",
- *     ref="#/components/schemas/InvType",
- *     description="The inventory type information"
- * )
- */
-class CharacterSkill extends Model
+#[OA\Schema(
+    title: 'CharacterSkill',
+    description: 'Character Skill',
+    properties: [
+        new OA\Property(property: 'skillpoints_in_skill', description: 'The amount of skill point actually learned for that skill', type: 'integer'),
+        new OA\Property(property: 'trained_skill_level', description: 'The level up to which the skill as been learned', type: 'integer'),
+        new OA\Property(property: 'active_skill_level', description: 'The level actually training', type: 'integer'),
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType', description: 'The inventory type information'),
+    ],
+    type: 'object'
+)]
+class CharacterSkill extends ExtensibleModel
 {
+    use HasFactory;
+
     /**
      * @var array
      */
@@ -71,6 +53,14 @@ class CharacterSkill extends Model
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CharacterSkillFactory::new();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

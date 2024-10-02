@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,15 @@
 
 namespace Seat\Eveapi\Bus;
 
+use Illuminate\Bus\Batch;
+use Seat\Eveapi\Events\CharacterBatchProcessed;
 use Seat\Eveapi\Jobs\Assets\Character\Assets;
 use Seat\Eveapi\Jobs\Assets\Character\Locations;
 use Seat\Eveapi\Jobs\Assets\Character\Names;
 use Seat\Eveapi\Jobs\Calendar\Attendees;
 use Seat\Eveapi\Jobs\Calendar\Detail;
 use Seat\Eveapi\Jobs\Calendar\Events;
+use Seat\Eveapi\Jobs\Character\Affiliation;
 use Seat\Eveapi\Jobs\Character\AgentsResearch;
 use Seat\Eveapi\Jobs\Character\Blueprints;
 use Seat\Eveapi\Jobs\Character\CorporationHistory;
@@ -57,11 +60,12 @@ use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\Planets;
 use Seat\Eveapi\Jobs\Skills\Character\Attributes;
 use Seat\Eveapi\Jobs\Skills\Character\Queue;
 use Seat\Eveapi\Jobs\Skills\Character\Skills;
-use Seat\Eveapi\Jobs\Universe\CharacterStructures;
 use Seat\Eveapi\Jobs\Wallet\Character\Balance;
 use Seat\Eveapi\Jobs\Wallet\Character\Journal;
 use Seat\Eveapi\Jobs\Wallet\Character\Transactions;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\RefreshToken;
+use Throwable;
 
 /**
  * Class Character.
@@ -73,12 +77,7 @@ class Character extends Bus
     /**
      * @var int
      */
-    private $character_id;
-
-    /**
-     * @var \Seat\Eveapi\Models\RefreshToken
-     */
-    private $token;
+    private int $character_id;
 
     /**
      * Character constructor.
@@ -88,10 +87,9 @@ class Character extends Bus
      */
     public function __construct(int $character_id, ?RefreshToken $token = null)
     {
-        parent::__construct();
+        parent::__construct($token);
 
         $this->character_id = $character_id;
-        $this->token = $token;
     }
 
     /**
@@ -99,7 +97,7 @@ class Character extends Bus
      *
      * @return void
      */
-    public function fire()
+    public function fire(): void
     {
         $this->addPublicJobs();
 
@@ -107,12 +105,43 @@ class Character extends Bus
             $this->addAuthenticatedJobs();
 
         // Character
-        Info::withChain($this->jobs->toArray())
-            ->dispatch($this->character_id)
-            ->delay(now()->addSeconds(rand(10, 120)));
-        // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
-        // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
-        // https://github.com/eveseat/seat/issues/731
+        $character = CharacterInfo::firstOrNew(
+            ['character_id' => $this->character_id],
+            ['name' => "Unknown Character : {$this->character_id}"]
+        );
+
+        \Illuminate\Support\Facades\Bus::batch([$this->jobs->toArray()])
+            ->then(function (Batch $batch) {
+                logger()->debug(
+                    sprintf('[Batches][%s] Character batch successfully completed.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                    ]);
+            })->catch(function (Batch $batch, Throwable $throwable) {
+                logger()->error(
+                    sprintf('[Batches][%s] An error occurred during Character batch processing.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                        'error' => $throwable->getMessage(),
+                        'trace' => $throwable->getTrace(),
+                    ]);
+            })->finally(function (Batch $batch) use ($character) {
+                event(new CharacterBatchProcessed($character));
+
+                logger()->info(
+                    sprintf('[Batches][%s] Character batch executed.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                        'stats' => [
+                            'success' => $batch->totalJobs - $batch->failedJobs,
+                            'failed' => $batch->failedJobs,
+                            'total' => $batch->totalJobs,
+                        ],
+                    ]);
+            })->onQueue('characters')->name($character->name)->allowFailures()->dispatch();
     }
 
     /**
@@ -122,7 +151,9 @@ class Character extends Bus
      */
     protected function addPublicJobs()
     {
-        $this->jobs->add(new CorporationHistory($this->character_id));
+        $this->addPublicJob(new Info($this->character_id));
+        $this->addPublicJob(new CorporationHistory($this->character_id));
+        $this->addPublicJob(new Affiliation([$this->character_id]));
     }
 
     /**
@@ -132,58 +163,57 @@ class Character extends Bus
      */
     protected function addAuthenticatedJobs()
     {
-        $this->jobs->add(new Roles($this->token));
-        $this->jobs->add(new Titles($this->token));
-        $this->jobs->add(new Clones($this->token));
-        $this->jobs->add(new Implants($this->token));
+        $this->addAuthenticatedJob(new Roles($this->token));
+        $this->addAuthenticatedJob(new Titles($this->token));
+        $this->addAuthenticatedJob(new Clones($this->token));
+        $this->addAuthenticatedJob(new Implants($this->token));
 
-        $this->jobs->add(new Location($this->token));
-        $this->jobs->add(new Online($this->token));
-        $this->jobs->add(new Ship($this->token));
+        $this->addAuthenticatedJob(new Location($this->token));
+        $this->addAuthenticatedJob(new Online($this->token));
+        $this->addAuthenticatedJob(new Ship($this->token));
 
-        $this->jobs->add(new Attributes($this->token));
-        $this->jobs->add(new Queue($this->token));
-        $this->jobs->add(new Skills($this->token));
+        $this->addAuthenticatedJob(new Attributes($this->token));
+        $this->addAuthenticatedJob(new Queue($this->token));
+        $this->addAuthenticatedJob(new Skills($this->token));
 
         // collect military information
-        $this->jobs->add(new Fittings($this->token));
+        $this->addAuthenticatedJob(new Fittings($this->token));
 
-        $this->jobs->add(new Fatigue($this->token));
-        $this->jobs->add(new Medals($this->token));
+        $this->addAuthenticatedJob(new Fatigue($this->token));
+        $this->addAuthenticatedJob(new Medals($this->token));
 
         // collect industrial information
-        $this->jobs->add(new Blueprints($this->token));
-        $this->jobs->add(new Jobs($this->token));
-        $this->jobs->add(new Mining($this->token));
-        $this->jobs->add(new AgentsResearch($this->token));
+        $this->addAuthenticatedJob(new Blueprints($this->token));
+        $this->addAuthenticatedJob(new Jobs($this->token));
+        $this->addAuthenticatedJob(new Mining($this->token));
+        $this->addAuthenticatedJob(new AgentsResearch($this->token));
 
         // collect financial information
-        $this->jobs->add(new Orders($this->token));
-        $this->jobs->add(new History($this->token));
-        $this->jobs->add(new Planets($this->token));
-        $this->jobs->add(new Balance($this->token));
-        $this->jobs->add(new Journal($this->token));
-        $this->jobs->add(new Transactions($this->token));
-        $this->jobs->add(new LoyaltyPoints($this->token));
+        $this->addAuthenticatedJob(new Orders($this->token));
+        $this->addAuthenticatedJob(new History($this->token));
+        $this->addAuthenticatedJob(new Planets($this->token));
+        $this->addAuthenticatedJob(new Balance($this->token));
+        $this->addAuthenticatedJob(new Journal($this->token));
+        $this->addAuthenticatedJob(new Transactions($this->token));
+        $this->addAuthenticatedJob(new LoyaltyPoints($this->token));
 
         // collect intel information
-        $this->jobs->add(new Standings($this->token));
-        $this->jobs->add(new Contacts($this->token));
-        $this->jobs->add(new ContactLabels($this->token));
+        $this->addAuthenticatedJob(new Standings($this->token));
+        $this->addAuthenticatedJob(new Contacts($this->token));
+        $this->addAuthenticatedJob(new ContactLabels($this->token));
 
-        $this->jobs->add(new MailLabels($this->token));
-        $this->jobs->add(new MailingLists($this->token));
-        $this->jobs->add(new Mails($this->token));
+        $this->addAuthenticatedJob(new MailLabels($this->token));
+        $this->addAuthenticatedJob(new MailingLists($this->token));
+        $this->addAuthenticatedJob(new Mails($this->token));
 
         // calendar events
-        $this->jobs->add(new Events($this->token));
-        $this->jobs->add(new Detail($this->token));
-        $this->jobs->add(new Attendees($this->token));
+        $this->addAuthenticatedJob(new Events($this->token));
+        $this->addAuthenticatedJob(new Detail($this->token));
+        $this->addAuthenticatedJob(new Attendees($this->token));
 
         // assets
-        $this->jobs->add(new Assets($this->token));
-        $this->jobs->add(new Names($this->token));
-        $this->jobs->add(new Locations($this->token));
-        $this->jobs->add(new CharacterStructures($this->token));
+        $this->addAuthenticatedJob(new Assets($this->token));
+        $this->addAuthenticatedJob(new Names($this->token));
+        $this->addAuthenticatedJob(new Locations($this->token));
     }
 }

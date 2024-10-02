@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,17 +22,18 @@
 
 namespace Seat\Eveapi\Models\Industry;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterMining.
  *
  * @package Seat\Eveapi\Models\Industry
  */
-class CharacterMining extends Model
+class CharacterMining extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool
@@ -91,5 +92,13 @@ class CharacterMining extends Model
         $this->setAttribute('year', carbon($this->getAttributeValue('date'))->year);
 
         return parent::save($options);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

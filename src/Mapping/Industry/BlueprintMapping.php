@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,13 @@ class BlueprintMapping extends DataMapping
      * @var array
      */
     protected static $mapping = [
-        'item_id'             => 'item_id',
-        'type_id'             => 'type_id',
-        'location_flag'       => 'location_flag',
-        'location_id'         => 'location_id',
-        'quantity'            => 'quantity',
-        'time_efficiency'     => 'time_efficiency',
+        'item_id' => 'item_id',
+        'type_id' => 'type_id',
+        'location_flag' => 'location_flag',
+        'location_id' => 'location_id',
+        'quantity' => 'quantity',
+        'time_efficiency' => 'time_efficiency',
         'material_efficiency' => 'material_efficiency',
-        'runs'                => 'runs',
+        'runs' => 'runs',
     ];
 }

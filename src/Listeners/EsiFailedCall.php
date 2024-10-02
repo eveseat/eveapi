@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,9 +68,9 @@ class EsiFailedCall
             logger()->error($exception->getMessage());
         }
 
-        logger()->debug('An exception occurred while processing an ESI job.', [
+        logger()->debug('[Jobs][Events] An exception occurred while processing an ESI job.', [
             'connection' => $event->connectionName,
-            'job' => $event->job,
+            'fqcn' => $event->job,
             'exception' => $event->exception,
         ]);
     }

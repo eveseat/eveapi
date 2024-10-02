@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ class Maintenance implements ShouldQueue
      *
      * @var int
      */
-    public $retryAfter = 12001;
+    public $backoff = 12001;
 
     /**
      * Perform the maintenance job.
@@ -86,10 +86,10 @@ class Maintenance implements ShouldQueue
     public function cleanup_tables()
     {
 
-        logger()->info('Performing tables maintenance');
+        logger()->info('[Cli] Performing tables maintenance');
 
         // Prune the failed jobs table
-        FailedJob::where('id', '<', (FailedJob::max('id') - 100))->delete();
+        FailedJob::where('id', '<', FailedJob::max('id') - 100)->delete();
 
         // Prune the server statuses older than a week.
         ServerStatus::where('created_at', '<', carbon('now')->subWeek(1))->delete();

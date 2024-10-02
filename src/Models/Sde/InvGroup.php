@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,17 +22,22 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class InvGroup.
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class InvGroup extends Model
+class InvGroup extends ExtensibleModel
 {
     use IsReadOnly;
+
+    /**
+     * The skill category id.
+     */
+    const SKILL_CATEGORY_ID = 16;
 
     /**
      * @var bool
@@ -48,4 +53,17 @@ class InvGroup extends Model
      * @var string
      */
     protected $primaryKey = 'groupID';
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function types()
+    {
+        return $this->hasMany(InvType::class, 'groupID', 'groupID');
+    }
 }

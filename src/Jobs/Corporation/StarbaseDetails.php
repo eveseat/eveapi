@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,8 @@ class StarbaseDetails extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         CorporationStarbase::where('corporation_id', $this->getCorporationId())
             ->get()->each(function ($starbase) {
 
@@ -100,14 +102,16 @@ class StarbaseDetails extends AbstractAuthCorporationJob
                     'system_id' => $starbase->system_id,
                 ];
 
-                $detail = $this->retrieve([
+                $response = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
-                    'starbase_id'    => $starbase->starbase_id,
+                    'starbase_id' => $starbase->starbase_id,
                 ]);
+
+                $detail = $response->getBody();
 
                 $model = CorporationStarbaseDetail::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'starbase_id'    => $starbase->starbase_id,
+                    'starbase_id' => $starbase->starbase_id,
                 ]);
 
                 StarbaseDetailMapping::make($model, $detail, [
@@ -125,8 +129,8 @@ class StarbaseDetails extends AbstractAuthCorporationJob
 
                         CorporationStarbaseFuel::firstOrNew([
                             'corporation_id' => $this->getCorporationId(),
-                            'starbase_id'    => $starbase->starbase_id,
-                            'type_id'        => $fuel->type_id,
+                            'starbase_id' => $starbase->starbase_id,
+                            'type_id' => $fuel->type_id,
                         ])->fill([
                             'quantity' => $fuel->quantity,
                         ])->save();

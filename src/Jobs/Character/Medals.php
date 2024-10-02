@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,19 +68,19 @@ class Medals extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $medals = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($medals->isCachedLoad() && CharacterMedal::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $medals = collect($response->getBody());
 
-        collect($medals)->each(function ($medal) {
+        $medals->each(function ($medal) {
 
             $model = CharacterMedal::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'medal_id'     => $medal->medal_id,
+                'medal_id' => $medal->medal_id,
             ]);
 
             MedalsMapping::make($model, $medal, [

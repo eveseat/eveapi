@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,17 +64,19 @@ class Ship extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $ship = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($ship->isCachedLoad() && CharacterShip::find($this->getCharacterId())) return;
+        $ship = $response->getBody();
 
         CharacterShip::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
             'ship_item_id' => $ship->ship_item_id,
-            'ship_name'    => $ship->ship_name,
+            'ship_name' => $ship->ship_name,
             'ship_type_id' => $ship->ship_type_id,
         ])->save();
     }

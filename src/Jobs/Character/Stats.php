@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,16 +68,14 @@ class Stats extends AbstractAuthCharacterJob
     public function handle()
     {
 
-        $stats = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($stats->isCachedLoad() &&
-            CharacterStats::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $stats = collect($response->getBody());
 
         // Process each years aggregate
-        collect($stats)->each(function ($aggregate) {
+        $stats->each(function ($aggregate) {
 
             // Separate stats by categories
             foreach (['character', 'combat', 'industry', 'inventory', 'isk', 'market',
@@ -85,9 +83,9 @@ class Stats extends AbstractAuthCharacterJob
 
                 CharacterStats::firstOrCreate([
                     'character_id' => $this->getCharacterId(),
-                    'year'         => $aggregate->year,
-                    'category'     => $category,
-                    'stats'        => isset($aggregate->$category) ?
+                    'year' => $aggregate->year,
+                    'category' => $category,
+                    'stats' => isset($aggregate->$category) ?
                         json_encode($aggregate->$category) : null,
                 ]);
             }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,35 +91,34 @@ class Contacts extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         while (true) {
 
-            $contacts = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($contacts->isCachedLoad() &&
-                CharacterContact::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $contacts = $response->getBody();
 
             collect($contacts)->each(function ($contact) {
 
                 CharacterContact::firstOrNew([
                     'character_id' => $this->getCharacterId(),
-                    'contact_id'   => $contact->contact_id,
+                    'contact_id' => $contact->contact_id,
                 ])->fill([
-                    'standing'     => $contact->standing,
+                    'standing' => $contact->standing,
                     'contact_type' => $contact->contact_type,
-                    'is_watched'   => $contact->is_watched ?? false,
-                    'is_blocked'   => $contact->is_blocked ?? false,
-                    'label_ids'    => $contact->label_ids ?? null,
+                    'is_watched' => $contact->is_watched ?? false,
+                    'is_blocked' => $contact->is_blocked ?? false,
+                    'label_ids' => $contact->label_ids ?? null,
                 ])->save();
             });
 
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
 
-            if (! $this->nextPage($contacts->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

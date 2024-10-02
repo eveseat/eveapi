@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,31 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Seat\Services\Models\ExtensibleModel;
+use Seat\Tests\Eveapi\Database\Factories\CharacterRoleFactory;
 
 /**
  * Class CharacterRole.
  *
  * @package Seat\Eveapi\Models\Character
+ *
+ * @property string $scope
+ * @property string $role
  */
-class CharacterRole extends Model
+class CharacterRole extends ExtensibleModel
 {
+    use HasFactory;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CharacterRoleFactory::new();
+    }
+
     /**
      * @var bool
      */

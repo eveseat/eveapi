@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Market\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Financial\OrderMapping;
 use Seat\Eveapi\Models\Market\CorporationOrder;
 
@@ -77,21 +78,24 @@ class Orders extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
-            $orders = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($orders->isCachedLoad() &&
-                CorporationOrder::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $orders = $response->getBody();
 
-            collect($orders)->each(function ($order) {
+            collect($orders)->each(function ($order) use ($structure_batch) {
+                $structure_batch->addStructure($order->location_id);
 
                 $model = CorporationOrder::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'order_id'       => $order->order_id,
+                    'order_id' => $order->order_id,
                 ]);
 
                 OrderMapping::make($model, $order, [
@@ -107,7 +111,9 @@ class Orders extends AbstractAuthCorporationJob
                 ])->save();
             });
 
-            if (! $this->nextPage($orders->pages))
+            if (! $this->nextPage($response->getPagesCount()))
+                $structure_batch->submitJobs();
+
                 return;
         }
     }

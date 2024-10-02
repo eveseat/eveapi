@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class Bucket.
  *
  * @package Seat\Eveapi\Models
  */
-class Bucket extends Model
+class Bucket extends ExtensibleModel
 {
     /**
      * @param  int  $threshold

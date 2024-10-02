@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,48 +105,45 @@ class Titles extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $titles = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($titles->isCachedLoad() &&
-            CorporationTitle::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $titles = $response->getBody();
 
         collect($titles)->each(function ($title) {
 
-            CorporationTitle::firstOrNew([
+            $title_model = CorporationTitle::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'title_id'       => $title->title_id,
+                'title_id' => $title->title_id,
             ])->fill([
                 'name' => $title->name ?? sprintf('Untitled %d', (int) sqrt($title->title_id - 1)),
-            ])->save();
+            ]);
+            $title_model->save();
 
-            collect($this->types)->each(function ($type) use ($title) {
+            collect($this->types)->each(function ($type) use ($title, $title_model) {
 
                 if (! property_exists($title, $type))
                     return;
 
-                collect($title->{$type})->each(function ($name) use ($title, $type) {
+                collect($title->{$type})->each(function ($name) use ($title_model, $type) {
 
                     CorporationTitleRole::firstOrCreate([
-                        'corporation_id' => $this->getCorporationId(),
-                        'title_id'       => $title->title_id,
-                        'type'           => $type,
-                        'role'           => $name,
+                        'title_id' => $title_model->id,
+                        'type' => $type,
+                        'role' => $name,
                     ]);
                 });
 
-                CorporationTitleRole::where('corporation_id', $this->getCorporationId())
-                    ->where('title_id', $title->title_id)
+                CorporationTitleRole::where('title_id', $title_model->id)
                     ->where('type', $type)
                     ->whereNotIn('role', collect($title->{$type})->flatten()->all())
                     ->delete();
-
             });
 
             $this->known_titles->push($title->title_id);
-
         });
 
         CorporationTitle::where('corporation_id', $this->getCorporationId())

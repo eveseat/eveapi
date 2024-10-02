@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Contracts\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 
@@ -74,17 +75,23 @@ class Contracts extends AbstractAuthCharacterJob
     public function handle()
     {
 
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
-            $contracts = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($contracts->isCachedLoad() &&
-                CharacterContract::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $contracts = $response->getBody();
 
-            collect($contracts)->each(function ($contract) {
+            collect($contracts)->each(function ($contract) use ($structure_batch) {
+                if ($contract->start_location_id) {
+                    $structure_batch->addStructure($contract->start_location_id);
+                }
+                if ($contract->end_location_id) {
+                    $structure_batch->addStructure($contract->end_location_id);
+                }
 
                 // Update or create the contract details.
                 $model = ContractDetail::firstOrNew([
@@ -97,7 +104,7 @@ class Contracts extends AbstractAuthCharacterJob
                 // Ensure the character is associated to this contract
                 CharacterContract::firstOrCreate([
                     'character_id' => $this->getCharacterId(),
-                    'contract_id'  => $contract->contract_id,
+                    'contract_id' => $contract->contract_id,
                 ]);
 
                 // dispatch a job which will collect bids related to this contract
@@ -110,8 +117,10 @@ class Contracts extends AbstractAuthCharacterJob
                     dispatch(new Items($this->token, $contract->contract_id));
             });
 
-            if (! $this->nextPage($contracts->pages))
+            if (! $this->nextPage($response->getPagesCount())) {
+                $structure_batch->submitJobs($this->getToken());
                 break;
+            }
         }
     }
 }

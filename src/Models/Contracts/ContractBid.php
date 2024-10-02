@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,40 +22,19 @@
 
 namespace Seat\Eveapi\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class ContractBid.
- *
- * @package Seat\Eveapi\Models\Contacts
- *
- * @OA\Schema(
- *     description="Contract Bid",
- *     title="ContractBid",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     property="bidder_id",
- *     type="integer",
- *     format="int64",
- *     description="Identifier from entity who put a bid"
- * )
- *
- * @OA\Property(
- *     property="date_bid",
- *     type="string",
- *     format="date-time",
- *     description="Date/Time when the bid has been placed"
- * )
- *
- * @OA\Property(
- *     property="amount",
- *     type="number",
- *     description="Amount of placed bid"
- * )
- */
-class ContractBid extends Model
+#[OA\Schema(
+    title: 'ContractBid',
+    description: 'Contract Bid',
+    properties: [
+        new OA\Property(property: 'bidder_id', description: 'Identifier from entity who put a bid', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'date_bid', description: 'Date/Time when the bid has been placed', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'amount', description: 'Amount of placed bid', type: 'number'),
+    ]
+)]
+class ContractBid extends ExtensibleModel
 {
     /**
      * @var array

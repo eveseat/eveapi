@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@
  */
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class UniverseNamesEndpointV3 extends Migration
 {
@@ -32,9 +34,20 @@ class UniverseNamesEndpointV3 extends Migration
      */
     public function up()
     {
-        // use raw query since table using enum fields cannot be altered.
-        // https://stackoverflow.com/questions/33140860/laravel-5-1-unknown-database-type-enum-requested
-        DB::statement("ALTER TABLE universe_names MODIFY COLUMN category ENUM('alliance','character','constellation','corporation','inventory_type','region','solar_system','station','faction') NOT NULL");
+        Schema::table('universe_names', function (Blueprint $table) {
+            $table->renameColumn('category', 'category_v2');
+        });
+
+        Schema::table('universe_names', function (Blueprint $table) {
+            $table->enum('category', ['alliance', 'character', 'constellation', 'corporation', 'inventory_type', 'region', 'solar_system', 'station', 'faction'])->after('category_v2');
+        });
+
+        DB::table('universe_names')
+            ->update(['category' => DB::raw('"category_v2"')]);
+
+        Schema::table('universe_names', function (Blueprint $table) {
+            $table->dropColumn('category_v2');
+        });
     }
 
     /**
@@ -44,8 +57,23 @@ class UniverseNamesEndpointV3 extends Migration
      */
     public function down()
     {
-        // use raw query since table using enum fields cannot be altered.
-        // https://stackoverflow.com/questions/33140860/laravel-5-1-unknown-database-type-enum-requested
-        DB::statement("ALTER TABLE universe_names MODIFY COLUMN category ENUM('alliance','character','constellation','corporation','inventory_type','region','solar_system','station') NOT NULL");
+        Schema::table('universe_names', function (Blueprint $table) {
+            $table->renameColumn('category', 'category_v3');
+        });
+
+        Schema::table('universe_names', function (Blueprint $table) {
+            $table->enum('category', ['alliance', 'character', 'constellation', 'corporation', 'inventory_type', 'region', 'solar_system', 'station'])->after('category_v3');
+        });
+
+        DB::table('universe_names')
+            ->where('category_v3', 'faction')
+            ->delete();
+
+        DB::table('universe_names')
+            ->update(['category' => DB::raw('"category_v3"')]);
+
+        Schema::table('universe_names', function (Blueprint $table) {
+            $table->dropColumn('category_v3');
+        });
     }
 }

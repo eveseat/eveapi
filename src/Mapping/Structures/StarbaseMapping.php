@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,13 @@ class StarbaseMapping extends DataMapping
      * @var string[]
      */
     protected static $mapping = [
-        'starbase_id'      => 'starbase_id',
-        'moon_id'          => 'moon_id',
-        'onlined_since'    => 'onlined_since',
+        'starbase_id' => 'starbase_id',
+        'moon_id' => 'moon_id',
+        'onlined_since' => 'onlined_since',
         'reinforced_until' => 'reinforced_until',
-        'state'            => 'state',
-        'type_id'          => 'type_id',
-        'system_id'        => 'system_id',
-        'unanchor_at'      => 'unanchor_at',
+        'state' => 'state',
+        'type_id' => 'type_id',
+        'system_id' => 'system_id',
+        'unanchor_at' => 'unanchor_at',
     ];
 }

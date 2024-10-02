@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Market\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Financial\OrderMapping;
 use Seat\Eveapi\Models\Market\CharacterOrder;
 
@@ -65,19 +66,22 @@ class Orders extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $orders = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($orders->isCachedLoad() &&
-            CharacterOrder::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $orders = $response->getBody();
 
-        collect($orders)->each(function ($order) {
+        $structure_batch = new StructureBatch();
+
+        collect($orders)->each(function ($order) use ($structure_batch) {
+            $structure_batch->addStructure($order->location_id);
 
             $model = CharacterOrder::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'order_id'     => $order->order_id,
+                'order_id' => $order->order_id,
             ]);
 
             OrderMapping::make($model, $order, [
@@ -89,5 +93,7 @@ class Orders extends AbstractAuthCharacterJob
                 },
             ])->save();
         });
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

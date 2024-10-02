@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
+use Closure;
 use Seat\Eveapi\Jobs\EsiBase;
 
 /**
@@ -32,24 +33,25 @@ use Seat\Eveapi\Jobs\EsiBase;
 class CheckEsiRateLimit
 {
     /**
-     * @param  \Illuminate\Queue\InteractsWithQueue  $job
-     * @param $next
+     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
+     * @param  \Closure  $next
+     * @return void
      */
-    public function handle($job, $next)
+    public function handle(EsiBase $job, Closure $next): void
     {
-        // in case the job is not ESI related, bypass this check
-        if (is_subclass_of($job, EsiBase::class)) {
+        // in case ESI limit has been reached, delay the job
+        if ($this->isEsiRateLimitReached($job)) {
+            logger()->warning(
+                sprintf('[Jobs][Middlewares][%s] ESI Throttler -> Rate Limit has been reached.', $job->job->getJobId()),
+                [
+                    'fqcn' => get_class($job),
+                    'delay' => $job::RATE_LIMIT_DURATION,
+                    'limit' => $job::RATE_LIMIT,
+                ]);
 
-            // in case ESI limit has been reached, delay the job
-            if ($this->isEsiRateLimitReached($job)) {
-                logger()->warning(
-                    sprintf('Rate Limit has been reached. Job %s has been delayed by %d seconds.',
-                        get_class($job), $job::RATE_LIMIT_DURATION));
+            $job->release($job::RATE_LIMIT_DURATION);
 
-                $job->release($job::RATE_LIMIT_DURATION);
-
-                return;
-            }
+            return;
         }
 
         $next($job);
@@ -63,7 +65,13 @@ class CheckEsiRateLimit
     {
         $current = cache()->get($job::RATE_LIMIT_KEY) ?: 0;
 
-        logger()->debug('Rate Limit Status', ['current' => $current, 'limit' => $job::RATE_LIMIT]);
+        logger()->debug(
+            sprintf('[Jobs][Middlewares][%s] ESI Throttler -> Retrieve current rate limit status.', $job->job->getJobId()),
+            [
+                'fqcn' => get_class($job),
+                'current' => $current,
+                'limit' => $job::RATE_LIMIT,
+            ]);
 
         return $current >= $job::RATE_LIMIT;
     }

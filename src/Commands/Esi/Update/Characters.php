@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ class Characters extends Command
         if (! $token) {
             $this->error('The provided ID is invalid or not registered in SeAT.');
 
-            return;
+            return $this::INVALID;
         }
 
         // Fire the class that handles the collection of jobs to run.
@@ -66,5 +66,7 @@ class Characters extends Command
 
         $this->info(sprintf('Processing character update %d - %s',
             $token->character_id, $token->character->name ?? trans('web::seat.unknown')));
+
+        return $this::SUCCESS;
     }
 }

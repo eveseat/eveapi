@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,11 +36,11 @@ class NotificationMapping extends DataMapping
      */
     protected static $mapping = [
         'notification_id' => 'notification_id',
-        'type'            => 'type',
-        'sender_id'       => 'sender_id',
-        'sender_type'     => 'sender_type',
-        'timestamp'       => 'timestamp',
-        'is_read'         => 'is_read',
-        'text'            => 'text',
+        'type' => 'type',
+        'sender_id' => 'sender_id',
+        'sender_type' => 'sender_type',
+        'timestamp' => 'timestamp',
+        'is_read' => 'is_read',
+        'text' => 'text',
     ];
 }

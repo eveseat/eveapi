@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,21 +96,21 @@ class Starbases extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $starbases = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($starbases->isCachedLoad() &&
-                CorporationStarbase::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $starbases = $response->getBody();
 
             collect($starbases)->each(function ($starbase) {
 
                 $model = CorporationStarbase::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'starbase_id'    => $starbase->starbase_id,
+                    'starbase_id' => $starbase->starbase_id,
                 ]);
 
                 StarbaseMapping::make($model, $starbase, [
@@ -123,7 +123,7 @@ class Starbases extends AbstractAuthCorporationJob
 
             });
 
-            if (! $this->nextPage($starbases->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

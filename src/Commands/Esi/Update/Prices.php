@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,14 @@
 
 namespace Seat\Eveapi\Commands\Esi\Update;
 
+use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Market\History;
+use Illuminate\Support\Facades\Bus;
+use Seat\Eveapi\Jobs\Market\DispatchHistoryJobs;
+use Seat\Eveapi\Jobs\Market\OrderAggregates;
+use Seat\Eveapi\Jobs\Market\Orders;
 use Seat\Eveapi\Jobs\Market\Prices as PricesJob;
-use Seat\Eveapi\Models\Sde\InvType;
+use Throwable;
 
 /**
  * Class Prices.
@@ -53,20 +57,35 @@ class Prices extends Command
      */
     public function handle()
     {
-        $jobs = collect();
+        Bus::batch([
+            new PricesJob(),
+            new DispatchHistoryJobs(),
+            [
+                new Orders(),
+                new OrderAggregates(),
+            ],
+        ])
+            ->then(function (Batch $batch) {
+                logger()->info(
+                    sprintf('[Batches][%s] %s - Succeeded : %d/%d - %d failed.',
+                        $batch->id, $batch->name, $batch->totalJobs - $batch->failedJobs, $batch->totalJobs, $batch->failedJobs));
+            })
+            ->catch(function (Batch $batch, Throwable $e) {
+                logger()->error(
+                    sprintf('[Batches][%s] %s - Some jobs have failed : %s',
+                        $batch->id, $batch->name, implode(', ', $batch->failedJobIds)));
+                logger()->error(sprintf('[Batches][%s] %s : %s', $batch->id, $batch->name, $e->getMessage()));
+            })
+            ->finally(function (Batch $batch) {
+                logger()->info(
+                    sprintf('[Batches][%s] %s - Completed : %d/%d - %d failed.',
+                        $batch->id, $batch->name, $batch->totalJobs - $batch->failedJobs, $batch->totalJobs, $batch->failedJobs));
+            })
+            ->allowFailures()
+            ->onQueue('public')
+            ->name('Market Prices')
+            ->dispatch();
 
-        // collect all items which can be sold on the market.
-        $types = InvType::whereNotNull('marketGroupID')
-            ->where('published', true)
-            ->select('typeID');
-
-        $batch_jobs_count = (int) ceil($types->count() / History::ENDPOINT_RATE_LIMIT_CALLS);
-
-        $types->chunk(History::ENDPOINT_RATE_LIMIT_CALLS, function ($results, $page) use ($batch_jobs_count, $jobs) {
-            $type_ids = $results->pluck('typeID')->toArray();
-            $jobs->add((new History($type_ids))->setCurrentBatchCount($page)->setTotalBatchCount($batch_jobs_count));
-        });
-
-        PricesJob::withChain($jobs->toArray())->dispatch();
+        return $this::SUCCESS;
     }
 }

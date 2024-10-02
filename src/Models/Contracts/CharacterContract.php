@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterContract.
  *
  * @package Seat\Eveapi\Models\Contacts
  */
-class CharacterContract extends Model
+class CharacterContract extends ExtensibleModel
 {
     /**
      * @var bool

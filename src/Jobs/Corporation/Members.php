@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,19 +66,19 @@ class Members extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $members = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($members->isCachedLoad() &&
-            CorporationMember::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $members = $response->getBody();
 
         collect($members)->each(function ($member_id) {
 
             CorporationMember::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'character_id'   => $member_id,
+                'character_id' => $member_id,
             ])->save();
 
         });

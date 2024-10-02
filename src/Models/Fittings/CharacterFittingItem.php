@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,16 @@
 
 namespace Seat\Eveapi\Models\Fittings;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterFittingItem.
  *
  * @package Seat\Eveapi\Models\Fittings
  */
-class CharacterFittingItem extends Model
+class CharacterFittingItem extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool
@@ -41,5 +42,13 @@ class CharacterFittingItem extends Model
     {
 
         return $this->hasOne(InvType::class, 'typeID', 'type_id');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

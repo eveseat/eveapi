@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,168 +22,42 @@
 
 namespace Seat\Eveapi\Models\Industry;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\RamActivity;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class CorporationIndustryJob.
- *
- * @package Seat\Eveapi\Models\Industry
- *
- * @OA\Schema(
- *     description="Corporation Industry Jobs",
- *     title="CorporationIndustryJob",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="job_id",
- *     description="The job ID"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="installer_id",
- *     description="The character who start the job"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="facility_id",
- *     description="The structure where the job has been started"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="station_id",
- *     description="The outpost where the job has been started (deprecated)"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="activity_id",
- *     description="The activity type used for the job"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="blueprint_id",
- *     description="The item blueprint ID on which the job is based"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="blueprint_location_id",
- *     description="The place where the blueprint is stored"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="output_location_id",
- *     description="The place where the resulting item should be put"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="runs",
- *     description="The runs amount for the activity"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="cost",
- *     description="The job installation cost"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="licensed_runs",
- *     description="The number of copy"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="probability",
- *     description="The success rate"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     enum={"active","cancelled","delivered","paused","ready","reverted"},
- *     property="status",
- *     description="The job status"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="duration",
- *     description="The job duration in seconds"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="start_date",
- *     description="The date-time when job has been started"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="end_date",
- *     description="The date-time when job should be done"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="pause_date",
- *     description="The date-time when job has been paused"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="completed_date",
- *     description="The date-time when job has been delivered"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="completed_character_id",
- *     description="The character who deliver the job"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="successful_runs",
- *     description="The amount of completed runs"
- * )
- *
- * @OA\Property(
- *     property="blueprint",
- *     description="The used blueprint type",
- *     ref="#/components/schemas/InvType"
- * )
- *
- * @OA\Property(
- *     property="product",
- *     description="The output type",
- *     ref="#/components/schemas/InvType"
- * )
- */
-class CorporationIndustryJob extends Model
+#[OA\Schema(
+    title: 'CorporationIndustryJob',
+    description: 'Corporation Industry Job',
+    properties: [
+        new OA\Property(property: 'job_id', description: 'The job ID', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'installer_id', description: 'The character who start the job', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'facility_id', description: 'The structure where the job has been started', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'station_id', description: 'The outpost where the job has been started (deprecated)', type: 'integer'),
+        new OA\Property(property: 'activity_id', description: 'The activity type used for the job', type: 'integer'),
+        new OA\Property(property: 'blueprint_id', description: 'The item blueprint ID on which the job is based', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'blueprint_location_id', description: 'The place where the blueprint is stored', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'output_location_id', description: 'The place where the resulting item should be put', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'runs', description: 'The runs amount for the activity', type: 'integer'),
+        new OA\Property(property: 'cost', description: 'The job installation fee', type: 'number', format: 'double'),
+        new OA\Property(property: 'licensed_runs', description: 'The number of copy', type: 'integer'),
+        new OA\Property(property: 'probability', description: 'The success rate', type: 'integer'),
+        new OA\Property(property: 'status', description: 'The job status', type: 'string', enum: ['active', 'cancelled', 'delivered', 'paused', 'ready', 'reverted']),
+        new OA\Property(property: 'duration', description: 'The job duration in seconds', type: 'integer'),
+        new OA\Property(property: 'start_date', description: 'The date/time when job has been started', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'end_date', description: 'The date/time when job should be done', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'pause_date', description: 'The date/time when job has been paused', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'completed_date', description: 'The date/time when job has been delivered', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'completed_character_id', description: 'The character who deliver the job', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'successful_runs', description: 'The amount of completed runs', type: 'integer'),
+        new OA\Property(property: 'blueprint', ref: '#/components/schemas/InvType', description: 'The used blueprint type'),
+        new OA\Property(property: 'product', ref: '#/components/schemas/InvType', description: 'The output type'),
+    ],
+    type: 'object'
+)]
+class CorporationIndustryJob extends ExtensibleModel
 {
     /**
      * @var array
@@ -206,7 +80,7 @@ class CorporationIndustryJob extends Model
     public $incrementing = false;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setStartDateAttribute($value)
     {
@@ -214,7 +88,7 @@ class CorporationIndustryJob extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setPauseDateAttribute($value)
     {
@@ -222,7 +96,7 @@ class CorporationIndustryJob extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setEndDateAttribute($value)
     {
@@ -230,7 +104,7 @@ class CorporationIndustryJob extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setCompletedDateAttribute($value)
     {

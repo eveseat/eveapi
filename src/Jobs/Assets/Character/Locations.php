@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +84,7 @@ class Locations extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         // Get the assets for this character, chunked in a number of blocks
         // that the endpoint will accept.
@@ -104,11 +105,13 @@ class Locations extends AbstractAuthCharacterJob
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
                 try {
-                    $locations = $this->retrieve([
+                    $response = $this->retrieve([
                         'character_id' => $this->getCharacterId(),
                     ]);
 
-                    collect($locations)->each(function ($location) {
+                    $locations = collect($response->getBody());
+
+                    $locations->each(function ($location) {
 
                         $asset_data = CharacterAsset::where('character_id', $this->getCharacterId())
                             ->where('item_id', $location->item_id)
@@ -159,11 +162,13 @@ class Locations extends AbstractAuthCharacterJob
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
                 try {
-                    $locations = $this->retrieve([
+                    $response = $this->retrieve([
                         'character_id' => $this->getCharacterId(),
                     ]);
 
-                    collect($locations)->each(function ($location) {
+                    $locations = collect($response->getBody());
+
+                    $locations->each(function ($location) {
 
                         $asset_data = CharacterAsset::where('character_id', $this->getCharacterId())
                             ->where('item_id', $location->item_id)
@@ -213,10 +218,12 @@ class Locations extends AbstractAuthCharacterJob
         if ($exception->getError() !== 'Invalid IDs in the request')
             throw $exception;
 
-        logger()->error('Request contains an invalid asset ID from which retrieve a location.', [
-            'character_id' => $this->character_id,
-            'assets_batch' => $item_ids,
-        ]);
+        logger()->error(
+            sprintf('[Jobs][%s] Request contains an invalid asset ID from which retrieve a location.', $this->job->getJobId()),
+            [
+                'character_id' => $this->character_id,
+                'assets_batch' => $item_ids,
+            ]);
 
         $this->has_exception = true;
     }

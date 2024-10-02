@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@
 namespace Seat\Eveapi\Commands\Seat\Cache;
 
 use Exception;
-use File;
 use Illuminate\Console\Command;
-use Predis\Client;
+use Illuminate\Support\Facades\Redis;
+use Seat\Services\Contracts\EsiClient;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 
@@ -41,7 +41,7 @@ class Clear extends Command
      *
      * @var string
      */
-    protected $signature = 'seat:cache:clear {--skip-eseye : Do not clear the Eseye cache}';
+    protected $signature = 'seat:cache:clear {--skip-esi : Do not clear the ESI cache} {--yes : Do not wait for confirmation}';
 
     /**
      * The console command description.
@@ -51,14 +51,20 @@ class Clear extends Command
     protected $description = 'Clear caches used by SeAT.';
 
     /**
+     * @var \Seat\Services\Contracts\EsiClient
+     */
+    private EsiClient $esi;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(EsiClient $client)
     {
-
         parent::__construct();
+
+        $this->esi = $client;
     }
 
     /**
@@ -70,19 +76,21 @@ class Clear extends Command
         $this->line('SeAT Cache Clearing Tool');
         $this->line('');
 
-        if (! $this->confirm('Are you sure you want to clear ALL caches (file/redis/db)?', true)) {
+        if(! $this->option('yes')) {
+            if (! $this->confirm('Are you sure you want to clear ALL caches (file/redis/db)?', true)) {
 
-            $this->warn('Exiting without clearing cache');
+                $this->warn('Exiting without clearing cache');
 
-            return;
+                return;
+            }
         }
 
         $this->clear_redis_cache();
 
         // If we are not clearing
-        if (! $this->option('skip-eseye')) {
+        if (! $this->option('skip-esi')) {
 
-            $this->clear_eseye_cache();
+            $this->clear_esi_cache();
         }
 
         // Analytics
@@ -107,12 +115,7 @@ class Clear extends Command
 
         try {
 
-            $redis = new Client([
-                'host' => $redis_host,
-                'port' => $redis_port,
-            ]);
-            $redis->flushall();
-            $redis->disconnect();
+            Redis::flushall();
 
         } catch (Exception $e) {
 
@@ -123,24 +126,16 @@ class Clear extends Command
     }
 
     /**
-     * Clear the Eseye Storage Cache.
+     * Clear the ESI Storage Cache.
      */
-    public function clear_eseye_cache()
+    public function clear_esi_cache()
     {
+        // ESI Cache Clearing
+        $this->info('Clearing the ESI Cache...');
 
-        // Eseye Cache Clearing
-        $eseye_cache = config('esi.eseye_cache');
+        $result = $this->esi->getCache()->clear();
 
-        if (File::isWritable($eseye_cache)) {
-
-            $this->info('Clearing the Eseye Cache at: ' . $eseye_cache);
-
-            if (! File::deleteDirectory($eseye_cache, true))
-                $this->error('Failed to clear the Eseye Cache directory. Check permissions.');
-
-        } else {
-
-            $this->warn('Eseye Cache directory at ' . $eseye_cache . ' is not writable');
-        }
+        if (! $result)
+            $this->error('Failed to clear the ESI Cache. Check configuration.');
     }
 }

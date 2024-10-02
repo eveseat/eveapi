@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,41 +22,21 @@
 
 namespace Seat\Eveapi\Models\Universe;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class UniverseName.
- *
- * @package Seat\Eveapi\Models\Universe
- *
- * @OA\Schema(
- *      description="Universe Name",
- *      title="UniverseName",
- *      type="object"
- * )
- *
- * @OA\Property(
- *      property="entity_id",
- *      type="integer",
- *      format="int64",
- *      description="The entity identifier"
- * )
- *
- * @OA\Property(
- *      property="name",
- *      type="string",
- *      description="The entity name"
- * )
- *
- * @OA\Property(
- *      property="category",
- *      type="string",
- *      enum={"alliance","character","constellation","corporation","inventory_type","region","solar_system","station","faction"},
- *      description="The entity type"
- * )
- */
-class UniverseName extends Model
+#[OA\Schema(
+    title: 'UniverseName',
+    description: 'Universe Name',
+    properties: [
+        new OA\Property(property: 'entity_id', description: 'The entity identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'name', description: 'The entity name', type: 'string'),
+        new OA\Property(property: 'category', description: 'The entity type', type: 'string', enum: ['alliance', 'character', 'constellation', 'corporation', 'inventory_type', 'region', 'solar_system', 'station', 'faction']),
+    ],
+    type: 'object'
+)]
+class UniverseName extends ExtensibleModel
 {
     /**
      * @var array

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ class Upgrade extends Command
                     try{
                         $token_headers = [
                             'headers' => [
-                                'Authorization' => 'Basic ' . base64_encode(config('esi.eseye_client_id') . ':' . config('esi.eseye_client_secret')),
+                                'Authorization' => 'Basic ' . base64_encode(config('eseye.esi.auth.client_id') . ':' . config('eseye.esi.auth.client_secret')),
                                 'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact eveseat slack or github. https://github.com/eveseat/seat',
                                 'Content-Type' => 'application/x-www-form-urlencoded',
                                 'Host' => 'login.eveonline.com',
@@ -115,11 +115,11 @@ class Upgrade extends Command
                         $success += 1;
 
                     } catch (RequestException $e) {
-                        logger()->error('Error Migrating Refresh Token', [
-                            'Character ID'   => $token->character_id,
-                            'Message' => $e->getMessage(),
-                            'Body' => (string) $e->getResponse()->getBody(),
-                            'Headers' => $e->getResponse()->getHeaders(),
+                        logger()->error('[Cli] Error Migrating Refresh Token', [
+                            'character_id' => $token->character_id,
+                            'message' => $e->getMessage(),
+                            'body' => (string) $e->getResponse()->getBody(),
+                            'headers' => $e->getResponse()->getHeaders(),
                         ]);
 
                         if (strpos((string) $e->getResponse()->getBody(), 'invalid_grant') !== false) {

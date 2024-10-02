@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,19 +22,16 @@
 
 namespace Seat\Eveapi\Models\Sovereignty;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class SovereigntyMap.
  *
  * @package Seat\Eveapi\Models\Sovereignty
  */
-class SovereigntyMap extends Model
+class SovereigntyMap extends ExtensibleModel
 {
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */
@@ -58,7 +55,7 @@ class SovereigntyMap extends Model
         return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
             ->withDefault([
                 'category' => 'alliance',
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -70,7 +67,7 @@ class SovereigntyMap extends Model
         return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
             ->withDefault([
                 'category' => 'corporation',
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -82,7 +79,7 @@ class SovereigntyMap extends Model
         return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
             ->withDefault([
                 'category' => 'faction',
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 }

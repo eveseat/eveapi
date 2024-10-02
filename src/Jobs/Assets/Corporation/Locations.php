@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,6 +89,8 @@ class Locations extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         // all items which need to be singleton
 
         // Get the assets for this character, chunked in a number of blocks
@@ -110,11 +112,13 @@ class Locations extends AbstractAuthCorporationJob
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
                 try {
-                    $locations = $this->retrieve([
+                    $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
                     ]);
 
-                    collect($locations)->each(function ($location) {
+                    $locations = collect($response->getBody());
+
+                    $locations->each(function ($location) {
 
                         $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
                             ->where('item_id', $location->item_id)
@@ -165,11 +169,13 @@ class Locations extends AbstractAuthCorporationJob
                 $this->request_body = $item_ids->pluck('item_id')->all();
 
                 try {
-                    $locations = $this->retrieve([
+                    $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
                     ]);
 
-                    collect($locations)->each(function ($location) {
+                    $locations = collect($response->getBody());
+
+                    $locations->each(function ($location) {
 
                         $asset_data = CorporationAsset::where('corporation_id', $this->getCorporationId())
                             ->where('item_id', $location->item_id)
@@ -219,10 +225,12 @@ class Locations extends AbstractAuthCorporationJob
         if ($exception->getError() !== 'Invalid IDs in the request')
             throw $exception;
 
-        logger()->error('Request contains an invalid asset ID from which retrieve a location.', [
-            'corporation_id' => $this->corporation_id,
-            'assets_batch' => $item_ids,
-        ]);
+        logger()->error(
+            sprintf('[Jobs][%s] Request contains an invalid asset ID from which retrieve a location.', $this->job->getJobId()),
+            [
+                'corporation_id' => $this->corporation_id,
+                'assets_batch' => $item_ids,
+            ]);
 
         $this->has_exception = true;
     }

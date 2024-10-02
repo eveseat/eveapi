@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,18 +22,18 @@
 
 namespace Seat\Eveapi\Models\Location;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterLocation.
  *
  * @package Seat\Eveapi\Models\Killmails
  */
-class CharacterLocation extends Model
+class CharacterLocation extends ExtensibleModel
 {
     /**
      * @var bool

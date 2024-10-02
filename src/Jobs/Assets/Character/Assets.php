@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Assets\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Assets\AssetMapping;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\RefreshToken;
@@ -65,19 +66,12 @@ class Assets extends AbstractAuthCharacterJob
     protected $page = 1;
 
     /**
-     * @var \Illuminate\Support\Collection
-     */
-    protected $known_assets;
-
-    /**
      * Assets constructor.
      *
      * @param  \Seat\Eveapi\Models\RefreshToken  $token
      */
     public function __construct(RefreshToken $token)
     {
-        $this->known_assets = collect();
-
         parent::__construct($token);
     }
 
@@ -90,40 +84,51 @@ class Assets extends AbstractAuthCharacterJob
      */
     public function handle(): void
     {
+        parent::handle();
+
+        $start = now();
+
+        $structure_batch = new StructureBatch();
 
         while (true) {
 
-            $assets = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($assets->isCachedLoad() && CharacterAsset::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $assets = collect($response->getBody());
 
-            collect($assets)->each(function ($asset) {
+            $assets->each(function ($asset) use ($structure_batch, $start) {
 
                 $model = CharacterAsset::firstOrNew([
                     'item_id' => $asset->item_id,
                 ]);
 
+                //make sure that the location is loaded if it is in a station or citadel
+                if (in_array($asset->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS) && in_array($asset->location_type, StructureBatch::RESOLVABLE_LOCATION_TYPES)) {
+                    $structure_batch->addStructure($asset->location_id);
+                }
+
                 AssetMapping::make($model, $asset, [
                     'character_id' => function () {
                         return $this->getCharacterId();
                     },
+                    'updated_at' => function () use ($start) {
+                            return $start;
+                        },
                 ])->save();
-
-                // Update the list of known item_id's which should be
-                // excluded from the database cleanup later.
-                $this->known_assets->push($asset->item_id);
             });
 
-            if (! $this->nextPage($assets->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 
         // Cleanup old assets
         CharacterAsset::where('character_id', $this->getCharacterId())
-            ->whereNotIn('item_id', $this->known_assets->flatten()->all())
+            ->where('updated_at', '<', $start)
             ->delete();
+
+        // schedule jobs for structures
+        $structure_batch->submitJobs($this->getToken());
     }
 }

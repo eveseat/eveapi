@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,22 +67,21 @@ class Labels extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $labels = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($labels->isCachedLoad() &&
-            CharacterLabel::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $labels = $response->getBody();
 
         collect($labels)->each(function ($label) {
 
             CharacterLabel::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'label_id'     => $label->label_id,
+                'label_id' => $label->label_id,
             ])->fill([
-                'name'         => $label->label_name,
+                'name' => $label->label_name,
             ])->save();
         });
 

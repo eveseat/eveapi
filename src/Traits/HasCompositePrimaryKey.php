@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,6 @@
  */
 
 namespace Seat\Eveapi\Traits;
-
-use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Trait HasCompositePrimaryKey.
@@ -54,7 +52,7 @@ trait HasCompositePrimaryKey
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function setKeysForSaveQuery(Builder $query)
+    protected function setKeysForSaveQuery($query)
     {
 
         if (is_array($this->getKeyName())) {

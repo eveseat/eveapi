@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,19 +67,19 @@ class Implants extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $implants = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($implants->isCachedLoad() && CharacterImplant::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $implants = $response->getBody();
 
         collect($implants)->each(function ($implant) {
 
             CharacterImplant::firstOrCreate([
                 'character_id' => $this->getCharacterId(),
-                'type_id'      => $implant,
+                'type_id' => $implant,
             ]);
         });
 

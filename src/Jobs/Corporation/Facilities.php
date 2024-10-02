@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,21 +71,21 @@ class Facilities extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $facilities = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($facilities->isCachedLoad() &&
-            CorporationFacility::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $facilities = $response->getBody();
 
         collect($facilities)->each(function ($facility) {
 
             CorporationFacility::firstOrNew([
                 'corporation_id' => $this->getCorporationId(),
-                'facility_id'    => $facility->facility_id,
+                'facility_id' => $facility->facility_id,
             ])->fill([
-                'type_id'   => $facility->type_id,
+                'type_id' => $facility->type_id,
                 'system_id' => $facility->system_id,
             ])->save();
         });

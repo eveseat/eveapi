@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ class Contracts extends Command
         if (! ContractDetail::where('status', '<>', 'deleted')->whereIn('contract_id', $contract_ids)->exists()) {
             $this->enqueueContractsListJobs();
 
-            return;
+            return $this::SUCCESS;
         }
 
         // collect contract from character related to asked contracts
@@ -70,6 +70,8 @@ class Contracts extends Command
 
         // collect contract from corporation related to asked contracts
         $this->enqueueDetailedCorporationContractsJobs($contract_ids);
+
+        return $this::SUCCESS;
     }
 
     private function enqueueContractsListJobs()

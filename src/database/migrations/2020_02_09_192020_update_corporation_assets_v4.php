@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@
  */
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Class UpdateCorporationAssetsV4.
@@ -30,15 +32,39 @@ class UpdateCorporationAssetsV4 extends Migration
 {
     public function up()
     {
-        DB::statement("ALTER TABLE corporation_assets MODIFY COLUMN location_type ENUM('station','solar_system','other', 'item') NOT NULL");
+        Schema::table('corporation_assets', function (Blueprint $table) {
+            $table->renameColumn('location_type', 'location_type_v3');
+        });
+        Schema::table('corporation_assets', function (Blueprint $table) {
+            $table->enum('location_type', ['station', 'solar_system', 'other', 'item'])->nullable(false);
+        });
+
+        DB::table('corporation_assets')
+            ->update(['location_type' => DB::raw('"location_type_v3"')]);
+
+        Schema::table('corporation_assets', function (Blueprint $table) {
+            $table->dropColumn('location_type_v3');
+        });
     }
 
     public function down()
     {
+        Schema::table('corporation_assets', function (Blueprint $table) {
+            $table->renameColumn('location_type', 'location_type_v4');
+        });
+        Schema::table('corporation_assets', function (Blueprint $table) {
+            $table->enum('location_type', ['station', 'solar_system', 'other'])->nullable(false);
+        });
+
         DB::table('corporation_assets')
-            ->where('location_type', 'item')
+            ->where('location_type_v4', 'item')
             ->delete();
 
-        DB::statement("ALTER TABLE corporation_assets MODIFY COLUMN location_type ENUM('station','solar_system','other') NOT NULL");
+        DB::table('corporation_assets')
+            ->update(['location_type' => DB::raw('"location_type_v4"')]);
+
+        Schema::table('corporation_assets', function (Blueprint $table) {
+            $table->dropColumn('location_type_v4');
+        });
     }
 }

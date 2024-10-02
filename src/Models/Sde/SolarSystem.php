@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,54 +22,23 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sovereignty\SovereigntyMap;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class SolarSystem.
- *
- * @package Seat\Eveapi\Models\Sde
- *
- * @OA\Schema(
- *     title="SolarSystem",
- *     type="object",
- *     description="Solar System"
- * )
- *
- * @OA\Property(
- *     property="system_id",
- *     description="Solar System Unique Identifier",
- *     type="integer",
- *     format="int64"
- * )
- *
- * @OA\Property(
- *     property="constellation_id",
- *     description="Constellation Unique Identifier",
- *     type="integer",
- *     format="int64"
- * )
- *
- * @OA\Property(
- *     property="region_id",
- *     description="Region Unique Identifier",
- *     type="integer",
- *     format="int64"
- * )
- *
- * @OA\Property(
- *     property="name",
- *     description="Solar System name",
- *     type="string"
- * )
- *
- * @OA\Propertu(
- *     property="security",
- *     description="Solar System Security Level",
- *     type="double"
- * )
- */
-class SolarSystem extends Model
+#[OA\Schema(
+    title: 'SolarSystem',
+    description: 'Solar System',
+    properties: [
+        new OA\Property(property: 'system_id', description: 'Solar System Unique Identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'constellation_id', description: 'Constellation Unique Identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'region_id', description: 'Region Unique Identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'name', description: 'Solar System name', type: 'string'),
+        new OA\Property(property: 'security', description: 'Solar System Security Level', type: 'double'),
+    ],
+    type: 'object'
+)]
+class SolarSystem extends ExtensibleModel
 {
     /**
      * @var bool

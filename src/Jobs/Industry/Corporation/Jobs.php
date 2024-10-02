@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Industry\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\JobMapping;
 use Seat\Eveapi\Models\Industry\CorporationIndustryJob;
 
@@ -84,21 +85,24 @@ class Jobs extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
-            $industry_jobs = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($industry_jobs->isCachedLoad() &&
-                CorporationIndustryJob::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $industry_jobs = $response->getBody();
 
-            collect($industry_jobs)->each(function ($job) {
+            collect($industry_jobs)->each(function ($job) use ($structure_batch) {
+                $structure_batch->addStructure($job->location_id);
 
                 $model = CorporationIndustryJob::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'job_id'         => $job->job_id,
+                    'job_id' => $job->job_id,
                 ]);
 
                 JobMapping::make($model, $job, [
@@ -111,8 +115,10 @@ class Jobs extends AbstractAuthCorporationJob
                 ])->save();
             });
 
-            if (! $this->nextPage($industry_jobs->pages))
-                return;
+            if (! $this->nextPage($response->getPagesCount()))
+                break;
         }
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

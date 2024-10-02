@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,17 +70,17 @@ class Mining extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $mining = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($mining->isCachedLoad() &&
-                CharacterMining::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $entries = $response->getBody();
 
-            collect($mining)->each(function ($ledger_entry) {
+            collect($entries)->each(function ($ledger_entry) {
 
                 // retrieve daily mined amount for current type, system and character
                 $row = CharacterMining::select(DB::raw('SUM(quantity) as quantity'))
@@ -106,11 +106,11 @@ class Mining extends AbstractAuthCharacterJob
 
                     // finally, we create the new entry
                     CharacterMining::updateOrCreate([
-                        'character_id'    => $this->getCharacterId(),
-                        'date'            => $ledger_entry->date,
-                        'time'            => $delta_time,
+                        'character_id' => $this->getCharacterId(),
+                        'date' => $ledger_entry->date,
+                        'time' => $delta_time,
                         'solar_system_id' => $ledger_entry->solar_system_id,
-                        'type_id'         => $ledger_entry->type_id,
+                        'type_id' => $ledger_entry->type_id,
                     ], [
                         'quantity' => $delta_quantity,
                     ]);
@@ -118,7 +118,7 @@ class Mining extends AbstractAuthCharacterJob
                 }
             });
 
-            if (! $this->nextPage($mining->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

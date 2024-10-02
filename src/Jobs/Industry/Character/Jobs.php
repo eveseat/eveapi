@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Industry\Character;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Industry\JobMapping;
 use Seat\Eveapi\Models\Industry\CharacterIndustryJob;
 
@@ -72,19 +73,21 @@ class Jobs extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $industry_jobs = $this->retrieve([
+        parent::handle();
+        $structure_batch = new StructureBatch();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($industry_jobs->isCachedLoad() &&
-            CharacterIndustryJob::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $industry_jobs = $response->getBody();
 
-        collect($industry_jobs)->each(function ($job) {
+        collect($industry_jobs)->each(function ($job) use ($structure_batch) {
+            $structure_batch->addStructure($job->facility_id);
 
             $model = CharacterIndustryJob::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'job_id'       => $job->job_id,
+                'job_id' => $job->job_id,
             ]);
 
             JobMapping::make($model, $job, [
@@ -96,5 +99,7 @@ class Jobs extends AbstractAuthCharacterJob
                 },
             ])->save();
         });
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,19 +22,16 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationStanding.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationStanding extends Model
+class CorporationStanding extends ExtensibleModel
 {
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */
@@ -47,8 +44,8 @@ class CorporationStanding extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'from_id')
             ->withDefault([
-                'category'  => 'character',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'character',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 }

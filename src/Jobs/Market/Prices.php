@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Market;
 
+use Illuminate\Bus\Batchable;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Market\Price;
 
@@ -32,6 +33,8 @@ use Seat\Eveapi\Models\Market\Price;
  */
 class Prices extends EsiBase
 {
+    use Batchable;
+
     /**
      * @var string
      */
@@ -59,28 +62,31 @@ class Prices extends EsiBase
      */
     public function handle()
     {
-        $prices = $this->retrieve();
+        if ($this->batchId && $this->batch()->cancelled()) {
+            logger()->debug(sprintf('[Jobs][%s] Orders - Cancelling job due to relevant batch %s cancellation.', $this->job->getJobId(), $this->batch()->id));
 
-        if ($prices->isCachedLoad() && Price::count() > 0) return;
+            return;
+        }
+
+        $response = $this->retrieve();
+
+        $prices = $response->getBody();
 
         collect($prices)->chunk(1000)->each(function ($chunk) {
 
             $records = $chunk->map(function ($item, $key) {
 
                 return [
-                    'type_id'        => $item->type_id,
-                    'average_price'  => $item->average_price ?? 0.0,
+                    'type_id' => $item->type_id,
+                    'average_price' => $item->average_price ?? 0.0,
                     'adjusted_price' => $item->adjusted_price ?? 0.0,
-                    'created_at'     => carbon(),
-                    'updated_at'     => carbon(),
+                    'created_at' => carbon(),
+                    'updated_at' => carbon(),
                 ];
             });
 
             Price::upsert($records->toArray(), [
                 'type_id',
-                'average_price',
-                'adjusted_price',
-                'updated_at',
             ]);
         });
     }

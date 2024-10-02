@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,14 +110,16 @@ class Names extends EsiBase
 
             $this->request_body = collect($chunk->values()->all())->unique()->values()->all();
 
-            $resolutions = $this->retrieve();
+            $response = $this->retrieve();
+
+            $resolutions = $response->getBody();
 
             collect($resolutions)->each(function ($resolution) {
 
                 UniverseName::firstOrNew([
                     'entity_id' => $resolution->id,
                 ])->fill([
-                    'name'     => $resolution->name,
+                    'name' => $resolution->name,
                     'category' => $resolution->category,
                 ])->save();
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,35 +22,19 @@
 
 namespace Seat\Eveapi\Models\Mail;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class MailRecipient.
- *
- * @package Seat\Eveapi\Models\Mail
- *
- * @OA\Schema(
- *     description="Mail Recipient",
- *     title="MailRecipient",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="recipient_id",
- *     description="The recipient ID"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     enum={"character", "corporation", "alliance", "mailing_list"},
- *     property="recipient_type",
- *     description="The recipient qualifier"
- * )
- */
-class MailRecipient extends Model
+#[OA\Schema(
+    title: 'MailRecipient',
+    description: 'Mail Recipient',
+    properties: [
+        new OA\Property(property: 'recipient_id', description: 'The recipient ID', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'recipient_type', description: 'The recipient qualifier', type: 'string', enum: ['character', 'corporation', 'alliance', 'mailing_list']),
+    ]
+)]
+class MailRecipient extends ExtensibleModel
 {
     /**
      * @var bool
@@ -110,8 +94,8 @@ class MailRecipient extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'recipient_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 }

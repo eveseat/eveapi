@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@ class RemoveCorporationIndustryMiningObserverDataSurrogateKey extends Migration
 {
     public function up()
     {
+        $engine = DB::getDriverName();
+
         Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
             $table->dropPrimary(['corporation_id', 'observer_id', 'recorded_corporation_id', 'character_id', 'type_id', 'last_updated']);
         });
@@ -40,7 +42,9 @@ class RemoveCorporationIndustryMiningObserverDataSurrogateKey extends Migration
             $table->bigIncrements('id')->first();
         });
 
-        DB::statement('DELETE a FROM corporation_industry_mining_observer_data a
+        switch ($engine) {
+            case 'mysql':
+                DB::statement('DELETE a FROM corporation_industry_mining_observer_data a
                        INNER JOIN corporation_industry_mining_observer_data b
                        WHERE a.id < b.id
                        AND a.observer_id = b.observer_id
@@ -48,6 +52,19 @@ class RemoveCorporationIndustryMiningObserverDataSurrogateKey extends Migration
                        AND a.character_id = b.character_id
                        AND a.type_id = b.type_id
                        AND a.last_updated = b.last_updated');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                DB::statement('DELETE FROM corporation_industry_mining_observer_data a
+                       USING corporation_industry_mining_observer_data b
+                       WHERE a.id < b.id
+                       AND a.observer_id = b.observer_id
+                       AND a.recorded_corporation_id = b.recorded_corporation_id
+                       AND a.character_id = b.character_id
+                       AND a.type_id = b.type_id
+                       AND a.last_updated = b.last_updated');
+                break;
+        }
 
         Schema::table('corporation_industry_mining_observer_data', function (Blueprint $table) {
             $table->dropColumn('id');

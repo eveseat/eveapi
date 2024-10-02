@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,13 @@ class SkillQueueMapping extends DataMapping
      * @var string[]
      */
     protected static $mapping = [
-        'skill_id'          => 'skill_id',
-        'queue_position'    => 'queue_position',
-        'finish_date'       => 'finish_date',
-        'start_date'        => 'start_date',
-        'finished_level'    => 'finished_level',
+        'skill_id' => 'skill_id',
+        'queue_position' => 'queue_position',
+        'finish_date' => 'finish_date',
+        'start_date' => 'start_date',
+        'finished_level' => 'finished_level',
         'training_start_sp' => 'training_start_sp',
-        'level_end_sp'      => 'level_end_sp',
-        'level_start_sp'    => 'level_start_sp',
+        'level_end_sp' => 'level_end_sp',
+        'level_start_sp' => 'level_start_sp',
     ];
 }

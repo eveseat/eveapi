@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,17 +35,17 @@ class UniverseStationMapping extends DataMapping
      * @var array
      */
     protected static $mapping = [
-        'type_id'                    => 'type_id',
-        'name'                       => 'name',
-        'owner'                      => 'owner',
-        'race_id'                    => 'race_id',
-        'x'                          => 'position.x',
-        'y'                          => 'position.y',
-        'z'                          => 'position.z',
-        'system_id'                  => 'system_id',
-        'reprocessing_efficiency'    => 'reprocessing_efficiency',
+        'type_id' => 'type_id',
+        'name' => 'name',
+        'owner' => 'owner',
+        'race_id' => 'race_id',
+        'x' => 'position.x',
+        'y' => 'position.y',
+        'z' => 'position.z',
+        'system_id' => 'system_id',
+        'reprocessing_efficiency' => 'reprocessing_efficiency',
         'reprocessing_stations_take' => 'reprocessing_stations_take',
-        'max_dockable_ship_volume'   => 'max_dockable_ship_volume',
-        'office_rental_cost'         => 'office_rental_cost',
+        'max_dockable_ship_volume' => 'max_dockable_ship_volume',
+        'office_rental_cost' => 'office_rental_cost',
     ];
 }

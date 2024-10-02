@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,13 +36,13 @@ class WalletTransactionMapping extends DataMapping
      */
     protected static $mapping = [
         'transaction_id' => 'transaction_id',
-        'date'           => 'date',
-        'type_id'        => 'type_id',
-        'location_id'    => 'location_id',
-        'unit_price'     => 'unit_price',
-        'quantity'       => 'quantity',
-        'client_id'      => 'client_id',
-        'is_buy'         => 'is_buy',
+        'date' => 'date',
+        'type_id' => 'type_id',
+        'location_id' => 'location_id',
+        'unit_price' => 'unit_price',
+        'quantity' => 'quantity',
+        'client_id' => 'client_id',
+        'is_buy' => 'is_buy',
         'journal_ref_id' => 'journal_ref_id',
     ];
 }

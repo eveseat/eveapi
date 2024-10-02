@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,18 +35,18 @@ class OrderMapping extends DataMapping
      * @var array
      */
     protected static $mapping = [
-        'order_id'        => 'order_id',
-        'type_id'         => 'type_id',
-        'region_id'       => 'region_id',
-        'location_id'     => 'location_id',
-        'range'           => 'range',
-        'is_buy_order'    => 'is_buy_order',
-        'price'           => 'price',
-        'volume_total'    => 'volume_total',
-        'volume_remain'   => 'volume_remain',
-        'issued'          => 'issued',
-        'min_volume'      => 'min_volume',
-        'duration'        => 'duration',
-        'escrow'          => 'escrow',
+        'order_id' => 'order_id',
+        'type_id' => 'type_id',
+        'region_id' => 'region_id',
+        'location_id' => 'location_id',
+        'range' => 'range',
+        'is_buy_order' => 'is_buy_order',
+        'price' => 'price',
+        'volume_total' => 'volume_total',
+        'volume_remain' => 'volume_remain',
+        'issued' => 'issued',
+        'min_volume' => 'min_volume',
+        'duration' => 'duration',
+        'escrow' => 'escrow',
     ];
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ class Affiliations extends Command
                 Affiliation::dispatch($character_ids);
             });
 
-            return;
+            return $this::SUCCESS;
         }
 
         // in case no IDs has been specified, collect all characters and universe names.
@@ -76,5 +76,7 @@ class Affiliations extends Command
                 $character_ids = $chunk->pluck('character_id')->toArray();
                 Affiliation::dispatch($character_ids);
         });
+
+        return $this::SUCCESS;
     }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,11 +62,13 @@ class Info extends AbstractCorporationJob
      */
     public function handle()
     {
-        $corporation = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($corporation->isCachedLoad() && CorporationInfo::find($this->getCorporationId())) return;
+        $corporation = $response->getBody();
 
         $model = CorporationInfo::firstOrNew([
             'corporation_id' => $this->getCorporationId(),

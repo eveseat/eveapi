@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterStanding.
  *
  * @package Seat\Eveapi\Models\Character
  */
-class CharacterStanding extends Model
+class CharacterStanding extends ExtensibleModel
 {
     /**
      * @var bool
@@ -44,8 +44,8 @@ class CharacterStanding extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'from_id')
             ->withDefault([
-                'category'  => 'character',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'character',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 }

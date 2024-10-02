@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationMemberTitle.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationMemberTitle extends Model
+class CorporationMemberTitle extends ExtensibleModel
 {
     use HasCompositePrimaryKey;
 

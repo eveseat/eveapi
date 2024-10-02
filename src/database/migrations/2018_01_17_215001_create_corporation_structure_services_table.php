@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateCorporationStructureServicesTable extends Migration
@@ -33,6 +34,15 @@ class CreateCorporationStructureServicesTable extends Migration
      */
     public function up()
     {
+        $records = DB::table('migrations')
+            ->where('migration', '2020_04_19_161944_drop_surrogate_key_from_corporation_structures_table')
+            ->exists();
+
+        if ($records === false) {
+            Schema::table('corporation_structures', function (Blueprint $table) {
+                $table->unique(['structure_id']);
+            });
+        }
 
         Schema::create('corporation_structure_services', function (Blueprint $table) {
 
@@ -59,6 +69,15 @@ class CreateCorporationStructureServicesTable extends Migration
      */
     public function down()
     {
+        $records = DB::table('migrations')
+            ->where('migration', '2020_04_19_161944_drop_surrogate_key_from_corporation_structures_table')
+            ->exists();
+
+        if ($records === false) {
+            Schema::table('corporation_structures', function (Blueprint $table) {
+                $table->dropIndex(['structure_id']);
+            });
+        }
 
         Schema::dropIfExists('corporation_structure_services');
     }

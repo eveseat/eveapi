@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Skills;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterAttribute.
  *
  * @package Seat\Eveapi\Models\Market
  */
-class CharacterAttribute extends Model
+class CharacterAttribute extends ExtensibleModel
 {
 
     /**
@@ -48,7 +48,7 @@ class CharacterAttribute extends Model
     protected $primaryKey = 'character_id';
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setLastRemapDateAttribute($value)
     {
@@ -56,7 +56,7 @@ class CharacterAttribute extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setAccruedRemapCooldownDateAttribute($value)
     {

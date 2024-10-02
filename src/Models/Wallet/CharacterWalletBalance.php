@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Wallet;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterWalletBalance.
  *
  * @package Seat\Eveapi\Models\Wallet
  */
-class CharacterWalletBalance extends Model
+class CharacterWalletBalance extends ExtensibleModel
 {
     /**
      * @var bool

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 namespace Seat\Eveapi\Jobs;
 
-use Exception;
+use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,6 +30,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
+use Throwable;
 
 /**
  * Class AbstractJob.
@@ -38,7 +39,7 @@ use Seat\Services\Jobs\Analytics;
  */
 abstract class AbstractJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
 
     /**
      * The duration in seconds how long a job is allowed to execute.
@@ -76,11 +77,11 @@ abstract class AbstractJob implements ShouldQueue
      * limiter. This is checked as part of the preflight
      * checks when API calls are made.
      *
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      *
      * @throws \Exception
      */
-    public function failed(Exception $exception)
+    public function failed(Throwable $exception)
     {
         // Analytics. Report only the Exception class and message.
         dispatch(new Analytics((new AnalyticsContainer)

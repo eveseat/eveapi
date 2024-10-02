@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,25 +32,35 @@ class AddUniqueIndexToMailMailingListsTable extends Migration
 {
     public function up()
     {
+        $engine = DB::getDriverName();
+
         Schema::table('mail_mailing_lists', function (Blueprint $table) {
             $table->increments('id');
         });
 
-        DB::statement('DELETE a FROM mail_mailing_lists a INNER JOIN mail_mailing_lists b WHERE a.id > b.id AND a.character_id = b.character_id AND a.mailing_list_id = b.mailing_list_id');
+        switch ($engine) {
+            case 'mysql':
+                DB::statement('DELETE a FROM mail_mailing_lists a INNER JOIN mail_mailing_lists b WHERE a.id > b.id AND a.character_id = b.character_id AND a.mailing_list_id = b.mailing_list_id');
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                DB::statement('DELETE FROM mail_mailing_lists a USING mail_mailing_lists b WHERE a.id > b.id AND a.character_id = b.character_id AND a.mailing_list_id = b.mailing_list_id');
+                break;
+        }
 
         Schema::table('mail_mailing_lists', function (Blueprint $table) {
             $table->dropColumn('id');
         });
 
         Schema::table('mail_mailing_lists', function (Blueprint $table) {
-            $table->unique(['character_id', 'mailing_list_id'], 'mail_mailing_lists');
+            $table->unique(['character_id', 'mailing_list_id']);
         });
     }
 
     public function down()
     {
         Schema::table('mail_mailing_lists', function (Blueprint $table) {
-            $table->dropUnique('mail_mailing_lists');
+            $table->dropUnique(['character_id', 'mailing_list_id']);
         });
     }
 }

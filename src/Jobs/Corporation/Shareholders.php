@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,22 +95,22 @@ class Shareholders extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $shareholders = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($shareholders->isCachedLoad() &&
-                CorporationShareholder::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $shareholders = $response->getBody();
 
             collect($shareholders)->each(function ($shareholder) {
 
                 CorporationShareholder::firstOrNew([
-                    'corporation_id'   => $this->getCorporationId(),
+                    'corporation_id' => $this->getCorporationId(),
                     'shareholder_type' => $shareholder->shareholder_type,
-                    'shareholder_id'   => $shareholder->shareholder_id,
+                    'shareholder_id' => $shareholder->shareholder_id,
                 ])->fill([
                     'share_count' => $shareholder->share_count,
                 ])->save();
@@ -120,7 +120,7 @@ class Shareholders extends AbstractAuthCorporationJob
             $this->known_shareholders->push(collect($shareholders)
                 ->pluck(['shareholder_type', 'shareholder_id'])->flatten()->all());
 
-            if (! $this->nextPage($shareholders->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

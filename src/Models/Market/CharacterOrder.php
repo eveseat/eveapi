@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,113 +22,33 @@
 
 namespace Seat\Eveapi\Models\Market;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class CharacterOrder.
- *
- * @package Seat\Eveapi\Models\Market
- *
- * @OA\Schema(
- *     description="Character Order",
- *     title="CharacterOrder",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="order_id",
- *     description="The market order ID"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="region_id",
- *     description="The region up to which the order is valid"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="location_id",
- *     description="The structure where the order is"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="range",
- *     description="The range the order is covering"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="is_buy_order",
- *     description="True if the order is a buy order"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="price",
- *     description="The unit price"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="volume_total",
- *     description="The order initial volume"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="volume_remain",
- *     description="The order remaining volume"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="issued",
- *     description="The date-time when the order has been created"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="min_volume",
- *     description="The minimum volume which is requested for a buy order"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="duration",
- *     description="The number of seconds the order is valid"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="is_corporation",
- *     description="True if the order is a corporation order"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="escrow"
- * )
- *
- * @OA\Property(
- *     property="type",
- *     ref="#/components/schemas/InvType",
- *     description="The type to which order is referring"
- * )
- */
-class CharacterOrder extends Model
+#[OA\Schema(
+    title: 'CharacterOrder',
+    description: 'Character Order',
+    properties: [
+        new OA\Property(property: 'order_id', description: 'The market order ID', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'region_id', description: 'The region up to which the order is valid', type: 'integer'),
+        new OA\Property(property: 'location_id', description: 'The structure where the order is', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'range', description: 'The range the order is covering', type: 'integer'),
+        new OA\Property(property: 'is_buy_order', description: 'True if the order is a buy order', type: 'boolean'),
+        new OA\Property(property: 'price', description: 'The unit price', type: 'number', format: 'double'),
+        new OA\Property(property: 'volume_total', description: 'The order initial volume', type: 'number', format: 'double'),
+        new OA\Property(property: 'volume_remain', description: 'The order remaining volume', type: 'number', format: 'double'),
+        new OA\Property(property: 'issued', description: 'The date/time when the order has been created', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'min_volume', description: 'The minimum volume which is requested for a buy order', type: 'number', format: 'double'),
+        new OA\Property(property: 'duration', description: 'The number of seconds the order is valid', type: 'integer'),
+        new OA\Property(property: 'escrow', type: 'number', format: 'double'),
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType', description: 'The type to which order is referring'),
+    ],
+    type: 'object'
+)]
+class CharacterOrder extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var array
@@ -148,7 +68,7 @@ class CharacterOrder extends Model
     protected static $unguarded = true;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setIssuedAttribute($value)
     {
@@ -175,5 +95,13 @@ class CharacterOrder extends Model
             ->withDefault([
                 'typeName' => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

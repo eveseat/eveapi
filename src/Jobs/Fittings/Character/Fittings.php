@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,22 +65,22 @@ class Fittings extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        $fittings = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($fittings->isCachedLoad() &&
-            CharacterFitting::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $fittings = $response->getBody();
 
         collect($fittings)->each(function ($fitting) {
 
             CharacterFitting::firstOrNew([
                 'character_id' => $this->getCharacterId(),
-                'fitting_id'   => $fitting->fitting_id,
+                'fitting_id' => $fitting->fitting_id,
             ])->fill([
-                'name'         => $fitting->name,
-                'description'  => $fitting->description,
+                'name' => $fitting->name,
+                'description' => $fitting->description,
                 'ship_type_id' => $fitting->ship_type_id,
             ])->save();
 
@@ -93,10 +93,10 @@ class Fittings extends AbstractAuthCharacterJob
 
                     CharacterFittingItem::firstOrCreate([
                         'fitting_id' => $fitting->fitting_id,
-                        'type_id'    => $item->type_id,
-                        'flag'       => $item->flag,
+                        'type_id' => $item->type_id,
+                        'flag' => $item->flag,
                     ], [
-                        'quantity'   => $item->quantity,
+                        'quantity' => $item->quantity,
                     ]);
                 });
             }

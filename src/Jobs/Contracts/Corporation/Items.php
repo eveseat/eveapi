@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,11 +81,6 @@ class Items extends AbstractAuthCorporationJob
     protected $tags = ['corporation', 'contract'];
 
     /**
-     * @var int
-     */
-    public $tries = 60;
-
-    /**
      * Items constructor.
      *
      * @param  int  $corporation_id
@@ -135,14 +130,12 @@ class Items extends AbstractAuthCorporationJob
             ->then(function () {
 
             try {
-                $items = $this->retrieve([
+                $response = $this->retrieve([
                     'corporation_id' => $this->getCorporationId(),
                     'contract_id' => $this->contract_id,
                 ]);
 
-                if ($items->isCachedLoad() &&
-                    ContractItem::where('contract_id', $this->contract_id)->count() > 0)
-                    return;
+                $items = $response->getBody();
 
                 collect($items)->each(function ($item) {
 

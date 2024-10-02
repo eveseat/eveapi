@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,29 +59,25 @@ class Map extends EsiBase
      */
     public function handle()
     {
-        $systems = $this->retrieve();
+        $response = $this->retrieve();
 
-        if ($systems->isCachedLoad() && SovereigntyMap::count() > 0) return;
+        $systems = $response->getBody();
 
         collect($systems)->chunk(1000)->each(function ($chunk) {
 
             $records = $chunk->map(function ($system, $key) {
                 return [
-                    'system_id'      => $system->system_id,
-                    'alliance_id'    => $system->alliance_id ?? null,
+                    'system_id' => $system->system_id,
+                    'alliance_id' => $system->alliance_id ?? null,
                     'corporation_id' => $system->corporation_id ?? null,
-                    'faction_id'     => $system->faction_id ?? null,
-                    'created_at'     => carbon(),
-                    'updated_at'     => carbon(),
+                    'faction_id' => $system->faction_id ?? null,
+                    'created_at' => carbon(),
+                    'updated_at' => carbon(),
                 ];
             });
 
             SovereigntyMap::upsert($records->toArray(), [
                 'system_id',
-                'alliance_id',
-                'corporation_id',
-                'faction_id',
-                'updated_at',
             ]);
 
         });

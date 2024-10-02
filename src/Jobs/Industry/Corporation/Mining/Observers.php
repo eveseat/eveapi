@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,27 +78,27 @@ class Observers extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $mining_observers = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($mining_observers->isCachedLoad() &&
-            CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $observers = $response->getBody();
 
-        collect($mining_observers)->each(function ($observer) {
+        collect($observers)->each(function ($observer) {
 
             CorporationIndustryMiningObserver::firstOrNew([
-                'observer_id'    => $observer->observer_id,
+                'observer_id' => $observer->observer_id,
             ])->fill([
                 'corporation_id' => $this->getCorporationId(),
-                'last_updated'  => carbon($observer->last_updated),
+                'last_updated' => carbon($observer->last_updated),
                 'observer_type' => $observer->observer_type,
             ])->save();
         });
 
         CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('observer_id', collect($mining_observers)
+            ->whereNotIn('observer_id', collect($observers)
                 ->pluck('observer_id')->flatten()->all())
             ->delete();
     }

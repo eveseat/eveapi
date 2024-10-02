@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,10 @@
 
 namespace Seat\Eveapi\Jobs\PlanetaryInteraction\Character;
 
+use Illuminate\Support\Facades\Bus;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Models\PlanetaryInteraction\CharacterPlanet;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Planet.
@@ -58,49 +60,78 @@ class Planets extends AbstractAuthCharacterJob
     protected $tags = ['character', 'pi'];
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $planet_jobs;
+
+    /**
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
+     */
+    public function __construct(RefreshToken $token)
+    {
+        parent::__construct($token);
+
+        $this->planet_jobs = collect();
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
      */
     public function handle()
     {
-        $planets = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if (! $planets->isCachedLoad()) {
+        $planets = $response->getBody();
 
-            collect($planets)->each(function ($planet) {
+        collect($planets)->each(function ($planet) {
 
-                CharacterPlanet::firstOrNew([
-                    'character_id' => $this->getCharacterId(),
-                    'solar_system_id' => $planet->solar_system_id,
-                    'planet_id' => $planet->planet_id,
-                ])->fill([
-                    'upgrade_level' => $planet->upgrade_level,
-                    'num_pins' => $planet->num_pins,
-                    'last_update' => carbon($planet->last_update),
-                    'planet_type' => $planet->planet_type,
-                ])->save();
+            CharacterPlanet::firstOrNew([
+                'character_id' => $this->getCharacterId(),
+                'solar_system_id' => $planet->solar_system_id,
+                'planet_id' => $planet->planet_id,
+            ])->fill([
+                'upgrade_level' => $planet->upgrade_level,
+                'num_pins' => $planet->num_pins,
+                'last_update' => carbon($planet->last_update),
+                'planet_type' => $planet->planet_type,
+            ])->save();
 
-            });
+        });
 
-            // Retrieve all waypoints which have not been returned by API.
-            // We will run a delete statement on those selected rows in order to avoid any deadlock.
-            $existing_planets = CharacterPlanet::where('character_id', $this->getCharacterId())
-                ->whereNotIn('planet_id', collect($planets)->pluck('planet_id')->toArray())
-                ->get();
+        // Retrieve all waypoints which have not been returned by API.
+        // We will run a delete statement on those selected rows in order to avoid any deadlock.
+        $existing_planets = CharacterPlanet::where('character_id', $this->getCharacterId())
+            ->whereNotIn('planet_id', collect($planets)->pluck('planet_id')->toArray())
+            ->get();
 
-            CharacterPlanet::where('character_id', $this->getCharacterId())
-                ->whereIn('planet_id', $existing_planets->pluck('planet_id')->toArray())
-                ->delete();
-        }
+        CharacterPlanet::where('character_id', $this->getCharacterId())
+            ->whereIn('planet_id', $existing_planets->pluck('planet_id')->toArray())
+            ->delete();
 
         // for all planets, enqueue a job which will collect details
         CharacterPlanet::where('character_id', $this->getCharacterId())
             ->get()
             ->each(function ($planet) {
-                PlanetDetail::dispatch($this->token, $planet->planet_id);
+                // add a new planet detail job to the list
+                $this->planet_jobs->add(new PlanetDetail($this->token, $planet->planet_id));
             });
+
+        // if we have planet jobs to process, append them to the active batch
+        if ($this->planet_jobs->isNotEmpty()) {
+            if($this->batchId) {
+                $this->batch()->add($this->planet_jobs->toArray());
+            } else {
+                Bus::batch($this->planet_jobs->toArray())
+                    ->name(sprintf('PI: %s', $this->token->character->name ?? $this->token->character_id))
+                    ->onQueue($this->job->getQueue())
+                    ->dispatch();
+            }
+        }
     }
 }

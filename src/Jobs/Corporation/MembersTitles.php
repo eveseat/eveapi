@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,15 +71,15 @@ class MembersTitles extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $member_titles = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($member_titles->isCachedLoad() &&
-            CorporationMemberTitle::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $titles = $response->getBody();
 
-        collect($member_titles)->filter(function ($member) {
+        collect($titles)->filter(function ($member) {
 
             // Filter out members that do not have any titles.
             return count($member->titles) > 0;
@@ -91,15 +91,15 @@ class MembersTitles extends AbstractAuthCorporationJob
 
                 CorporationMemberTitle::firstOrCreate([
                     'corporation_id' => $this->getCorporationId(),
-                    'character_id'   => $member->character_id,
-                    'title_id'       => $title,
+                    'character_id' => $member->character_id,
+                    'title_id' => $title,
                 ]);
             });
         });
 
         // Cleanup members of this corporation that may no longer have any titles.
         CorporationMemberTitle::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('character_id', collect($member_titles)->filter(function ($member) {
+            ->whereNotIn('character_id', collect($titles)->filter(function ($member) {
 
                 return count($member->titles) > 0;
 

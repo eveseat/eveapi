@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,9 +59,9 @@ class Insurances extends EsiBase
      */
     public function handle()
     {
-        $insurances = $this->retrieve();
+        $response = $this->retrieve();
 
-        if ($insurances->isCachedLoad() && Insurance::count() > 0) return;
+        $insurances = $response->getBody();
 
         collect($insurances)->each(function ($insurance) {
 
@@ -69,10 +69,10 @@ class Insurances extends EsiBase
 
                 Insurance::firstOrNew([
                     'type_id' => $insurance->type_id,
-                    'name'    => $level->name,
+                    'name' => $level->name,
                 ], [
-                    'cost'    => $level->cost,
-                    'payout'  => $level->payout,
+                    'cost' => $level->cost,
+                    'payout' => $level->payout,
                 ])->save();
 
             });

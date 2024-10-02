@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,12 @@
 namespace Seat\Eveapi\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Bus;
 use Seat\Eveapi\Jobs\Killmails\Character\Recent as RecentCharacterKills;
 use Seat\Eveapi\Jobs\Killmails\Corporation\Recent as RecentCorporationKills;
 use Seat\Eveapi\Jobs\Killmails\Detail;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Killmails\Killmail;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -62,12 +65,27 @@ class Killmails extends Command
 
         // loop over kills and queue detailed jobs
         // if we don't have any kills registered -> queue character and corporation jobs to collect them
-        if ($killmails->get()->each(function ($killmail) {
-            Detail::dispatch($killmail->killmail_id, $killmail->killmail_hash);
-        })->isEmpty() && empty($killmail_ids)) {
+        $data = $killmails->get();
+
+        if ($data->isNotEmpty()) {
+            Bus::batch($data->map(function ($killmail) {
+                return new Detail($killmail->killmail_id, $killmail->killmail_hash);
+            }))->name('Killmails batch')->dispatch();
+
+            return $this::SUCCESS;
+        }
+
+        if (empty($killmail_ids)) {
             RefreshToken::chunk(100, function ($tokens) {
                 $tokens->each(function ($token) {
-                    RecentCharacterKills::dispatch($token);
+                    $character = CharacterInfo::firstOrNew(
+                        ['character_id' => $token->character_id],
+                        ['name' => "Unknown Character : {$token->character_id}"]
+                    );
+
+                    Bus::batch([new RecentCharacterKills($token)])
+                        ->name("{$character->name} Killmails")
+                        ->dispatch();
                 });
             });
 
@@ -77,8 +95,17 @@ class Killmails extends Command
                 $query->where('scope', 'roles');
                 $query->where('role', 'Director');
             })->get()->unique('character.affiliation.corporation_id')->each(function ($token) {
-                RecentCorporationKills::dispatch($token->character->affiliation->corporation_id, $token);
+                $corporation = CorporationInfo::firstOrNew(
+                    ['corporation_id' => $token->character->affiliation->corporation_id],
+                    ['name' => "Unknown Corporation : {$token->character->affiliation->corporation_id}"]
+                );
+
+                Bus::batch([new RecentCorporationKills($token->character->affiliation->corporation_id, $token)])
+                    ->name("{$corporation->name} Killmails")
+                    ->dispatch();
             });
         }
+
+        return $this::SUCCESS;
     }
 }

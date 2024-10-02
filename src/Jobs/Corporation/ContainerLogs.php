@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Assets\ContainerLogsMapping;
 use Seat\Eveapi\Models\Corporation\CorporationContainerLog;
 
@@ -77,22 +78,28 @@ class ContainerLogs extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
-            $logs = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($logs->isCachedLoad() &&
-                CorporationContainerLog::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $logs = $response->getBody();
 
-            collect($logs)->each(function ($log) {
+            collect($logs)->each(function ($log) use ($structure_batch) {
+                // I assume location_flag is the same as in assets
+                if (in_array($log->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS)) {
+                    $structure_batch->addStructure($log->location_id);
+                }
 
                 $model = CorporationContainerLog::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'container_id'   => $log->container_id,
-                    'logged_at'      => carbon($log->logged_at),
+                    'container_id' => $log->container_id,
+                    'logged_at' => carbon($log->logged_at),
                 ]);
 
                 ContainerLogsMapping::make($model, $log, [
@@ -103,8 +110,10 @@ class ContainerLogs extends AbstractAuthCorporationJob
 
             });
 
-            if (! $this->nextPage($logs->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Contracts\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 
@@ -72,17 +73,23 @@ class Contracts extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
-            $contracts = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($contracts->isCachedLoad() &&
-                CorporationContract::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $contracts = $response->getBody();
 
-            collect($contracts)->each(function ($contract) {
+            collect($contracts)->each(function ($contract) use ($structure_batch) {
+                if ($contract->start_location_id) {
+                    $structure_batch->addStructure($contract->start_location_id);
+                }
+                if ($contract->end_location_id) {
+                    $structure_batch->addStructure($contract->end_location_id);
+                }
 
                 // Update or create the contract details.
                 $model = ContractDetail::firstOrNew([
@@ -95,7 +102,7 @@ class Contracts extends AbstractAuthCorporationJob
                 // Ensure the character is associated to this contract
                 CorporationContract::firstOrCreate([
                     'corporation_id' => $this->getCorporationId(),
-                    'contract_id'    => $contract->contract_id,
+                    'contract_id' => $contract->contract_id,
                 ]);
 
                 // dispatch a job which will collect bids related to this contract
@@ -108,8 +115,10 @@ class Contracts extends AbstractAuthCorporationJob
                     dispatch(new Items($this->getCorporationId(), $this->token, $contract->contract_id));
             });
 
-            if (! $this->nextPage($contracts->pages))
+            if (! $this->nextPage($response->getPagesCount())) {
+                $structure_batch->submitJobs($this->getToken());
                 break;
+            }
         }
     }
 }

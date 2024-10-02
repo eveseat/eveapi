@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ class Detail extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
         $event_ids = CharacterCalendarEvent::where('character_id', $this->getCharacterId())
             ->whereNotIn('event_id', function ($query) {
@@ -81,13 +82,12 @@ class Detail extends AbstractAuthCharacterJob
         $event_ids->each(function ($event_id) {
 
             try {
-                $detail = $this->retrieve([
+                $response = $this->retrieve([
                     'character_id' => $this->getCharacterId(),
                     'event_id' => $event_id,
                 ]);
 
-                if ($detail->isCachedLoad() && CharacterCalendarEventDetail::where('event_id', $event_id)->count() > 0)
-                    return;
+                $detail = $response->getBody();
 
                 $model = CharacterCalendarEventDetail::firstOrNew([
                     'event_id' => $event_id,

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,51 +22,24 @@
 
 namespace Seat\Eveapi\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class ContractItem.
- *
- * @package Seat\Eveapi\Models\Contacts
- *
- * @OA\Schema(
- *     description="Contract Item",
- *     title="ContractItem",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     property="type_id",
- *     type="integer",
- *     description="The item type identifier"
- * )
- *
- * @OA\Property(
- *     property="quantity",
- *     type="number",
- *     description="The item quantity"
- * )
- *
- * @OA\Property(
- *     property="raw_quantity",
- *     type="integer",
- *     minimum=-2
- * )
- *
- * @OA\Property(
- *     property="is_singleton",
- *     type="boolean",
- *     description="Determine if the item is stacked"
- * )
- *
- * @OA\Property(
- *     property="is_included",
- *     type="boolean",
- *     description="Determine if the item is contained in a parent item"
- * )
- */
-class ContractItem extends Model
+#[OA\Schema(
+    title: 'ContractItem',
+    description: 'Contract Item',
+    properties: [
+        new OA\Property(property: 'type_id', description: 'The item type identifier', type: 'integer'),
+        new OA\Property(property: 'quantity', description: 'The item quantity', type: 'integer'),
+        new OA\Property(property: 'raw_quantity', type: 'integer', minimum: 2),
+        new OA\Property(property: 'is_singleton', description: 'Determine if the item is stacked', type: 'boolean'),
+        new OA\Property(property: 'is_included', description: 'Determine if the item is contained in a parent item', type: 'boolean'),
+    ],
+    type: 'object'
+)]
+class ContractItem extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var array
@@ -113,5 +86,13 @@ class ContractItem extends Model
             ->withDefault([
                 'typeName' => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

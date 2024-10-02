@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,13 @@ class CharacterAttributesMapping extends DataMapping
      * @var array
      */
     protected static $mapping = [
-        'charisma'                    => 'charisma',
-        'intelligence'                => 'intelligence',
-        'memory'                      => 'memory',
-        'perception'                  => 'perception',
-        'willpower'                   => 'willpower',
-        'bonus_remaps'                => 'bonus_remaps',
-        'last_remap_date'             => 'last_remap_date',
+        'charisma' => 'charisma',
+        'intelligence' => 'intelligence',
+        'memory' => 'memory',
+        'perception' => 'perception',
+        'willpower' => 'willpower',
+        'bonus_remaps' => 'bonus_remaps',
+        'last_remap_date' => 'last_remap_date',
         'accrued_remap_cooldown_date' => 'accrued_remap_cooldown_date',
     ];
 }

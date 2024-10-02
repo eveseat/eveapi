@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,111 +22,43 @@
 
 namespace Seat\Eveapi\Models\Assets;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Sde\InvGroup;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\SolarSystem;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
+use Seat\Tests\Eveapi\Database\Factories\CharacterAssetFactory;
 
-/**
- * Class CharacterAsset.
- *
- * @package Seat\Eveapi\Models\Assets
- *
- * @OA\Schema(
- *     description="Character Asset",
- *     title="CharacterAsset",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="item_id",
- *     description="The item identifier"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="integer",
- *     property="quantity",
- *     description="The item quantity"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="location_id",
- *     description="The place of the item"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     enum={"station", "solar_system", "other"},
- *     property="location_type",
- *     description="The location qualifier"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="location_flag",
- *     description="The location flag"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="is_singleton",
- *     description="True if the item is not stacked"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="x",
- *     description="The x coordinate if the item is in space"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="y",
- *     description="The y coordinate if the item is in space"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="z",
- *     description="The z coordinate if the item is in space"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="map_id",
- *     description="The map identifier into which item is located"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="map_name",
- *     description="The name of the system where the item resides"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="name",
- *     description="The name of the asset (ie: a ship name)"
- * )
- *
- * @OA\Property(
- *     property="type",
- *     ref="#/components/schemas/InvType"
- * )
- */
-class CharacterAsset extends Model
+#[OA\Schema(
+    title: 'CharacterAsset',
+    description: 'Character Asset',
+    properties: [
+        new OA\Property(property: 'item_id', description: 'The item identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'quantity', description: 'The item quantity', type: 'integer'),
+        new OA\Property(property: 'location_id', description: 'The place of the item', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'location_type', description: 'The location qualifier', type: 'string', enum: ['station', 'solar_system', 'other']),
+        new OA\Property(property: 'location_flag', description: 'The location flag'),
+        new OA\Property(property: 'is_singleton', description: 'True if the item is not stacked', type: 'boolean'),
+        new OA\Property(property: 'x', description: 'The x coordinate if the item is in space', type: 'number', format: 'double'),
+        new OA\Property(property: 'y', description: 'The y coordinate if the item is in space', type: 'number', format: 'double'),
+        new OA\Property(property: 'z', description: 'The z coordinate if the item is in space', type: 'number', format: 'double'),
+        new OA\Property(property: 'map_id', description: 'The map identifier into which items is located', type: 'integer'),
+        new OA\Property(property: 'map_name', description: 'The map name of the system where the item resides', type: 'string'),
+        new OA\Property(property: 'name', description: 'The name of the asset (ie: a ship name)', type: 'string'),
+        new OA\Property(property: 'type', ref: '#/components/schemas/InvType'),
+    ],
+    type: 'object'
+)]
+class CharacterAsset extends ExtensibleModel implements HasTypeID
 {
+    use HasFactory;
+
     /**
      * @var array
      */
@@ -153,6 +85,14 @@ class CharacterAsset extends Model
      * @var
      */
     protected $primaryKey = 'item_id';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CharacterAssetFactory::new();
+    }
 
     /**
      * Provide a rate of the used space based on item capacity and stored item volume.
@@ -262,5 +202,13 @@ class CharacterAsset extends Model
             ->withDefault([
                 'name' => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

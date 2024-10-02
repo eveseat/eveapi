@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,9 +76,7 @@ class Status extends EsiBase
     public function handle()
     {
 
-        $status = $this->retrieve();
-
-        if ($status->isCachedLoad()) return;
+        $response = $this->retrieve();
 
         $latest_status = ServerStatus::latest()->first();
 
@@ -87,12 +85,13 @@ class Status extends EsiBase
         if (! $latest_status || $latest_status->created_at->addSeconds(30)
                 ->lt(carbon())) {
 
+            $status = $response->getBody();
+
             ServerStatus::create([
-                'start_time'     => carbon($status->start_time),
-                'players'        => $status->players,
+                'start_time' => carbon($status->start_time),
+                'players' => $status->players,
                 'server_version' => $status->server_version,
-                'vip'            => property_exists($status, 'vip') ?
-                    $status->vip : false,
+                'vip' => $status->vip ?? false,
             ]);
         }
     }

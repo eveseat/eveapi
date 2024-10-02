@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Clones;
 
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Models\Clones\CharacterClone;
 use Seat\Eveapi\Models\Clones\CharacterJumpClone;
 
@@ -68,46 +69,53 @@ class Clones extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $clone = $this->retrieve([
+        $structure_batch = new StructureBatch();
+
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($clone->isCachedLoad() && CharacterClone::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $clone_informations = $response->getBody();
 
         // Populate current clone information
         CharacterClone::firstOrNew([
             'character_id' => $this->getCharacterId(),
         ])->fill([
-            'last_clone_jump_date'     => isset($clone->last_clone_jump_date) ?
-                carbon($clone->last_clone_jump_date) : null,
-            'home_location_id'         => isset($clone->home_location) ?
-                $clone->home_location->location_id : null,
-            'home_location_type'       => isset($clone->home_location) ?
-                $clone->home_location->location_type : null,
-            'last_station_change_date' => isset($clone->last_station_change_date) ?
-                carbon($clone->last_station_change_date) : null,
+            'last_clone_jump_date' => isset($clone_informations->last_clone_jump_date) ?
+                carbon($clone_informations->last_clone_jump_date) : null,
+            'home_location_id' => isset($clone_informations->home_location) ?
+                $clone_informations->home_location->location_id : null,
+            'home_location_type' => isset($clone_informations->home_location) ?
+                $clone_informations->home_location->location_type : null,
+            'last_station_change_date' => isset($clone_informations->last_station_change_date) ?
+                carbon($clone_informations->last_station_change_date) : null,
         ])->save();
 
+        $structure_batch->addStructure($clone_informations->home_location->location_id);
+
         // Populate jump clone information
-        collect($clone->jump_clones)->each(function ($jump_clone) {
+        collect($clone_informations->jump_clones)->each(function ($jump_clone) use ($structure_batch) {
+            $structure_batch->addStructure($jump_clone->location_id);
 
             CharacterJumpClone::firstOrNew([
-                'character_id'  => $this->getCharacterId(),
+                'character_id' => $this->getCharacterId(),
                 'jump_clone_id' => $jump_clone->jump_clone_id,
             ])->fill([
-                'name'          => isset($jump_clone->name) ? $jump_clone->name : null,
-                'location_id'   => $jump_clone->location_id,
+                'name' => $jump_clone->name ?? null,
+                'location_id' => $jump_clone->location_id,
                 'location_type' => $jump_clone->location_type,
-                'implants'      => $jump_clone->implants,
+                'implants' => $jump_clone->implants,
             ])->save();
         });
 
         // Remove invalid jump clones
         CharacterJumpClone::where('character_id', $this->getCharacterId())
-            ->whereNotIn('jump_clone_id', collect($clone->jump_clones)
+            ->whereNotIn('jump_clone_id', collect($clone_informations->jump_clones)
                 ->pluck('jump_clone_id')->flatten()->all())
             ->delete();
+
+        $structure_batch->submitJobs($this->getToken());
     }
 }

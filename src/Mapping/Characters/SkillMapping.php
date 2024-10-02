@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@ class SkillMapping extends DataMapping
      * @var array
      */
     protected static $mapping = [
-        'skill_id'             => 'skill_id',
+        'skill_id' => 'skill_id',
         'skillpoints_in_skill' => 'skillpoints_in_skill',
-        'trained_skill_level'  => 'trained_skill_level',
-        'active_skill_level'   => 'active_skill_level',
+        'trained_skill_level' => 'trained_skill_level',
+        'active_skill_level' => 'active_skill_level',
     ];
 }

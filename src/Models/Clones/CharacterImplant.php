@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,16 @@
 
 namespace Seat\Eveapi\Models\Clones;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterImplant.
  *
  * @package Seat\Eveapi\Models\Clones
  */
-class CharacterImplant extends Model
+class CharacterImplant extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool
@@ -44,5 +45,13 @@ class CharacterImplant extends Model
     {
 
         return $this->belongsTo(InvType::class, 'type_id', 'typeID');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

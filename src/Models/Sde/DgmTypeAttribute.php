@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,19 +22,24 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class DgmTypeAttribute.
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class DgmTypeAttribute extends Model
+class DgmTypeAttribute extends ExtensibleModel
 {
     use IsReadOnly;
     use HasCompositePrimaryKey;
+
+    /**
+     * The attribute ID which contains skill rank.
+     */
+    const SKILL_RANK_ID = 275;
 
     /**
      * @var bool
@@ -50,4 +55,9 @@ class DgmTypeAttribute extends Model
      * @var string
      */
     protected $primaryKey = ['typeID', 'attributeID'];
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }

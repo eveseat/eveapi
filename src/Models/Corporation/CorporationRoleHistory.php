@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,16 +22,16 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationRoleHistory.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationRoleHistory extends Model
+class CorporationRoleHistory extends ExtensibleModel
 {
 
     use HasCompositePrimaryKey;
@@ -53,8 +53,8 @@ class CorporationRoleHistory extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'issuer_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 
@@ -65,8 +65,8 @@ class CorporationRoleHistory extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 }

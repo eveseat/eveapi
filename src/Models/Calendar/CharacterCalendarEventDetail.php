@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Calendar;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterCalendarEventDetail.
  *
  * @package Seat\Eveapi\Models\Calendar
  */
-class CharacterCalendarEventDetail extends Model
+class CharacterCalendarEventDetail extends ExtensibleModel
 {
     /**
      * @var bool
@@ -54,8 +54,8 @@ class CharacterCalendarEventDetail extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'owner_id')
             ->withDefault([
-                'category'  => 'character',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'character',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,18 +25,20 @@ namespace Seat\Eveapi\Jobs;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
-use Seat\Eseye\Containers\EsiAuthentication;
-use Seat\Eseye\Containers\EsiResponse;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Exception\PermanentInvalidTokenException;
 use Seat\Eveapi\Exception\TemporaryEsiOutageException;
 use Seat\Eveapi\Exception\UnavailableEveServersException;
+use Seat\Eveapi\InteractsWithToken;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiRateLimit;
 use Seat\Eveapi\Jobs\Middleware\CheckEsiRouteStatus;
 use Seat\Eveapi\Jobs\Middleware\CheckServerStatus;
 use Seat\Eveapi\Models\RefreshToken;
+use Seat\Services\Contracts\EsiClient;
+use Seat\Services\Contracts\EsiResponse;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
+use Throwable;
 
 /**
  * Class EsiBase.
@@ -45,6 +47,18 @@ use Seat\Services\Jobs\Analytics;
  */
 abstract class EsiBase extends AbstractJob
 {
+    use InteractsWithToken;
+
+    /**
+     * ANTI_RACE_DELAY prevents rapid job recycling with low queue depths.
+     */
+    const ANTI_RACE_DELAY = 10;
+
+    /**
+     * ACCESS_TOKEN_EXPIRY_DELAY forces lock release after 25m (as access token expiry is 20m).
+     */
+    const ACCESS_TOKEN_EXPIRY_DELAY = 25 * 60;
+
     const RATE_LIMIT = 80;
 
     const RATE_LIMIT_DURATION = 300;
@@ -60,14 +74,16 @@ abstract class EsiBase extends AbstractJob
     ];
 
     /**
-     * @var string By default, queue all ESI jobs on public queue.
+     * The maximum number of unhandled exceptions to allow before failing.
+     *
+     * @var int
      */
-    public $queue = 'public';
+    public $maxExceptions = 3;
 
     /**
-     * @var int By default, retry all ESI jobs 3 times.
+     * @var string By default, queue all ESI jobs on public queue.
      */
-    public $tries = 3;
+    public $queue = 'public'; // By default, queue all ESI jobs on public queue.
 
     /**
      * The HTTP method used for the API Call.
@@ -134,9 +150,18 @@ abstract class EsiBase extends AbstractJob
     protected $token;
 
     /**
-     * @var \Seat\Eseye\Eseye|null
+     * @var \Seat\Services\Contracts\EsiClient
      */
-    protected $client;
+    protected EsiClient $esi;
+
+    /**
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function __construct()
+    {
+        // Attach an ESI Client.
+        $this->esi = app()->make(EsiClient::class);
+    }
 
     /**
      * @return array
@@ -168,7 +193,10 @@ abstract class EsiBase extends AbstractJob
      */
     public function getRateLimitKeyTtl(): int
     {
-        return Redis::ttl(Cache::getPrefix() . self::RATE_LIMIT_KEY);
+        // Redis 'default' database can be different from 'cache'
+        $redis = Redis::connection('cache');
+
+        return $redis->ttl(Cache::getPrefix() . self::RATE_LIMIT_KEY);
     }
 
     /**
@@ -185,6 +213,11 @@ abstract class EsiBase extends AbstractJob
     public function getToken(): ?RefreshToken
     {
         return $this->token;
+    }
+
+    protected function getClient(): EsiClient
+    {
+        return $this->esi;
     }
 
     /**
@@ -206,17 +239,17 @@ abstract class EsiBase extends AbstractJob
     /**
      * @return \Illuminate\Support\Carbon
      */
-    public function retryAfter()
+    public function backoff()
     {
         return now()->addSeconds($this->attempts() * 300);
     }
 
     /**
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      *
      * @throws \Exception
      */
-    public function failed(Exception $exception)
+    public function failed(Throwable $exception)
     {
         parent::failed($exception);
 
@@ -254,7 +287,7 @@ abstract class EsiBase extends AbstractJob
 
     /**
      * @param  array  $path_values
-     * @return \Seat\Eseye\Containers\EsiResponse
+     * @return \Seat\Services\Contracts\EsiResponse
      *
      * @throws \Seat\Eseye\Exceptions\RequestFailedException
      * @throws \Seat\Eveapi\Exception\PermanentInvalidTokenException
@@ -264,25 +297,24 @@ abstract class EsiBase extends AbstractJob
      */
     public function retrieve(array $path_values = []): EsiResponse
     {
-
         $this->validateCall();
 
-        $client = $this->eseye();
-        $client->setVersion($this->version);
-        $client->setBody($this->request_body);
-        $client->setQueryString($this->query_string);
+        $this->esi->setVersion($this->version);
+        $this->esi->setBody($this->request_body);
+        $this->esi->setQueryString($this->query_string);
 
         // Configure the page to get
         if (! is_null($this->page))
-            $client->page($this->page);
+            $this->esi->page($this->page);
+
+        $this->configureTokenForEsiClient();
 
         // Generally, we want to bubble up exceptions all the way to the
         // callee. However, in the case of this worker class, we need to
         // try and be vigilant with tokens that may have expired. So for
         // those cases we wrap in a try/catch.
         try {
-
-            $result = $client->invoke($this->method, $this->endpoint, $path_values);
+            $result = $this->esi->invoke($this->method, $this->endpoint, $path_values);
 
             // Update the refresh token we have stored in the database.
             $this->updateRefreshToken();
@@ -293,7 +325,7 @@ abstract class EsiBase extends AbstractJob
 
         // If this is a cached load, don't bother with any further
         // processing.
-        if ($result->isCachedLoad())
+        if ($result->isFromCache())
             return $result;
 
         // Perform error checking
@@ -325,46 +357,19 @@ abstract class EsiBase extends AbstractJob
     }
 
     /**
-     * Get an instance of Eseye to use for this job.
-     *
-     * @return \Seat\Eseye\Eseye
-     *
-     * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
-     */
-    public function eseye()
-    {
-        $this->client = app('esi-client');
-
-        if (is_null($this->token))
-            return $this->client = $this->client->get();
-
-        // retrieve up-to-date token
-        $this->token = $this->token->fresh();
-
-        return $this->client = $this->client->get(new EsiAuthentication([
-            'refresh_token' => $this->token->refresh_token,
-            'access_token'  => $this->token->token,
-            'token_expires' => $this->token->expires_on,
-            'scopes'        => $this->token->scopes,
-        ]));
-    }
-
-    /**
      * Logs warnings to the Eseye logger.
      *
      * These warnings will also cause analytics jobs to be
      * sent to allow for monitoring of endpoint changes.
      *
-     * @param  \Seat\Eseye\Containers\EsiResponse  $response
-     *
-     * @throws \Throwable
+     * @param  \Seat\Services\Contracts\EsiResponse  $response
      */
     public function warning(EsiResponse $response): void
     {
 
-        if (! is_null($response->pages) && $this->page === null) {
+        if (! is_null($response->getPagesCount()) && $this->page === null) {
 
-            $this->eseye()->getLogger()->warning('Response contained pages but none was expected');
+            $this->esi->getLogger()->warning('Response contained pages but none was expected');
 
             dispatch(new Analytics((new AnalyticsContainer)
                 ->set('type', 'endpoint_warning')
@@ -373,9 +378,9 @@ abstract class EsiBase extends AbstractJob
                 ->set('ev', $this->endpoint)))->onQueue('default');
         }
 
-        if (! is_null($this->page) && $response->pages === null) {
+        if (! is_null($this->page) && $response->getPagesCount() === null) {
 
-            $this->eseye()->getLogger()->warning('Expected a paged response but had none');
+            $this->esi->getLogger()->warning('Expected a paged response but had none');
 
             dispatch(new Analytics((new AnalyticsContainer)
                 ->set('type', 'endpoint_warning')
@@ -384,46 +389,17 @@ abstract class EsiBase extends AbstractJob
                 ->set('ev', $this->endpoint)))->onQueue('default');
         }
 
-        if (array_key_exists('Warning', $response->headers)) {
+        if ($response->hasHeader('warning')) {
 
-            $this->eseye()->getLogger()->warning('A response contained a warning: ' .
-                $response->headers['Warning']);
+            $this->esi->getLogger()->warning('A response contained a warning: ' .
+                $response->getHeaderLine('warning'));
 
             dispatch(new Analytics((new AnalyticsContainer)
                 ->set('type', 'generic_warning')
                 ->set('ec', 'missing_pages')
                 ->set('el', $this->endpoint)
-                ->set('ev', $response->headers['Warning'])))->onQueue('default');
+                ->set('ev', $response->getHeader('Warning'))))->onQueue('default');
         }
-    }
-
-    /**
-     * Update the access_token last used in the job,
-     * along with the expiry time.
-     */
-    public function updateRefreshToken(): void
-    {
-
-        tap($this->token, function ($token) {
-
-            // If no API call was made, the client would never have
-            // been instantiated and auth information never updated.
-            if (is_null($this->client) || is_null($token))
-                return;
-
-            if (! $this->client->isAuthenticated())
-                return;
-
-            $last_auth = $this->client->getAuthentication();
-
-            if (! empty($last_auth->refresh_token))
-                $token->refresh_token = $last_auth->refresh_token;
-
-            $token->token = $last_auth->access_token ?? '-';
-            $token->expires_on = $last_auth->token_expires;
-
-            $token->save();
-        });
     }
 
     /**
@@ -451,7 +427,7 @@ abstract class EsiBase extends AbstractJob
      * @throws \Seat\Eseye\Exceptions\RequestFailedException
      * @throws \Seat\Eveapi\Exception\PermanentInvalidTokenException
      * @throws \Seat\Eveapi\Exception\TemporaryEsiOutageException
-     * @throws \Seat\Eveapi\Exception\UnavailableEveServersException
+     * @throws \Seat\Eveapi\Exception\UnavailableEveServersException|\Psr\SimpleCache\InvalidArgumentException
      */
     private function handleEsiFailedCall(RequestFailedException $exception)
     {

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,13 +71,13 @@ class MembersLimit extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $limit = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($limit->isCachedLoad() &&
-            CorporationMemberLimits::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $limit = $response->getBody();
 
         if (! property_exists($limit, 'scalar'))
             return;

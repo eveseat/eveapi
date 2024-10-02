@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,13 +45,13 @@ class CreateKillmailsTable extends Migration
         // collect mails from deprecated tables
         $killmails = DB::table('character_killmails')
             ->select('killmail_id', 'killmail_hash')
-            ->selectRaw('"2020-01-06 00:00:00" as created_at')
-            ->selectRaw('"2020-01-06 00:00:00" as updated_at')
+            ->selectRaw('CURRENT_TIMESTAMP as created_at')
+            ->selectRaw('CURRENT_TIMESTAMP as updated_at')
             ->union(
                 DB::table('corporation_killmails')
                     ->select('killmail_id', 'killmail_hash')
-                    ->selectRaw('"2020-01-06 00:00:00" as created_at')
-                    ->selectRaw('"2020-01-06 00:00:00" as updated_at')
+                    ->selectRaw('CURRENT_TIMESTAMP as created_at')
+                    ->selectRaw('CURRENT_TIMESTAMP as updated_at')
             )
             ->distinct();
 

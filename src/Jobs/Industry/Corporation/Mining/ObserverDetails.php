@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,36 +77,36 @@ class ObserverDetails extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         CorporationIndustryMiningObserver::where('corporation_id', $this->getCorporationId())
             ->get()->each(function ($observer) {
 
                 while (true) {
 
-                    $detail = $this->retrieve([
+                    $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
-                        'observer_id'    => $observer->observer_id,
+                        'observer_id' => $observer->observer_id,
                     ]);
 
-                    if ($detail->isCachedLoad() &&
-                        CorporationIndustryMiningObserverData::where('corporation_id', $this->getCorporationId())->count() > 0)
-                        return;
+                    $observers = $response->getBody();
 
-                    collect($detail)->each(function ($data) use ($observer) {
+                    collect($observers)->each(function ($data) use ($observer) {
 
                         CorporationIndustryMiningObserverData::firstOrNew([
-                            'corporation_id'          => $this->getCorporationId(),
-                            'observer_id'             => $observer->observer_id,
+                            'corporation_id' => $this->getCorporationId(),
+                            'observer_id' => $observer->observer_id,
                             'recorded_corporation_id' => $data->recorded_corporation_id,
-                            'character_id'            => $data->character_id,
-                            'type_id'                 => $data->type_id,
-                            'last_updated'            => $data->last_updated,
+                            'character_id' => $data->character_id,
+                            'type_id' => $data->type_id,
+                            'last_updated' => $data->last_updated,
                         ])->fill([
                             'quantity' => $data->quantity,
                         ])->save();
 
                     });
 
-                    if (! $this->nextPage($detail->pages))
+                    if (! $this->nextPage($response->getPagesCount()))
                         break;
 
                 }

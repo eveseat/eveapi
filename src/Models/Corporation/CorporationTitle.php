@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,21 +22,34 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Pivot\Character\CharacterTitle;
+use Seat\Services\Models\ExtensibleModel;
+use Seat\Tests\Eveapi\Database\Factories\CorporationTitleFactory;
 
 /**
  * Class CorporationTitle.
  *
  * @package Seat\Eveapi\Models\Corporation
  */
-class CorporationTitle extends Model
+class CorporationTitle extends ExtensibleModel
 {
+    use HasFactory;
+
     /**
      * @var bool
      */
     protected static $unguarded = true;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CorporationTitleFactory::new();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -52,5 +65,13 @@ class CorporationTitle extends Model
     public function corporation()
     {
         return $this->belongsTo(CorporationInfo::class, 'corporation_id', 'corporation_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function roles()
+    {
+        return $this->hasMany(CorporationTitleRole::class, 'title_id', 'id');
     }
 }

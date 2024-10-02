@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,108 +22,32 @@
 
 namespace Seat\Eveapi\Models\Wallet;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class CharacterWalletJournal.
- *
- * @package Seat\Eveapi\Models\Wallet
- *
- * @OA\Schema(
- *     description="Character Wallet Journal",
- *     title="CharacterWalletJournal",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="id",
- *     description="Unique journal reference ID"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="date",
- *     description="Date and time of transaction"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="ref_type",
- *     description="The transaction type for the given transaction. Different transaction types will populate different attributes. Note: If you have an existing XML API application that is using ref_types, you will need to know which string ESI ref_type maps to which integer. You can look at the following file to see string->int mappings: https://github.com/ccpgames/eve-glue/blob/master/eve_glue/wallet_journal_ref.py"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="amount",
- *     description="The amount of ISK given or taken from the wallet as a result of the given transaction. Positive when ISK is deposited into the wallet and negative when ISK is withdrawn"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="balance",
- *     description="Wallet balance after transaction occurred"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="reason",
- *     description="The user stated reason for the transaction. Only applies to some ref_types"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="tax_receiver_id",
- *     description="The corporation ID receiving any tax paid. Only applies to tax related transactions"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="tax",
- *     description="Tax amount received. Only applies to tax related transactions"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="context_id",
- *     description="An ID that gives extra context to the particular transaction. Because of legacy reasons the context is completely different per ref_type and means different things. It is also possible to not have a context_id"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     enum={"structure_id","station_id","market_transaction_id","character_id","corporation_id","alliance_id","eve_system","industry_job_id","contract_id","planet_id","system_id","type_id"},
- *     property="context_id_type",
- *     description="The type of the given context_id if present"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="description",
- *     description="The reason for the transaction, mirrors what is seen in the client"
- * )
- *
- * @OA\Property(
- *     property="first_party",
- *     description="The id of the first party involved in the transaction. This attribute has no consistency and is different or non existant for particular ref_types. The description attribute will help make sense of what this attribute means. For more info about the given ID it can be dropped into the /universe/names/ ESI route to determine its type and name",
- *     ref="#/components/schemas/UniverseName"
- * )
- *
- * @OA\Property(
- *     property="second_party",
- *     description="The id of the second party involved in the transaction. This attribute has no consistency and is different or non existant for particular ref_types. The description attribute will help make sense of what this attribute means. For more info about the given ID it can be dropped into the /universe/names/ ESI route to determine its type and name",
- *     ref="#/components/schemas/UniverseName"
- * )
- */
-class CharacterWalletJournal extends Model
+#[OA\Schema(
+    title: 'CharacterWalletJournal',
+    description: 'Character Wallet Journal',
+    properties: [
+        new OA\Property(property: 'id', description: 'Unique journal reference ID', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'date', description: 'The transaction date/time', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'ref_type', description: 'The type for the given transaction. Different transaction types will populate different attributes. Note: If you have an existing XML API application that is using ref_types, you will need to know which string ESI ref_type maps to which integer. You can look at the following file to see string->int mappings: https://github.com/ccpgames/eve-glue/blob/master/eve_glue/wallet_journal_ref.py', type: 'string'),
+        new OA\Property(property: 'amount', description: 'The amount of ISK given or taken from the wallet as a result of the given transaction. Positive when ISK is deposited into the wallet and negative when ISK is withdrawn', type: 'number', format: 'float'),
+        new OA\Property(property: 'balance', description: 'Wallet balance after transaction occurred', type: 'number', format: 'double'),
+        new OA\Property(property: 'reason', description: 'The user stated reason for the transaction. Only applies to some ref_types', type: 'string'),
+        new OA\Property(property: 'tax_receiver_id', description: 'The corporation ID receiving any tax paid. Only applies to tax related transactions', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'tax', description: 'Tax amount received. Only applies to tax related transactions', type: 'number', format: 'double'),
+        new OA\Property(property: 'context_id', description: 'An ID that gives extra context to the particular transaction. Because of legacy reasons the context is completely different per ref_type and means different things. It is also possible to not have a context_id', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'context_id_type', description: 'The type of the given context_id if present', type: 'string', enum: ['structure_id', 'station_id', 'market_transaction_id', 'character_id', 'corporation_id', 'alliance_id', 'eve_system', 'industry_job_id', 'contract_id', 'planet_id', 'system_id', 'type_id']),
+        new OA\Property(property: 'description', description: 'The reason for the transaction, mirrors what is seen in the client', type: 'string'),
+        new OA\Property(property: 'first_party', ref: '#/components/schemas/UniverseName', description: 'The id of the first party involved in the transaction. This attribute has no consistency and is different or non existant for particular ref_types. The description attribute will help make sense of what this attribute means. For more info about the given ID it can be dropped into the /universe/names/ ESI route to determine its type and name'),
+        new OA\Property(property: 'second_party', ref: '#/components/schemas/UniverseName', description: 'The id of the second party involved in the transaction. This attribute has no consistency and is different or non existant for particular ref_types. The description attribute will help make sense of what this attribute means. For more info about the given ID it can be dropped into the /universe/names/ ESI route to determine its type and name'),
+    ],
+    type: 'object'
+)]
+class CharacterWalletJournal extends ExtensibleModel
 {
     /**
      * @var array
@@ -141,7 +65,7 @@ class CharacterWalletJournal extends Model
     public $incrementing = false;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setDateAttribute($value)
     {
@@ -156,8 +80,8 @@ class CharacterWalletJournal extends Model
         return $this->belongsTo(CharacterInfo::class, 'character_id', 'character_id')
             ->withDefault([
                 'corporation_id' => 0,
-                'alliance_id'    => 0,
-                'faction_id'     => 0,
+                'alliance_id' => 0,
+                'faction_id' => 0,
             ]);
     }
 
@@ -169,8 +93,8 @@ class CharacterWalletJournal extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'first_party_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 
@@ -182,8 +106,8 @@ class CharacterWalletJournal extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'second_party_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 }

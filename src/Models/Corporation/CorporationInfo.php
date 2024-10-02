@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,9 @@
 
 namespace Seat\Eveapi\Models\Corporation;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
@@ -39,103 +41,33 @@ use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Wallet\CorporationWalletBalance;
 use Seat\Eveapi\Models\Wallet\CorporationWalletJournal;
 use Seat\Eveapi\Models\Wallet\CorporationWalletTransaction;
+use Seat\Services\Models\ExtensibleModel;
+use Seat\Tests\Eveapi\Database\Factories\CorporationInfoFactory;
 
-/**
- * Class CorporationInfo.
- *
- * @package Seat\Eveapi\Models\Corporation
- *
- * @OA\Schema(
- *      description="Corporation Sheet",
- *      title="CorporationInfo",
- *      type="object"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="name",
- *     description="The name of the corporation"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="ticker",
- *     description="The corporation ticker name"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="member_count",
- *     description="The member amount of the corporation"
- * )
- *
- * @OA\Property(
- *     property="ceo",
- *     description="The character ID of the corporation CEO",
- *     ref="#/components/schemas/UniverseName"
- * )
- *
- * @OA\Property(
- *     property="alliance",
- *     description="The alliance of the corporation if any",
- *     ref="#/components/schemas/UniverseName"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="description",
- *     description="The corporation description"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="float",
- *     property="tax_rate",
- *     description="The corporation tax rate"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="date_founded",
- *     description="The corporation creation date"
- * )
- *
- * @OA\Property(
- *     property="creator",
- *     description="The corporation founder character",
- *     ref="#/components/schemas/UniverseName"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="uri",
- *     property="url",
- *     description="The corporation homepage link"
- * )
- *
- * @OA\Property(
- *     property="faction",
- *     description="The corporation faction if any",
- *     ref="#/components/schemas/UniverseName"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="home_station_id",
- *     description="The home station where the corporation has its HQ"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="shares",
- *     description="The shares attached to the corporation"
- * )
- */
-class CorporationInfo extends Model
+#[OA\Schema(
+    title: 'CorporationInfo',
+    description: 'Corporation Sheet',
+    properties: [
+        new OA\Property(property: 'name', description: 'The name of the corporation', type: 'string'),
+        new OA\Property(property: 'ticker', description: 'The corporation ticker', type: 'string'),
+        new OA\Property(property: 'member_count', description: 'The member amount of the corporation', type: 'integer'),
+        new OA\Property(property: 'ceo', ref: '#/components/schemas/UniverseName', description: 'The corporation CEO'),
+        new OA\Property(property: 'alliance', ref: '#/components/schemas/UniverseName', description: 'The alliance of the corporation, if any'),
+        new OA\Property(property: 'description', description: 'The corporation description', type: 'string'),
+        new OA\Property(property: 'tax_rate', description: 'The corporation tax rate', type: 'number', format: 'float'),
+        new OA\Property(property: 'date_founded', description: 'The date/time when this corporation has been created', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'creator', ref: '#/components/schemas/UniverseName', description: 'The corporation founder character'),
+        new OA\Property(property: 'url', description: 'The corporation homepage link', type: 'string', format: 'uri'),
+        new OA\Property(property: 'faction', ref: '#/components/schemas/UniverseName', description: 'The corporation faction, if any'),
+        new OA\Property(property: 'home_station_id', description: 'The station into which the corporation has its HQ', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'shares', description: 'The shares attached to the corporation', type: 'number', format: 'double'),
+    ],
+    type: 'object'
+)]
+class CorporationInfo extends ExtensibleModel
 {
+    use HasFactory;
+
     /**
      * @var bool
      */
@@ -152,7 +84,15 @@ class CorporationInfo extends Model
     protected $primaryKey = 'corporation_id';
 
     /**
-     * @param $value
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return CorporationInfoFactory::new();
+    }
+
+    /**
+     * @param  $value
      */
     public function setDateFoundedAttribute($value)
     {
@@ -196,7 +136,7 @@ class CorporationInfo extends Model
     {
         return $this->hasOne(Alliance::class, 'alliance_id', 'alliance_id')
             ->withDefault([
-                'name'        => '',
+                'name' => '',
             ]);
     }
 
@@ -286,8 +226,8 @@ class CorporationInfo extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'ceo_id')
             ->withDefault([
-                'category'  => 'character',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'character',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -299,7 +239,7 @@ class CorporationInfo extends Model
         return $this->hasOne(UniverseName::class, 'entity_id', 'creator_id')
             ->withDefault([
                 'category' => 'character',
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 

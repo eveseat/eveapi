@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,6 @@
 
 namespace Seat\Eveapi\Jobs;
 
-use Exception;
-
 /**
  * Class AbstractAllianceJob.
  *
@@ -31,6 +29,7 @@ use Exception;
  */
 abstract class AbstractAllianceJob extends EsiBase
 {
+
     /**
      * @var int The alliance ID to which the job is related.
      */
@@ -44,6 +43,8 @@ abstract class AbstractAllianceJob extends EsiBase
     public function __construct(int $alliance_id)
     {
         $this->alliance_id = $alliance_id;
+
+        parent::__construct();
     }
 
     /**
@@ -66,13 +67,22 @@ abstract class AbstractAllianceJob extends EsiBase
         if (! in_array('alliance', $tags))
             $tags[] = 'alliance';
 
-        try {
-            if (! in_array($this->getAllianceId(), $tags))
-                $tags[] = $this->getAllianceId();
-        } catch (Exception $e) {
-            logger()->error($e->getMessage(), $e->getTrace());
-        }
+        if (! in_array($this->getAllianceId(), $tags))
+            $tags[] = $this->getAllianceId();
 
         return $tags;
+    }
+
+    public function handle()
+    {
+        if ($this->batchId && $this->batch()->cancelled())
+            return;
+
+        logger()->debug(
+            sprintf('[Jobs][%s] Alliance job is processing...', $this->job->getJobId()),
+            [
+                'fqcn' => static::class,
+                'alliance_id' => $this->alliance_id,
+            ]);
     }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Sovereignty;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class SovereigntyStructure.
  *
  * @package Seat\Eveapi\Models\Sovereignty
  */
-class SovereigntyStructure extends Model
+class SovereigntyStructure extends ExtensibleModel
 {
     /**
      * @var bool
@@ -47,7 +47,7 @@ class SovereigntyStructure extends Model
     protected $primaryKey = 'structure_id';
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setVulnerableStartTimeAttribute($value)
     {
@@ -55,7 +55,7 @@ class SovereigntyStructure extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setVulnerableEndTimeAttribute($value)
     {

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,44 +22,22 @@
 
 namespace Seat\Eveapi\Models\Killmails;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class Killmail.
- *
- * @package Seat\Eveapi\Models\Killmails
- *
- * @OA\Schema(
- *     description="Killmail informations",
- *     title="Killmail",
- *     type="object",
- *     @OA\Property(
- *       property="killmail_id",
- *       type="integer",
- *       format="int64",
- *       description="The unique Killmail identifier"
- *     ),
- *     @OA\Property(
- *       property="killmail_hash",
- *       type="string",
- *       description="The killmail hash"
- *     ),
- *     @OA\Property(
- *       property="detail",
- *       ref="#/components/schemas/KillmailDetail"
- *     ),
- *     @OA\Property(
- *       property="victim",
- *       ref="#/components/schemas/KillmailVictim"
- *     ),
- *     @OA\Property(
- *       property="attackers",
- *       type="array",
- *       @OA\Items(ref="#/components/schemas/KillmailAttacker")
- *     )
- * )
- */
-class Killmail extends Model
+#[OA\Schema(
+    title: 'Killmail',
+    description: 'Killmail information',
+    properties: [
+        new OA\Property(property: 'killmail_id', description: 'The unique Killmail identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'killmail_hash', description: 'The killmail hash', type: 'string'),
+        new OA\Property(property: 'detail', ref: '#/components/schemas/KillmailDetail'),
+        new OA\Property(property: 'victim', ref: '#/components/schemas/KillmailVictim'),
+        new OA\Property(property: 'attackers', type: 'array', items: new OA\Items(ref: '#/components/schemas/KillmailAttacker')),
+    ],
+    type: 'object'
+)]
+class Killmail extends ExtensibleModel
 {
     /**
      * @var bool
@@ -87,7 +65,7 @@ class Killmail extends Model
     public function detail()
     {
         return $this->hasOne(KillmailDetail::class, 'killmail_id', 'killmail_id')->withDefault([
-            'killmail_time'   => '1970-01-01 00:00:01',
+            'killmail_time' => '1970-01-01 00:00:01',
             'solar_system_id' => 30000380,
         ]);
     }
@@ -98,9 +76,9 @@ class Killmail extends Model
     public function victim()
     {
         return $this->hasOne(KillmailVictim::class, 'killmail_id', 'killmail_id')->withDefault([
-            'character_id'   => 0,
+            'character_id' => 0,
             'corporation_id' => 0,
-            'ship_type_id'   => 0,
+            'ship_type_id' => 0,
         ]);
     }
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,13 @@
 
 namespace Seat\Eveapi\Bus;
 
+use Illuminate\Bus\Batch;
 use Seat\Eveapi\Jobs\Alliances\Info;
 use Seat\Eveapi\Jobs\Alliances\Members;
 use Seat\Eveapi\Jobs\Contacts\Alliance\Contacts;
 use Seat\Eveapi\Jobs\Contacts\Alliance\Labels;
 use Seat\Eveapi\Models\RefreshToken;
+use Throwable;
 
 /**
  * Class Alliance.
@@ -38,12 +40,7 @@ class Alliance extends Bus
     /**
      * @var int
      */
-    private $alliance_id;
-
-    /**
-     * @var \Seat\Eveapi\Models\RefreshToken
-     */
-    private $token;
+    private int $alliance_id;
 
     /**
      * Alliance constructor.
@@ -53,7 +50,7 @@ class Alliance extends Bus
      */
     public function __construct(int $alliance_id, ?RefreshToken $token = null)
     {
-        parent::__construct();
+        parent::__construct($token);
 
         $this->token = $token;
         $this->alliance_id = $alliance_id;
@@ -64,19 +61,48 @@ class Alliance extends Bus
      *
      * @return void
      */
-    public function fire()
+    public function fire(): void
     {
         $this->addPublicJobs();
 
         if (! is_null($this->token))
             $this->addAuthenticatedJobs();
 
-        Info::withChain($this->jobs->toArray())
-            ->dispatch($this->alliance_id)
-            ->delay(now()->addSeconds(rand(120, 600)));
-        // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
-        // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
-        // https://github.com/eveseat/seat/issues/731
+        $alliance = \Seat\Eveapi\Models\Alliances\Alliance::firstOrNew(
+            ['alliance_id' => $this->alliance_id],
+            ['name' => "Unknown Alliance : {$this->alliance_id}"]
+        );
+
+        \Illuminate\Support\Facades\Bus::batch([$this->jobs->toArray()])
+            ->then(function (Batch $batch) {
+                logger()->debug(
+                    sprintf('[Batches][%s] Alliance batch successfully completed.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                    ]);
+            })->catch(function (Batch $batch, Throwable $throwable) {
+                logger()->error(
+                    sprintf('[Batches][%s] An error occurred during Alliance batch processing.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                        'error' => $throwable->getMessage(),
+                        'trace' => $throwable->getTrace(),
+                    ]);
+            })->finally(function (Batch $batch) {
+                logger()->info(
+                    sprintf('[Batches][%s] Alliance batch executed.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                        'stats' => [
+                            'success' => $batch->totalJobs - $batch->failedJobs,
+                            'failed' => $batch->failedJobs,
+                            'total' => $batch->totalJobs,
+                        ],
+                    ]);
+            })->onQueue('public')->name($alliance->name)->allowFailures()->dispatch();
     }
 
     /**
@@ -86,7 +112,8 @@ class Alliance extends Bus
      */
     protected function addPublicJobs()
     {
-        $this->jobs->add(new Members($this->alliance_id));
+        $this->addPublicJob(new Info($this->alliance_id));
+        $this->addPublicJob(new Members($this->alliance_id));
     }
 
     /**
@@ -96,7 +123,7 @@ class Alliance extends Bus
      */
     protected function addAuthenticatedJobs()
     {
-        $this->jobs->add(new Labels($this->alliance_id, $this->token));
-        $this->jobs->add(new Contacts($this->alliance_id, $this->token));
+        $this->addAuthenticatedJob(new Labels($this->alliance_id, $this->token));
+        $this->addAuthenticatedJob(new Contacts($this->alliance_id, $this->token));
     }
 }

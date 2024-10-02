@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Killmails;
 
+use Illuminate\Bus\Batchable;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Mapping\Killmails\AttackerMapping;
 use Seat\Eveapi\Mapping\Killmails\VictimMapping;
@@ -36,6 +37,8 @@ use Seat\Eveapi\Models\Killmails\KillmailVictim;
  */
 class Detail extends EsiBase
 {
+    use Batchable;
+
     /**
      * @var int
      */
@@ -74,6 +77,8 @@ class Detail extends EsiBase
      */
     public function __construct(int $killmail_id, string $killmail_hash)
     {
+        parent::__construct();
+
         $this->killmail_id = $killmail_id;
         $this->killmail_hash = $killmail_hash;
 
@@ -89,24 +94,24 @@ class Detail extends EsiBase
      */
     public function handle()
     {
-        $detail = $this->retrieve([
-            'killmail_id'   => $this->killmail_id,
+        $response = $this->retrieve([
+            'killmail_id' => $this->killmail_id,
             'killmail_hash' => $this->killmail_hash,
         ]);
 
-        if ($detail->isCachedLoad() && KillmailDetail::find($this->killmail_id)) return;
+        $detail = $response->getBody();
 
         $killmail = KillmailDetail::firstOrCreate([
-            'killmail_id'     => $this->killmail_id,
+            'killmail_id' => $this->killmail_id,
         ], [
-            'killmail_time'   => carbon($detail->killmail_time),
+            'killmail_time' => carbon($detail->killmail_time),
             'solar_system_id' => $detail->solar_system_id,
-            'moon_id'         => property_exists($detail, 'moon_id') ? $detail->moon_id : null,
-            'war_id'          => property_exists($detail, 'war_id') ? $detail->war_id : null,
+            'moon_id' => property_exists($detail, 'moon_id') ? $detail->moon_id : null,
+            'war_id' => property_exists($detail, 'war_id') ? $detail->war_id : null,
         ]);
 
         $victim = KillmailVictim::firstOrNew([
-            'killmail_id'    => $this->killmail_id,
+            'killmail_id' => $this->killmail_id,
         ]);
 
         VictimMapping::make($victim, $detail->victim, [
@@ -118,14 +123,14 @@ class Detail extends EsiBase
         collect($detail->attackers)->each(function ($attacker) {
 
             $model = KillmailAttacker::firstOrNew([
-                'killmail_id'     => $this->killmail_id,
-                'character_id'    => property_exists($attacker, 'character_id') ?
+                'killmail_id' => $this->killmail_id,
+                'character_id' => property_exists($attacker, 'character_id') ?
                     $attacker->character_id : null,
-                'corporation_id'  => property_exists($attacker, 'corporation_id') ?
+                'corporation_id' => property_exists($attacker, 'corporation_id') ?
                     $attacker->corporation_id : null,
-                'alliance_id'     => property_exists($attacker, 'alliance_id') ?
+                'alliance_id' => property_exists($attacker, 'alliance_id') ?
                     $attacker->alliance_id : null,
-                'faction_id'      => property_exists($attacker, 'faction_id') ?
+                'faction_id' => property_exists($attacker, 'faction_id') ?
                     $attacker->faction_id : null,
             ]);
 
@@ -141,7 +146,7 @@ class Detail extends EsiBase
             collect($detail->victim->items)->each(function ($item) use ($victim) {
 
                 $pivot_attributes = [
-                    'flag'      => $item->flag,
+                    'flag' => $item->flag,
                     'singleton' => $item->singleton,
                 ];
 

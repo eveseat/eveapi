@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,31 +74,31 @@ class Medals extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $medals = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($medals->isCachedLoad() &&
-                CorporationMedal::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $medals = $response->getBody();
 
             collect($medals)->each(function ($medal) {
 
                 CorporationMedal::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'medal_id'       => $medal->medal_id,
+                    'medal_id' => $medal->medal_id,
                 ])->fill([
-                    'title'       => $medal->title,
+                    'title' => $medal->title,
                     'description' => $medal->description,
-                    'creator_id'  => $medal->creator_id,
-                    'created_at'  => carbon($medal->created_at),
+                    'creator_id' => $medal->creator_id,
+                    'created_at' => carbon($medal->created_at),
                 ])->save();
 
             });
 
-            if (! $this->nextPage($medals->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

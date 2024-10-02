@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,85 +23,29 @@
 namespace Seat\Eveapi\Models\Killmails;
 
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class KillmailAttacker.
- *
- * @package Seat\Eveapi\Models\Killmails
- *
- * @OA\Schema(
- *     description="Killmail Attacker",
- *     title="KillmailAttacker",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     property="attacker_hash",
- *     type="string",
- *     description="A hash composite of character_id, corporation_id, alliance_id and faction_id fields"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="character_id",
- *     description="The character identifier"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="corporation_id",
- *     description="The corporation identifier to which the attacker depends"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="alliance_id",
- *     description="The alliance identifier to which the attacker depends"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="faction_id",
- *     description="The faction identifier to which the attacker depends (if factional warfare)"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="float",
- *     property="security_status",
- *     description="The attacker security status"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="final_blow",
- *     description="True if the attacker did the final blow"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="damage_done",
- *     description="The amount of damage the attacker applied"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="ship_type_id",
- *     description="The ship inventory type identifier into which attacker was"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="weapon_type_id",
- *     description="The weapon inventory type identifier used by the attacker"
- * )
- */
-class KillmailAttacker extends Model
+#[OA\Schema(
+    title: 'KillmailAttacker',
+    description: 'Killmail Attacker',
+    properties: [
+        new OA\Property(property: 'attacker_hash', description: 'A hash composite of character_id, corporation_id, alliance_id and faction_id fields', type: 'string'),
+        new OA\Property(property: 'character_id', description: 'The character identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'corporation_id', description: 'The corporation identifier to which the attacker depends', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'alliance_id', description: 'The alliance identifier to which the attacker depends', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'faction_id', description: 'The faction identifier to which the attacker depends', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'security_status', description: 'The attacker security status', type: 'number', format: 'float'),
+        new OA\Property(property: 'final_blow', description: 'True if the attacker did the final blow', type: 'boolean'),
+        new OA\Property(property: 'damage_done', description: 'The amount of damage the attacker applied', type: 'integer'),
+        new OA\Property(property: 'ship_type_id', description: 'The ship inventory type identifier into which attacker was', type: 'integer'),
+        new OA\Property(property: 'weapon_type_id', description: 'The weapon inventory type identifier used by the attacker', type: 'integer'),
+    ],
+    type: 'object'
+)]
+class KillmailAttacker extends ExtensibleModel
 {
     protected $casts = [
         'final_blow' => 'boolean',
@@ -140,8 +84,8 @@ class KillmailAttacker extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'character_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 
@@ -153,8 +97,8 @@ class KillmailAttacker extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'corporation_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'corporation',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'corporation',
             ]);
     }
 
@@ -166,8 +110,8 @@ class KillmailAttacker extends Model
 
         return $this->hasOne(UniverseName::class, 'entity_id', 'alliance_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'alliance',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'alliance',
             ]);
     }
 
@@ -178,7 +122,7 @@ class KillmailAttacker extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'faction_id')
             ->withDefault([
-                'name'     => trans('web::seat.unknown'),
+                'name' => trans('web::seat.unknown'),
                 'category' => 'faction',
             ]);
     }

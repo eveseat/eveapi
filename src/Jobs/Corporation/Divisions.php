@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,13 +71,13 @@ class Divisions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
-        $divisions = $this->retrieve([
+        parent::handle();
+
+        $response = $this->retrieve([
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($divisions->isCachedLoad() &&
-            CorporationDivision::where('corporation_id', $this->getCorporationId())->count() > 0)
-            return;
+        $divisions = $response->getBody();
 
         if (property_exists($divisions, 'hangar'))
 
@@ -85,8 +85,8 @@ class Divisions extends AbstractAuthCorporationJob
 
                 CorporationDivision::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'type'           => 'hangar',
-                    'division'       => $hangar->division,
+                    'type' => 'hangar',
+                    'division' => $hangar->division,
                 ])->fill([
                     'name' => $hangar->name ?? null,
                 ])->save();
@@ -98,8 +98,8 @@ class Divisions extends AbstractAuthCorporationJob
 
                 CorporationDivision::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'type'           => 'wallet',
-                    'division'       => $wallet->division,
+                    'type' => 'wallet',
+                    'division' => $wallet->division,
                 ])->fill([
                     'name' => $wallet->name ?? null,
                 ])->save();

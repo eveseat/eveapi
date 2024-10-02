@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,15 +70,15 @@ class History extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $orders = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($orders->isCachedLoad() &&
-                CharacterOrder::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
+            $orders = $response->getBody();
 
             collect($orders)->each(function ($order) {
 
@@ -100,7 +100,7 @@ class History extends AbstractAuthCharacterJob
                 ])->save();
             });
 
-            if (! $this->nextPage($orders->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 return;
         }
     }

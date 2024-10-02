@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,13 +67,13 @@ class Roles extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
 
-        $roles = $this->retrieve([
+        $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($roles->isCachedLoad() && CharacterRole::where('character_id', $this->getCharacterId())->count() > 0)
-            return;
+        $roles = $response->getBody();
 
         foreach (['roles', 'roles_at_hq', 'roles_at_base', 'roles_at_other'] as $scope) {
 
@@ -82,8 +82,8 @@ class Roles extends AbstractAuthCharacterJob
 
                 CharacterRole::firstOrCreate([
                     'character_id' => $this->getCharacterId(),
-                    'role'         => $role,
-                    'scope'        => $scope,
+                    'role' => $role,
+                    'scope' => $scope,
                 ]);
             });
 

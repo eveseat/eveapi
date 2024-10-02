@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,22 +22,20 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Traits\CanUpsertIgnoreReplace;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterBluePrints.
  *
  * @package App
  */
-class CharacterBlueprint extends Model
+class CharacterBlueprint extends ExtensibleModel implements HasTypeID
 {
-    use CanUpsertIgnoreReplace;
-
     /**
      * @var bool
      */
@@ -88,5 +86,13 @@ class CharacterBlueprint extends Model
             ->withDefault([
                 'typeName' => trans('web::seat.unknown'),
             ]);
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->type_id;
     }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,23 +32,35 @@ use Seat\Eveapi\Exception\ReadOnlyModelException;
 trait IsReadOnly
 {
     /**
+     * @var bool
+     */
+    private static bool $bypass_read_only = false;
+
+    /**
      * @param  array  $attributes
+     * @return \Illuminate\Database\Eloquent\Model|$this
      *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public static function create(array $attributes = [])
     {
+        if (self::$bypass_read_only)
+            return parent::create($attributes);
 
         throw new ReadOnlyModelException;
     }
 
     /**
-     * @param  array  $arr
+     * @param  array  $attributes
+     * @param  array  $values
+     * @return \Illuminate\Database\Eloquent\Model|static
      *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
-    public static function firstOrCreate(array $arr)
+    public static function firstOrCreate(array $attributes = [], array $values = [])
     {
+        if (self::$bypass_read_only)
+            return parent::firstOrCreate($attributes, $values);
 
         throw new ReadOnlyModelException;
     }
@@ -56,10 +68,14 @@ trait IsReadOnly
     /**
      * @param  array  $options
      *
+     * @eturn bool
+     *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public function save(array $options = [])
     {
+        if (self::$bypass_read_only)
+            return parent::save($options);
 
         throw new ReadOnlyModelException;
     }
@@ -67,30 +83,52 @@ trait IsReadOnly
     /**
      * @param  array  $attributes
      * @param  array  $options
+     * @return bool
      *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public function update(array $attributes = [], array $options = [])
     {
+        if (self::$bypass_read_only)
+            return parent::update($attributes, $options);
 
         throw new ReadOnlyModelException;
     }
 
     /**
+     * @return bool|null
+     *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public function delete()
     {
+        if (self::$bypass_read_only)
+            return parent::delete();
 
         throw new ReadOnlyModelException;
     }
 
     /**
+     * @return bool|null
+     *
      * @throws \Seat\Eveapi\Exception\ReadOnlyModelException
      */
     public function forceDelete()
     {
+        if (self::$bypass_read_only)
+            return parent::forceDelete();
 
         throw new ReadOnlyModelException;
+    }
+
+    /**
+     * @param  bool  $new_value
+     * @return $this
+     */
+    public function bypassReadOnly(bool $new_value = true)
+    {
+        self::$bypass_read_only = true;
+
+        return $this;
     }
 }

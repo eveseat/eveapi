@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Assets\Corporation;
 
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Mapping\Assets\AssetMapping;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\RefreshToken;
@@ -70,11 +71,6 @@ class Assets extends AbstractAuthCorporationJob
     protected $page = 1;
 
     /**
-     * @var \Illuminate\Support\Collection
-     */
-    protected $known_assets;
-
-    /**
      * Assets constructor.
      *
      * @param  int  $corporation_id
@@ -82,8 +78,6 @@ class Assets extends AbstractAuthCorporationJob
      */
     public function __construct(int $corporation_id, RefreshToken $token)
     {
-        $this->known_assets = collect();
-
         parent::__construct($corporation_id, $token);
     }
 
@@ -96,43 +90,54 @@ class Assets extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
+        $start = now();
+
+        $structure_batch = new StructureBatch();
+
         while (true) {
 
-            $assets = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($assets->isCachedLoad() && CorporationAsset::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $assets = collect($response->getBody());
 
-            collect($assets)->chunk(1000)->each(function ($chunk) {
+            $assets->chunk(1000)->each(function ($chunk) use ($structure_batch, $start) {
 
-                $chunk->each(function ($asset) {
+                $chunk->each(function ($asset) use ($structure_batch, $start) {
 
                     $model = CorporationAsset::firstOrNew([
                         'item_id' => $asset->item_id,
                     ]);
 
+                    //make sure that the location is loaded if it is in a station or citadel
+                    if (in_array($asset->location_flag, StructureBatch::RESOLVABLE_LOCATION_FLAGS) && in_array($asset->location_type, StructureBatch::RESOLVABLE_LOCATION_TYPES)) {
+                        $structure_batch->addStructure($asset->location_id);
+                    }
+
                     AssetMapping::make($model, $asset, [
                         'corporation_id' => function () {
                             return $this->getCorporationId();
+                        },
+                        'updated_at' => function () use ($start) {
+                            return $start;
                         },
                     ])->save();
                 });
             });
 
-            // Update the list of known item_id's which should be
-            // excluded from the database cleanup later.
-            $this->known_assets->push(collect($assets)
-                ->pluck('item_id')->flatten()->all());
-
-            if (! $this->nextPage($assets->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 
         // Cleanup old assets
         CorporationAsset::where('corporation_id', $this->getCorporationId())
-            ->whereNotIn('item_id', $this->known_assets->flatten()->all())
+            ->where('updated_at', '<', $start)
             ->delete();
+
+        // schedule jobs for structures
+        $structure_batch->submitJobs($this->getToken());
     }
 }

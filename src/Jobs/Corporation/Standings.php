@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,39 +71,36 @@ class Standings extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $standings = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($standings->isCachedLoad() &&
-                CorporationStanding::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $standings = $response->getBody();
 
             collect($standings)->chunk(100)->each(function ($chunk) {
 
                 $records = $chunk->map(function ($standing, $key) {
                     return [
                         'corporation_id' => $this->getCorporationId(),
-                        'from_type'      => $standing->from_type,
-                        'from_id'        => $standing->from_id,
-                        'standing'       => $standing->standing,
-                        'created_at'     => carbon(),
-                        'updated_at'     => carbon(),
+                        'from_type' => $standing->from_type,
+                        'from_id' => $standing->from_id,
+                        'standing' => $standing->standing,
+                        'created_at' => carbon(),
+                        'updated_at' => carbon(),
                     ];
                 });
 
                 CorporationStanding::upsert($records->toArray(), [
                     'corporation_id',
-                    'from_type',
                     'from_id',
-                    'standing',
-                    'updated_at',
                 ]);
             });
 
-            if (! $this->nextPage($standings->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
     }

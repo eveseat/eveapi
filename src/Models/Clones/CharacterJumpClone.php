@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,56 +22,24 @@
 
 namespace Seat\Eveapi\Models\Clones;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Sde\StaStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class CharacterJumpClone.
- *
- * @package Seat\Eveapi\Models\Clones
- *
- * @OA\Schema(
- *     description="Character Jump Clone",
- *     title="CharacterJumpClone",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="jump_clone_id",
- *     description="Unique jump clone identifier"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="name",
- *     description="Clone name if set"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="location_id",
- *     description="The structure into which the clone resides"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     enum={"station","structure"},
- *     property="location_type",
- *     description="The structure type qualifier"
- * )
- *
- * @OA\Property(
- *     type="array",
- *     property="implants",
- *     description="A list of type ID",
- *     @OA\Items(type="integer")
- * )
- */
-class CharacterJumpClone extends Model
+#[OA\Schema(
+    title: 'CharacterJumpClone',
+    description: 'Character Jump Clone',
+    properties: [
+        new OA\Property(property: 'jump_clone_id', description: 'Unique jump clone identifier', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'name', description: 'Clone name if set', type: 'string'),
+        new OA\Property(property: 'location_id', description: 'The structure into which the clone resides', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'location_type', description: 'The structure type qualifier', type: 'string', enum: ['station', 'structure']),
+        new OA\Property(property: 'implants', description: 'A list of type ID', type: 'array', items: new OA\Items(type: 'integer')),
+    ],
+    type: 'object'
+)]
+class CharacterJumpClone extends ExtensibleModel
 {
     /**
      * @var array

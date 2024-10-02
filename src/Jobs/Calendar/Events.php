@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,8 @@ class Events extends AbstractAuthCharacterJob
      */
     public function handle()
     {
+        parent::handle();
+
         // Perform a walk backwards to get all of the
         // entries as far back as possible. When the response from
         // ESI is empty, we can assume we have everything.
@@ -80,21 +82,17 @@ class Events extends AbstractAuthCharacterJob
 
             $this->query_string = ['from_event' => $this->from_id];
 
-            $events = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($events->isCachedLoad() &&
-                CharacterCalendarEvent::where('character_id', $this->getCharacterId())->count() > 0)
-                return;
-
-            $response = collect($events);
+            $events = collect($response->getBody());
 
             // if we have no more entries, break the loop.
-            if ($response->count() === 0)
+            if ($events->count() === 0)
                 break;
 
-            $response->each(function ($event) {
+            $events->each(function ($event) {
 
                 $model = CharacterCalendarEvent::firstOrNew([
                     'character_id' => $this->getCharacterId(),
@@ -108,7 +106,7 @@ class Events extends AbstractAuthCharacterJob
                 ])->save();
             });
 
-            $this->from_id = $response->max('event_id');
+            $this->from_id = $events->max('event_id');
         }
     }
 }

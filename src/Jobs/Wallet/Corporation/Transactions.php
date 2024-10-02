@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,8 @@ class Transactions extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         CorporationWalletBalance::where('corporation_id', $this->getCorporationId())->get()
             ->each(function ($balance) {
 
@@ -90,14 +92,12 @@ class Transactions extends AbstractAuthCorporationJob
 
                     $this->query_string = ['from_id' => $this->from_id];
 
-                    $transactions = $this->retrieve([
+                    $response = $this->retrieve([
                         'corporation_id' => $this->getCorporationId(),
-                        'division'       => $balance->division,
+                        'division' => $balance->division,
                     ]);
 
-                    if ($transactions->isCachedLoad() &&
-                        CorporationWalletTransaction::where('corporation_id', $this->getCorporationId())->count() > 0)
-                        return;
+                    $transactions = $response->getBody();
 
                     // If we have no more entries, break the loop.
                     if (collect($transactions)->count() === 0)
@@ -107,7 +107,7 @@ class Transactions extends AbstractAuthCorporationJob
 
                         $transaction_entry = CorporationWalletTransaction::firstOrNew([
                             'corporation_id' => $this->getCorporationId(),
-                            'division'       => $balance->division,
+                            'division' => $balance->division,
                             'transaction_id' => $transaction->transaction_id,
                         ]);
 

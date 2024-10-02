@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
+use Closure;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Status\ServerStatus;
 
@@ -32,20 +33,23 @@ use Seat\Eveapi\Models\Status\ServerStatus;
  */
 class CheckServerStatus
 {
-    public function handle($job, $next)
+    /**
+     * @param  \Seat\Eveapi\Jobs\EsiBase  $job
+     * @param  \Closure  $next
+     * @return void
+     */
+    public function handle(EsiBase $job, Closure $next): void
     {
-        // in case the job is not ESI related, bypass this check
-        if (is_subclass_of($job, EsiBase::class)) {
+        // TQ seems to be down - delay
+        if (! $this->isEveOnline()) {
 
-            // TQ seems to be down - delay
-            if (! $this->isEveOnline()) {
+            logger()->warning(
+                sprintf('[Jobs][Middlewares][%s] Check Server Status -> EVE Online server seems to be unreachable, aborting job.', $job->job->getJobId()),
+                [
+                    'fqcn' => get_class($job),
+                ]);
 
-                logger()->warning(
-                    sprintf('EVE Online server seems to be unreachable. Job %s has been abort.',
-                        get_class($job)));
-
-                return;
-            }
+            return;
         }
 
         $next($job);

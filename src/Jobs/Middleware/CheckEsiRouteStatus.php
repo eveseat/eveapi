@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\Middleware;
 
+use Closure;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Jobs\Status\Esi;
+use Seat\Services\Contracts\EsiClient;
 
 /**
  * Class CheckEsiRouteStatus.
@@ -36,54 +38,72 @@ class CheckEsiRouteStatus
 
     const ROUTE_STATUS_DURATION = 300;
 
-    const ROUTE = 'https://esi.evetech.net/status.json?version=latest';
-
     /**
      * @param  \Seat\Eveapi\Jobs\EsiBase  $job
-     * @param $next
-     *
-     * @throws \Exception
+     * @param  \Closure  $next
+     * @return void
      */
-    public function handle($job, $next)
+    public function handle(EsiBase $job, Closure $next): void
     {
         // bypass control if the class is not related to ESI or is the ESI ping job
-        if (is_subclass_of($job, EsiBase::class) && ! ($job instanceof Esi)) {
-            logger()->debug('middleware: esistatus: checking for ' . $job->getEndpoint());
+        if ($job instanceof Esi) {
+            logger()->debug(
+                sprintf('[Jobs][Middlewares][%s] Check ESI Route Status -> Bypassed due to Esi job instance.', $job->job->getJobId()),
+                [
+                    'fqcn' => get_class($job),
+                    'endpoint' => $job->getEndpoint(),
+                ]);
 
-            if (! $this->isRouteOnline($job->getEndpoint())) {
-                logger()->warning(
-                    sprintf('ESI route seems to be unavailable. Job %s has been aborted.',
-                        get_class($job)));
+            $next($job);
 
-                return;
-            }
+            return;
+        }
+
+        logger()->debug(
+            sprintf('[Jobs][Middlewares][%s] Check ESI Route Status -> Checking endpoint health.', $job->job->getJobId()),
+            [
+                'fqcn' => get_class($job),
+                'endpoint' => $job->getEndpoint(),
+            ]);
+
+        if (! $this->isRouteOnline($job->getEndpoint())) {
+            logger()->warning(
+                sprintf('[Jobs][Middlewares][%s] Check ESI Route Status -> Endpoint seems to be unavailable, aborting job.', $job->job->getJobId()),
+                [
+                    'fqcn' => get_class($job),
+                    'endpoint' => $job->getEndpoint(),
+                ]);
+
+            return;
         }
 
         $next($job);
     }
 
     /**
+     * @param  string  $endpoint
      * @return bool
      */
-    private function isRouteOnline($endpoint): bool
+    private function isRouteOnline(string $endpoint): bool
     {
 
         $cacheKey = 'esi-route-status:' . $endpoint;
 
         // Get the latest ESI status.
         $status = cache()->remember($cacheKey, self::ROUTE_STATUS_DURATION, function () use ($endpoint) {
+
             // Need to probe the status endpoint in order to determine if it is up.
-            logger()->debug('middleware: esistatus: probing endpoint ' . $endpoint);
             try {
-                $client = app('esi-client')->get();
+                $client = app()->make(EsiClient::class);
                 $client->setVersion('');
                 $client->setQueryString(['version' => 'latest']);
+                $response = $client->invoke('get', '/status.json');
 
-                $data = $client->invoke('get', '/status.json');
+                $data = $response->getBody();
 
                 foreach($data as $path) {
                     if ($path->route == $endpoint) {
-                        return isset($path->status) ? $path->status : 'invalid';
+                        return $path->status ?? 'invalid';
                     }
                 }
 
@@ -95,7 +115,10 @@ class CheckEsiRouteStatus
 
         });
 
-        logger()->debug('middleware: esistatus: result for ' . $endpoint . ' is ' . $status);
+        logger()->debug('[Jobs][Middlewares] Check ESI Route Status -> Probing ESI endpoints.', [
+            'endpoint' => $endpoint,
+            'status' => $status,
+        ]);
 
         // If the status is OK, yay.
 

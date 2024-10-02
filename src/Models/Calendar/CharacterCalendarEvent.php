@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\Calendar;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterCalendarEvent.
  *
  * @package Seat\Eveapi\Models\Calendar
  */
-class CharacterCalendarEvent extends Model
+class CharacterCalendarEvent extends ExtensibleModel
 {
     /**
      * @var bool
@@ -37,7 +37,7 @@ class CharacterCalendarEvent extends Model
     protected static $unguarded = true;
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setEventDateAttribute($value)
     {

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,117 +22,43 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Fittings\Insurance;
 use Seat\Eveapi\Models\Market\Price;
 use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
-/**
- * Class InvType.
- *
- * @package Seat\Eveapi\Models\Sde
- *
- * @OA\Schema(
- *     description="Inventory Type",
- *     title="InvType",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     minimum=1,
- *     property="typeID",
- *     description="The inventory type ID"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     minimum=1,
- *     property="groupID",
- *     description="The group to which the type is related"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="typeName",
- *     description="The inventory type name"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="description",
- *     description="The inventory type description"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="mass",
- *     description="The inventory type mass"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="volume",
- *     description="The inventory type volume"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="capacity",
- *     description="The inventory type storage capacity"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="portionSize"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="raceID",
- *     description="The race to which the inventory type is tied"
- * )
- *
- * @OA\Property(
- *     type="number",
- *     format="double",
- *     property="basePrice",
- *     description="The initial price used by NPC to create order"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="published",
- *     description="True if the item is available in-game"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="marketGroupID",
- *     description="The group into which the item is available on market"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="iconID"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="soundID"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="graphicID"
- * )
- */
-class InvType extends Model
+#[OA\Schema(
+    title: 'InvType',
+    description: 'inventory Type',
+    properties: [
+        new OA\Property(property: 'typeID', description: 'The inventory type ID', type: 'integer', minimum: 1),
+        new OA\Property(property: 'groupID', description: 'The group to which the type is related', type: 'integer', minimum: 1),
+        new OA\Property(property: 'typeName', description: 'The inventory type name', type: 'string'),
+        new OA\Property(property: 'description', description: 'The inventory type description', type: 'string'),
+        new OA\Property(property: 'mass', description: 'The inventory type mass', type: 'number', format: 'double'),
+        new OA\Property(property: 'volume', description: 'The inventory type volume', type: 'number', format: 'double'),
+        new OA\Property(property: 'capacity', description: 'The inventory type storage capacity', type: 'number', format: 'double'),
+        new OA\Property(property: 'portionSize', type: 'integer'),
+        new OA\Property(property: 'raceID', description: 'The race to which the inventory type is tied', type: 'integer'),
+        new OA\Property(property: 'basePrice', description: 'The initial price used by NPC to create order', type: 'number', format: 'double'),
+        new OA\Property(property: 'published', description: 'True if the item is available on market', type: 'boolean'),
+        new OA\Property(property: 'marketGroupID', description: 'The group into which the item is available on market', type: 'integer'),
+        new OA\Property(property: 'iconID', type: 'integer'),
+        new OA\Property(property: 'soundID', type: 'integer'),
+        new OA\Property(property: 'graphicID', type: 'integer'),
+    ],
+    type: 'object'
+)]
+class InvType extends ExtensibleModel implements HasTypeID
 {
     use IsReadOnly;
+
+    /**
+     * Maximum value a skill of rank 1 may have when level 5 has been reached.
+     */
+    const MAX_SKILL_SKILLPOINTS = 256000;
 
     /**
      * @var bool
@@ -155,6 +81,21 @@ class InvType extends Model
      * @var string
      */
     protected $primaryKey = 'typeID';
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * The maximum amount of skillpoints when level 5 has been reached for current skill.
+     *
+     * @return int
+     */
+    public function getMaximumSkillpointsAttribute()
+    {
+        return round($this->dogma_attributes->where('attributeID', DgmTypeAttribute::SKILL_RANK_ID)->first()->valueFloat) * self::MAX_SKILL_SKILLPOINTS;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -185,8 +126,8 @@ class InvType extends Model
 
         return $this->hasOne(Price::class, 'type_id', 'typeID')
             ->withDefault([
-                'average'        => 0.00,
-                'average_price'  => 0.00,
+                'average' => 0.00,
+                'average_price' => 0.00,
                 'adjusted_price' => 0.00,
             ]);
     }
@@ -224,5 +165,13 @@ class InvType extends Model
         return $this->belongsToMany(InvType::class, 'invTypeReactions', 'reactionTypeID', 'typeID')
             ->wherePivot('input', true)
             ->withPivot('input', 'quantity');
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->typeID;
     }
 }

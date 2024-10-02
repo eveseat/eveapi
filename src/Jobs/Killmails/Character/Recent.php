@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,12 @@
 
 namespace Seat\Eveapi\Jobs\Killmails\Character;
 
+use Illuminate\Support\Facades\Bus;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Jobs\Killmails\Detail;
 use Seat\Eveapi\Models\Killmails\Killmail;
 use Seat\Eveapi\Models\Killmails\KillmailDetail;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Recent.
@@ -65,6 +67,21 @@ class Recent extends AbstractAuthCharacterJob
     protected $page = 1;
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $killmail_jobs;
+
+    /**
+     * @param  \Seat\Eveapi\Models\RefreshToken  $token
+     */
+    public function __construct(RefreshToken $token)
+    {
+        parent::__construct($token);
+
+        $this->killmail_jobs = collect();
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
@@ -73,11 +90,11 @@ class Recent extends AbstractAuthCharacterJob
     {
         while (true) {
 
-            $killmails = $this->retrieve([
+            $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
-            if ($killmails->isCachedLoad()) return;
+            $killmails = $response->getBody();
 
             collect($killmails)->each(function ($killmail) {
 
@@ -88,11 +105,22 @@ class Recent extends AbstractAuthCharacterJob
                 ]);
 
                 if (! KillmailDetail::find($killmail->killmail_id))
-                    dispatch(new Detail($killmail->killmail_id, $killmail->killmail_hash));
+                    $this->killmail_jobs->add(new Detail($killmail->killmail_id, $killmail->killmail_hash));
             });
 
-            if (! $this->nextPage($killmails->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
+        }
+
+        if ($this->killmail_jobs->isNotEmpty()) {
+            if($this->batchId) {
+                $this->batch()->add($this->killmail_jobs->toArray());
+            } else {
+                Bus::batch($this->killmail_jobs->toArray())
+                    ->name(sprintf('KM: %s', $this->token->character->name ?? $this->token->character_id))
+                    ->onQueue($this->job->getQueue())
+                    ->dispatch();
+            }
         }
     }
 }

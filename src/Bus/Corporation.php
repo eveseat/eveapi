@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Bus;
 
+use Illuminate\Bus\Batch;
 use Seat\Eveapi\Jobs\Assets\Corporation\Assets;
 use Seat\Eveapi\Jobs\Assets\Corporation\Locations;
 use Seat\Eveapi\Jobs\Assets\Corporation\Names;
@@ -55,11 +56,12 @@ use Seat\Eveapi\Jobs\Market\Corporation\History;
 use Seat\Eveapi\Jobs\Market\Corporation\Orders;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOfficeLocations;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOffices;
-use Seat\Eveapi\Jobs\Universe\CorporationStructures;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Balances;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Journals;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Transactions;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\RefreshToken;
+use Throwable;
 
 /**
  * Class Corporation.
@@ -71,12 +73,7 @@ class Corporation extends Bus
     /**
      * @var int
      */
-    private $corporation_id;
-
-    /**
-     * @var \Seat\Eveapi\Models\RefreshToken
-     */
-    private $token;
+    private int $corporation_id;
 
     /**
      * Corporation constructor.
@@ -86,7 +83,7 @@ class Corporation extends Bus
      */
     public function __construct(int $corporation_id, ?RefreshToken $token = null)
     {
-        parent::__construct();
+        parent::__construct($token);
 
         $this->corporation_id = $corporation_id;
         $this->token = $token;
@@ -97,7 +94,7 @@ class Corporation extends Bus
      *
      * @return void
      */
-    public function fire()
+    public function fire(): void
     {
         $this->addPublicJobs();
 
@@ -105,12 +102,41 @@ class Corporation extends Bus
             $this->addAuthenticatedJobs();
 
         // Corporation
-        Info::withChain($this->jobs->toArray())
-            ->dispatch($this->corporation_id)
-            ->delay(now()->addSeconds(rand(120, 300)));
-        // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
-        // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
-        // https://github.com/eveseat/seat/issues/731
+        $corporation = CorporationInfo::firstOrNew(
+            ['corporation_id' => $this->corporation_id],
+            ['name' => "Unknown Corporation: {$this->corporation_id}"]
+        );
+
+        $batch = \Illuminate\Support\Facades\Bus::batch([$this->jobs->toArray()])
+            ->then(function (Batch $batch) {
+                logger()->debug(
+                    sprintf('[Batches][%s] Corporation batch successfully completed.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                    ]);
+            })->catch(function (Batch $batch, Throwable $throwable) {
+                logger()->error(
+                    sprintf('[Batches][%s] An error occurred during Corporation batch processing.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                        'error' => $throwable->getMessage(),
+                        'trace' => $throwable->getTrace(),
+                    ]);
+            })->finally(function (Batch $batch) {
+                logger()->info(
+                    sprintf('[Batches][%s] Corporation batch executed.', $batch->id),
+                    [
+                        'id' => $batch->id,
+                        'name' => $batch->name,
+                        'stats' => [
+                            'success' => $batch->totalJobs - $batch->failedJobs,
+                            'failed' => $batch->failedJobs,
+                            'total' => $batch->totalJobs,
+                        ],
+                    ]);
+            })->onQueue('corporations')->name($corporation->name)->allowFailures()->dispatch();
     }
 
     /**
@@ -120,7 +146,8 @@ class Corporation extends Bus
      */
     protected function addPublicJobs()
     {
-        $this->jobs->add(new AllianceHistory($this->corporation_id));
+        $this->addPublicJob(new Info($this->corporation_id));
+        $this->addPublicJob(new AllianceHistory($this->corporation_id));
     }
 
     /**
@@ -130,54 +157,53 @@ class Corporation extends Bus
      */
     protected function addAuthenticatedJobs()
     {
-        $this->jobs->add(new Divisions($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Divisions($this->corporation_id, $this->token));
 
-        $this->jobs->add(new Roles($this->corporation_id, $this->token));
-        $this->jobs->add(new RoleHistories($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Roles($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new RoleHistories($this->corporation_id, $this->token));
 
-        $this->jobs->add(new Titles($this->corporation_id, $this->token));
-        $this->jobs->add(new MembersTitles($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Titles($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new MembersTitles($this->corporation_id, $this->token));
 
-        $this->jobs->add(new MembersLimit($this->corporation_id, $this->token));
-        $this->jobs->add(new Members($this->corporation_id, $this->token));
-        $this->jobs->add(new MemberTracking($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new MembersLimit($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Members($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new MemberTracking($this->corporation_id, $this->token));
 
-        $this->jobs->add(new Medals($this->corporation_id, $this->token));
-        $this->jobs->add(new IssuedMedals($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Medals($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new IssuedMedals($this->corporation_id, $this->token));
 
         // collect industrial information
-        $this->jobs->add(new Blueprints($this->corporation_id, $this->token));
-        $this->jobs->add(new Facilities($this->corporation_id, $this->token));
-        $this->jobs->add(new Jobs($this->corporation_id, $this->token));
-        $this->jobs->add(new Observers($this->corporation_id, $this->token));
-        $this->jobs->add(new ObserverDetails($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Blueprints($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Facilities($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Jobs($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Observers($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new ObserverDetails($this->corporation_id, $this->token));
 
         // collect financial information
-        $this->jobs->add(new Orders($this->corporation_id, $this->token));
-        $this->jobs->add(new History($this->corporation_id, $this->token));
-        $this->jobs->add(new Shareholders($this->corporation_id, $this->token));
-        $this->jobs->add(new Balances($this->corporation_id, $this->token));
-        $this->jobs->add(new Journals($this->corporation_id, $this->token));
-        $this->jobs->add(new Transactions($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Orders($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new History($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Shareholders($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Balances($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Journals($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Transactions($this->corporation_id, $this->token));
 
         // collect intel information
-        $this->jobs->add(new Labels($this->corporation_id, $this->token));
-        $this->jobs->add(new Standings($this->corporation_id, $this->token));
-        $this->jobs->add(new Contacts($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Labels($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Standings($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Contacts($this->corporation_id, $this->token));
 
         // structures
-        $this->jobs->add(new Starbases($this->corporation_id, $this->token));
-        $this->jobs->add(new StarbaseDetails($this->corporation_id, $this->token));
-        $this->jobs->add(new Structures($this->corporation_id, $this->token));
-        $this->jobs->add(new Extractions($this->corporation_id, $this->token));
-        $this->jobs->add(new CustomsOffices($this->corporation_id, $this->token));
-        $this->jobs->add(new CustomsOfficeLocations($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Starbases($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new StarbaseDetails($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Structures($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Extractions($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new CustomsOffices($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new CustomsOfficeLocations($this->corporation_id, $this->token));
 
         // assets
-        $this->jobs->add(new Assets($this->corporation_id, $this->token));
-        $this->jobs->add(new ContainerLogs($this->corporation_id, $this->token));
-        $this->jobs->add(new Locations($this->corporation_id, $this->token));
-        $this->jobs->add(new Names($this->corporation_id, $this->token));
-        $this->jobs->add(new CorporationStructures($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Assets($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new ContainerLogs($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Locations($this->corporation_id, $this->token));
+        $this->addAuthenticatedJob(new Names($this->corporation_id, $this->token));
     }
 }

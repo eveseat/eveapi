@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@ class UniverseStructureMapping extends DataMapping
      * @var array
      */
     protected static $mapping = [
-        'name'            => 'name',
-        'owner_id'        => 'owner_id',
+        'name' => 'name',
+        'owner_id' => 'owner_id',
         'solar_system_id' => 'solar_system_id',
-        'x'               => 'position.x',
-        'y'               => 'position.y',
-        'z'               => 'position.z',
-        'type_id'         => 'type_id',
+        'x' => 'position.x',
+        'y' => 'position.y',
+        'z' => 'position.z',
+        'type_id' => 'type_id',
     ];
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 
 namespace Seat\Eveapi\Models\PlanetaryInteraction;
 
-use Illuminate\Database\Eloquent\Model;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterPlanetContent.
  *
  * @package Seat\Eveapi\Models\PlanetaryInteraction
  */
-class CharacterPlanetContent extends Model
+class CharacterPlanetContent extends ExtensibleModel
 {
     /**
      * @var bool

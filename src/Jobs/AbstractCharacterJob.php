@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ namespace Seat\Eveapi\Jobs;
  */
 abstract class AbstractCharacterJob extends EsiBase
 {
+
     /**
      * @var int The character ID to which this job is related.
      */
@@ -38,10 +39,14 @@ abstract class AbstractCharacterJob extends EsiBase
      * AbstractCharacterJob constructor.
      *
      * @param  int  $character_id
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __construct(int $character_id)
     {
         $this->character_id = $character_id;
+
+        parent::__construct();
     }
 
     /**
@@ -64,9 +69,22 @@ abstract class AbstractCharacterJob extends EsiBase
         if (! in_array('character', $tags))
             $tags[] = 'character';
 
-        if (! in_array($this->getCharacterId(), $tags))
-            $tags[] = $this->getCharacterId();
+        if (! in_array($this->character_id, $tags))
+            $tags[] = $this->character_id;
 
         return $tags;
+    }
+
+    public function handle()
+    {
+        if ($this->batchId && $this->batch()->cancelled())
+            return;
+
+        logger()->debug(
+            sprintf('[Jobs][%s] Character job is processing...', $this->job->getJobId()),
+            [
+                'fqcn' => static::class,
+                'character_id' => $this->character_id,
+            ]);
     }
 }

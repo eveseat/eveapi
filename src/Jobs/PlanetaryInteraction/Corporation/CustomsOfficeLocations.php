@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,8 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         $customs_offices = CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->get();
 
         collect($customs_offices)->chunk(1000)->each(function ($chunk) {
@@ -84,13 +86,11 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
                 return $office->office_id;
             })->flatten()->toArray();
 
-            $locations = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($locations->isCachedLoad() &&
-                CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $locations = $response->getBody();
 
             collect($locations)->each(function ($location) use ($chunk) {
 
@@ -104,11 +104,11 @@ class CustomsOfficeLocations extends AbstractAuthCorporationJob
 
                 CorporationCustomsOffice::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'office_id'      => $location->item_id,
+                    'office_id' => $location->item_id,
                 ])->fill([
-                    'x'           => $location->position->x,
-                    'y'           => $location->position->y,
-                    'z'           => $location->position->z,
+                    'x' => $location->position->x,
+                    'y' => $location->position->y,
+                    'z' => $location->position->z,
                     'location_id' => $nearest_celestial['map_id'],
                 ])->save();
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,16 +22,16 @@
 
 namespace Seat\Eveapi\Models\Sde;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Eveapi\Traits\IsReadOnly;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class InvControlTowerResources.
  *
  * @package Seat\Eveapi\Models\Sde
  */
-class InvControlTowerResource extends Model
+class InvControlTowerResource extends ExtensibleModel
 {
     use IsReadOnly;
     use HasCompositePrimaryKey;
@@ -50,4 +50,9 @@ class InvControlTowerResource extends Model
      * @var string
      */
     protected $primaryKey = ['controlTowerTypeID', 'resourceTypeID'];
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }

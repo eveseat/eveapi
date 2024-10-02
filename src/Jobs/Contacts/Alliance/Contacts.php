@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,30 +92,28 @@ class Contacts extends AbstractAuthAllianceJob
     {
         while (true) {
 
-            $contacts = $this->retrieve([
+            $response = $this->retrieve([
                 'alliance_id' => $this->getAllianceId(),
             ]);
 
-            if ($contacts->isCachedLoad() &&
-                AllianceContact::where('alliance_id', $this->getAllianceId())->count() > 0)
-                return;
+            $contacts = $response->getBody();
 
             collect($contacts)->each(function ($contact) {
 
                 AllianceContact::firstOrNew([
                     'alliance_id' => $this->getAllianceId(),
-                    'contact_id'     => $contact->contact_id,
+                    'contact_id' => $contact->contact_id,
                 ])->fill([
-                    'standing'     => $contact->standing,
+                    'standing' => $contact->standing,
                     'contact_type' => $contact->contact_type,
-                    'label_ids'    => $contact->label_ids ?? null,
+                    'label_ids' => $contact->label_ids ?? null,
                 ])->save();
             });
 
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
 
-            if (! $this->nextPage($contacts->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

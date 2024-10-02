@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@
 
 namespace Seat\Eveapi\Models\Alliances;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class AllianceMember.
  *
  * @package Seat\Eveapi\Models\Alliances
  */
-class AllianceMember extends Model
+class AllianceMember extends ExtensibleModel
 {
     /**
      * @var bool

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,21 +66,19 @@ class Labels extends AbstractAuthAllianceJob
      */
     public function handle()
     {
-        $labels = $this->retrieve([
+        $response = $this->retrieve([
             'alliance_id' => $this->getAllianceId(),
         ]);
 
-        if ($labels->isCachedLoad() &&
-            AllianceLabel::where('alliance_id', $this->getAllianceId())->count() > 0)
-            return;
+        $labels = $response->getBody();
 
         collect($labels)->each(function ($label) {
 
             AllianceLabel::firstOrNew([
                 'alliance_id' => $this->getAllianceId(),
-                'label_id'       => $label->label_id,
+                'label_id' => $label->label_id,
             ])->fill([
-                'name'           => $label->label_name,
+                'name' => $label->label_name,
             ])->save();
         });
 

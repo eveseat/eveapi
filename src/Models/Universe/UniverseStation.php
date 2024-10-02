@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,16 +22,16 @@
 
 namespace Seat\Eveapi\Models\Universe;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Sde\SolarSystem;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class UniverseStation.
  *
  * @package Seat\Eveapi\Models\Universe
  */
-class UniverseStation extends Model
+class UniverseStation extends ExtensibleModel
 {
     /**
      * Those stations might be returned by ESI on some endpoints (ie: corporation infos) - however, they don't exist.

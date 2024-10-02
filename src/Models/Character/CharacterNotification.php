@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,87 +22,35 @@
 
 namespace Seat\Eveapi\Models\Character;
 
-use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * Class CharacterNotification.
- *
- * @package Seat\Eveapi\Models\Character
- *
- * @OA\Schema(
- *     description="Character Notification",
- *     title="CharacterNotification",
- *     type="object"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     property="notification_id",
- *     description="The notification identifier"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="type",
- *     description="The notification type"
- * )
- *
- * @OA\Property(
- *     type="integer",
- *     format="int64",
- *     property="sender_id",
- *     description="The entity who sent the notification"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     enum={"character","corporation","alliance","faction","other"},
- *     property="sender_type",
- *     description="The sender qualifier"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="timestamp",
- *     description="The date-time when notification has been sent"
- * )
- *
- * @OA\Property(
- *     type="boolean",
- *     property="is_read",
- *     description="True if the notification has been red"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     property="object",
- *     description="The notification content"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="created_at",
- *     description="The date-time when notification has been created into SeAT"
- * )
- *
- * @OA\Property(
- *     type="string",
- *     format="date-time",
- *     property="updated_at",
- *     description="The date-time when notification has been updated into SeAT"
- * )
- */
-class CharacterNotification extends Model
+#[OA\Schema(
+    title: 'CharacterNotification',
+    description: 'Character Notification',
+    properties: [
+        new OA\Property(property: 'notification_id', description: 'The notification identifier', type: 'integer'),
+        new OA\Property(property: 'type', description: 'The notification type', type: 'string'),
+        new OA\Property(property: 'sender_id', description: 'The entity who sent the notification', type: 'integer', format: 'int64'),
+        new OA\Property(property: 'sender_type', description: 'The sender qualifier', type: 'string', enum: ['character', 'corporation', 'alliance', 'faction', 'other']),
+        new OA\Property(property: 'timestamp', description: 'The date/time when notification has been sent', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'is_read', description: 'True if the notification has been red', type: 'boolean'),
+        new OA\Property(property: 'object', description: 'The notification content', type: 'string'),
+        new OA\Property(property: 'created_at', description: 'The date/time when notification has been created into SeAT', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', description: 'The date/time when notification has been updated into SeAT', type: 'string', format: 'date-time'),
+    ],
+    type: 'object'
+)]
+class CharacterNotification extends ExtensibleModel
 {
     /**
      * @var array
      */
     protected $casts = [
         'is_read' => 'boolean',
+        'timestamp' => 'datetime',
     ];
 
     /**
@@ -123,7 +71,7 @@ class CharacterNotification extends Model
     /**
      * Return YAML parsed value of the notification content.
      *
-     * @param $value
+     * @param  $value
      * @return mixed
      */
     public function getTextAttribute($value)
@@ -137,7 +85,7 @@ class CharacterNotification extends Model
     /**
      * Reset parsed value of notification content and update raw value.
      *
-     * @param $value
+     * @param  $value
      */
     public function setTextAttribute($value)
     {
@@ -146,7 +94,7 @@ class CharacterNotification extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setTimestampAttribute($value)
     {
@@ -168,8 +116,8 @@ class CharacterNotification extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'sender_id')
             ->withDefault([
-                'name'      => trans('web::seat.unknown'),
-                'category'  => 'character',
+                'name' => trans('web::seat.unknown'),
+                'category' => 'character',
             ]);
     }
 }

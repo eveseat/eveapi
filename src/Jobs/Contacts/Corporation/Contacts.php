@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,33 +90,33 @@ class Contacts extends AbstractAuthCorporationJob
      */
     public function handle()
     {
+        parent::handle();
+
         while (true) {
 
-            $contacts = $this->retrieve([
+            $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
-            if ($contacts->isCachedLoad() &&
-                CorporationContact::where('corporation_id', $this->getCorporationId())->count() > 0)
-                return;
+            $contacts = $response->getBody();
 
             collect($contacts)->each(function ($contact) {
 
                 CorporationContact::firstOrNew([
                     'corporation_id' => $this->getCorporationId(),
-                    'contact_id'     => $contact->contact_id,
+                    'contact_id' => $contact->contact_id,
                 ])->fill([
-                    'standing'     => $contact->standing,
+                    'standing' => $contact->standing,
                     'contact_type' => $contact->contact_type,
-                    'is_watched'   => $contact->is_watched ?? false,
-                    'label_ids'    => $contact->label_ids ?? null,
+                    'is_watched' => $contact->is_watched ?? false,
+                    'label_ids' => $contact->label_ids ?? null,
                 ])->save();
             });
 
             $this->known_contact_ids->push(collect($contacts)
                 ->pluck('contact_id')->flatten()->all());
 
-            if (! $this->nextPage($contacts->pages))
+            if (! $this->nextPage($response->getPagesCount()))
                 break;
         }
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ class DropCharacterIdFromMailHeadersTable extends Migration
             ->insertUsing(
                 ['mail_id', 'subject', 'from', 'timestamp', 'created_at', 'updated_at'],
                 DB::table('mig_mail_headers')
-                    ->select('mail_id', DB::raw('TRIM(REPLACE(subject, CHAR(9), CHAR(32)))'), 'from', 'timestamp', DB::raw('now()'), DB::raw('now()'))
+                    ->select('mail_id', DB::raw('TRIM(REPLACE(subject, \'	\', \' \'))'), 'from', 'timestamp', DB::raw('now()'), DB::raw('now()'))
                     ->distinct()
             );
 

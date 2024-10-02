@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,18 +22,23 @@
 
 namespace Seat\Eveapi\Models\Alliances;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Seat\Eveapi\Models\Contacts\AllianceContact;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Services\Models\ExtensibleModel;
+use Seat\Tests\Eveapi\Database\Factories\AllianceFactory;
 
 /**
  * Class Alliance.
  *
  * @package Seat\Eveapi\Models\Alliances
  */
-class Alliance extends Model
+class Alliance extends ExtensibleModel
 {
+    use HasFactory;
+
     /**
      * @var array
      */
@@ -55,7 +60,15 @@ class Alliance extends Model
     protected $primaryKey = 'alliance_id';
 
     /**
-     * @param $value
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return AllianceFactory::new();
+    }
+
+    /**
+     * @param  $value
      */
     public function setDateFoundedAttribute($value)
     {
@@ -69,8 +82,8 @@ class Alliance extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'executor_corporation_id')
             ->withDefault([
-                'category'  => 'corporation',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'corporation',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -81,8 +94,8 @@ class Alliance extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'creator_id')
             ->withDefault([
-                'category'  => 'character',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'character',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 
@@ -93,8 +106,8 @@ class Alliance extends Model
     {
         return $this->hasOne(UniverseName::class, 'entity_id', 'creator_corporation_id')
             ->withDefault([
-                'category'  => 'corporation',
-                'name'      => trans('web::seat.unknown'),
+                'category' => 'corporation',
+                'name' => trans('web::seat.unknown'),
             ]);
     }
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,16 +22,16 @@
 
 namespace Seat\Eveapi\Models\Industry;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Corporation\CorporationStructure;
 use Seat\Eveapi\Models\Sde\Moon;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CorporationIndustryMiningExtraction.
  *
  * @package Seat\Eveapi\Models\Industry
  */
-class CorporationIndustryMiningExtraction extends Model
+class CorporationIndustryMiningExtraction extends ExtensibleModel
 {
     /**
      * Return the theoretical duration of a chunk once it reached its drilling cycle.
@@ -51,7 +51,7 @@ class CorporationIndustryMiningExtraction extends Model
     /**
      * Return the base m3 amount gained per hour of extraction length.
      */
-    const BASE_DRILLING_VOLUME = 40000;
+    const BASE_DRILLING_VOLUME = 30000;
 
     /**
      * @var bool
@@ -77,7 +77,7 @@ class CorporationIndustryMiningExtraction extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setExtractionStartTimeAttribute($value)
     {
@@ -85,7 +85,7 @@ class CorporationIndustryMiningExtraction extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setChunkArrivalTimeAttribute($value)
     {
@@ -93,7 +93,7 @@ class CorporationIndustryMiningExtraction extends Model
     }
 
     /**
-     * @param $value
+     * @param  $value
      */
     public function setNaturalDecayTimeAttribute($value)
     {

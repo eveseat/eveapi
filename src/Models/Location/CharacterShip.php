@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015 to 2022 Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,17 +22,18 @@
 
 namespace Seat\Eveapi\Models\Location;
 
-use Illuminate\Database\Eloquent\Model;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Sde\InvGroup;
 use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Services\Contracts\HasTypeID;
+use Seat\Services\Models\ExtensibleModel;
 
 /**
  * Class CharacterShip.
  *
  * @package Seat\Eveapi\Models\Location
  */
-class CharacterShip extends Model
+class CharacterShip extends ExtensibleModel implements HasTypeID
 {
     /**
      * @var bool
@@ -70,5 +71,13 @@ class CharacterShip extends Model
                 $type->typeName = trans('web::seat.unknown');
                 $type->group = $group;
             });
+    }
+
+    /**
+     * @return int The eve type id of this object
+     */
+    public function getTypeID(): int
+    {
+        return $this->ship_type_id;
     }
 }
