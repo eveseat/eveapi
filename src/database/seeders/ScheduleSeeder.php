@@ -186,7 +186,7 @@ class ScheduleSeeder extends AbstractScheduleSeeder
                 // 15 minute schedule with random offset
                 case 'esi:update:killmails':
                 case 'esi:update:contracts':
-                    $start = rand(1,14); // Also dont include 0 as that is what all other people who use */15 will hit
+                    $start = rand(1, 14); // Also dont include 0 as that is what all other people who use */15 will hit
                     $schedules[$key]['expression'] = sprintf('%d,%d,%d,%d * * * *', $start, $start + 15, $start + 30, $start + 45);
                     break;
             }

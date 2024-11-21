@@ -34,7 +34,7 @@ return new class extends Migration {
         // Where the default schedule exists for the killmail and contracts schedules,
         // remove it so it gets updated randomised
         DB::table('schedules')
-            ->whereIn('command',  ['esi:update:contracts', 'esi:update:killmails'])
+            ->whereIn('command', ['esi:update:contracts', 'esi:update:killmails'])
             ->where('expression', '*/15 * * * *')
             ->delete();
     }
