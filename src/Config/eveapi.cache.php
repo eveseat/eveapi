@@ -21,5 +21,5 @@
  */
 
 return [
-    'respect_cache' => env('EVEAPI_RESPECT_CACHE', true),
+    'respect_cache' => env('EVEAPI_RESPECT_CACHE', false),
 ];
