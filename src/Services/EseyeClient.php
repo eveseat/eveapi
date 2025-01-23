@@ -57,7 +57,7 @@ class EseyeClient implements EsiClient
         $config->http_client = Client::class;
         $config->http_stream_factory = HttpFactory::class;
         $config->http_request_factory = HttpFactory::class;
-        $config->http_user_agent = sprintf('SeAT %s/%s', $version, setting('admin_contact', true));  
+        $config->http_user_agent = sprintf('SeAT %s/%s', $version, setting('admin_contact', true));
 
         $config->logger = Log::channel('eseye');
         $config->cache = Cache::store('eseye');
