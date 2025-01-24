@@ -102,7 +102,7 @@ class CheckEsiRouteStatus
                 $data = $response->getBody();
 
                 foreach($data as $path) {
-                    if ($path->route == $endpoint) {
+                    if (property_exists($path, 'route') && $path->route == $endpoint) {
                         return $path->status ?? 'invalid';
                     }
                 }
