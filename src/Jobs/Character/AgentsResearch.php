@@ -74,10 +74,6 @@ class AgentsResearch extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($this->shouldUseCache($response) &&
-            CharacterAgentResearch::where('character_id', $this->getCharacterId()->exists()))
-            return;
-
         $agents = collect($response->getBody());
 
         $agents->each(function ($agent) {

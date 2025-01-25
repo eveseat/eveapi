@@ -60,13 +60,11 @@ class Info extends AbstractAllianceJob
             'alliance_id' => $this->alliance_id,
         ]);
 
+        $info = $response->getBody();
+
         $model = Alliance::firstOrNew([
             'alliance_id' => $this->alliance_id,
         ]);
-
-        if ($this->shouldUseCache($response) && $model->exists) return; // No need to hit the DB here
-
-        $info = $response->getBody();
 
         InfoMapping::make($model, $info, [
             'alliance_id' => function () {

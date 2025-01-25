@@ -82,15 +82,11 @@ class ContainerLogs extends AbstractAuthCorporationJob
 
         $structure_batch = new StructureBatch();
 
-        do {
+        while (true) {
 
             $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
-
-            if ($this->shouldUseCache($response) &&
-                CorporationContainerLog::where('corporation_id', $this->getCorporationId())->exists())
-                continue;
 
             $logs = $response->getBody();
 
@@ -113,7 +109,10 @@ class ContainerLogs extends AbstractAuthCorporationJob
                 ])->save();
 
             });
-        }  while ($this->nextPage($response->getPagesCount()));
+
+            if (! $this->nextPage($response->getPagesCount()))
+                break;
+        }
 
         $structure_batch->submitJobs($this->getToken());
     }

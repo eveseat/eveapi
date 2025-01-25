@@ -89,7 +89,7 @@ class Jobs extends AbstractAuthCorporationJob
 
         $structure_batch = new StructureBatch();
 
-        do {
+        while (true) {
 
             $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
@@ -105,9 +105,6 @@ class Jobs extends AbstractAuthCorporationJob
                     'job_id' => $job->job_id,
                 ]);
 
-                if ($this->shouldUseCache($response) && $model->exists)
-                    return;
-
                 JobMapping::make($model, $job, [
                     'corporation_id' => function () {
                         return $this->getCorporationId();
@@ -118,7 +115,9 @@ class Jobs extends AbstractAuthCorporationJob
                 ])->save();
             });
 
-        } while ($this->nextPage($response->getPagesCount()));
+            if (! $this->nextPage($response->getPagesCount()))
+                break;
+        }
 
         $structure_batch->submitJobs($this->getToken());
     }

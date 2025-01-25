@@ -67,10 +67,6 @@ class AllianceHistory extends AbstractCorporationJob
             'corporation_id' => $this->getCorporationId(),
         ]);
 
-        if ($this->shouldUseCache($response) &&
-        CorporationAllianceHistory::where('corporation_id', $this->getCorporationId())->exists())
-            return;
-
         $history = $response->getBody();
 
         collect($history)->each(function ($alliance) {

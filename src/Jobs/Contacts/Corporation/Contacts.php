@@ -92,21 +92,13 @@ class Contacts extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        do {
+        while (true) {
 
             $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
             ]);
 
             $contacts = $response->getBody();
-
-            $this->known_contact_ids->push(collect($contacts)
-                ->pluck('contact_id')->flatten()->all());
-
-                // In this case, the cache guard here  will not save network ops, but should save the DB
-            if ($this->shouldUseCache($response) &&
-                CorporationContact::where('corporation_id', $this->getCorporationId())->exists())
-                continue;
 
             collect($contacts)->each(function ($contact) {
 
@@ -121,7 +113,12 @@ class Contacts extends AbstractAuthCorporationJob
                 ])->save();
             });
 
-        } while ($this->nextPage($response->getPagesCount()));
+            $this->known_contact_ids->push(collect($contacts)
+                ->pluck('contact_id')->flatten()->all());
+
+            if (! $this->nextPage($response->getPagesCount()))
+                break;
+        }
 
         // Cleanup old contacts
         CorporationContact::where('corporation_id', $this->getCorporationId())

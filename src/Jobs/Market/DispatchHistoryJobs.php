@@ -66,14 +66,15 @@ class DispatchHistoryJobs extends EsiBase
 
         $types = collect();
 
-        do {
+        while (true) {
             $response = $this->retrieve(['region_id' => $region_id]);
             $orders = $response->getBody();
 
             $types = $types->merge($orders);
 
             // if there are more pages with orders, continue loading them
-        } while ($this->nextPage($response->getPagesCount()));
+            if (! $this->nextPage($response->getPagesCount())) break;
+        }
 
         // create history jobs
         $jobs = collect();

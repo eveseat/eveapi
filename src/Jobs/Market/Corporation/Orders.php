@@ -82,7 +82,7 @@ class Orders extends AbstractAuthCorporationJob
 
         $structure_batch = new StructureBatch();
 
-        do {
+        while (true) {
 
             $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
@@ -111,8 +111,10 @@ class Orders extends AbstractAuthCorporationJob
                 ])->save();
             });
 
-        } while ($this->nextPage($response->getPagesCount()));
+            if (! $this->nextPage($response->getPagesCount()))
+                $structure_batch->submitJobs();
 
-        $structure_batch->submitJobs();
+                return;
+        }
     }
 }
