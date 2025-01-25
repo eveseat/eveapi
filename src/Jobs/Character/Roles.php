@@ -73,9 +73,6 @@ class Roles extends AbstractAuthCharacterJob
             'character_id' => $this->getCharacterId(),
         ]);
 
-        if ($this->shouldUseCache($response) && CharacterRole::where('character_id', $this->getCharacterId())->exists())
-            return;
-
         $roles = $response->getBody();
 
         foreach (['roles', 'roles_at_hq', 'roles_at_base', 'roles_at_other'] as $scope) {

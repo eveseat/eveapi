@@ -93,21 +93,13 @@ class Contacts extends AbstractAuthCharacterJob
     {
         parent::handle();
 
-        do {
+        while (true) {
 
             $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
             ]);
 
             $contacts = $response->getBody();
-
-            $this->known_contact_ids->push(collect($contacts)
-                ->pluck('contact_id')->flatten()->all());
-
-            // This wont save network but should save DB writes
-            if ($this->shouldUseCache($response) &&
-                CharacterContact::where('character_id', $this->getCharacterId())->exists())
-                continue;
 
             collect($contacts)->each(function ($contact) {
 
@@ -123,7 +115,12 @@ class Contacts extends AbstractAuthCharacterJob
                 ])->save();
             });
 
-        } while ($this->nextPage($response->getPagesCount()));
+            $this->known_contact_ids->push(collect($contacts)
+                ->pluck('contact_id')->flatten()->all());
+
+            if (! $this->nextPage($response->getPagesCount()))
+                break;
+        }
 
         // Cleanup old contacts
         CharacterContact::where('character_id', $this->getCharacterId())

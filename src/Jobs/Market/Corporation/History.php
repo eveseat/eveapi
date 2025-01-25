@@ -79,7 +79,7 @@ class History extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        do {
+        while (true) {
 
             $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
@@ -110,6 +110,8 @@ class History extends AbstractAuthCorporationJob
                 ])->save();
             });
 
-        } while ($this->nextPage($response->getPagesCount()));
+            if (! $this->nextPage($response->getPagesCount()))
+                return;
+        }
     }
 }

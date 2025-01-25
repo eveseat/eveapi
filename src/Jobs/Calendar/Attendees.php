@@ -91,9 +91,6 @@ class Attendees extends AbstractAuthCharacterJob
                     'event_id' => $event->event_id,
                 ]);
 
-                if ($this->shouldUseCache($response) && CharacterCalendarAttendee::where('event_id', $event->event_id)->exists())
-                    return true; // Return true to move onto the next event
-
                 $attendees = collect($response->getBody());
 
                 $attendees->each(function ($attendee) use ($event) {

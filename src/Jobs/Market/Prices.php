@@ -70,10 +70,6 @@ class Prices extends EsiBase
 
         $response = $this->retrieve();
 
-        if ($this->shouldUseCache($response) &&
-            Price::exists())
-            return;
-
         $prices = $response->getBody();
 
         collect($prices)->chunk(1000)->each(function ($chunk) {

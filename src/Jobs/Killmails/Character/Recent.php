@@ -88,7 +88,7 @@ class Recent extends AbstractAuthCharacterJob
      */
     public function handle()
     {
-        do {
+        while (true) {
 
             $response = $this->retrieve([
                 'character_id' => $this->getCharacterId(),
@@ -108,7 +108,9 @@ class Recent extends AbstractAuthCharacterJob
                     $this->killmail_jobs->add(new Detail($killmail->killmail_id, $killmail->killmail_hash));
             });
 
-        } while ($this->nextPage($response->getPagesCount()));
+            if (! $this->nextPage($response->getPagesCount()))
+                break;
+        }
 
         if ($this->killmail_jobs->isNotEmpty()) {
             if($this->batchId) {

@@ -122,9 +122,6 @@ class Blueprints extends AbstractAuthCharacterJob
                         'item_id' => $blueprint->item_id,
                     ]);
 
-                    // Exit early in the case that the model exists.
-                    if ($model->exists) return;
-
                     BlueprintMapping::make($model, $blueprint, [
                         'character_id' => function () {
                             return $this->getCharacterId();

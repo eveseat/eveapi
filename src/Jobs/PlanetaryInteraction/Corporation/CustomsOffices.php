@@ -98,7 +98,7 @@ class CustomsOffices extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        do {
+        while (true) {
 
             $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
@@ -123,7 +123,9 @@ class CustomsOffices extends AbstractAuthCorporationJob
 
             });
 
-        } while ($this->nextPage($response->getPagesCount()));
+            if (! $this->nextPage($response->getPagesCount()))
+                break;
+        }
 
         // Cleanup customs offices that were not in the response.
         CorporationCustomsOffice::where('corporation_id', $this->getCorporationId())
