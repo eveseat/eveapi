@@ -57,7 +57,8 @@ class EseyeClient implements EsiClient
         $config->http_client = Client::class;
         $config->http_stream_factory = HttpFactory::class;
         $config->http_request_factory = HttpFactory::class;
-        $config->http_user_agent = sprintf('SeAT %s/%s', $version, setting('admin_contact', true));
+        $config->http_user_agent = sprintf('SeAT %s', $version);
+        $config->http_user_agent_eveapi_version = $version; //store this for later.
 
         $config->logger = Log::channel('eseye');
         $config->cache = Cache::store('eseye');
@@ -190,6 +191,16 @@ class EseyeClient implements EsiClient
      */
     public function invoke(string $method, string $uri, array $uri_data = []): EsiResponse
     {
+        // Here we update the user--agent with contact information.
+        // At this point it is updating it each call, at the cost
+        // of a cache request each time. If this proves to impact,
+        // then in the future we could guard the cache call.
+        // The benefit to not guarding it is that changes made in
+        // the UI are appied immediately.
+        $config = Configuration::getInstance();
+        $version = $config->http_user_agent_eveapi_version;
+        $config->http_user_agent = sprintf('SeAT %s/%s', $version, setting('admin_contact', true));
+
         $response = $this->instance->invoke($method, $uri, $uri_data);
 
         return new \Seat\Eveapi\Containers\EsiResponse(
