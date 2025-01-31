@@ -79,6 +79,18 @@ class Citadel extends AbstractAuthCharacterJob
 
     /**
      * {@inheritdoc}
+     */
+    public function tags(): array
+    {
+        $tags = parent::tags();
+
+        $tags[] = $this->structure_id;
+
+        return $tags;
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * @throws RequestFailedException
      */
