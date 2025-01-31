@@ -26,10 +26,10 @@ use Illuminate\Support\Facades\Bus;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
-use Seat\Eveapi\Contracts\CitadelAccessCache;
 
 class StructureBatch
 {
@@ -98,8 +98,9 @@ class StructureBatch
      * Returns whether a job for this citadel has already been scheduled.
      * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job.
      *
-     * @param int $structure_id
+     * @param  int  $structure_id
      * @return bool
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -111,8 +112,9 @@ class StructureBatch
      * Set a structure as already processing.
      * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job.
      *
-     * @param int $structure_id
+     * @param  int  $structure_id
      * @return void
+     *
      * @throws InvalidArgumentException
      */
     private function setStructureCurrentlyProcessing(int $structure_id): void {

@@ -27,7 +27,7 @@ use Seat\Eveapi\Traits\HasCompositePrimaryKey;
 use Seat\Services\Models\ExtensibleModel;
 
 /**
- * A citadel access cache that is stored in the database
+ * A citadel access cache that is stored in the database.
  *
  * @property int citadel_id
  * @property int character_id

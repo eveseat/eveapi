@@ -24,8 +24,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -38,7 +37,7 @@ return new class extends Migration
             $table->bigInteger('character_id');
             $table->timestamp('last_failed_access')->nullable();
 
-            $table->primary(['citadel_id','character_id']);
+            $table->primary(['citadel_id', 'character_id']);
         });
     }
 
