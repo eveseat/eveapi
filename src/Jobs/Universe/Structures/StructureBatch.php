@@ -23,9 +23,13 @@
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
 use Illuminate\Support\Facades\Bus;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Seat\Eveapi\Contracts\CitadelAccessCache;
 
 class StructureBatch
 {
@@ -66,11 +70,11 @@ class StructureBatch
         // we can only load citadels if we have a token
         if($token !== null) {
             // only dispatch the job if the citadel is unknown AND the character is not acl banned
-            $citadels = $citadels->filter(function ($citadel_id) use ($token) {
-
+            $accessCache = app()->make(CitadelAccessCache::class);
+            $citadels = $citadels->filter(function ($citadel_id) use ($accessCache, $token) {
                 return                                                                          // only schedule the citadel if:
                     UniverseStructure::find($citadel_id) === null                               // we don't already know it
-                    && CacheCitadelAccessCache::canAccess($token->character_id, $citadel_id)    // the character isn't banned
+                    && $accessCache::canAccess($token->character_id, $citadel_id)    // the character isn't banned
                     && ! $this->isCurrentlyProcessing($citadel_id);        // we haven't already scheduled it
             });
 
@@ -94,8 +98,10 @@ class StructureBatch
      * Returns whether a job for this citadel has already been scheduled.
      * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job.
      *
-     * @param  int  $structure_id
+     * @param int $structure_id
      * @return bool
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private function isCurrentlyProcessing(int $structure_id): bool {
         return cache()->get(sprintf('structure.%d.processing', $structure_id), false);
@@ -105,8 +111,9 @@ class StructureBatch
      * Set a structure as already processing.
      * This logic doesn't need to be 100% race-condition proof, as soon as it catches 99% it does its job.
      *
-     * @param  int  $structure_id
+     * @param int $structure_id
      * @return void
+     * @throws InvalidArgumentException
      */
     private function setStructureCurrentlyProcessing(int $structure_id): void {
         cache()->set(sprintf('structure.%d.processing', $structure_id), true, now()->addMinutes(60));

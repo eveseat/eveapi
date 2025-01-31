@@ -20,23 +20,40 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Universe\Structures;
+namespace Seat\Eveapi\Models\Universe;
 
-use Seat\Eveapi\Contracts\CitadelAccessCache;
+use Carbon\Carbon;
+use Seat\Eveapi\Traits\HasCompositePrimaryKey;
+use Seat\Services\Models\ExtensibleModel;
 
-class CacheCitadelAccessCache implements CitadelAccessCache
+/**
+ * A citadel access cache that is stored in the database
+ *
+ * @property int citadel_id
+ * @property int character_id
+ * @property Carbon last_failed_access
+ */
+class CitadelAccessCache extends ExtensibleModel
 {
-    private static function getCacheKey(int $character_id, int $citadel_id) {
-        return "citadel.$citadel_id.block.$character_id";
-    }
+    use HasCompositePrimaryKey;
 
-    public static function canAccess(int $character_id, int $citadel_id): bool
-    {
-        return cache()->get(self::getCacheKey($character_id, $citadel_id), true);
-    }
+    /**
+     * @var string
+     */
+    protected $primaryKey = ['citadel_id', 'character_id'];
 
-    public static function blockAccess(int $character_id, int $citadel_id)
-    {
-        cache()->set(self::getCacheKey($character_id, $citadel_id), false, now()->addSeconds(self::BLOCK_DURATION_SECONDS));
-    }
+    /**
+     * @var bool
+     */
+    public $incrementing = true;
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * @var string
+     */
+    protected $table = 'citadel_access_cache';
 }

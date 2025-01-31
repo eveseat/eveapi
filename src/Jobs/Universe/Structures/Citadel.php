@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
 use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Mapping\Structures\UniverseStructureMapping;
 use Seat\Eveapi\Models\RefreshToken;
@@ -90,7 +91,8 @@ class Citadel extends AbstractAuthCharacterJob
         if(UniverseStructure::find($this->structure_id) !== null) return;
 
         // check if the acl cache allows refetching the structure
-        if(! CacheCitadelAccessCache::canAccess($this->getCharacterId(), $this->structure_id)) return;
+        $accessCache = app()->make(CitadelAccessCache::class);
+        if(! $accessCache::canAccess($this->getCharacterId(), $this->structure_id)) return;
 
         try {
             // attempt to resolve the structure
@@ -112,7 +114,7 @@ class Citadel extends AbstractAuthCharacterJob
 
         } catch (RequestFailedException $e) {
             if($e->getEsiResponse()->getErrorCode() === 403) {
-                CacheCitadelAccessCache::blockAccess($this->getCharacterId(), $this->structure_id);
+                $accessCache::blockAccess($this->getCharacterId(), $this->structure_id);
             } else {
                 throw $e;
             }

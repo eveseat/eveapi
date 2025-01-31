@@ -20,23 +20,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Universe\Structures;
+namespace Seat\Eveapi\Contracts;
 
-use Seat\Eveapi\Contracts\CitadelAccessCache;
-
-class CacheCitadelAccessCache implements CitadelAccessCache
+interface CitadelAccessCache
 {
-    private static function getCacheKey(int $character_id, int $citadel_id) {
-        return "citadel.$citadel_id.block.$character_id";
-    }
+    const BLOCK_DURATION_SECONDS = 60 * 60 * 24 * 7 * 4; // 4 weeks
 
-    public static function canAccess(int $character_id, int $citadel_id): bool
-    {
-        return cache()->get(self::getCacheKey($character_id, $citadel_id), true);
-    }
+    /**
+     * Checks whether a character can access a citadel or if esi will return an error 403.
+     *
+     * @param  int  $character_id
+     * @param  int  $citadel_id
+     * @return bool
+     */
+    public static function canAccess(int $character_id, int $citadel_id): bool;
 
-    public static function blockAccess(int $character_id, int $citadel_id)
-    {
-        cache()->set(self::getCacheKey($character_id, $citadel_id), false, now()->addSeconds(self::BLOCK_DURATION_SECONDS));
-    }
+    /**
+     * After having received an error 403, block a character from further accesses.
+     *
+     * @param  int  $character_id
+     * @param  int  $citadel_id
+     * @return mixed
+     */
+    public static function blockAccess(int $character_id, int $citadel_id);
 }
