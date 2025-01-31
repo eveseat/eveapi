@@ -24,6 +24,8 @@ namespace Seat\Eveapi;
 
 use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Jobs\Universe\Structures\CacheCitadelAccessCache;
+use Seat\Eveapi\Jobs\Universe\Structures\DBCitadelAccessCache;
+use Seat\Eveapi\Jobs\Universe\Structures\StructureBatch;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\AbstractSeatPlugin;
@@ -74,7 +76,11 @@ class EveapiServiceProvider extends AbstractSeatPlugin
             // \Seat\Eveapi\Database\Seeders\Sde\SdeSeeder::class, -- Disabled until later implemented again in services
         ]);
 
-        $this->app->bindIf(CitadelAccessCache::class, CacheCitadelAccessCache::class);
+        if(env("CITADEL_ACCESS_CACHE") === "db"){
+            $this->app->bind(CitadelAccessCache::class, DBCitadelAccessCache::class);
+        } else {
+            $this->app->bind(CitadelAccessCache::class, CacheCitadelAccessCache::class);
+        }
     }
 
     private function addCommands()
