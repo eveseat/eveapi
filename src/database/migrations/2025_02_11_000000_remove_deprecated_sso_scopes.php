@@ -37,7 +37,7 @@ class RemoveDeprecatedSsoScopes extends Migration
         $remove_scopes = [
             'esi-bookmarks.read_character_bookmarks.v1',
             'esi-bookmarks.read_corporation_bookmarks.v1',
-            'esi-characters.read_opportunities.v1'
+            'esi-characters.read_opportunities.v1',
         ];
 
         // Fix existing tokens
@@ -58,7 +58,7 @@ class RemoveDeprecatedSsoScopes extends Migration
                         ->where('character_id', $refresh_token->character_id)
                         ->update([
                             'scopes' => json_encode($scopes),
-                    ]);
+                        ]);
                 }
             });
     }
