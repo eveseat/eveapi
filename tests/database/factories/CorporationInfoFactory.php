@@ -39,7 +39,7 @@ class CorporationInfoFactory extends Factory
     public function definition(): array
     {
         return [
-            'corporation_id' => fake()->numberBetween(98000000, 98001794),
+            'corporation_id' => fake()->unique()->numberBetween(98000000, 98001794),
             'name' => fake()->company,
             'ticker' => fake()->currencyCode,
             'member_count' => fake()->numberBetween(5, 200),
