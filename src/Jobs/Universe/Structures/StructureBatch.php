@@ -23,6 +23,10 @@
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
 use Illuminate\Support\Facades\Bus;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\SimpleCache\InvalidArgumentException;
+use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
@@ -66,11 +70,11 @@ class StructureBatch
         // we can only load citadels if we have a token
         if($token !== null) {
             // only dispatch the job if the citadel is unknown AND the character is not acl banned
-            $citadels = $citadels->filter(function ($citadel_id) use ($token) {
-
+            $accessCache = app()->make(CitadelAccessCache::class);
+            $citadels = $citadels->filter(function ($citadel_id) use ($accessCache, $token) {
                 return                                                                          // only schedule the citadel if:
                     UniverseStructure::find($citadel_id) === null                               // we don't already know it
-                    && CacheCitadelAccessCache::canAccess($token->character_id, $citadel_id)    // the character isn't banned
+                    && $accessCache::canAccess($token->character_id, $citadel_id)    // the character isn't banned
                     && ! $this->isCurrentlyProcessing($citadel_id);        // we haven't already scheduled it
             });
 
@@ -96,6 +100,9 @@ class StructureBatch
      *
      * @param  int  $structure_id
      * @return bool
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private function isCurrentlyProcessing(int $structure_id): bool {
         return cache()->get(sprintf('structure.%d.processing', $structure_id), false);
@@ -107,6 +114,8 @@ class StructureBatch
      *
      * @param  int  $structure_id
      * @return void
+     *
+     * @throws InvalidArgumentException
      */
     private function setStructureCurrentlyProcessing(int $structure_id): void {
         cache()->set(sprintf('structure.%d.processing', $structure_id), true, now()->addMinutes(60));

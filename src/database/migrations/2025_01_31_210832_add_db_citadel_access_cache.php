@@ -20,27 +20,34 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Universe\Structures;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-interface CitadelAccessCache
-{
-    const BLOCK_DURATION_SECONDS = 60 * 60 * 24 * 7 * 4; // 4 weeks
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('citadel_access_cache', function (Blueprint $table) {
+            $table->bigInteger('citadel_id');
+            $table->bigInteger('character_id');
+            $table->timestamp('last_failed_access')->nullable();
+
+            $table->primary(['citadel_id', 'character_id']);
+        });
+    }
 
     /**
-     * Checks whether a character can access a citadel or if esi will return an error 403.
+     * Reverse the migrations.
      *
-     * @param  int  $character_id
-     * @param  int  $citadel_id
-     * @return bool
+     * @return void
      */
-    public static function canAccess(int $character_id, int $citadel_id): bool;
-
-    /**
-     * After having received an error 403, block a character from further accesses.
-     *
-     * @param  int  $character_id
-     * @param  int  $citadel_id
-     * @return mixed
-     */
-    public static function blockAccess(int $character_id, int $citadel_id);
-}
+    public function down()
+    {
+        Schema::drop('citadel_access_cache');
+    }
+};

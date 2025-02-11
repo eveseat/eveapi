@@ -23,20 +23,41 @@
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
 use Seat\Eveapi\Contracts\CitadelAccessCache;
+use Seat\Eveapi\Models\Universe\CitadelAccessCache as CitadelAccessCacheModel;
 
-class CacheCitadelAccessCache implements CitadelAccessCache
+class DBCitadelAccessCache implements CitadelAccessCache
 {
-    private static function getCacheKey(int $character_id, int $citadel_id) {
-        return "citadel.$citadel_id.block.$character_id";
-    }
-
+    /**
+     * @inheritDoc
+     */
     public static function canAccess(int $character_id, int $citadel_id): bool
     {
-        return cache()->get(self::getCacheKey($character_id, $citadel_id), true);
+        $entry = CitadelAccessCacheModel::where('character_id', $character_id)
+            ->where('citadel_id', $citadel_id)
+            ->where('last_failed_access', '>=', now()->subSeconds(self::BLOCK_DURATION_SECONDS))
+            ->first();
+
+        if($entry === null) return true;
+
+        return false;
     }
 
+    /**
+     * @inheritDoc
+     */
     public static function blockAccess(int $character_id, int $citadel_id)
     {
-        cache()->set(self::getCacheKey($character_id, $citadel_id), false, now()->addSeconds(self::BLOCK_DURATION_SECONDS));
+        $entry = CitadelAccessCacheModel::where('character_id', $character_id)
+            ->where('citadel_id', $citadel_id)
+            ->first();
+
+        if($entry === null) {
+            $entry = new CitadelAccessCacheModel();
+            $entry->character_id = $character_id;
+            $entry->citadel_id = $citadel_id;
+        }
+
+        $entry->last_failed_access = now();
+        $entry->save();
     }
 }
