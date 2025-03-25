@@ -72,7 +72,7 @@ class Names extends EsiBase
     protected $existing_entity_ids;
 
     /**
-     * @param \Illuminate\Support\Collection|null  $entity_ids
+     * @param  \Illuminate\Support\Collection|null  $entity_ids
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
