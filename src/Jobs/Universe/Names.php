@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\Universe;
 
+use Illuminate\Support\Collection;
 use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Eveapi\Models\Wallet\CharacterWalletJournal;
@@ -71,6 +72,19 @@ class Names extends EsiBase
     protected $existing_entity_ids;
 
     /**
+     * @param \Illuminate\Support\Collection|null $entity_ids
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function __construct (?Collection $entity_ids = null)
+    {
+        parent::__construct();
+
+        if ($entity_ids) {
+            $this->entity_ids = $entity_ids;
+        }
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \Throwable
@@ -83,28 +97,29 @@ class Names extends EsiBase
             ->get()
             ->pluck('entity_id');
 
-        $this->entity_ids = collect();
+        // if no entity IDs were specified, try to resolve all unresolved universe names
+        if (!isset($this->entity_ids)) {
+            $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')
+                ->whereNotNull('first_party_id')
+                ->distinct()
+                ->get()
+                ->pluck('first_party_id')
+                ->toArray());
 
-        $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')
-            ->whereNotNull('first_party_id')
-            ->distinct()
-            ->get()
-            ->pluck('first_party_id')
-            ->toArray());
+            $this->entity_ids->push(CharacterWalletJournal::select('second_party_id')
+                ->whereNotNull('second_party_id')
+                ->distinct()
+                ->get()
+                ->pluck('second_party_id')
+                ->toArray());
 
-        $this->entity_ids->push(CharacterWalletJournal::select('second_party_id')
-            ->whereNotNull('second_party_id')
-            ->distinct()
-            ->get()
-            ->pluck('second_party_id')
-            ->toArray());
-
-        $this->entity_ids->push(CharacterWalletTransaction::select('client_id')
-            ->whereNotNull('client_id')
-            ->distinct()
-            ->get()
-            ->pluck('client_id')
-            ->toArray());
+            $this->entity_ids->push(CharacterWalletTransaction::select('client_id')
+                ->whereNotNull('client_id')
+                ->distinct()
+                ->get()
+                ->pluck('client_id')
+                ->toArray());
+        }
 
         $this->entity_ids->flatten()->diff($this->existing_entity_ids)->values()->chunk($this->items_id_limit)->each(function ($chunk) {
 
