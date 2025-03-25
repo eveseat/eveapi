@@ -92,11 +92,6 @@ class Names extends EsiBase
     public function handle()
     {
 
-        $this->existing_entity_ids = UniverseName::select('entity_id')
-            ->distinct()
-            ->get()
-            ->pluck('entity_id');
-
         // if no entity IDs were specified, try to resolve all unresolved universe names
         if (!isset($this->entity_ids)) {
             $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')
@@ -120,6 +115,15 @@ class Names extends EsiBase
                 ->pluck('client_id')
                 ->toArray());
         }
+
+        if ($this->entity_ids->isEmpty()) {
+            return;
+        }
+
+        $this->existing_entity_ids = UniverseName::select('entity_id')
+            ->distinct()
+            ->get()
+            ->pluck('entity_id');
 
         $this->entity_ids->flatten()->diff($this->existing_entity_ids)->values()->chunk($this->items_id_limit)->each(function ($chunk) {
 
