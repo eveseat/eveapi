@@ -72,10 +72,11 @@ class Names extends EsiBase
     protected $existing_entity_ids;
 
     /**
-     * @param \Illuminate\Support\Collection|null $entity_ids
+     * @param \Illuminate\Support\Collection|null  $entity_ids
+     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function __construct (?Collection $entity_ids = null)
+    public function __construct(?Collection $entity_ids = null)
     {
         parent::__construct();
 
@@ -93,7 +94,7 @@ class Names extends EsiBase
     {
 
         // if no entity IDs were specified, try to resolve all unresolved universe names
-        if (!isset($this->entity_ids)) {
+        if (! isset($this->entity_ids)) {
             $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')
                 ->whereNotNull('first_party_id')
                 ->distinct()
