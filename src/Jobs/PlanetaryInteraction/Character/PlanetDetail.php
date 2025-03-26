@@ -402,6 +402,7 @@ class PlanetDetail extends AbstractAuthCharacterJob
             $type = $pins->first();
 
             CharacterPlanetContent::where('character_id', $this->getCharacterId())
+                ->where('planet_id', $this->planet_id)
                 ->where('type_id', $type['type_id'])
                 ->whereNotIn('pin_id', $pins->pluck('pin_id'))
                 ->delete();
