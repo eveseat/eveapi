@@ -402,6 +402,14 @@ class CharacterInfo extends ExtensibleModel
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function trashed_token()
+    {
+        return $this->hasOne(RefreshToken::class, 'character_id', 'character_id')->withTrashed();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function standings()
