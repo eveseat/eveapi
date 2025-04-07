@@ -120,7 +120,7 @@ class Maintenance implements ShouldQueue
     {
 
         // Need to find all corps that dont have a reason to be kept (no chars with tokens and not part of an alliance that has an active member)
-        Alliance::where( function ($query) {
+        Alliance::where(function ($query) {
             $query->doesntHave('corporations.characters.trashed_token');
             $query->orWhereRelation('corporations.characters.trashed_token', 'deleted_at', '<', now()->subDay(30));
         })
@@ -131,7 +131,7 @@ class Maintenance implements ShouldQueue
         // Now delete all the corps that have no alliance and no active tokens
         CorporationInfo::whereNotBetween('corporation_id', [1000000, 1999999])
             ->doesntHave('alliance')
-            ->where(function ($query) {    
+            ->where(function ($query) {
                 $query->doesntHave('characters.trashed_token');
                 $query->orWhereRelation('characters.trashed_token', 'deleted_at', '<', now()->subDay(30));
             })
