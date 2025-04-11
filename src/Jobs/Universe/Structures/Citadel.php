@@ -133,4 +133,30 @@ class Citadel extends AbstractAuthCharacterJob
         }
 
     }
+
+    /**
+     * @param  \Throwable  $exception
+     * 
+     * We have a unique case here where we want to delete the failed job in
+     * the case that its a MaxAttemptsExceededException as we dont want to
+     * keep polluting the failed_jobs
+     *
+     * @throws \Exception
+     */
+    public function failed(Throwable $exception)
+    {
+        // used token is non longer valid, remove it from the system.
+        if ($exception instanceof MaxAttemptsExceededException) {
+            logger()->warning(
+                sprintf('[Citadel] Citadel job failed due to MaxAttemptsExceeded, deleting.'),
+                [
+                    'structure_id' => $this->structure_id,
+                    'character_id' => $this->getCharacterId(),
+                ]);
+            $this->delete();
+            return;
+        }
+
+        parent::failed($exception);
+    }
 }
