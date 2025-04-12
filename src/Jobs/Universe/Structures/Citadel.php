@@ -22,12 +22,14 @@
 
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
+use Exception;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
 use Seat\Eveapi\Mapping\Structures\UniverseStructureMapping;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Eveapi\Models\Universe\UniverseStructure;
+use Throwable;
 
 /**
  * Class Citadels.
@@ -136,7 +138,7 @@ class Citadel extends AbstractAuthCharacterJob
 
     /**
      * @param  \Throwable  $exception
-     * 
+     *
      * We have a unique case here where we want to delete the failed job in
      * the case that its a MaxAttemptsExceededException as we dont want to
      * keep polluting the failed_jobs
