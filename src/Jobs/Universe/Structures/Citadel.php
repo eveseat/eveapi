@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
 use Exception;
+use Illuminate\Queue\MaxAttemptsExceededException;
 use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
