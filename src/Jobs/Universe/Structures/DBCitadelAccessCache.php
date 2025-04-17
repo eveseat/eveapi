@@ -22,7 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
-use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Models\Universe\CitadelAccessCache as CitadelAccessCacheModel;
 
 class DBCitadelAccessCache extends AbstractCitadelAccessCache

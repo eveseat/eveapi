@@ -24,8 +24,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -34,7 +33,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('citadel_access_cache', function (Blueprint $table) {
-            $table->renameColumn('last_failed_access','next_allowed_access');
+            $table->renameColumn('last_failed_access', 'next_allowed_access');
         });
     }
 
@@ -46,7 +45,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('citadel_access_cache', function (Blueprint $table) {
-            $table->renameColumn('next_allowed_access','last_failed_access');
+            $table->renameColumn('next_allowed_access', 'last_failed_access');
         });
     }
 };

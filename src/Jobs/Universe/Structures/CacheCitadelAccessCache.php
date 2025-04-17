@@ -22,8 +22,6 @@
 
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
-use Seat\Eveapi\Contracts\CitadelAccessCache;
-
 class CacheCitadelAccessCache extends AbstractCitadelAccessCache
 {
     private static function getCacheKey(int $character_id, int $citadel_id) {
