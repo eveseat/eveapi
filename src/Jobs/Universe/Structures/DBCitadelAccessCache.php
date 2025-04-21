@@ -22,10 +22,9 @@
 
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
-use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Models\Universe\CitadelAccessCache as CitadelAccessCacheModel;
 
-class DBCitadelAccessCache implements CitadelAccessCache
+class DBCitadelAccessCache extends AbstractCitadelAccessCache
 {
     /**
      * @inheritDoc
@@ -34,7 +33,7 @@ class DBCitadelAccessCache implements CitadelAccessCache
     {
         $entry = CitadelAccessCacheModel::where('character_id', $character_id)
             ->where('citadel_id', $citadel_id)
-            ->where('last_failed_access', '>=', now()->subSeconds(self::BLOCK_DURATION_SECONDS))
+            ->where('next_allowed_access', '>=', now())
             ->first();
 
         if($entry === null) return true;
@@ -57,7 +56,7 @@ class DBCitadelAccessCache implements CitadelAccessCache
             $entry->citadel_id = $citadel_id;
         }
 
-        $entry->last_failed_access = now();
+        $entry->next_allowed_access = now()->addSeconds(self::getRandomizedBlockDuration());
         $entry->save();
     }
 }

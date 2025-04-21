@@ -20,21 +20,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Jobs\Universe\Structures;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CacheCitadelAccessCache extends AbstractCitadelAccessCache
-{
-    private static function getCacheKey(int $character_id, int $citadel_id) {
-        return "citadel.$citadel_id.block.$character_id";
-    }
-
-    public static function canAccess(int $character_id, int $citadel_id): bool
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
     {
-        return cache()->get(self::getCacheKey($character_id, $citadel_id), true);
+        Schema::table('citadel_access_cache', function (Blueprint $table) {
+            $table->renameColumn('last_failed_access', 'next_allowed_access');
+        });
     }
 
-    public static function blockAccess(int $character_id, int $citadel_id)
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
     {
-        cache()->set(self::getCacheKey($character_id, $citadel_id), false, now()->addSeconds(self::getRandomizedBlockDuration()));
+        Schema::table('citadel_access_cache', function (Blueprint $table) {
+            $table->renameColumn('next_allowed_access', 'last_failed_access');
+        });
     }
-}
+};

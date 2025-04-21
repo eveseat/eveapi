@@ -22,19 +22,17 @@
 
 namespace Seat\Eveapi\Jobs\Universe\Structures;
 
-class CacheCitadelAccessCache extends AbstractCitadelAccessCache
+use Seat\Eveapi\Contracts\CitadelAccessCache;
+
+abstract class AbstractCitadelAccessCache implements CitadelAccessCache
 {
-    private static function getCacheKey(int $character_id, int $citadel_id) {
-        return "citadel.$citadel_id.block.$character_id";
-    }
-
-    public static function canAccess(int $character_id, int $citadel_id): bool
+    /**
+     * Returns a randomized block duration on the order of self::BLOCK_DURATION_SECONDS.
+     *
+     * @return int
+     */
+    protected static function getRandomizedBlockDuration(): int
     {
-        return cache()->get(self::getCacheKey($character_id, $citadel_id), true);
-    }
-
-    public static function blockAccess(int $character_id, int $citadel_id)
-    {
-        cache()->set(self::getCacheKey($character_id, $citadel_id), false, now()->addSeconds(self::getRandomizedBlockDuration()));
+        return rand((int) (self::BLOCK_DURATION_SECONDS * 0.5), (int) (self::BLOCK_DURATION_SECONDS * 1.5));
     }
 }
