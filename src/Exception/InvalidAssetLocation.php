@@ -32,7 +32,7 @@ use Throwable;
  */
 class InvalidAssetLocation extends Exception
 {
-    public function __construct(Throwable $previous = null)
+    public function __construct(?Throwable $previous = null)
     {
         $message = 'Invalid Asset Location requested. Check your logs to get more details.';
         $code = 400;
