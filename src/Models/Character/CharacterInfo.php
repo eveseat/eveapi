@@ -414,16 +414,6 @@ class CharacterInfo extends ExtensibleModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function stats()
-    {
-
-        return $this->hasMany(CharacterStats::class,
-            'character_id', 'character_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function skills()
     {
 
