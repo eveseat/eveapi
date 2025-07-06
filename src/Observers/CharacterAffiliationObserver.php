@@ -39,7 +39,21 @@ class CharacterAffiliationObserver
     /**
      * @param  \Seat\Eveapi\Models\Character\CharacterAffiliation  $affiliation
      */
-    public function created(CharacterAffiliation $affiliation)
+    public function created(CharacterAffiliation $affiliation){
+        $this->handle($affiliation);
+    }
+
+    /**
+     * @param  \Seat\Eveapi\Models\Character\CharacterAffiliation  $affiliation
+     */
+    public function updated(CharacterAffiliation $affiliation){
+        $this->handle($affiliation);
+    }
+
+    /**
+     * @param  \Seat\Eveapi\Models\Character\CharacterAffiliation  $affiliation
+     */
+    public function handle(CharacterAffiliation $affiliation)
     {
         if (! CorporationInfo::find($affiliation->corporation_id) && RefreshToken::withTrashed()->find($affiliation->character_id))
             dispatch(new CorporationInfoJob($affiliation->corporation_id))->onQueue('high');
