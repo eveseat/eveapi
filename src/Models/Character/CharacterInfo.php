@@ -404,7 +404,7 @@ class CharacterInfo extends ExtensibleModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function trashed_token()
+    public function token_with_trashed()
     {
         return $this->hasOne(RefreshToken::class, 'character_id', 'character_id')->withTrashed();
     }
