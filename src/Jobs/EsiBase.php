@@ -115,6 +115,13 @@ abstract class EsiBase extends AbstractJob
     protected $version = '';
 
     /**
+     * When this job was written, so ESI can try to serve a response compatible with the behaviour of the endpoint at that time.
+     *
+     * @var string
+     */
+    protected string $compatibility_date = "2025-07-20";
+
+    /**
      * The SSO scope required to make the call.
      *
      * @var string
@@ -301,6 +308,7 @@ abstract class EsiBase extends AbstractJob
     {
         $this->validateCall();
 
+        $this->esi->setCompatibilityDate($this->compatibility_date);
         $this->esi->setBody($this->request_body);
         $this->esi->setQueryString($this->query_string);
 
