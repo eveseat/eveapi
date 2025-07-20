@@ -120,25 +120,6 @@ class EseyeClient implements EsiClient
     }
 
     /**
-     * @return string
-     */
-    public function getVersion(): string
-    {
-        return $this->instance->getVersion();
-    }
-
-    /**
-     * @param  string  $version
-     * @return \Seat\Services\Contracts\EsiClient
-     */
-    public function setVersion(string $version): EsiClient
-    {
-        $this->instance->setVersion($version);
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getQueryString(): array
