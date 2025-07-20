@@ -230,4 +230,21 @@ class EseyeClient implements EsiClient
     {
         return $this->instance->getValidAccessToken()->access_token;
     }
+
+    /**
+     * @param string $date
+     * @return void
+     */
+    public function setCompatibilityDate(string $date): void
+    {
+        $this->instance->setCompatibilityDate($date);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompatibilityDate(): string
+    {
+        return $this->instance->getCompatibilityDate();
+    }
 }
