@@ -172,6 +172,7 @@ class KillmailVictim extends ExtensibleModel
     public function items()
     {
         return $this->belongsToMany(InvType::class, 'killmail_victim_items', 'killmail_id', 'item_type_id', 'killmail_id', 'typeID')
+            ->using(KillmailVictimItem::class)
             ->withPivot(['quantity_destroyed', 'quantity_dropped', 'singleton', 'flag']);
     }
 }

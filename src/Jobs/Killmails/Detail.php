@@ -29,6 +29,7 @@ use Seat\Eveapi\Mapping\Killmails\VictimMapping;
 use Seat\Eveapi\Models\Killmails\KillmailAttacker;
 use Seat\Eveapi\Models\Killmails\KillmailDetail;
 use Seat\Eveapi\Models\Killmails\KillmailVictim;
+use Seat\Eveapi\Models\Killmails\KillmailVictimItem;
 
 /**
  * Class Detail.
@@ -94,6 +95,8 @@ class Detail extends EsiBase
      */
     public function handle()
     {
+        if(KillmailDetail::where('killmail_id', $this->killmail_id)->exists()) return;
+
         $response = $this->retrieve([
             'killmail_id' => $this->killmail_id,
             'killmail_hash' => $this->killmail_hash,
@@ -143,21 +146,32 @@ class Detail extends EsiBase
 
         if (property_exists($detail->victim, 'items')) {
 
-            collect($detail->victim->items)->each(function ($item) use ($victim) {
+            $result = collect($detail->victim->items)
+                ->groupBy(function ($item) {
+                    return sprintf("%d-%d-%d",$item->item_type_id, $item->flag, $item->singleton);
+                })->each(function ($items){
+                    $quantity_dropped = 0;
+                    $quantity_destroyed = 0;
 
-                $pivot_attributes = [
-                    'flag' => $item->flag,
-                    'singleton' => $item->singleton,
-                ];
+                    foreach ($items as $item){
+                        if (property_exists($item, 'quantity_destroyed'))
+                            $quantity_destroyed += $item->quantity_destroyed;
 
-                if (property_exists($item, 'quantity_destroyed'))
-                    $pivot_attributes['quantity_destroyed'] = $item->quantity_destroyed;
+                        if (property_exists($item, 'quantity_dropped'))
+                            $quantity_dropped += $item->quantity_dropped;
+                    }
 
-                if (property_exists($item, 'quantity_dropped'))
-                    $pivot_attributes['quantity_dropped'] = $item->quantity_dropped;
-
-                $victim->items()->attach($item->item_type_id, $pivot_attributes);
-            });
+                    $group = $items->first();
+                    KillmailVictimItem::updateOrCreate([
+                        'item_type_id'=>$group->item_type_id,
+                        'flag'=>$group->flag,
+                        'singleton'=>$group->singleton,
+                        'killmail_id'=>$this->killmail_id
+                    ],[
+                        'quantity_destroyed' => $quantity_destroyed,
+                        'quantity_dropped' => $quantity_dropped
+                    ]);
+                });
         }
 
         event(sprintf('eloquent.updated: %s', KillmailDetail::class), $killmail);
