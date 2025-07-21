@@ -148,8 +148,8 @@ class Detail extends EsiBase
 
             $result = collect($detail->victim->items)
                 ->groupBy(function ($item) {
-                    return sprintf("%d-%d-%d",$item->item_type_id, $item->flag, $item->singleton);
-                })->each(function ($items){
+                    return sprintf('%d-%d-%d', $item->item_type_id, $item->flag, $item->singleton);
+                })->each(function ($items) {
                     $quantity_dropped = 0;
                     $quantity_destroyed = 0;
 
@@ -163,13 +163,13 @@ class Detail extends EsiBase
 
                     $group = $items->first();
                     KillmailVictimItem::updateOrCreate([
-                        'item_type_id'=>$group->item_type_id,
-                        'flag'=>$group->flag,
-                        'singleton'=>$group->singleton,
-                        'killmail_id'=>$this->killmail_id
-                    ],[
+                        'item_type_id' => $group->item_type_id,
+                        'flag' => $group->flag,
+                        'singleton' => $group->singleton,
+                        'killmail_id' => $this->killmail_id,
+                    ], [
                         'quantity_destroyed' => $quantity_destroyed,
-                        'quantity_dropped' => $quantity_dropped
+                        'quantity_dropped' => $quantity_dropped,
                     ]);
                 });
         }
