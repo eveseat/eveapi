@@ -88,7 +88,7 @@ class Orders extends EsiBase
                         'duration' => $order->duration,
                         'is_buy_order' => $order->is_buy_order,
                         'issued' => $issued,
-                        'expiry' => $issued->addDays($order->duration),
+                        'expiry' => $issued->copy()->addDays($order->duration),
                         'location_id' => $order->location_id,
                         'min_volume' => $order->min_volume,
                         'price' => $order->price,
