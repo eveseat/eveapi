@@ -47,7 +47,7 @@ class Orders extends EsiBase
     /**
      * @var string
      */
-    protected $version = 'v1';
+    protected string $compatibility_date = "2025-07-20";
 
     /**
      * @var array

@@ -47,7 +47,7 @@ class ContainerLogs extends AbstractAuthCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v3';
+    protected string $compatibility_date = "2025-07-20";
 
     /**
      * @var string

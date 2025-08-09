@@ -46,7 +46,7 @@ class Journal extends AbstractAuthCharacterJob
     /**
      * @var string
      */
-    protected $version = 'v6';
+    protected string $compatibility_date = "2025-07-20";
 
     /**
      * @var string
