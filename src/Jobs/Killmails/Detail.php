@@ -61,9 +61,9 @@ class Detail extends EsiBase
     protected $endpoint = '/killmails/{killmail_id}/{killmail_hash}/';
 
     /**
-     * @var int
+     * @var string
      */
-    protected $version = 'v1';
+    protected string $compatibility_date = '2025-07-20';
 
     /**
      * @var array

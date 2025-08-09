@@ -238,7 +238,7 @@ class Diagnose extends Command
         $this->line(' * Checking ESI Access');
 
         try {
-            $result = $this->esi->setVersion('v1')->invoke('get', '/status/');
+            $result = $this->esi->setCompatibilityDate('2025-08-09')->invoke('get', '/status/');
             $this->info('Server Online Since: ' . $result->getBody()->start_time);
             $this->info('Online Players: ' . $result->getBody()->players);
 
