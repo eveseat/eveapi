@@ -73,7 +73,7 @@ class Ping extends Command
     {
         try {
 
-            $this->esi->setVersion('')->invoke('get', '/ping');
+            $this->esi->setCompatibilityDate('2025-08-09')->invoke('get', '/ping');
 
         } catch (RequestFailedException $e) {
 

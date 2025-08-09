@@ -235,9 +235,11 @@ class EseyeClient implements EsiClient
      * @param string $date
      * @return void
      */
-    public function setCompatibilityDate(string $date): void
+    public function setCompatibilityDate(string $date): self
     {
         $this->instance->setCompatibilityDate($date);
+
+        return $this;
     }
 
     /**
