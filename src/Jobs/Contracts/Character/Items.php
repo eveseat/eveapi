@@ -68,7 +68,7 @@ class Items extends AbstractAuthCharacterJob
     /**
      * @var string
      */
-    protected string $compatibility_date = "2025-07-20";
+    protected string $compatibility_date = '2025-07-20';
 
     /**
      * @var string

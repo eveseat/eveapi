@@ -232,7 +232,7 @@ class EseyeClient implements EsiClient
     }
 
     /**
-     * @param string $date
+     * @param  string  $date
      * @return void
      */
     public function setCompatibilityDate(string $date): self

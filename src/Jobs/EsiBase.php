@@ -119,7 +119,7 @@ abstract class EsiBase extends AbstractJob
      *
      * @var string
      */
-    protected string $compatibility_date = "2025-07-20";
+    protected string $compatibility_date = '2025-07-20';
 
     /**
      * The SSO scope required to make the call.
