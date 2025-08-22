@@ -45,6 +45,7 @@ use Seat\Eveapi\Jobs\Clones\Clones;
 use Seat\Eveapi\Jobs\Clones\Implants;
 use Seat\Eveapi\Jobs\Contacts\Character\Contacts;
 use Seat\Eveapi\Jobs\Contacts\Character\Labels as ContactLabels;
+use Seat\Eveapi\Jobs\Corporation\Info as CorporationInfoJob;
 use Seat\Eveapi\Jobs\Fittings\Character\Fittings;
 use Seat\Eveapi\Jobs\Industry\Character\Jobs;
 use Seat\Eveapi\Jobs\Industry\Character\Mining;
@@ -105,10 +106,15 @@ class Character extends Bus
             $this->addAuthenticatedJobs();
 
         // Character
-        $character = CharacterInfo::firstOrNew(
+        $character = CharacterInfo::with('affiliation.corporationInfo')->firstOrNew(
             ['character_id' => $this->character_id],
             ['name' => "Unknown Character : {$this->character_id}"]
         );
+
+        // integrity check: ensure we have corporation_info for every character
+        if($character->affiliation !== null && $character->affiliation->corporationInfo === null) {
+            $this->addPublicJob(new CorporationInfoJob($character->affiliation->corporation_id));
+        }
 
         \Illuminate\Support\Facades\Bus::batch([$this->jobs->toArray()])
             ->then(function (Batch $batch) {
