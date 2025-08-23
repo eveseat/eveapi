@@ -24,6 +24,7 @@ namespace Seat\Eveapi\Models\Character;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Services\Models\ExtensibleModel;
 use Seat\Tests\Eveapi\Database\Factories\CharacterAffiliationFactory;
@@ -82,6 +83,14 @@ class CharacterAffiliation extends ExtensibleModel
                 'name' => trans('web::seat.unknown'),
                 'category' => 'corporation',
             ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function corporationInfo()
+    {
+        return $this->hasOne(CorporationInfo::class, 'corporation_id', 'corporation_id');
     }
 
     /**
