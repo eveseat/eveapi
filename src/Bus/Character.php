@@ -112,7 +112,7 @@ class Character extends Bus
         );
 
         // integrity check: ensure we have corporation_info for every character
-        if($character->affiliation !== null && $character->affiliation->corporationInfo === null) {
+        if($character->affiliation !== null && $character->affiliation->corporationInfo === null && $character->affiliation->corporation_id !== null) {
             $this->addPublicJob(new CorporationInfoJob($character->affiliation->corporation_id));
         }
 
