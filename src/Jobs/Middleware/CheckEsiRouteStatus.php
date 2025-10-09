@@ -95,7 +95,7 @@ class CheckEsiRouteStatus
             // Need to probe the status endpoint in order to determine if it is up.
             try {
                 $client = app()->make(EsiClient::class);
-                $client->setVersion('');
+                $client->setCompatibilityDate('2025-08-09');
                 $client->setQueryString(['version' => 'latest']);
                 $response = $client->invoke('get', '/status.json');
 

@@ -45,9 +45,9 @@ class Mails extends AbstractAuthCharacterJob
     protected $endpoint = '/characters/{character_id}/mail/';
 
     /**
-     * @var int
+     * @var string
      */
-    protected $version = 'v1';
+    protected string $compatibility_date = '2025-07-20';
 
     /**
      * @var string
@@ -115,7 +115,7 @@ class Mails extends AbstractAuthCharacterJob
 
             // pull related body if header is new
             if ($mail_header->wasRecentlyCreated) {
-                $body = $this->esi->setVersion('v1')->invoke('get', '/characters/{character_id}/mail/{mail_id}/', [
+                $body = $this->esi->setCompatibilityDate('2025-08-09')->invoke('get', '/characters/{character_id}/mail/{mail_id}/', [
                     'character_id' => $this->getCharacterId(),
                     'mail_id' => $header->mail_id,
                 ]);

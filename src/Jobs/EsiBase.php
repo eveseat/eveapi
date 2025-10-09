@@ -108,9 +108,18 @@ abstract class EsiBase extends AbstractJob
      *
      * Eg: v1, v4
      *
+     * @deprecated ESI no longer uses versioned endpoints. Support for this field will be removed in SeAT 6. Until then, setting a version has no effect.
+     *
      * @var int
      */
     protected $version = '';
+
+    /**
+     * When this job was written, so ESI can try to serve a response compatible with the behaviour of the endpoint at that time.
+     *
+     * @var string
+     */
+    protected string $compatibility_date = '2025-07-20';
 
     /**
      * The SSO scope required to make the call.
@@ -299,7 +308,7 @@ abstract class EsiBase extends AbstractJob
     {
         $this->validateCall();
 
-        $this->esi->setVersion($this->version);
+        $this->esi->setCompatibilityDate($this->compatibility_date);
         $this->esi->setBody($this->request_body);
         $this->esi->setQueryString($this->query_string);
 
@@ -350,10 +359,6 @@ abstract class EsiBase extends AbstractJob
 
         if (trim($this->endpoint) === '')
             throw new Exception('Empty endpoint used');
-
-        // Enfore a version specification unless this is a 'meta' call.
-        if (trim($this->version) === '' && ! in_array('meta', $this->tags()))
-            throw new Exception('Version is empty');
     }
 
     /**
@@ -374,7 +379,6 @@ abstract class EsiBase extends AbstractJob
             dispatch(new Analytics((new AnalyticsContainer)
                 ->set('type', 'endpoint_warning')
                 ->set('ec', 'unexpected_page')
-                ->set('el', $this->version)
                 ->set('ev', $this->endpoint)))->onQueue('default');
         }
 
@@ -385,7 +389,6 @@ abstract class EsiBase extends AbstractJob
             dispatch(new Analytics((new AnalyticsContainer)
                 ->set('type', 'endpoint_warning')
                 ->set('ec', 'missing_pages')
-                ->set('el', $this->version)
                 ->set('ev', $this->endpoint)))->onQueue('default');
         }
 

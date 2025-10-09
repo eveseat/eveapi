@@ -120,25 +120,6 @@ class EseyeClient implements EsiClient
     }
 
     /**
-     * @return string
-     */
-    public function getVersion(): string
-    {
-        return $this->instance->getVersion();
-    }
-
-    /**
-     * @param  string  $version
-     * @return \Seat\Services\Contracts\EsiClient
-     */
-    public function setVersion(string $version): EsiClient
-    {
-        $this->instance->setVersion($version);
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getQueryString(): array
@@ -248,5 +229,24 @@ class EseyeClient implements EsiClient
     public function getValidAccessToken(): string
     {
         return $this->instance->getValidAccessToken()->access_token;
+    }
+
+    /**
+     * @param  string  $date
+     * @return void
+     */
+    public function setCompatibilityDate(string $date): self
+    {
+        $this->instance->setCompatibilityDate($date);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompatibilityDate(): string
+    {
+        return $this->instance->getCompatibilityDate();
     }
 }

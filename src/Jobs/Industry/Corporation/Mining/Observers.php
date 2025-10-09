@@ -45,7 +45,7 @@ class Observers extends AbstractAuthCorporationJob
     /**
      * @var string
      */
-    protected $version = 'v1';
+    protected string $compatibility_date = '2025-07-20';
 
     /**
      * TODO: Add a local scope override as this is diff.

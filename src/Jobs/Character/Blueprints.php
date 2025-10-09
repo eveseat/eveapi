@@ -46,9 +46,9 @@ class Blueprints extends AbstractAuthCharacterJob
     protected $endpoint = '/characters/{character_id}/blueprints/';
 
     /**
-     * @var int
+     * @var string
      */
-    protected $version = 'v3';
+    protected string $compatibility_date = '2025-07-20';
 
     /**
      * @var string
