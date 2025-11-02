@@ -57,7 +57,9 @@ class Notifications extends Command
                 return $tokens->where('character_id', $this->argument('character_id'));
             })
             ->each(function ($token) {
-                NotificationsJob::dispatch($token);
+                if (in_array((new NotificationsJob($token))->scope, $token->getScopes())) {
+                    NotificationsJob::dispatch($token);
+                }
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
