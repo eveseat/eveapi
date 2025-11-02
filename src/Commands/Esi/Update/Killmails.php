@@ -78,14 +78,16 @@ class Killmails extends Command
         if (empty($killmail_ids)) {
             RefreshToken::chunk(100, function ($tokens) {
                 $tokens->each(function ($token) {
-                    $character = CharacterInfo::firstOrNew(
-                        ['character_id' => $token->character_id],
-                        ['name' => "Unknown Character : {$token->character_id}"]
-                    );
-
-                    Bus::batch([new RecentCharacterKills($token)])
-                        ->name("{$character->name} Killmails")
-                        ->dispatch();
+                    if (in_array((new RecentCharacterKills($token))->scope, $token->getScopes())) {
+                        $character = CharacterInfo::firstOrNew(
+                            ['character_id' => $token->character_id],
+                            ['name' => "Unknown Character : {$token->character_id}"]
+                        );
+    
+                        Bus::batch([new RecentCharacterKills($token)])
+                            ->name("{$character->name} Killmails")
+                            ->dispatch();
+                    }
                 });
             });
 
