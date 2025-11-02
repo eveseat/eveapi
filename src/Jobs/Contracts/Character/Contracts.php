@@ -52,7 +52,7 @@ class Contracts extends AbstractAuthCharacterJob
     /**
      * @var string
      */
-    protected $scope = 'esi-contracts.read_character_contracts.v1';
+    public $scope = 'esi-contracts.read_character_contracts.v1';
 
     /**
      * @var array
