@@ -101,7 +101,6 @@ class Killmails extends Command
                     ['corporation_id' => $token->character->affiliation->corporation_id],
                     ['name' => "Unknown Corporation : {$token->character->affiliation->corporation_id}"]
                 );
-
                 Bus::batch([new RecentCorporationKills($token->character->affiliation->corporation_id, $token)])
                     ->name("{$corporation->name} Killmails")
                     ->dispatch();
