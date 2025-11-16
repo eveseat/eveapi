@@ -54,7 +54,7 @@ class Recent extends AbstractAuthCharacterJob
     /**
      * @var string
      */
-    public $scope = 'esi-killmails.read_killmails.v1';
+    protected $scope = 'esi-killmails.read_killmails.v1';
 
     /**
      * @var array

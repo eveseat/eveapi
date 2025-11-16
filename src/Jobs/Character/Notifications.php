@@ -53,7 +53,7 @@ class Notifications extends AbstractAuthCharacterJob
     /**
      * @var string
      */
-    public $scope = 'esi-characters.read_notifications.v1';
+    protected $scope = 'esi-characters.read_notifications.v1';
 
     /**
      * @var array
