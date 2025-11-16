@@ -83,7 +83,6 @@ class Killmails extends Command
                             ['character_id' => $token->character_id],
                             ['name' => "Unknown Character : {$token->character_id}"]
                         );
-    
                         Bus::batch([new RecentCharacterKills($token)])
                             ->name("{$character->name} Killmails")
                             ->dispatch();
@@ -101,7 +100,6 @@ class Killmails extends Command
                     ['corporation_id' => $token->character->affiliation->corporation_id],
                     ['name' => "Unknown Corporation : {$token->character->affiliation->corporation_id}"]
                 );
-                
                 Bus::batch([new RecentCorporationKills($token->character->affiliation->corporation_id, $token)])
                     ->name("{$corporation->name} Killmails")
                     ->dispatch();
