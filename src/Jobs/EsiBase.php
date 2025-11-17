@@ -180,7 +180,7 @@ abstract class EsiBase extends AbstractJob
         return [
             new CheckEsiRateLimit,
             new CheckServerStatus,
-            new CheckEsiRouteStatus,
+            // new CheckEsiRouteStatus,
         ];
     }
 
