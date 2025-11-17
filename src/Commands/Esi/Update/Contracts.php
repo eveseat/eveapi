@@ -79,7 +79,9 @@ class Contracts extends Command
         // process all tokens character contracts by batch of 100
         RefreshToken::chunk(100, function ($tokens) {
             foreach ($tokens as $token) {
-                CharacterContracts::dispatch($token);
+                if (in_array((new CharacterContracts($token))->getScope(), $token->getScopes())) {
+                    CharacterContracts::dispatch($token);
+                }
             }
         });
 
