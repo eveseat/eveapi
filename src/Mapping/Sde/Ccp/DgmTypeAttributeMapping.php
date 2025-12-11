@@ -20,25 +20,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Mapping\Sde\Ccp;
 
-use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\InvTypeMaterialMapping;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 
-class InvTypeMaterialsSeeder extends AbstractSdeSeeder
+/**
+ * DgmTypeAttributeMapping.
+ *
+ * Used to import csv data into dgmTypeAttributes table.
+ * CSV file must be formatted using Fuzzwork format.
+ *
+ * @url https://www.fuzzwork.co.uk
+ */
+class DgmTypeAttributeMapping extends AbstractSdeMapping
 {
-    protected function getSdeTableDefinition(Blueprint $table): void
-    {
-        $table->integer('typeID');
-        $table->integer('materialTypeID');
-        $table->integer('quantity');
 
-        $table->primary(['typeID', 'materialTypeID']);
-    }
+    protected const MULTI_ARRAY_KEY = ["_key", "typeID"];
 
-    protected function getMappingClass(): AbstractFuzzworkMapping
-    {
-        return new InvTypeMaterialMapping();
-    }
+    protected const MULTI_NEST_PATH = "dogmaAttributes";
+
+    /**
+     * @var string[]
+     */
+    protected static $mapping = [
+        'typeID' => '_key',
+        'attributeID' => 'attributeID',
+        // 'valueInt' => '', // No longer used
+        'valueFloat' => 'value',
+    ];
 }

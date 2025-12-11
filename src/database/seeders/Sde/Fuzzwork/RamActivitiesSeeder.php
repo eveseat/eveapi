@@ -20,13 +20,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Fuzzwork;
 
 use Illuminate\Database\Schema\Blueprint;
 use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\InvControlTowerResourceMapping;
+use Seat\Eveapi\Mapping\Sde\RamActivityMapping;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
 
-class InvControlTowerResourcesSeeder extends AbstractSdeSeeder
+class RamActivitiesSeeder extends AbstractSdeSeeder
 {
     /**
      * Define seeder related SDE table structure.
@@ -36,14 +37,11 @@ class InvControlTowerResourcesSeeder extends AbstractSdeSeeder
      */
     protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $table->integer('controlTowerTypeID');
-        $table->integer('resourceTypeID');
-        $table->integer('purpose');
-        $table->double('quantity');
-        $table->double('minSecurityLevel')->nullable();
-        $table->integer('factionID')->nullable();
-
-        $table->primary(['controlTowerTypeID', 'resourceTypeID']);
+        $table->integer('activityID')->primary();
+        $table->string('activityName');
+        $table->string('iconNo', 10)->nullable();
+        $table->string('description');
+        $table->boolean('published');
     }
 
     /**
@@ -53,6 +51,6 @@ class InvControlTowerResourcesSeeder extends AbstractSdeSeeder
      */
     protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        return new InvControlTowerResourceMapping();
+        return new RamActivityMapping();
     }
 }

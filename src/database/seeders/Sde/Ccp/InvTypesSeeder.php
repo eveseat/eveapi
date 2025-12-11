@@ -20,14 +20,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\InvTypeMapping;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
+use Seat\Eveapi\Mapping\Sde\Ccp\InvTypeMapping;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
+use Seat\Eveapi\Models\Sde\InvType;
 
 class InvTypesSeeder extends AbstractSdeSeeder
 {
+
+    protected const FILENAME = "types.jsonl";
+
     /**
      * Define seeder related SDE table structure.
      *
@@ -50,15 +55,26 @@ class InvTypesSeeder extends AbstractSdeSeeder
         $table->integer('marketGroupID')->nullable();
         $table->integer('iconID')->nullable();
         $table->integer('graphicID')->nullable();
+        $table->integer('factionID')->nullable();
+        $table->integer('metaGroupID')->nullable();
+        $table->double('radius')->nullable();
+        $table->integer('soundID')->nullable();
+        $table->integer('variationParentTypeID')->nullable();
     }
 
     /**
      * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractSdeMapping
      */
-    protected function getMappingClass(): AbstractFuzzworkMapping
+    protected function getMappingClass(): AbstractSdeMapping
     {
         return new InvTypeMapping();
+    }
+
+    public function insert($arr) 
+    {
+        // Replace 'YourModel' with the actual model class name
+        return InvType::insert($arr);
     }
 }

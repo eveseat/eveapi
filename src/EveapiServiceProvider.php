@@ -22,12 +22,15 @@
 
 namespace Seat\Eveapi;
 
+use Composer\InstalledVersions;
+use OutOfBoundsException;
 use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Jobs\Universe\Structures\CacheCitadelAccessCache;
 use Seat\Eveapi\Jobs\Universe\Structures\DBCitadelAccessCache;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\AbstractSeatPlugin;
+use Illuminate\Support\Facades\Http;
 
 /**
  * Class EveapiServiceProvider.
@@ -60,6 +63,8 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
         // Register events listeners
         $this->addListeners();
+
+        $this->configureHttpClient();
     }
 
     /**
@@ -75,7 +80,7 @@ class EveapiServiceProvider extends AbstractSeatPlugin
             // \Seat\Eveapi\Database\Seeders\Sde\SdeSeeder::class, -- Disabled until later implemented again in services
         ]);
 
-        if(env('CITADEL_ACCESS_CACHE') === 'db'){
+        if (env('CITADEL_ACCESS_CACHE') === 'db') {
             $this->app->bind(CitadelAccessCache::class, DBCitadelAccessCache::class);
         } else {
             $this->app->bind(CitadelAccessCache::class, CacheCitadelAccessCache::class);
@@ -148,6 +153,20 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         //     \Seat\Eveapi\Database\Seeders\Sde\RamActivitiesSeeder::class,
         //     \Seat\Eveapi\Database\Seeders\Sde\StaStationsSeeder::class,
         // ]);
+    }
+
+    private function configureHttpClient()
+    {
+        try {
+            $version = InstalledVersions::getPrettyVersion('eveseat/eveapi');
+        } catch (OutOfBoundsException $e) {
+            $version = 'dev';
+        }
+
+        Http::globalRequestMiddleware(fn($request) => $request->withHeader(
+            'User-Agent',
+            sprintf('SeAT_Eveapi/%s (Instance contact: %s; Repository: https://github.com/eveseat/seat)', $version, setting('admin_contact', true))
+        ));
     }
 
     /**

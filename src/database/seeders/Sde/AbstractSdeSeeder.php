@@ -27,12 +27,15 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Validators\ValidationException;
-use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
+use Illuminate\Database\Eloquent\Model;
+use stdClass;
 
 abstract class AbstractSdeSeeder extends Seeder
 {
+
+    protected const INSERT_BATCH_SIZE = 500;
+
     /**
      * Provide the SDE dump filename related to the active seeder.
      *
@@ -45,6 +48,10 @@ abstract class AbstractSdeSeeder extends Seeder
 
         return Str::camel($filename);
     }
+
+    protected const FILENAME = "";
+
+    protected const IS_MULTI_SEEDER = false;
 
     /**
      * Download SDE file, create related table and seed it with dump.
@@ -63,6 +70,23 @@ abstract class AbstractSdeSeeder extends Seeder
     }
 
     /**
+     * Get a new progress bar to display based on the
+     * amount of iterations we expect to use.
+     *
+     * @param  $iterations
+     * @return \Symfony\Component\Console\Helper\ProgressBar
+     */
+    public function getProgressBar($iterations)
+    {
+
+        $bar = $this->command->getOutput()->createProgressBar($iterations);
+
+        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% %memory:6s%');
+
+        return $bar;
+    }
+
+    /**
      * Define seeder related SDE table structure.
      *
      * @param  \Illuminate\Database\Schema\Blueprint  $table
@@ -73,9 +97,11 @@ abstract class AbstractSdeSeeder extends Seeder
     /**
      * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractSdeMapping
      */
-    abstract protected function getMappingClass(): AbstractFuzzworkMapping;
+    abstract protected function getMappingClass(): AbstractSdeMapping;
+
+    abstract public function insert($arr);
 
     /**
      * Determine actions which have to be executed after the seeding process.
@@ -110,24 +136,69 @@ abstract class AbstractSdeSeeder extends Seeder
      */
     final protected function seedTable(): void
     {
-        $sde_dump = $this->getSdeName();
-        $path = storage_path("sde/$sde_dump.csv");
+        $path = storage_path(sprintf("sde/%s", $this::FILENAME));
 
         if (! file_exists($path))
             throw new FileNotFoundException("Unable to retrieve $path.");
 
-        try {
-            Excel::import($this->getMappingClass(), $path);
-        } catch (ValidationException $e) {
-            $failures = $e->failures();
-
-            foreach ($failures as $failure) {
-                $this->command->error("An error has been encountered at row {$failure->row()}.");
-
-                foreach ($failure->errors() as $error) {
-                    $this->command->getOutput()->writeln($error);
-                }
-            }
+        // First open and scan to get length.. Inefficient but I want to know length
+        $linecount = 0;
+        $handle = fopen($path, "r");
+        while (!feof($handle)) {
+            $line = fgets($handle);
+            $linecount++;
         }
+
+        $bar = $this->getProgressBar($linecount);
+
+        fclose($handle);
+
+        $handle = fopen($path, 'r');
+        if (! $handle) {
+            $this->command->error("Unable to open file.");
+            return; //Command::FAILURE;
+        }
+
+        $lineNumber = 0;
+        $records = [];
+
+        while (($line = fgets($handle)) !== false) {
+
+            $lineNumber++;
+
+            // Trim any newline or whitespace
+            $line = trim($line);
+            if ($line === '') {
+                continue; // skip empty lines
+            }
+
+            // Decode this one JSON object
+            $data = json_decode($line, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $this->command->error("Invalid JSON at line {$lineNumber}");
+                continue;
+            }
+
+            if (! $this::IS_MULTI_SEEDER) {
+                $records[] = $this->getMappingClass()::detail([], $data);
+            } else {
+                $records = array_merge($records, $this->getMappingClass()::multiDetail([], $data));
+            }
+            if (count($records) >= $this::INSERT_BATCH_SIZE) {
+                $this->insert($records);
+                $records = [];
+            }
+
+            // processing logic here
+            // $this->getMappingClass()::make($this->getNewModel()->bypassReadOnly(), $data)->save();
+
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->command->getOutput()->newLine();
+
+        fclose($handle);
     }
 }

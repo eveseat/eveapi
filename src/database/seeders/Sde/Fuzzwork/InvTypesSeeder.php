@@ -20,13 +20,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Fuzzwork;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\InvMarketGroupMapping;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
+use Seat\Eveapi\Mapping\Sde\InvTypeMapping;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
 
-class InvMarketGroupsSeeder extends AbstractSdeSeeder
+class InvTypesSeeder extends AbstractSdeSeeder
 {
     /**
      * Define seeder related SDE table structure.
@@ -36,20 +37,29 @@ class InvMarketGroupsSeeder extends AbstractSdeSeeder
      */
     protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $table->integer('marketGroupID')->primary();
-        $table->integer('parentGroupID')->nullable();
-        $table->string('marketGroupName', 100);
-        $table->string('description', 250)->nullable();
+        $table->integer('typeID')->primary();
+        $table->integer('groupID');
+        $table->string('typeName', 100);
+        $table->text('description')->nullable();
+        $table->double('mass')->nullable();
+        $table->double('volume')->nullable();
+        $table->double('capacity')->nullable();
+        $table->integer('portionSize')->nullable();
+        $table->integer('raceID')->nullable();
+        $table->double('basePrice')->nullable();
+        $table->boolean('published')->default(false);
+        $table->integer('marketGroupID')->nullable();
         $table->integer('iconID')->nullable();
+        $table->integer('graphicID')->nullable();
     }
 
     /**
      * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractSdeMapping
      */
-    protected function getMappingClass(): AbstractFuzzworkMapping
+    protected function getMappingClass(): AbstractSdeMapping
     {
-        return new InvMarketGroupMapping();
+        return new InvTypeMapping();
     }
 }

@@ -20,13 +20,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Fuzzwork;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
 use Seat\Eveapi\Mapping\Sde\MapDenormalizeMapping;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
 
 class MapDenormalizeSeeder extends AbstractSdeSeeder
 {
