@@ -25,9 +25,13 @@ namespace Seat\Eveapi\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Seat\Eveapi\Database\Seeders\Sde\Ccp\ChrFactionsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\DgmTypeAttributesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvTypesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\DgmTypeEffectsSeeder;
+use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvCategoriesSeeder;
+use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvContrabandTypesSeeder;
+use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvControlTowerResourcesSeeder;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 /**
@@ -52,9 +56,14 @@ class CcpSdeSeeder extends Seeder
 
     private $imported_files = [];
 
+    // TODO, would be nice to dynamically build this...
     private const  SEEDER_MAP = [
         'types.jsonl' => InvTypesSeeder::class,
         'typeDogma.jsonl' => [DgmTypeAttributesSeeder::class, DgmTypeEffectsSeeder::class],
+        'factions.jsonl' => ChrFactionsSeeder::class,
+        'categories.jsonl' => InvCategoriesSeeder::class,
+        'contrabandTypes.jsonl' => InvContrabandTypesSeeder::class,
+        'controlTowerResources.jsonl' => InvControlTowerResourcesSeeder::class
 
     ];
 

@@ -34,7 +34,7 @@ use stdClass;
 abstract class AbstractSdeSeeder extends Seeder
 {
 
-    protected const INSERT_BATCH_SIZE = 500;
+    protected const INSERT_BATCH_SIZE = 1000;
 
     /**
      * Provide the SDE dump filename related to the active seeder.
@@ -195,6 +195,11 @@ abstract class AbstractSdeSeeder extends Seeder
 
             $bar->advance();
         }
+
+        if (count($records) >= 0) {
+                $this->insert($records);
+                $records = [];
+            }
 
         $bar->finish();
         $this->command->getOutput()->newLine();
