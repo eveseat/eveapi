@@ -34,7 +34,7 @@ use stdClass;
 abstract class AbstractSdeSeeder extends Seeder
 {
 
-    protected const INSERT_BATCH_SIZE = 1000;
+    protected const INSERT_BATCH_SIZE = 500;
 
     /**
      * Provide the SDE dump filename related to the active seeder.
@@ -62,11 +62,25 @@ abstract class AbstractSdeSeeder extends Seeder
      */
     final public function run()
     {
+        $this->disableFK();
+        
         $this->createTable();
 
         $this->seedTable();
 
         $this->after();
+
+        $this->enableFK();
+    }
+
+    private function disableFK()
+    {
+        Schema::disableForeignKeyConstraints();
+    }
+
+    private function enableFK()
+    {
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

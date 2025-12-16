@@ -32,6 +32,7 @@ use Seat\Eveapi\Database\Seeders\Sde\Ccp\DgmTypeEffectsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvCategoriesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvContrabandTypesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvControlTowerResourcesSeeder;
+use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvGroupsSeeder;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 /**
@@ -63,8 +64,8 @@ class CcpSdeSeeder extends Seeder
         'factions.jsonl' => ChrFactionsSeeder::class,
         'categories.jsonl' => InvCategoriesSeeder::class,
         'contrabandTypes.jsonl' => InvContrabandTypesSeeder::class,
-        'controlTowerResources.jsonl' => InvControlTowerResourcesSeeder::class
-
+        'controlTowerResources.jsonl' => InvControlTowerResourcesSeeder::class,
+        'groups.jsonl' => InvGroupsSeeder::class,
     ];
 
     private $seeders = [];

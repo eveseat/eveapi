@@ -30,6 +30,7 @@ use Seat\Eveapi\Jobs\Universe\Structures\DBCitadelAccessCache;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\AbstractSeatPlugin;
+use Seat\Services\Helpers\UserAgentBuilder;
 use Illuminate\Support\Facades\Http;
 
 /**
@@ -165,7 +166,10 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
         Http::globalRequestMiddleware(fn($request) => $request->withHeader(
             'User-Agent',
-            sprintf('SeAT_Eveapi/%s (Instance contact: %s; Repository: https://github.com/eveseat/seat)', $version, setting('admin_contact', true))
+            (new UserAgentBuilder())
+                ->seatPlugin(EveapiServiceProvider::class) // TODO: perhaps a better way to init this
+                ->defaultComments()
+                ->build(),
         ));
     }
 
