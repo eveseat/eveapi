@@ -33,6 +33,8 @@ use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvCategoriesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvContrabandTypesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvControlTowerResourcesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvGroupsSeeder;
+use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMarketGroupsSeeder;
+use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMetaGroupsSeeder;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 /**
@@ -66,6 +68,8 @@ class CcpSdeSeeder extends Seeder
         'contrabandTypes.jsonl' => InvContrabandTypesSeeder::class,
         'controlTowerResources.jsonl' => InvControlTowerResourcesSeeder::class,
         'groups.jsonl' => InvGroupsSeeder::class,
+        'marketGroups.jsonl' => InvMarketGroupsSeeder::class,
+        'metaGroups.jsonl' => InvMetaGroupsSeeder::class,
     ];
 
     private $seeders = [];

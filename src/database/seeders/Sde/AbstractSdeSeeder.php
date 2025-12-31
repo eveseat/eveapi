@@ -62,15 +62,17 @@ abstract class AbstractSdeSeeder extends Seeder
      */
     final public function run()
     {
-        $this->disableFK();
-        
-        $this->createTable();
+        try {
+            $this->disableFK();
 
-        $this->seedTable();
+            $this->createTable();
 
-        $this->after();
+            $this->seedTable();
 
-        $this->enableFK();
+            $this->after();
+        } finally {
+            $this->enableFK(); // Really dont want to leave this disabled.
+        }
     }
 
     private function disableFK()
@@ -211,9 +213,9 @@ abstract class AbstractSdeSeeder extends Seeder
         }
 
         if (count($records) >= 0) {
-                $this->insert($records);
-                $records = [];
-            }
+            $this->insert($records);
+            $records = [];
+        }
 
         $bar->finish();
         $this->command->getOutput()->newLine();
