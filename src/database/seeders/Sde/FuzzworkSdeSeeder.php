@@ -35,7 +35,7 @@ use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
  *
  * Used as a facade to seed all SDE related tables.
  */
-class SdeSeeder extends Seeder
+class FuzzworkSdeSeeder extends Seeder
 {
     /**
      * @var string

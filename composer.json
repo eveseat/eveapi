@@ -12,6 +12,7 @@
     "psr-4": {
       "Seat\\Eveapi\\": "src/",
       "Seat\\Eveapi\\Database\\Seeders\\": "src/database/seeders/",
+      "Seat\\Eveapi\\Database\\Seeders\\Sde\\": "src/database/seeders/Sde",
       "Seat\\Tests\\Eveapi\\Database\\Factories\\": "tests/database/factories/"
     }
   },

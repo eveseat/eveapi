@@ -20,14 +20,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\StaStationMapping;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
+use Seat\Eveapi\Mapping\Sde\Ccp\InvCategoryMapping;
+use Seat\Eveapi\Models\Sde\InvCategory;
 
-class StaStationsSeeder extends AbstractSdeSeeder
+class InvCategoriesSeeder extends AbstractSdeSeeder
 {
+
+    protected const FILENAME = "categories.jsonl";
+
     /**
      * Define seeder related SDE table structure.
      *
@@ -36,33 +41,25 @@ class StaStationsSeeder extends AbstractSdeSeeder
      */
     protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $table->integer('stationID')->primary();
-        $table->double('security');
-        $table->double('dockingCostPerVolume');
-        $table->double('maxShipVolumeDockable');
-        $table->double('officeRentalCost');
-        $table->integer('operationID');
-        $table->integer('stationTypeID');
-        $table->bigInteger('corporationID');
-        $table->integer('solarSystemID');
-        $table->integer('constellationID');
-        $table->integer('regionID');
-        $table->string('stationName', 100);
-        $table->double('x');
-        $table->double('y');
-        $table->double('z');
-        $table->double('reprocessingEfficiency');
-        $table->double('reprocessingStationsTake');
-        $table->integer('reprocessingHangarFlag');
+        $table->integer('categoryID')->primary();
+        $table->string('categoryName', 100)->nullable();
+        $table->integer('iconID')->nullable();
+        $table->boolean('published')->default(false);
     }
 
     /**
      * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractSdeMapping
      */
-    protected function getMappingClass(): AbstractFuzzworkMapping
+    protected function getMappingClass(): AbstractSdeMapping
     {
-        return new StaStationMapping();
+        return new InvCategoryMapping();
+    }
+
+    public function insert($arr)
+    {
+        // Replace 'YourModel' with the actual model class name
+        return InvCategory::insert($arr);
     }
 }

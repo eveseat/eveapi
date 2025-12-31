@@ -22,12 +22,16 @@
 
 namespace Seat\Eveapi;
 
+use Composer\InstalledVersions;
+use OutOfBoundsException;
 use Seat\Eveapi\Contracts\CitadelAccessCache;
 use Seat\Eveapi\Jobs\Universe\Structures\CacheCitadelAccessCache;
 use Seat\Eveapi\Jobs\Universe\Structures\DBCitadelAccessCache;
 use Seat\Eveapi\Models\Character\CharacterAffiliation;
 use Seat\Eveapi\Models\RefreshToken;
 use Seat\Services\AbstractSeatPlugin;
+use Seat\Services\Helpers\UserAgentBuilder;
+use Illuminate\Support\Facades\Http;
 
 /**
  * Class EveapiServiceProvider.
@@ -60,6 +64,8 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
         // Register events listeners
         $this->addListeners();
+
+        $this->configureHttpClient();
     }
 
     /**
@@ -70,12 +76,14 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     public function register()
     {
 
+        $this->registerConfig();
+
         $this->registerDatabaseSeeders([
             \Seat\Eveapi\Database\Seeders\ScheduleSeeder::class,
             // \Seat\Eveapi\Database\Seeders\Sde\SdeSeeder::class, -- Disabled until later implemented again in services
         ]);
 
-        if(env('CITADEL_ACCESS_CACHE') === 'db'){
+        if (env('CITADEL_ACCESS_CACHE') === 'db') {
             $this->app->bind(CitadelAccessCache::class, DBCitadelAccessCache::class);
         } else {
             $this->app->bind(CitadelAccessCache::class, CacheCitadelAccessCache::class);
@@ -150,6 +158,23 @@ class EveapiServiceProvider extends AbstractSeatPlugin
         // ]);
     }
 
+    private function configureHttpClient()
+    {
+        try {
+            $version = InstalledVersions::getPrettyVersion('eveseat/eveapi');
+        } catch (OutOfBoundsException $e) {
+            $version = 'dev';
+        }
+
+        Http::globalRequestMiddleware(fn($request) => $request->withHeader(
+            'User-Agent',
+            (new UserAgentBuilder())
+                ->seatPlugin(EveapiServiceProvider::class) // TODO: perhaps a better way to init this
+                ->defaultComments()
+                ->build(),
+        ));
+    }
+
     /**
      * Update Laravel 5 Swagger annotation path.
      */
@@ -180,6 +205,17 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
         $events->listen(\Illuminate\Queue\Events\JobExceptionOccurred::class, \Seat\Eveapi\Listeners\EsiFailedCall::class);
     }
+
+    /**
+     * Register config in the stack.
+     *
+     * @return void
+     */
+    private function registerConfig(): void
+    {
+        $this->mergeConfigFrom($config = __DIR__ . '/Config/eveapi.config.php', 'eveapi.config');
+    }
+
 
     /**
      * {@inheritdoc}

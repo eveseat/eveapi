@@ -20,13 +20,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Fuzzwork;
 
 use Illuminate\Database\Schema\Blueprint;
 use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\DgmTypeAttributeMapping;
+use Seat\Eveapi\Mapping\Sde\InvGroupMapping;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
 
-class DgmTypeAttributesSeeder extends AbstractSdeSeeder
+class InvGroupsSeeder extends AbstractSdeSeeder
 {
     /**
      * Define seeder related SDE table structure.
@@ -36,12 +37,15 @@ class DgmTypeAttributesSeeder extends AbstractSdeSeeder
      */
     protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $table->integer('typeID');
-        $table->integer('attributeID');
-        $table->integer('valueInt')->nullable();
-        $table->double('valueFloat')->nullable();
-
-        $table->primary(['typeID', 'attributeID']);
+        $table->integer('groupID')->primary();
+        $table->integer('categoryID');
+        $table->string('groupName', 100);
+        $table->integer('iconID')->nullable();
+        $table->boolean('useBasePrice');
+        $table->boolean('anchored');
+        $table->boolean('anchorable');
+        $table->boolean('fittableNonSingleton');
+        $table->boolean('published');
     }
 
     /**
@@ -51,6 +55,6 @@ class DgmTypeAttributesSeeder extends AbstractSdeSeeder
      */
     protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        return new DgmTypeAttributeMapping();
+        return new InvGroupMapping();
     }
 }

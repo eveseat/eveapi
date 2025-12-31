@@ -20,36 +20,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Fuzzwork;
 
 use Illuminate\Database\Schema\Blueprint;
 use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\RamActivityMapping;
+use Seat\Eveapi\Mapping\Sde\InvTypeMaterialMapping;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
 
-class RamActivitiesSeeder extends AbstractSdeSeeder
+class InvTypeMaterialsSeeder extends AbstractSdeSeeder
 {
-    /**
-     * Define seeder related SDE table structure.
-     *
-     * @param  \Illuminate\Database\Schema\Blueprint  $table
-     * @return void
-     */
     protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $table->integer('activityID')->primary();
-        $table->string('activityName');
-        $table->string('iconNo', 10)->nullable();
-        $table->string('description');
-        $table->boolean('published');
+        $table->integer('typeID');
+        $table->integer('materialTypeID');
+        $table->integer('quantity');
+
+        $table->primary(['typeID', 'materialTypeID']);
     }
 
-    /**
-     * The mapping instance which must be used to seed table with SDE dump.
-     *
-     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
-     */
     protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        return new RamActivityMapping();
+        return new InvTypeMaterialMapping();
     }
 }

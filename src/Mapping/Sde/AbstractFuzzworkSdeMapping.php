@@ -40,7 +40,7 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
  *
  * @url https://www.fuzzwork.co.uk
  */
-abstract class AbstractFuzzworkMapping extends DefaultValueBinder implements ToModel, WithCustomCsvSettings, WithCustomValueBinder, WithChunkReading, WithStartRow
+abstract class AbstractFuzzworkMapping extends AbstractSdeMapping  implements DefaultValueBinder, ToModel, WithCustomCsvSettings, WithCustomValueBinder, WithChunkReading, WithStartRow
 {
     use RemembersRowNumber;
 

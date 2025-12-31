@@ -20,14 +20,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\InvControlTowerResourceMapping;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
+use Seat\Eveapi\Mapping\Sde\Ccp\InvContrabandTypeMapping;
+use Seat\Eveapi\Models\Sde\InvContrabandType;
 
-class InvControlTowerResourcesSeeder extends AbstractSdeSeeder
+class InvContrabandTypesSeeder extends AbstractSdeSeeder
 {
+
+    protected const FILENAME = "contrabandTypes.jsonl";
+
+    protected const IS_MULTI_SEEDER = true;
+
     /**
      * Define seeder related SDE table structure.
      *
@@ -36,23 +43,28 @@ class InvControlTowerResourcesSeeder extends AbstractSdeSeeder
      */
     protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $table->integer('controlTowerTypeID');
-        $table->integer('resourceTypeID');
-        $table->integer('purpose');
-        $table->double('quantity');
-        $table->double('minSecurityLevel')->nullable();
-        $table->integer('factionID')->nullable();
-
-        $table->primary(['controlTowerTypeID', 'resourceTypeID']);
+        $table->integer('factionID');
+        $table->integer('typeID');
+        $table->double('standingLoss')->nullable();
+        $table->double('confiscateMinSec')->nullable();
+        $table->double('fineByValue')->nullable();
+        $table->double('attackMinSec')->nullable();
+        $table->primary(['factionID', 'typeID']);
     }
 
     /**
      * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractSdeMapping
      */
-    protected function getMappingClass(): AbstractFuzzworkMapping
+    protected function getMappingClass(): AbstractSdeMapping
     {
-        return new InvControlTowerResourceMapping();
+        return new InvContrabandTypeMapping();
+    }
+
+    public function insert($arr)
+    {
+        // Replace 'YourModel' with the actual model class name
+        return InvContrabandType::insert($arr);
     }
 }

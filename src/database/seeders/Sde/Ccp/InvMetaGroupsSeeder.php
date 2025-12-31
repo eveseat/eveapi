@@ -20,14 +20,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\InvTypeMapping;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
+use Seat\Eveapi\Mapping\Sde\Ccp\InvMetaGroupMapping;
+use Seat\Eveapi\Models\Sde\InvMetaGroup;
 
-class InvTypesSeeder extends AbstractSdeSeeder
+class InvMetaGroupsSeeder extends AbstractSdeSeeder
 {
+
+    protected const FILENAME = "metaGroups.jsonl";
+
     /**
      * Define seeder related SDE table structure.
      *
@@ -36,29 +41,29 @@ class InvTypesSeeder extends AbstractSdeSeeder
      */
     protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $table->integer('typeID')->primary();
-        $table->integer('groupID');
-        $table->string('typeName', 100);
-        $table->text('description')->nullable();
-        $table->double('mass')->nullable();
-        $table->double('volume')->nullable();
-        $table->double('capacity')->nullable();
-        $table->integer('portionSize')->nullable();
-        $table->integer('raceID')->nullable();
-        $table->double('basePrice')->nullable();
-        $table->boolean('published')->default(false);
-        $table->integer('marketGroupID')->nullable();
+        $table->integer('metaGroupID')->primary();
+        $table->string('metaGroupName', 100)->nullable();
+        $table->string('description', 3000)->nullable();
+        $table->string('iconSuffix', 256)->nullable();
         $table->integer('iconID')->nullable();
-        $table->integer('graphicID')->nullable();
+        $table->integer('colorRed')->nullable();
+        $table->integer('colorBlue')->nullable();
+        $table->integer('colorGreen')->nullable();
     }
 
     /**
      * The mapping instance which must be used to seed table with SDE dump.
      *
-     * @return \Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping
+     * @return \Seat\Eveapi\Mapping\Sde\AbstractSdeMapping
      */
-    protected function getMappingClass(): AbstractFuzzworkMapping
+    protected function getMappingClass(): AbstractSdeMapping
     {
-        return new InvTypeMapping();
+        return new InvMetaGroupMapping();
+    }
+
+    public function insert($arr)
+    {
+        // Replace 'YourModel' with the actual model class name
+        return InvMetaGroup::insert($arr);
     }
 }

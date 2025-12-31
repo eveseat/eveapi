@@ -20,13 +20,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Database\Seeders\Sde;
+namespace Seat\Eveapi\Database\Seeders\Sde\Fuzzwork;
 
 use Illuminate\Database\Schema\Blueprint;
 use Seat\Eveapi\Mapping\Sde\AbstractFuzzworkMapping;
-use Seat\Eveapi\Mapping\Sde\InvMarketGroupMapping;
+use Seat\Eveapi\Mapping\Sde\RamActivityMapping;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
 
-class InvMarketGroupsSeeder extends AbstractSdeSeeder
+class RamActivitiesSeeder extends AbstractSdeSeeder
 {
     /**
      * Define seeder related SDE table structure.
@@ -36,11 +37,11 @@ class InvMarketGroupsSeeder extends AbstractSdeSeeder
      */
     protected function getSdeTableDefinition(Blueprint $table): void
     {
-        $table->integer('marketGroupID')->primary();
-        $table->integer('parentGroupID')->nullable();
-        $table->string('marketGroupName', 100);
-        $table->string('description', 250)->nullable();
-        $table->integer('iconID')->nullable();
+        $table->integer('activityID')->primary();
+        $table->string('activityName');
+        $table->string('iconNo', 10)->nullable();
+        $table->string('description');
+        $table->boolean('published');
     }
 
     /**
@@ -50,6 +51,6 @@ class InvMarketGroupsSeeder extends AbstractSdeSeeder
      */
     protected function getMappingClass(): AbstractFuzzworkMapping
     {
-        return new InvMarketGroupMapping();
+        return new RamActivityMapping();
     }
 }
