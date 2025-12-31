@@ -76,6 +76,8 @@ class EveapiServiceProvider extends AbstractSeatPlugin
     public function register()
     {
 
+        $this->registerConfig();
+
         $this->registerDatabaseSeeders([
             \Seat\Eveapi\Database\Seeders\ScheduleSeeder::class,
             // \Seat\Eveapi\Database\Seeders\Sde\SdeSeeder::class, -- Disabled until later implemented again in services
@@ -203,6 +205,17 @@ class EveapiServiceProvider extends AbstractSeatPlugin
 
         $events->listen(\Illuminate\Queue\Events\JobExceptionOccurred::class, \Seat\Eveapi\Listeners\EsiFailedCall::class);
     }
+
+    /**
+     * Register config in the stack.
+     *
+     * @return void
+     */
+    private function registerConfig(): void
+    {
+        $this->mergeConfigFrom($config = __DIR__ . '/Config/eveapi.config.php', 'eveapi.config');
+    }
+
 
     /**
      * {@inheritdoc}
