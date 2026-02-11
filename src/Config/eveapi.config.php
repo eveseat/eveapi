@@ -21,5 +21,5 @@
  */
 
 return [
-    'ccp_skill_cache_test' => env('CCP_SKILLS_CACHE_TEST', false) && \Carbon\Carbon::now()->lt('2026-01-06'),
+    
 ];

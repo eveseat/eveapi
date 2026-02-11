@@ -68,9 +68,6 @@ class Skills extends AbstractAuthCharacterJob
     public function handle()
     {
         parent::handle();
-        if (config('eveapi.config.ccp_skill_cache_test')){
-            $this->compatibility_date = '2099-01-01';
-        }
         $response = $this->retrieve([
             'character_id' => $this->getCharacterId(),
         ]);

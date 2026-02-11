@@ -71,9 +71,6 @@ class Queue extends AbstractAuthCharacterJob
     public function handle()
     {
         parent::handle();
-                if (config('eveapi.config.ccp_skill_cache_test')){
-            $this->compatibility_date = '2099-01-01';
-        }
 
         $this->greatest_position = -1;
 
