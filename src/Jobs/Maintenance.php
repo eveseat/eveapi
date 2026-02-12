@@ -74,8 +74,8 @@ class Maintenance implements ShouldQueue
         $this->cleanup_tables();
 
         if (setting('cleanup_data', true) == 'yes') {
-            $this->cleanup_characters();
             $this->cleanup_corps();
+            $this->cleanup_characters();
         }
     }
 
@@ -110,21 +110,31 @@ class Maintenance implements ShouldQueue
 
     private function cleanup_characters()
     {
-        CharacterInfo::doesntHave('refresh_token')->delete();
+        // Only remove Chars which the token was deleted more than 30 days ago.
+        CharacterInfo::doesntHave('token_with_trashed')
+            ->orwhereRelation('token_with_trashed', 'deleted_at', '<', now()->subDay(30))
+            ->delete();
     }
 
     private function cleanup_corps()
     {
 
         // Need to find all corps that dont have a reason to be kept (no chars with tokens and not part of an alliance that has an active member)
-        Alliance::doesntHave('corporations.characters.refresh_token')->each(function ($alliance) {
+        Alliance::where(function ($query) {
+            $query->doesntHave('corporations.characters.token_with_trashed');
+            $query->orWhereRelation('corporations.characters.token_with_trashed', 'deleted_at', '<', now()->subDay(30));
+        })
+        ->each(function ($alliance) {
             $alliance->corporations()->whereNotBetween('alliance_members.corporation_id', [1000000, 1999999])->delete();
         });
 
         // Now delete all the corps that have no alliance and no active tokens
         CorporationInfo::whereNotBetween('corporation_id', [1000000, 1999999])
             ->doesntHave('alliance')
-            ->doesntHave('characters.refresh_token')
+            ->where(function ($query) {
+                $query->doesntHave('characters.token_with_trashed');
+                $query->orWhereRelation('characters.token_with_trashed', 'deleted_at', '<', now()->subDay(30));
+            })
             ->delete();
     }
 }
