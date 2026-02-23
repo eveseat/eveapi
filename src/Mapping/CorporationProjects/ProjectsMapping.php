@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2026 to present Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,6 @@ class ProjectsMapping extends DataMapping
         'created' => 'details.created',
         'description' => 'details.description',
         'expires' => 'details.expires',
-        'finished' => 'details.finished'
-     ];
+        'finished' => 'details.finished',
+    ];
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2026 to present Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\CorporationProjects;
 
+use Carbon\Carbon;
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Mapping\CorporationProjects\ProjectsMapping;
 use Seat\Eveapi\Models\CorporationProjects\CorporationProject;
 use Seat\Eveapi\Models\RefreshToken;
-
-use Carbon\Carbon;
 
 /**
  * Class Projects.
@@ -46,12 +45,10 @@ class Details extends AbstractAuthCorporationJob
      */
     protected $endpoint = '/corporations/{corporation_id}/projects/{project_id}';
 
-
     /**
      * @var string
      */
     protected $scope = 'esi-corporations.read_projects.v1';
-
 
     /**
      * When this job was written, so ESI can try to serve a response compatible with the behaviour of the endpoint at that time.
@@ -103,11 +100,12 @@ class Details extends AbstractAuthCorporationJob
         $details = $response->getBody();
 
         $lm = Carbon::parse($details->last_modified);
-        
+
         // Weird early projects, bad data
         $thresholdDate = Carbon::parse('2025-01-01');
         if ($lm->isBefore($thresholdDate)){
             logger()->warning('early project detected', ['body' => $details]); // TODO investigate
+
             return;
         }
 
@@ -117,32 +115,33 @@ class Details extends AbstractAuthCorporationJob
         ]);
 
         ProjectsMapping::make($proj, $details, [
-            'last_modified' => function() use ($lm) {
+            'last_modified' => function () use ($lm) {
                 return $lm->format('Y-m-d H:i:s');
             },
-            'corporation_id' => function() use ($cid) {
+            'corporation_id' => function () use ($cid) {
                 return $cid;
             },
-            'created' => function() use ($details) {
+            'created' => function () use ($details) {
                 return Carbon::parse($details->details->created)->format('Y-m-d H:i:s');
             },
-            'finished' => function() use ($details) {
-                if (!isset($details->details->finished)){
+            'finished' => function () use ($details) {
+                if (! isset($details->details->finished)){
                     return;
                 }
+
                 return Carbon::parse($details->details->finished)->format('Y-m-d H:i:s');
             },
-            'expires' => function() use ($details) {
-                if (!isset($details->details->expires)){
+            'expires' => function () use ($details) {
+                if (! isset($details->details->expires)){
                     return;
                 }
+
                 return Carbon::parse($details->details->expires)->format('Y-m-d H:i:s');
             },
-            'configuration' => function() use ($details) {
+            'configuration' => function () use ($details) {
                 return json_encode($details->configuration);
             },
         ])->save();
-
 
     }
 }

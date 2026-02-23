@@ -22,12 +22,10 @@
 
 namespace Seat\Eveapi\Jobs\CorporationProjects;
 
-use Illuminate\Support\Facades\Log;
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\CorporationProjects\CorporationProject;
 use Seat\Eveapi\Models\CorporationProjects\CorporationProjectContributor;
 use Seat\Eveapi\Models\RefreshToken;
-
 
 /**
  * Class Projects.
@@ -45,7 +43,6 @@ class Contributors extends AbstractAuthCorporationJob
      * @var string
      */
     protected $endpoint = '/corporations/{corporation_id}/projects/{project_id}/contributors';
-
 
     /**
      * @var string
@@ -94,9 +91,9 @@ class Contributors extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        $this->query_string["limit"] = "100";
+        $this->query_string['limit'] = '100';
 
-        $before = "0";
+        $before = '0';
 
         $proj = CorporationProject::findOrFail($this->project_id);
 
@@ -104,7 +101,7 @@ class Contributors extends AbstractAuthCorporationJob
 
         while (true) {
 
-            $this->query_string["before"] = $before;
+            $this->query_string['before'] = $before;
 
             $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
@@ -128,24 +125,25 @@ class Contributors extends AbstractAuthCorporationJob
         // Clear out list if necessary. Disabled under assumption contributors cant leave list
         // CorporationProjectContributor::where('project_id', $this->project_id)->delete();
 
-        $rows = $contriblist->map(function ($item) use ($proj) { 
-            // handle object or array item 
+        $rows = $contriblist->map(function ($item) use ($proj) {
+            // handle object or array item
             $id = is_object($item) ? ($item->id ?? null) : ($item['id'] ?? null);
             $contributed = is_object($item) ? ($item->contributed ?? 0) : ($item['contributed'] ?? 0);
-            return [ 
+
+            return [
                 'project_id' => $proj->id,
                 'character_id' => $id,
                 'contributed' => $contributed,
-                ];
+            ];
             })->toArray();
 
         // Perform upsert: unique by project_id + character_id, update contributed on conflict
         // Timestamps are auto updated
-        CorporationProjectContributor::upsert( 
+        CorporationProjectContributor::upsert(
             $rows,
             uniqueBy: ['project_id', 'character_id'],
             update: ['contributed']
             );
-            
+
     }
 }

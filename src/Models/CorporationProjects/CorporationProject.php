@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2026 to present Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,6 @@
 
 namespace Seat\Eveapi\Models\CorporationProjects;
 
-use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\CorporationProjects\CorporationProjectContributor;
 use Seat\Eveapi\Models\Universe\UniverseName;
 use Seat\Services\Models\ExtensibleModel;
 
@@ -57,5 +55,4 @@ class CorporationProject extends ExtensibleModel
                 'name' => trans('web::seat.unknown'),
             ]);
     }
-
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2026 to present Leon Jacobs
+ * Copyright (C) 2015 to present Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,8 @@
 
 namespace Seat\Eveapi\Models\CorporationProjects;
 
-
-use Seat\Services\Models\ExtensibleModel;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Services\Models\ExtensibleModel;
 
 class CorporationProjectContributor extends ExtensibleModel
 {
@@ -37,12 +36,12 @@ class CorporationProjectContributor extends ExtensibleModel
     protected $fillable = [
         'project_id',
         'character_id',
-        'contributed'
-        ];
+        'contributed',
+    ];
 
     protected $casts = [
-        'contributed' => 'integer'
-        ];
+        'contributed' => 'integer',
+    ];
 
     public function project()
     {

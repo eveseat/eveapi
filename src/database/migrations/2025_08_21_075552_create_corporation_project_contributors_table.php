@@ -34,7 +34,7 @@ class CreateCorporationProjectContributorsTable extends Migration
     public function up()
     {
         Schema::create('corporation_project_contributors', function (Blueprint $table) {
-            
+
             $table->bigIncrements('id');
             $table->foreignUuid('project_id')->constrained(table: 'corporation_projects')->cascadeOnDelete()->index();
             $table->unsignedBigInteger('character_id')->index();

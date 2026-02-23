@@ -22,12 +22,11 @@
 
 namespace Seat\Eveapi\Jobs\CorporationProjects;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Bus;
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Mapping\CorporationProjects\ProjectsMapping;
 use Seat\Eveapi\Models\CorporationProjects\CorporationProject;
-
-use Carbon\Carbon;
 
 /**
  * Class Projects.
@@ -45,7 +44,6 @@ class Projects extends AbstractAuthCorporationJob
      * @var string
      */
     protected $endpoint = '/corporations/{corporation_id}/projects';
-
 
     /**
      * @var string
@@ -85,17 +83,17 @@ class Projects extends AbstractAuthCorporationJob
     {
         parent::handle();
 
-        $this->query_string["limit"] = "100";
-        $this->query_string["state"] = "All";
+        $this->query_string['limit'] = '100';
+        $this->query_string['state'] = 'All';
 
-        $before = "0";
+        $before = '0';
 
         $this->project_jobs = collect();
 
         while (true) {
 
             // TODO - proper cursor based caching, not just grab it all every time.
-            $this->query_string["before"] = $before;
+            $this->query_string['before'] = $before;
 
             $response = $this->retrieve([
                 'corporation_id' => $this->getCorporationId(),
@@ -116,13 +114,13 @@ class Projects extends AbstractAuthCorporationJob
                         logger()->warning('early project detected', ['project' => $project]); // TODO investigate
                         continue;
                     }
-                    
+
                     $proj = CorporationProject::firstOrNew([
                         'id' => $project->id,
                     ]);
                     // dd($project->last_modified, gettype(Carbon($project->last_modified)->format('Y-m-d H:i:s')), Carbon($project->last_modified)->format('Y-m-d H:i:s'));
                     ProjectsMapping::make($proj, $project, [
-                        'last_modified' => function() use ($lm) {
+                        'last_modified' => function () use ($lm) {
                             return $lm->format('Y-m-d H:i:s');
                         },
                         'corporation_id' => function () {
@@ -138,7 +136,7 @@ class Projects extends AbstractAuthCorporationJob
                 break;
             }
         }
-        
+
         if ($this->project_jobs->isNotEmpty()) {
             if($this->batchId) {
                 $this->batch()->add($this->project_jobs->toArray());

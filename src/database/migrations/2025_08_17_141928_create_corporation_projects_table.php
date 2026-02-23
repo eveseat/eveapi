@@ -34,9 +34,9 @@ class CreateCorporationProjectsTable extends Migration
     public function up()
     {
         Schema::create('corporation_projects', function (Blueprint $table) {
-            
+
             // The below are all obtainable from the list api
-            
+
             $table->uuid('id')->primary();
             $table->bigInteger('corporation_id')->index(); // Index because the datatable will filter on it.
             $table->dateTime('last_modified');
