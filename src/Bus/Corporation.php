@@ -40,6 +40,7 @@ use Seat\Eveapi\Jobs\Corporation\Members;
 use Seat\Eveapi\Jobs\Corporation\MembersLimit;
 use Seat\Eveapi\Jobs\Corporation\MembersTitles;
 use Seat\Eveapi\Jobs\Corporation\MemberTracking;
+use Seat\Eveapi\Jobs\CorporationProjects\Projects;
 use Seat\Eveapi\Jobs\Corporation\RoleHistories;
 use Seat\Eveapi\Jobs\Corporation\Roles;
 use Seat\Eveapi\Jobs\Corporation\Shareholders;
@@ -205,5 +206,8 @@ class Corporation extends Bus
         $this->addAuthenticatedJob(new ContainerLogs($this->corporation_id, $this->token));
         $this->addAuthenticatedJob(new Locations($this->corporation_id, $this->token));
         $this->addAuthenticatedJob(new Names($this->corporation_id, $this->token));
+
+        // projects
+        $this->addAuthenticatedJob(new Projects($this->corporation_id, $this->token));
     }
 }
