@@ -65,12 +65,7 @@ class Details extends AbstractAuthCorporationJob
     /**
      * @var string
      */
-    private $project_id;
-
-    /**
-     * @var string
-     */
-    protected $version = '';
+    private string $project_id;
 
     public function __construct(int $corporation_id, RefreshToken $token, string $project_id)
     {
@@ -104,7 +99,7 @@ class Details extends AbstractAuthCorporationJob
         // Weird early projects, bad data
         $thresholdDate = Carbon::parse('2025-01-01');
         if ($lm->isBefore($thresholdDate)){
-            logger()->warning('early project detected', ['body' => $details]); // TODO investigate
+            logger()->warning('early project detected', ['body' => $details]); // These may need investigation by CCP if requried.
 
             return;
         }

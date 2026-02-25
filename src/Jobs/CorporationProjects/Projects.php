@@ -111,14 +111,14 @@ class Projects extends AbstractAuthCorporationJob
                     // Weird early projects
                     $thresholdDate = Carbon::parse('2025-01-01');
                     if ($lm->isBefore($thresholdDate)){
-                        logger()->warning('early project detected', ['project' => $project]); // TODO investigate
+                        logger()->warning('early project detected', ['project' => $project]); // // These may need investigation by CCP if requried.
                         continue;
                     }
 
                     $proj = CorporationProject::firstOrNew([
                         'id' => $project->id,
                     ]);
-                    // dd($project->last_modified, gettype(Carbon($project->last_modified)->format('Y-m-d H:i:s')), Carbon($project->last_modified)->format('Y-m-d H:i:s'));
+
                     ProjectsMapping::make($proj, $project, [
                         'last_modified' => function () use ($lm) {
                             return $lm->format('Y-m-d H:i:s');

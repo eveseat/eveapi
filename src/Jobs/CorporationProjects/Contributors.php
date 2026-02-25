@@ -52,7 +52,7 @@ class Contributors extends AbstractAuthCorporationJob
     /**
      * @var array
      */
-    protected $roles = ['Project Manager']; // TODO: TBC
+    protected $roles = ['Project Manager'];
 
     /**
      * When this job was written, so ESI can try to serve a response compatible with the behaviour of the endpoint at that time.
@@ -69,9 +69,7 @@ class Contributors extends AbstractAuthCorporationJob
     /**
      * @var string
      */
-    protected $version = '';
-
-    private $project_id;
+    private string $project_id;
 
     public function __construct(int $corporation_id, RefreshToken $token, string $project_id)
     {
