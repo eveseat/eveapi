@@ -48,6 +48,7 @@ use Seat\Eveapi\Jobs\Corporation\StarbaseDetails;
 use Seat\Eveapi\Jobs\Corporation\Starbases;
 use Seat\Eveapi\Jobs\Corporation\Structures;
 use Seat\Eveapi\Jobs\Corporation\Titles;
+use Seat\Eveapi\Jobs\CorporationProjects\Projects;
 use Seat\Eveapi\Jobs\Industry\Corporation\Jobs;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Extractions;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\ObserverDetails;
@@ -205,5 +206,8 @@ class Corporation extends Bus
         $this->addAuthenticatedJob(new ContainerLogs($this->corporation_id, $this->token));
         $this->addAuthenticatedJob(new Locations($this->corporation_id, $this->token));
         $this->addAuthenticatedJob(new Names($this->corporation_id, $this->token));
+
+        // projects
+        $this->addAuthenticatedJob(new Projects($this->corporation_id, $this->token));
     }
 }

@@ -86,4 +86,5 @@ return [
     'esi-universe.read_structures.v1',
     'esi-wallet.read_character_wallet.v1',
     'esi-wallet.read_corporation_wallets.v1',
+    'esi-corporations.read_projects.v1',
 ];
