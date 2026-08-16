@@ -428,15 +428,15 @@ class Sde extends Command
             // With the output file ready, prepare the scary exec() command
             // that should be run. A sample $import_command is:
             // mysql -u root -h 127.0.0.1 seat < /tmp/sample.sql
-            $import_command = 'mysql -u ' . config('database.connections.mysql.username') .
+            $import_command = 'mysql -u ' . escapeshellarg(config('database.connections.mysql.username')) .
                 // Check if the password is longer than 0. If not, don't specify the -p flag
                 (strlen(config('database.connections.mysql.password')) ? ' -p' : '')
                 // Append this regardless. Escape special chars in the password too.
-                . escapeshellcmd(config('database.connections.mysql.password')) .
-                ' -h ' . config('database.connections.mysql.host') .
-                ' -P ' . config('database.connections.mysql.port') .
-                ' ' . config('database.connections.mysql.database') .
-                ' < ' . $extracted_path;
+                . escapeshellarg(config('database.connections.mysql.password')) .
+                ' -h ' . escapeshellarg(config('database.connections.mysql.host')) .
+                ' -P ' . escapeshellarg(config('database.connections.mysql.port')) .
+                ' ' . escapeshellarg(config('database.connections.mysql.database')) .
+                ' < ' . escapeshellarg($extracted_path);
 
             // Run the command... (*scared_face*)
             exec($import_command, $output, $exit_code);
@@ -470,13 +470,13 @@ class Sde extends Command
         DB::statement('CREATE ROLE yaml WITH NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT NOREPLICATION CONNECTION LIMIT -1');
         DB::statement('GRANT yaml TO seat');
 
-        $import_command = 'PGPASSWORD=' . config('database.connections.pgsql.password') .
-            ' pg_restore -d ' . config('database.connections.pgsql.database') .
-            ' -h ' . config('database.connections.pgsql.host') .
-            ' -p ' . config('database.connections.pgsql.port') .
-            ' -U ' . config('database.connections.pgsql.username') .
-            ' -t ' . implode(' -t ', $this->json->tables) .
-            ' ' . $extracted_path;
+        $import_command = 'PGPASSWORD=' . escapeshellarg(config('database.connections.pgsql.password')) .
+            ' pg_restore -d ' . escapeshellarg(config('database.connections.pgsql.database')) .
+            ' -h ' . escapeshellarg(config('database.connections.pgsql.host')) .
+            ' -p ' . escapeshellarg(config('database.connections.pgsql.port')) .
+            ' -U ' . escapeshellarg(config('database.connections.pgsql.username')) .
+            ' -t ' . implode(' -t ', array_map('escapeshellarg', $this->json->tables)) .
+            ' ' . escapeshellarg($extracted_path);
 
         exec($import_command, $output, $exit_code);
 
