@@ -28,6 +28,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Services\Helpers\AnalyticsContainer;
@@ -42,6 +43,14 @@ use Seat\Services\Settings\Seat;
 class Sde extends Command
 {
     use DispatchesJobs;
+
+    /**
+     * Fuzzwork dump endpoints. The index lists the latest build directory;
+     * the tables are published as gzip dumps under latest/mysql_tables.
+     */
+    private const FUZZWORK_DUMP_URL = 'https://www.fuzzwork.co.uk/dump/';
+
+    private const FUZZWORK_TABLES_URL = 'https://www.fuzzwork.co.uk/dump/latest/mysql_tables/';
 
     /**
      * The name and signature of the console command.
@@ -245,23 +254,119 @@ class Sde extends Command
     }
 
     /**
-     * Query the eveseat/resources repository for SDE
-     * related information.
+     * Build the SDE download descriptor. eveseat/resources still advertises
+     * Fuzzwork's retired per-table .sql.bz2 dump; Fuzzwork now publishes the
+     * same tables as gzip under latest/mysql_tables, so build the descriptor
+     * here and track the latest build directory.
      *
      * @return mixed
      */
     public function getJsonResource()
     {
 
-        $result = $this->getGuzzle()->request('GET',
-            'https://raw.githubusercontent.com/eveseat/resources/master/sde.json', [
-                'headers' => ['Accept' => 'application/json'],
-            ]);
+        $tables = [
+            'chrFactions', 'dgmTypeAttributes', 'dgmTypeEffects', 'invCategories',
+            'invContrabandTypes', 'invControlTowerResourcePurposes',
+            'invControlTowerResources', 'invFlags', 'invGroups', 'invItems',
+            'invMarketGroups', 'invMetaGroups', 'invMetaTypes', 'invNames',
+            'invPositions', 'invTypeMaterials', 'invTypeReactions', 'invTypes',
+            'invUniqueNames', 'mapDenormalize', 'ramActivities', 'staStations',
+        ];
 
-        if ($result->getStatusCode() != 200)
-            return json_encode([]);
+        return (object) [
+            'version' => $this->getFuzzworkLatestVersion(),
+            'url' => self::FUZZWORK_TABLES_URL,
+            'format' => '.sql.gz',
+            'tables' => $tables,
+        ];
+    }
 
-        return json_decode($result->getBody());
+    /**
+     * Resolve the version used to decide whether a new import is needed.
+     *
+     * Order: an explicit SDE_FUZZWORK_VERSION pin, then the latest build
+     * directory listed on the Fuzzwork index, then the build stamp served
+     * with a table dump. A stable marker is used only as a last resort, so
+     * an unreachable Fuzzwork does not trigger a re-import on every boot.
+     *
+     * @return string
+     */
+    private function getFuzzworkLatestVersion()
+    {
+
+        $pinned = env('SDE_FUZZWORK_VERSION');
+
+        if (! empty($pinned))
+            return (string) $pinned;
+
+        $version = $this->scrapeFuzzworkVersion();
+
+        if ($version !== null)
+            return $version;
+
+        $version = $this->probeFuzzworkVersion();
+
+        if ($version !== null)
+            return $version;
+
+        return 'sde-latest';
+    }
+
+    /**
+     * Read the latest build number from the Fuzzwork dump index, e.g. the
+     * 3542233 in https://www.fuzzwork.co.uk/dump/3542233_20260924_133005/.
+     *
+     * @return string|null
+     */
+    private function scrapeFuzzworkVersion()
+    {
+
+        try {
+
+            $result = $this->getGuzzle()->request('GET',
+                self::FUZZWORK_DUMP_URL, [
+                    'headers' => ['Accept' => 'text/html'],
+                ]);
+
+            if ($result->getStatusCode() == 200 &&
+                preg_match('/href="(\d+)_\d{8}_\d{6}\/"/', (string) $result->getBody(), $matches)) {
+
+                return $matches[1];
+            }
+
+        } catch (\Throwable $e) {
+
+            Log::warning('Unable to read the Fuzzwork dump index: ' . $e->getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Derive a version from the build stamp served with a table dump, so a
+     * change still bumps the version when the index cannot be read.
+     *
+     * @return string|null
+     */
+    private function probeFuzzworkVersion()
+    {
+
+        try {
+
+            $result = $this->getGuzzle()->request('HEAD',
+                self::FUZZWORK_TABLES_URL . 'invTypes.sql.gz');
+
+            $stamp = $result->getHeaderLine('Last-Modified') ?: $result->getHeaderLine('ETag');
+
+            if (! empty($stamp))
+                return 'sde-' . md5($stamp);
+
+        } catch (\Throwable $e) {
+
+            Log::warning('Unable to probe the Fuzzwork dumps: ' . $e->getMessage());
+        }
+
+        return null;
     }
 
     /**
@@ -545,6 +650,21 @@ class Sde extends Command
 
     private function uncompressFile($archive_path, $extracted_target_path): void
     {
+        // Fuzzwork's per-table dumps are gzip; the postgres dump stays bzip2.
+        if (str_ends_with($archive_path, '.gz')) {
+
+            $input_file = gzopen($archive_path, 'rb');
+            $output_file = fopen($extracted_target_path, 'w');
+
+            while (! gzeof($input_file))
+                fwrite($output_file, gzread($input_file, 4096));
+
+            gzclose($input_file);
+            fclose($output_file);
+
+            return;
+        }
+
         // Get 2 handles ready for both the in and out files
         $input_file = bzopen($archive_path, 'r');
         $output_file = fopen($extracted_target_path, 'w');
