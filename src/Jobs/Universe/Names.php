@@ -95,6 +95,8 @@ class Names extends EsiBase
 
         // if no entity IDs were specified, try to resolve all unresolved universe names
         if (! isset($this->entity_ids)) {
+            $this->entity_ids = collect();
+
             $this->entity_ids->push(CharacterWalletJournal::select('first_party_id')
                 ->whereNotNull('first_party_id')
                 ->distinct()
