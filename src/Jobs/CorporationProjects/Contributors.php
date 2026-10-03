@@ -22,6 +22,7 @@
 
 namespace Seat\Eveapi\Jobs\CorporationProjects;
 
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Models\CorporationProjects\CorporationProject;
 use Seat\Eveapi\Models\CorporationProjects\CorporationProjectContributor;
@@ -101,10 +102,20 @@ class Contributors extends AbstractAuthCorporationJob
 
             $this->query_string['before'] = $before;
 
-            $response = $this->retrieve([
-                'corporation_id' => $this->getCorporationId(),
-                'project_id' => $this->project_id,
-            ]);
+            try {
+                $response = $this->retrieve([
+                    'corporation_id' => $this->getCorporationId(),
+                    'project_id' => $this->project_id,
+                ]);
+            } catch (RequestFailedException $exception) {
+                // The project may have finished or been deleted between the listing
+                // and this contributors call. Nothing more to collect for this run.
+                if ($exception->getEsiResponse()->getErrorCode() === 404) {
+                    return;
+                }
+
+                throw $exception;
+            }
 
             $contribs = $response->getBody();
             if (isset($contribs->cursor) && isset($contribs->cursor->before)) {
