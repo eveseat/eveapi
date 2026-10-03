@@ -128,6 +128,15 @@ class Projects extends AbstractAuthCorporationJob
                         },
                     ])->save();
 
+                    // Do not schedule detail/contributor jobs for projects which are
+                    // already finished or in a terminal ESI state. The per-project
+                    // endpoints can 404 once the project reaches these states, and
+                    // the listing endpoint already gives us the authoritative final
+                    // state.
+                    if ($this->isProjectFinishedOrTerminal($proj, $project)) {
+                        continue;
+                    }
+
                     $this->project_jobs->add(new Details($this->getCorporationId(), $this->getToken(), $proj->id));
                     $this->project_jobs->add(new Contributors($this->getCorporationId(), $this->getToken(), $proj->id));
                 }
@@ -148,5 +157,27 @@ class Projects extends AbstractAuthCorporationJob
             }
         }
 
+    }
+
+    /**
+     * Determine whether a project has reached a finished or terminal state.
+     *
+     * A project is considered terminal when either the local record already has
+     * a finished timestamp, or when ESI reports a state which cannot become
+     * active again (Closed, Completed, Expired, Deleted).
+     *
+     * @param  \Seat\Eveapi\Models\CorporationProjects\CorporationProject  $project
+     * @param  object  $esi_project
+     * @return bool
+     */
+    private function isProjectFinishedOrTerminal(CorporationProject $project, object $esi_project): bool
+    {
+        if (! is_null($project->finished)) {
+            return true;
+        }
+
+        $terminal_states = ['Closed', 'Completed', 'Expired', 'Deleted'];
+
+        return isset($esi_project->state) && in_array($esi_project->state, $terminal_states, true);
     }
 }

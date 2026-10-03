@@ -23,6 +23,7 @@
 namespace Seat\Eveapi\Jobs\CorporationProjects;
 
 use Carbon\Carbon;
+use Seat\Eseye\Exceptions\RequestFailedException;
 use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
 use Seat\Eveapi\Mapping\CorporationProjects\ProjectsMapping;
 use Seat\Eveapi\Models\CorporationProjects\CorporationProject;
@@ -87,10 +88,21 @@ class Details extends AbstractAuthCorporationJob
 
         $cid = $this->getCorporationId(); // Extract it here early as we use it a log
 
-        $response = $this->retrieve([
-            'project_id' => $this->project_id,
-            'corporation_id' => $cid,
-        ]);
+        try {
+            $response = $this->retrieve([
+                'project_id' => $this->project_id,
+                'corporation_id' => $cid,
+            ]);
+        } catch (RequestFailedException $exception) {
+            // The project may have finished, expired, or been deleted between the
+            // listing and this detail call. Leave the row untouched; the listing
+            // endpoint is authoritative and the next run will skip terminal rows.
+            if ($exception->getEsiResponse()->getErrorCode() === 404) {
+                return;
+            }
+
+            throw $exception;
+        }
 
         $details = $response->getBody();
 
