@@ -23,15 +23,15 @@
 namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
 use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Mapping\Sde\Ccp\InvTypeMapping;
-use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
 use Seat\Eveapi\Models\Sde\InvType;
 
 class InvTypesSeeder extends AbstractSdeSeeder
 {
 
-    protected const FILENAME = "types.jsonl";
+    protected const FILENAME = 'types.jsonl';
 
     /**
      * Define seeder related SDE table structure.
@@ -43,7 +43,7 @@ class InvTypesSeeder extends AbstractSdeSeeder
     {
         $table->integer('typeID')->primary();
         $table->integer('groupID');
-        $table->string('typeName', 150);
+        $table->string('typeName', 255);
         $table->text('description')->nullable();
         $table->double('mass')->nullable();
         $table->double('volume')->nullable();
@@ -72,7 +72,7 @@ class InvTypesSeeder extends AbstractSdeSeeder
         return new InvTypeMapping();
     }
 
-    public function insert($arr) 
+    public function insert($arr)
     {
         // Replace 'YourModel' with the actual model class name
         return InvType::insert($arr);

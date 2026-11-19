@@ -23,17 +23,15 @@
 namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Mapping\Sde\Ccp\ChrFactionMapping;
 use Seat\Eveapi\Models\Sde\ChrFaction;
 
 class ChrFactionsSeeder extends AbstractSdeSeeder
 {
 
-    protected const FILENAME = "factions.jsonl";
-
-
+    protected const FILENAME = 'factions.jsonl';
 
     /**
      * Define seeder related SDE table structure.
@@ -44,7 +42,7 @@ class ChrFactionsSeeder extends AbstractSdeSeeder
     protected function getSdeTableDefinition(Blueprint $table): void
     {
         $table->integer('factionID')->primary();
-        $table->string('factionName', 100)->nullable();
+        $table->string('factionName', 255)->nullable();
         $table->string('description', 2000)->nullable();
         $table->integer('raceIDs')->nullable();
         $table->integer('solarSystemID')->nullable();
@@ -65,8 +63,6 @@ class ChrFactionsSeeder extends AbstractSdeSeeder
     {
         return new ChrFactionMapping();
     }
-
-
 
     public function insert($arr)
     {
