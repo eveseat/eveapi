@@ -44,7 +44,7 @@ class ChrFactionsSeeder extends AbstractSdeSeeder
     protected function getSdeTableDefinition(Blueprint $table): void
     {
         $table->integer('factionID')->primary();
-        $table->string('factionName', 100)->nullable();
+        $table->string('factionName', 255)->nullable();
         $table->string('description', 2000)->nullable();
         $table->integer('raceIDs')->nullable();
         $table->integer('solarSystemID')->nullable();

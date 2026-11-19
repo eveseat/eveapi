@@ -212,7 +212,7 @@ abstract class AbstractSdeSeeder extends Seeder
             $bar->advance();
         }
 
-        if (count($records) >= 0) {
+        if (count($records) > 0) {
             $this->insert($records);
             $records = [];
         }
