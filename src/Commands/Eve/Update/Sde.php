@@ -231,6 +231,9 @@ class Sde extends Command
 
         Seat::set('installed_sde', $this->json->version);
 
+        // This import replaces the tables the CCP seeder fills, so its build is no longer installed.
+        Seat::set('installed_ccp_sde', null);
+
         $this->line('SDE Update Command Complete');
 
         // Analytics

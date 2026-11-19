@@ -35,6 +35,7 @@ use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvGroupsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMarketGroupsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMetaGroupsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvTypesSeeder;
+use Seat\Services\Settings\Seat;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 /**
@@ -94,6 +95,32 @@ class CcpSdeSeeder extends Seeder
 
         $this->command->info('Seeding SDE into Database...');
         $this->call($this->seeders);
+
+        $this->recordInstalledVersion();
+    }
+
+    /**
+     * Kept apart from installed_sde: eve:update:sde compares that one with the
+     * Fuzzwork release on every boot and would reimport over these tables if it changed.
+     *
+     * @return void
+     */
+    private function recordInstalledVersion(): void
+    {
+        $version = $this->version;
+
+        $meta = $this->storage_path . '_sde.jsonl';
+        if (file_exists($meta)) {
+            $sde = json_decode((string) strtok(file_get_contents($meta), "\n"), true) ?: [];
+
+            if (isset($sde['buildNumber']))
+                $version = (string) $sde['buildNumber'];
+
+            if (isset($sde['releaseDate']))
+                $version .= sprintf(' (%s)', substr($sde['releaseDate'], 0, 10));
+        }
+
+        Seat::set('installed_ccp_sde', $version);
     }
 
     /**
