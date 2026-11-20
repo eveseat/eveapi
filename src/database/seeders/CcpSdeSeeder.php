@@ -22,9 +22,12 @@
 
 namespace Seat\Eveapi\Database\Seeders;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\ChrFactionsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\DgmTypeAttributesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvTypesSeeder;
@@ -34,7 +37,9 @@ use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvContrabandTypesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvControlTowerResourcesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvGroupsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMarketGroupsSeeder;
+use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMetaGroupsSeeder;
+use Seat\Services\Settings\Seat;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 /**
@@ -48,7 +53,7 @@ class CcpSdeSeeder extends Seeder
     /**
      * @var string
      */
-    private $version = '3444265';
+    private $version = '3720952';
 
     /**
      * The SDE file storage path.
@@ -82,7 +87,7 @@ class CcpSdeSeeder extends Seeder
         // extract sde file/seeder mapping from config
         // $sde_seeders = config('seat.sde.seeders', []);
         // configure sde version
-        $this->version = config('eveapi.config.sde.version') ?? $this->version;
+        $this->version = $this->getVersion();
         $this->command->info('Checking configuration...');
         if (! $this->isStorageOk())
             throw new DirectoryNotFoundException('Storage path is not OK. Please check permissions.');
@@ -92,8 +97,133 @@ class CcpSdeSeeder extends Seeder
         $this->command->info('Downloading static files...');
         $this->downloadStaticFiles();
 
+        $keeps_backup = DB::connection()->getDriverName() === 'mysql';
+
+        if ($keeps_backup) {
+            $this->command->info('Each table is copied before it is replaced. If one fails to load, its copy is put back');
+            $this->command->info('automatically, so SeAT keeps the data it had and there is nothing to fix by hand.');
+        }
+
         $this->command->info('Seeding SDE into Database...');
-        $this->call($this->seeders);
+
+        try {
+            $this->call($this->seeders);
+        } catch (\Throwable $e) {
+            $this->command->newLine();
+            $this->command->error('The CCP SDE update stopped: ' . self::reason($e));
+
+            if ($keeps_backup) {
+                $done = array_keys(AbstractSdeSeeder::pullResults());
+                $this->command->warn('The table being loaded was put back as it was.');
+                $this->command->warn($done
+                    ? 'Already updated to build ' . $this->version . ': ' . implode(', ', $done) . '. Every other table is unchanged.'
+                    : 'No table was changed.');
+                $this->command->warn('Once the cause is fixed, run the CCP seeder again.');
+            }
+
+            throw $e;
+        }
+
+        [$build, $released] = $this->recordInstalledVersion();
+
+        $this->reportResults($build, $released);
+    }
+
+    /**
+     * A failed insert's message carries the whole batch it was running, hundreds of
+     * rows of type descriptions. The driver's own message says what went wrong.
+     *
+     * @param  \Throwable  $e
+     * @return string
+     */
+    public static function reason(\Throwable $e): string
+    {
+        if ($e instanceof QueryException && $e->getPrevious())
+            return $e->getPrevious()->getMessage();
+
+        return $e->getMessage();
+    }
+
+    /**
+     * @param  string  $build
+     * @param  string|null  $released
+     * @return void
+     */
+    private function reportResults(string $build, ?string $released): void
+    {
+        $format = fn ($count) => is_null($count) ? '-' : number_format($count);
+
+        $results = collect(AbstractSdeSeeder::pullResults());
+
+        $rows = $results
+            ->map(fn ($result, $table) => [
+                $table,
+                $format($result['before']),
+                $format($result['after']),
+                $format($result['added']),
+                $format($result['removed']),
+            ])
+            ->values()
+            ->all();
+
+        $this->command->newLine();
+        $this->command->table(['Table', 'Rows before', 'Rows after', 'Added', 'Removed'], $rows);
+
+        $this->command->info(sprintf('CCP SDE build %s%s is installed. All %d tables were updated.',
+            $build, $released ? ' (released ' . $released . ')' : '', count($rows)));
+
+        // A row count from before is only known where a copy was taken.
+        if ($results->contains(fn ($result) => ! is_null($result['before'])))
+            $this->command->info('Every table loaded, so the copies taken before the update have been deleted.');
+    }
+
+    /**
+     * A seed that was killed part way (out of memory, container stopped) leaves that
+     * table's backup behind and the table half loaded until the seeder runs again.
+     *
+     * @return bool
+     */
+    public static function hasInterruptedRun(): bool
+    {
+        return collect(self::SEEDER_MAP)->flatten()
+            ->contains(fn ($seeder) => Schema::hasTable($seeder::getBackupName()));
+    }
+
+    /**
+     * The CCP build this seeder installs.
+     *
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return (string) (config('eveapi.config.sde.version') ?? $this->version);
+    }
+
+    /**
+     * Kept apart from installed_sde: eve:update:sde compares that one with the
+     * Fuzzwork release on every boot and would reimport over these tables if it changed.
+     *
+     * @return array build number, and CCP's release date when the build says it
+     */
+    private function recordInstalledVersion(): array
+    {
+        $build = $this->version;
+        $released = null;
+
+        $meta = $this->storage_path . '_sde.jsonl';
+        if (file_exists($meta)) {
+            $sde = json_decode((string) strtok(file_get_contents($meta), "\n"), true) ?: [];
+
+            if (isset($sde['buildNumber']))
+                $build = (string) $sde['buildNumber'];
+
+            if (isset($sde['releaseDate']))
+                $released = substr($sde['releaseDate'], 0, 10);
+        }
+
+        Seat::set('installed_ccp_sde', $released ? sprintf('%s (%s)', $build, $released) : $build);
+
+        return [$build, $released];
     }
 
     

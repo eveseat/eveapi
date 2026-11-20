@@ -43,7 +43,7 @@ class InvTypesSeeder extends AbstractSdeSeeder
     {
         $table->integer('typeID')->primary();
         $table->integer('groupID');
-        $table->string('typeName', 150);
+        $table->string('typeName', 255);
         $table->text('description')->nullable();
         $table->double('mass')->nullable();
         $table->double('volume')->nullable();
