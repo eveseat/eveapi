@@ -83,6 +83,13 @@ class Sde extends Command
     protected $storage_path;
 
     /**
+     * Tables whose dump did not load.
+     *
+     * @var string[]
+     */
+    private $failed_imports = [];
+
+    /**
      * Create a new command instance.
      */
     public function __construct()
@@ -197,6 +204,11 @@ class Sde extends Command
         $this->info(count($this->json->tables) . ' tables will be updated: ' .
             implode(', ', $this->json->tables));
         $this->info('Download format will be: ' . $this->json->format);
+
+        if (! empty($installed_ccp_sde) && ! $this->option('without-ccp'))
+            $this->info(sprintf('CCP SDE build %s is installed on top, so the CCP seeder will run again afterwards (skip it with --without-ccp).',
+                (new CcpSdeSeeder)->getVersion()));
+
         $this->line('');
 
         if (DB::connection()->getDriverName() == 'mysql')
@@ -239,9 +251,17 @@ class Sde extends Command
         // This import replaces the tables the CCP seeder fills, so its build is no longer installed.
         Seat::set('installed_ccp_sde', null);
 
+        if ($this->failed_imports) {
+            $this->error(sprintf('Fuzzwork SDE %s: %s failed to import, see the errors above.',
+                $this->json->version, implode(', ', $this->failed_imports)));
+        } else {
+            $this->info(sprintf('Fuzzwork SDE %s imported, %d tables updated.',
+                $this->json->version, count($this->json->tables)));
+        }
+
         $status = $this->updateCcpSde($installed_ccp_sde, true);
 
-        $this->line('SDE Update Command Complete');
+        $this->line($status === $this::SUCCESS ? 'SDE Update Command Complete' : 'SDE Update finished with errors, see above.');
 
         // Analytics
         dispatch(new Analytics((new AnalyticsContainer)
@@ -278,14 +298,22 @@ class Sde extends Command
         if (! $replaced && ! $interrupted && strtok($installed, ' ') === $version)
             return $this::SUCCESS;
 
-        $this->info($interrupted
-            ? 'A previous CCP SDE seed did not finish. Applying CCP SDE build ' . $version . ' again.'
-            : 'Applying CCP SDE build ' . $version . ' on top of the Fuzzwork import.');
+        if ($interrupted)
+            $this->info('A previous CCP SDE seed did not finish. Applying CCP SDE build ' . $version . ' again.');
+        elseif ($replaced)
+            $this->info('Applying CCP SDE build ' . $version . ' on top of the Fuzzwork import.');
+        else
+            $this->info(sprintf('The Fuzzwork SDE is current, but SeAT now uses CCP SDE build %s (installed: %s). Applying it.',
+                $version, $installed));
 
         try {
             $status = $this->call('db:seed', ['--class' => CcpSdeSeeder::class, '--force' => true]);
         } catch (\Throwable $e) {
-            $this->error('CCP SDE seed failed: ' . $e->getMessage());
+            $this->error('CCP SDE seed failed: ' . CcpSdeSeeder::reason($e));
+
+            // The import above cleared the installed build, so no later run will retry this on its own.
+            if ($replaced)
+                $this->warn('Scheduled updates will not retry it. Once the cause is fixed, run: php artisan db:seed --class="Seat\Eveapi\Database\Seeders\CcpSdeSeeder" --force');
 
             return $this::FAILURE;
         }
@@ -468,6 +496,7 @@ class Sde extends Command
 
             if (! File::exists($archive_path)) {
 
+                $this->failed_imports[] = $table;
                 $this->warn($archive_path . ' seems to be invalid. Skipping.');
                 continue;
             }
@@ -490,9 +519,11 @@ class Sde extends Command
             // Run the command... (*scared_face*)
             exec($import_command, $output, $exit_code);
 
-            if ($exit_code !== 0)
+            if ($exit_code !== 0) {
+                $this->failed_imports[] = $table;
                 $this->error('Warning: Import failed with exit code ' .
                     $exit_code . ' and command outut: ' . implode('\n', $output));
+            }
 
             $bar->advance();
         }
@@ -529,9 +560,11 @@ class Sde extends Command
 
         exec($import_command, $output, $exit_code);
 
-        if ($exit_code !== 0)
+        if ($exit_code !== 0) {
+            $this->failed_imports[] = 'the dump';
             $this->error('Warning: Import failed with exit code ' .
                 $exit_code . ' and command outut: ' . implode('\n', $output));
+        }
     }
 
     /**
