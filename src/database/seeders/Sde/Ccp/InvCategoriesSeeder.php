@@ -42,7 +42,7 @@ class InvCategoriesSeeder extends AbstractSdeSeeder
     protected function getSdeTableDefinition(Blueprint $table): void
     {
         $table->integer('categoryID')->primary();
-        $table->string('categoryName', 100)->nullable();
+        $table->string('categoryName', 255)->nullable();
         $table->integer('iconID')->nullable();
         $table->boolean('published')->default(false);
     }

@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Database\Seeders\Sde;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
@@ -65,14 +66,149 @@ abstract class AbstractSdeSeeder extends Seeder
         try {
             $this->disableFK();
 
+            $this->restoreBackup();
+
+            $this->backupTable();
+
             $this->createTable();
 
             $this->seedTable();
 
+            $this->restoreExtraIndexes();
+
             $this->after();
+
+            $this->dropBackup();
+        } catch (\Throwable $e) {
+            $this->restoreBackup();
+
+            throw $e;
         } finally {
             $this->enableFK(); // Really dont want to leave this disabled.
         }
+    }
+
+    /**
+     * Name the last complete copy of the table is kept under while it is reseeded.
+     *
+     * @return string
+     */
+    private function getBackupName(): string
+    {
+        return $this->getSdeName() . '_backup';
+    }
+
+    /**
+     * The backup relies on CREATE TABLE ... LIKE and information_schema, so other
+     * drivers keep the plain drop and recreate.
+     *
+     * @return bool
+     */
+    private function canKeepBackup(): bool
+    {
+        return DB::connection()->getDriverName() === 'mysql';
+    }
+
+    /**
+     * Copy the live table rather than renaming it: a rename would carry other tables'
+     * foreign keys over to the backup and leave them pointing at it once it is dropped.
+     * The copy is filled under a temporary name and renamed when complete, so a backup
+     * is never half filled.
+     *
+     * @return void
+     */
+    private function backupTable(): void
+    {
+        if (! $this->canKeepBackup() || ! Schema::hasTable($this->getSdeName()))
+            return;
+
+        $copy = $this->getBackupName() . '_new';
+
+        Schema::dropIfExists($copy);
+        DB::statement(sprintf('CREATE TABLE `%s` LIKE `%s`', $copy, $this->getSdeName()));
+        DB::statement(sprintf('INSERT INTO `%s` SELECT * FROM `%s`', $copy, $this->getSdeName()));
+        Schema::rename($copy, $this->getBackupName());
+    }
+
+    /**
+     * A backup only exists while a seed is running or after one was killed part way,
+     * so whenever one is found it is the last complete copy of the table.
+     *
+     * @return void
+     */
+    private function restoreBackup(): void
+    {
+        if (! $this->canKeepBackup())
+            return;
+
+        Schema::dropIfExists($this->getBackupName() . '_new');
+
+        if (! Schema::hasTable($this->getBackupName()))
+            return;
+
+        Schema::dropIfExists($this->getSdeName());
+        Schema::rename($this->getBackupName(), $this->getSdeName());
+    }
+
+    /**
+     * Put back indexes that operators or plugins added to the table, since the table
+     * definition above only knows about its own.
+     *
+     * @return void
+     */
+    private function restoreExtraIndexes(): void
+    {
+        if (! $this->canKeepBackup() || ! Schema::hasTable($this->getBackupName()))
+            return;
+
+        $current = $this->getIndexes($this->getSdeName());
+
+        foreach ($this->getIndexes($this->getBackupName()) as $name => $columns) {
+            if ($name === 'PRIMARY' || $current->has($name))
+                continue;
+
+            $missing = $columns->pluck('COLUMN_NAME')
+                ->reject(fn ($column) => Schema::hasColumn($this->getSdeName(), $column));
+
+            if ($missing->isNotEmpty()) {
+                $this->command->warn(sprintf('Index %s on %s was not restored, column %s no longer exists.',
+                    $name, $this->getSdeName(), $missing->implode(', ')));
+                continue;
+            }
+
+            $first = $columns->first();
+            $kind = $first->INDEX_TYPE === 'FULLTEXT' ? 'FULLTEXT ' : ($first->NON_UNIQUE == 0 ? 'UNIQUE ' : '');
+            $parts = $columns->map(fn ($column) => sprintf('`%s`%s', $column->COLUMN_NAME,
+                $column->SUB_PART ? '(' . (int) $column->SUB_PART . ')' : ''));
+
+            try {
+                DB::statement(sprintf('CREATE %sINDEX `%s` ON `%s` (%s)',
+                    $kind, $name, $this->getSdeName(), $parts->implode(', ')));
+            } catch (\Throwable $e) {
+                // A unique index the new data no longer satisfies should not throw away a good seed.
+                $this->command->warn(sprintf('Index %s on %s was not restored: %s',
+                    $name, $this->getSdeName(), $e->getMessage()));
+            }
+        }
+    }
+
+    /**
+     * @param  string  $table
+     * @return \Illuminate\Support\Collection
+     */
+    private function getIndexes(string $table)
+    {
+        return collect(DB::select(
+            'SELECT INDEX_NAME, NON_UNIQUE, INDEX_TYPE, COLUMN_NAME, SUB_PART FROM information_schema.STATISTICS
+             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? ORDER BY INDEX_NAME, SEQ_IN_INDEX',
+            [DB::connection()->getDatabaseName(), $table]
+        ))->groupBy('INDEX_NAME');
+    }
+
+    private function dropBackup(): void
+    {
+        if ($this->canKeepBackup())
+            Schema::dropIfExists($this->getBackupName());
     }
 
     private function disableFK()
@@ -212,7 +348,7 @@ abstract class AbstractSdeSeeder extends Seeder
             $bar->advance();
         }
 
-        if (count($records) >= 0) {
+        if (count($records) > 0) {
             $this->insert($records);
             $records = [];
         }

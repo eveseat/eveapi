@@ -45,7 +45,7 @@ class InvGroupsSeeder extends AbstractSdeSeeder
     {
         $table->integer('groupID')->primary();
         $table->integer('categoryID')->nullable();
-        $table->string('groupName', 100)->nullable();
+        $table->string('groupName', 255)->nullable();
         $table->integer('iconID')->nullable();
         $table->boolean('useBasePrice')->default(false);
         $table->boolean('anchored')->default(false);
