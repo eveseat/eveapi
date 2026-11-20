@@ -43,7 +43,7 @@ class InvMarketGroupsSeeder extends AbstractSdeSeeder
     {
         $table->integer('marketGroupID')->primary();
         $table->integer('parentGroupID')->nullable();
-        $table->string('marketGroupName', 100)->nullable();
+        $table->string('marketGroupName', 255)->nullable();
         $table->string('description', 3000)->nullable();
         $table->integer('iconID')->nullable();
         $table->boolean('hasTypes')->nullable();
