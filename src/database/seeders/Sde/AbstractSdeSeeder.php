@@ -93,9 +93,9 @@ abstract class AbstractSdeSeeder extends Seeder
      *
      * @return string
      */
-    private function getBackupName(): string
+    final public static function getBackupName(): string
     {
-        return $this->getSdeName() . '_backup';
+        return static::getSdeName() . '_backup';
     }
 
     /**

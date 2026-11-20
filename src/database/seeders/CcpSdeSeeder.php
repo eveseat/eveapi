@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\ChrFactionsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\DgmTypeAttributesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvTypesSeeder;
@@ -83,7 +84,7 @@ class CcpSdeSeeder extends Seeder
         // extract sde file/seeder mapping from config
         // $sde_seeders = config('seat.sde.seeders', []);
         // configure sde version
-        $this->version = config('eveapi.config.sde.version') ?? $this->version;
+        $this->version = $this->getVersion();
         $this->command->info('Checking configuration...');
         if (! $this->isStorageOk())
             throw new DirectoryNotFoundException('Storage path is not OK. Please check permissions.');
@@ -97,6 +98,28 @@ class CcpSdeSeeder extends Seeder
         $this->call($this->seeders);
 
         $this->recordInstalledVersion();
+    }
+
+    /**
+     * A seed that was killed part way (out of memory, container stopped) leaves that
+     * table's backup behind and the table half loaded until the seeder runs again.
+     *
+     * @return bool
+     */
+    public static function hasInterruptedRun(): bool
+    {
+        return collect(self::SEEDER_MAP)->flatten()
+            ->contains(fn ($seeder) => Schema::hasTable($seeder::getBackupName()));
+    }
+
+    /**
+     * The CCP build this seeder installs.
+     *
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return (string) (config('eveapi.config.sde.version') ?? $this->version);
     }
 
     /**
