@@ -23,17 +23,15 @@
 namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
-use Seat\Eveapi\Mapping\Sde\Ccp\InvCategoryMapping;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Mapping\Sde\Ccp\InvGroupMapping;
-use Seat\Eveapi\Models\Sde\InvCategory;
 use Seat\Eveapi\Models\Sde\InvGroup;
 
 class InvGroupsSeeder extends AbstractSdeSeeder
 {
 
-    protected const FILENAME = "groups.jsonl";
+    protected const FILENAME = 'groups.jsonl';
 
     /**
      * Define seeder related SDE table structure.
@@ -45,7 +43,7 @@ class InvGroupsSeeder extends AbstractSdeSeeder
     {
         $table->integer('groupID')->primary();
         $table->integer('categoryID')->nullable();
-        $table->string('groupName', 100)->nullable();
+        $table->string('groupName', 255)->nullable();
         $table->integer('iconID')->nullable();
         $table->boolean('useBasePrice')->default(false);
         $table->boolean('anchored')->default(false);

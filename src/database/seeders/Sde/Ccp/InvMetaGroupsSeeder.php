@@ -23,15 +23,15 @@
 namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Mapping\Sde\Ccp\InvMetaGroupMapping;
 use Seat\Eveapi\Models\Sde\InvMetaGroup;
 
 class InvMetaGroupsSeeder extends AbstractSdeSeeder
 {
 
-    protected const FILENAME = "metaGroups.jsonl";
+    protected const FILENAME = 'metaGroups.jsonl';
 
     /**
      * Define seeder related SDE table structure.
@@ -42,7 +42,7 @@ class InvMetaGroupsSeeder extends AbstractSdeSeeder
     protected function getSdeTableDefinition(Blueprint $table): void
     {
         $table->integer('metaGroupID')->primary();
-        $table->string('metaGroupName', 100)->nullable();
+        $table->string('metaGroupName', 255)->nullable();
         $table->string('description', 3000)->nullable();
         $table->string('iconSuffix', 256)->nullable();
         $table->integer('iconID')->nullable();

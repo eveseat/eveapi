@@ -28,8 +28,6 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
-use Illuminate\Database\Eloquent\Model;
-use stdClass;
 
 abstract class AbstractSdeSeeder extends Seeder
 {
@@ -49,7 +47,7 @@ abstract class AbstractSdeSeeder extends Seeder
         return Str::camel($filename);
     }
 
-    protected const FILENAME = "";
+    protected const FILENAME = '';
 
     protected const IS_MULTI_SEEDER = false;
 
@@ -152,15 +150,15 @@ abstract class AbstractSdeSeeder extends Seeder
      */
     final protected function seedTable(): void
     {
-        $path = storage_path(sprintf("sde/%s", $this::FILENAME));
+        $path = storage_path(sprintf('sde/%s', $this::FILENAME));
 
         if (! file_exists($path))
             throw new FileNotFoundException("Unable to retrieve $path.");
 
         // First open and scan to get length.. Inefficient but I want to know length
         $linecount = 0;
-        $handle = fopen($path, "r");
-        while (!feof($handle)) {
+        $handle = fopen($path, 'r');
+        while (! feof($handle)) {
             $line = fgets($handle);
             $linecount++;
         }
@@ -171,7 +169,8 @@ abstract class AbstractSdeSeeder extends Seeder
 
         $handle = fopen($path, 'r');
         if (! $handle) {
-            $this->command->error("Unable to open file.");
+            $this->command->error('Unable to open file.');
+
             return; //Command::FAILURE;
         }
 
@@ -212,7 +211,7 @@ abstract class AbstractSdeSeeder extends Seeder
             $bar->advance();
         }
 
-        if (count($records) >= 0) {
+        if (count($records) > 0) {
             $this->insert($records);
             $records = [];
         }

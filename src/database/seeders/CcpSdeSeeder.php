@@ -27,7 +27,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\ChrFactionsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\DgmTypeAttributesSeeder;
-use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvTypesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\DgmTypeEffectsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvCategoriesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvContrabandTypesSeeder;
@@ -35,6 +34,7 @@ use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvControlTowerResourcesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvGroupsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMarketGroupsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMetaGroupsSeeder;
+use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvTypesSeeder;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 /**
@@ -48,7 +48,7 @@ class CcpSdeSeeder extends Seeder
     /**
      * @var string
      */
-    private $version = '3444265';
+    private $version = '3720952';
 
     /**
      * The SDE file storage path.
@@ -96,7 +96,6 @@ class CcpSdeSeeder extends Seeder
         $this->call($this->seeders);
     }
 
-    
     /**
      * Download the EVE Sde from Fuzzwork and save it
      * in the storage_path/sde folder.
@@ -128,6 +127,7 @@ class CcpSdeSeeder extends Seeder
 
         if ($zip->open($zipPath) !== true) {
             $this->command->error("Could not open ZIP file: $zipPath");
+
             return;
         }
 
@@ -179,6 +179,7 @@ class CcpSdeSeeder extends Seeder
 
         return $bar;
     }
+
     /**
      * Check that the storage path is ok. I needed it
      * will be automatically created.
@@ -207,9 +208,10 @@ class CcpSdeSeeder extends Seeder
     private function resolveSeeder(string $filename): ?array
     {
         if (array_key_exists(basename($filename), self::SEEDER_MAP)) {
-            $seeder =  self::SEEDER_MAP[basename($filename)];
-            if (is_array($seeder)) 
+            $seeder = self::SEEDER_MAP[basename($filename)];
+            if (is_array($seeder))
                 return $seeder;
+
             return [$seeder];
         }
 

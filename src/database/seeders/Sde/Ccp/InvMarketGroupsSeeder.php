@@ -23,15 +23,15 @@
 namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Mapping\Sde\Ccp\InvMarketGroupMapping;
 use Seat\Eveapi\Models\Sde\InvMarketGroup;
 
 class InvMarketGroupsSeeder extends AbstractSdeSeeder
 {
 
-    protected const FILENAME = "marketGroups.jsonl";
+    protected const FILENAME = 'marketGroups.jsonl';
 
     /**
      * Define seeder related SDE table structure.
@@ -43,7 +43,7 @@ class InvMarketGroupsSeeder extends AbstractSdeSeeder
     {
         $table->integer('marketGroupID')->primary();
         $table->integer('parentGroupID')->nullable();
-        $table->string('marketGroupName', 100)->nullable();
+        $table->string('marketGroupName', 255)->nullable();
         $table->string('description', 3000)->nullable();
         $table->integer('iconID')->nullable();
         $table->boolean('hasTypes')->nullable();

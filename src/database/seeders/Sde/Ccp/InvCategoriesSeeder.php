@@ -23,15 +23,15 @@
 namespace Seat\Eveapi\Database\Seeders\Sde\Ccp;
 
 use Illuminate\Database\Schema\Blueprint;
-use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Database\Seeders\Sde\AbstractSdeSeeder;
+use Seat\Eveapi\Mapping\Sde\AbstractSdeMapping;
 use Seat\Eveapi\Mapping\Sde\Ccp\InvCategoryMapping;
 use Seat\Eveapi\Models\Sde\InvCategory;
 
 class InvCategoriesSeeder extends AbstractSdeSeeder
 {
 
-    protected const FILENAME = "categories.jsonl";
+    protected const FILENAME = 'categories.jsonl';
 
     /**
      * Define seeder related SDE table structure.
@@ -42,7 +42,7 @@ class InvCategoriesSeeder extends AbstractSdeSeeder
     protected function getSdeTableDefinition(Blueprint $table): void
     {
         $table->integer('categoryID')->primary();
-        $table->string('categoryName', 100)->nullable();
+        $table->string('categoryName', 255)->nullable();
         $table->integer('iconID')->nullable();
         $table->boolean('published')->default(false);
     }
