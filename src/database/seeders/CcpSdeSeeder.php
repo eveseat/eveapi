@@ -25,6 +25,7 @@ namespace Seat\Eveapi\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\ChrFactionsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\DgmTypeAttributesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvTypesSeeder;
@@ -35,6 +36,7 @@ use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvControlTowerResourcesSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvGroupsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMarketGroupsSeeder;
 use Seat\Eveapi\Database\Seeders\Sde\Ccp\InvMetaGroupsSeeder;
+use Seat\Services\Settings\Seat;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 
 /**
@@ -48,7 +50,7 @@ class CcpSdeSeeder extends Seeder
     /**
      * @var string
      */
-    private $version = '3444265';
+    private $version = '3720952';
 
     /**
      * The SDE file storage path.
@@ -82,7 +84,7 @@ class CcpSdeSeeder extends Seeder
         // extract sde file/seeder mapping from config
         // $sde_seeders = config('seat.sde.seeders', []);
         // configure sde version
-        $this->version = config('eveapi.config.sde.version') ?? $this->version;
+        $this->version = $this->getVersion();
         $this->command->info('Checking configuration...');
         if (! $this->isStorageOk())
             throw new DirectoryNotFoundException('Storage path is not OK. Please check permissions.');
@@ -94,6 +96,54 @@ class CcpSdeSeeder extends Seeder
 
         $this->command->info('Seeding SDE into Database...');
         $this->call($this->seeders);
+
+        $this->recordInstalledVersion();
+    }
+
+    /**
+     * A seed that was killed part way (out of memory, container stopped) leaves that
+     * table's backup behind and the table half loaded until the seeder runs again.
+     *
+     * @return bool
+     */
+    public static function hasInterruptedRun(): bool
+    {
+        return collect(self::SEEDER_MAP)->flatten()
+            ->contains(fn ($seeder) => Schema::hasTable($seeder::getBackupName()));
+    }
+
+    /**
+     * The CCP build this seeder installs.
+     *
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return (string) (config('eveapi.config.sde.version') ?? $this->version);
+    }
+
+    /**
+     * Kept apart from installed_sde: eve:update:sde compares that one with the
+     * Fuzzwork release on every boot and would reimport over these tables if it changed.
+     *
+     * @return void
+     */
+    private function recordInstalledVersion(): void
+    {
+        $version = $this->version;
+
+        $meta = $this->storage_path . '_sde.jsonl';
+        if (file_exists($meta)) {
+            $sde = json_decode((string) strtok(file_get_contents($meta), "\n"), true) ?: [];
+
+            if (isset($sde['buildNumber']))
+                $version = (string) $sde['buildNumber'];
+
+            if (isset($sde['releaseDate']))
+                $version .= sprintf(' (%s)', substr($sde['releaseDate'], 0, 10));
+        }
+
+        Seat::set('installed_ccp_sde', $version);
     }
 
     

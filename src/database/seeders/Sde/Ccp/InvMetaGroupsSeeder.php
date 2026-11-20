@@ -42,7 +42,7 @@ class InvMetaGroupsSeeder extends AbstractSdeSeeder
     protected function getSdeTableDefinition(Blueprint $table): void
     {
         $table->integer('metaGroupID')->primary();
-        $table->string('metaGroupName', 100)->nullable();
+        $table->string('metaGroupName', 255)->nullable();
         $table->string('description', 3000)->nullable();
         $table->string('iconSuffix', 256)->nullable();
         $table->integer('iconID')->nullable();

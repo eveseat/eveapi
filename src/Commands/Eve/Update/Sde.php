@@ -29,6 +29,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Seat\Eveapi\Database\Seeders\CcpSdeSeeder;
 use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
@@ -50,7 +51,8 @@ class Sde extends Command
      */
     protected $signature = 'eve:update:sde
                             {--local : Check the local config file for the version string}
-                            {--force : Force re-installation of an existing SDE version}';
+                            {--force : Force re-installation of an existing SDE version}
+                            {--without-ccp : Leave the Fuzzwork tables as imported, even if a CCP build was installed on top}';
 
     /**
      * The console command description.
@@ -119,6 +121,9 @@ class Sde extends Command
             return $this::SUCCESS;
         }
 
+        // Read before the import below clears it.
+        $installed_ccp_sde = Seat::get('installed_ccp_sde');
+
         // Request the json from eveseat/resources
         $this->json = $this->getJsonResource();
 
@@ -170,7 +175,7 @@ class Sde extends Command
             $this->warn('You are already running the latest SDE version.');
             $this->warn('If you want to install it again, run this command with --force argument.');
 
-            return $this::SUCCESS;
+            return $this->updateCcpSde($installed_ccp_sde, false);
         }
 
         // Ask for a confirmation before installing an existing SDE version
@@ -231,6 +236,11 @@ class Sde extends Command
 
         Seat::set('installed_sde', $this->json->version);
 
+        // This import replaces the tables the CCP seeder fills, so its build is no longer installed.
+        Seat::set('installed_ccp_sde', null);
+
+        $status = $this->updateCcpSde($installed_ccp_sde, true);
+
         $this->line('SDE Update Command Complete');
 
         // Analytics
@@ -241,7 +251,46 @@ class Sde extends Command
             ->set('el', 'console')
             ->set('ev', $this->json->version)));
 
-        return $this::SUCCESS;
+        return $status;
+    }
+
+    /**
+     * Keep a hybrid install hybrid: once the CCP seeder has run on top of the
+     * Fuzzwork import, a Fuzzwork import alone would roll those tables back.
+     *
+     * @param  string|null  $installed  installed_ccp_sde as it was before this run
+     * @param  bool  $replaced  whether this run imported Fuzzwork over the CCP tables
+     * @return int
+     */
+    private function updateCcpSde(?string $installed, bool $replaced): int
+    {
+        if ($this->option('without-ccp'))
+            return $this::SUCCESS;
+
+        $interrupted = CcpSdeSeeder::hasInterruptedRun();
+
+        // Installs that never ran the CCP seeder stay Fuzzwork only.
+        if (empty($installed) && ! $interrupted)
+            return $this::SUCCESS;
+
+        $version = (new CcpSdeSeeder)->getVersion();
+
+        if (! $replaced && ! $interrupted && strtok($installed, ' ') === $version)
+            return $this::SUCCESS;
+
+        $this->info($interrupted
+            ? 'A previous CCP SDE seed did not finish. Applying CCP SDE build ' . $version . ' again.'
+            : 'Applying CCP SDE build ' . $version . ' on top of the Fuzzwork import.');
+
+        try {
+            $status = $this->call('db:seed', ['--class' => CcpSdeSeeder::class, '--force' => true]);
+        } catch (\Throwable $e) {
+            $this->error('CCP SDE seed failed: ' . $e->getMessage());
+
+            return $this::FAILURE;
+        }
+
+        return $status === 0 ? $this::SUCCESS : $this::FAILURE;
     }
 
     /**
